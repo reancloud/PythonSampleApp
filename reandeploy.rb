@@ -1,51 +1,100 @@
 #!/usr/bin/env ruby
-require 'optparse'
+
+# Fix output buffering if running in Jenkins.
+$stdout.sync = true
+$stderr.sync = true
+
+# Fix invalid SSL certificate for DeployNow ELB.
+require 'openssl'
+OpenSSL::SSL.instance_eval{ remove_const :VERIFY_PEER }    # Hack to prevent warning (bundle exec preloads stuff)
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+
+require 'thor'
 require 'timeout'
 require 'uri'
 require 'json'
 require 'faraday'
 require 'yaml'
 
-SCRIPT_NAME=File.basename($0, '.rb')
+SCRIPT_NAME = File.basename($0, '.rb')
 
-# Fix invalid SSL certificate for DeployNow ELB.
-require 'openssl'
-OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+# Initial configuration.
+CONFIG = YAML.load(File.read(File.expand_path('../config.yml', __FILE__)))
 
-# Fix output buffering if running in Jenkins.
-$stdout.sync = true
-$stderr.sync = true
+class REANDeploy
+  module Util
+    
+    protected
+    
+    # Logging output.
+    def log(*items)
+      puts "#{SCRIPT_NAME}: #{items.join(' ')}"
+    end
 
-# Logging output.
-def log(*items)
-	$stderr.puts "#{SCRIPT_NAME}: #{items.join(' ')}"
-end
-
-# Fatal exit.
-def die(*items)
-	log(*items)
-	exit 1
-end
-
-# Read config.
-@config = YAML.load(File.read(File.expand_path('../config.yml', __FILE__)))
-
-# Set up connection to DNow.
-@conn = Faraday.new url: @config['dnow']['base_url']
-@conn.headers['Authorization'] = @config['dnow'].values_at('username', 'password').map{|v| URI.escape(v)}.join(':')
-@conn.headers['Accepts'] = 'application/json'
+    # Fatal exit.
+    def die(*items)
+      log(*items)
+      exit 1
+    end
+    
+    # Connection to REANDeploy
+    def conn
+      unless defined? @conn
+        @conn = Faraday.new url: CONFIG['dnow']['base_url']
+        @conn.headers['Authorization'] = CONFIG['dnow'].values_at('username', 'password').map{|v| URI.escape(v)}.join(':')
+        @conn.headers['Accepts'] = 'application/json'
+      end
+      @conn
+    end
   
-def dnow_get(path, *args)
-  rp = @conn.get(path, *args)
-  die "request failed #{rp.env.url} (#{rp.status})" if rp.status != 200
-  JSON.parse rp.body
-end
-  
-def dnow_post(path, body, *args)
-  rp = @conn.post(path, *args) do |rq|
-    rq.headers['Content-Type'] = 'application/json'
-    rq.body = (String===body ? body : body.to_json)
+    # GET request to REANDeploy
+    def dnow_get(path, *args)
+      rp = @conn.get(path, *args)
+      die "request failed #{rp.env.url} (#{rp.status})" if rp.status != 200
+      JSON.parse rp.body
+    end
+      
+    # POST request to REANDeploy
+    def dnow_post(path, body, *args)
+      rp = @conn.post(path, *args) do |rq|
+        rq.headers['Content-Type'] = 'application/json'
+        rq.body = (String===body ? body : body.to_json)
+      end
+      die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
+      JSON.parse rp.body
+    end
   end
-  die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
-  JSON.parse rp.body
+  
+  class Env < Thor
+    include Util
+    
+    desc "deploy <ID-or-NAME>", "Deploy an environment identified by ID or by NAME"
+    def deploy id_or_name
+      
+      # Called from the command-line, only a String will ever make it here.
+      if String===id_or_name
+        
+        # If a numeric ID was not passed, we need to get the environment by name.
+        if id_or_name !~ /^\d+$/
+          die "getting an environment by name is not yet supported"
+          
+        # Otherwise, just use the numeric ID.
+        else
+          id_or_name = id_or_name.to_i
+        end
+      end
+      
+      # Now, armed with an ID, we can deploy the environment.
+      log "deploying environment ##{id_or_name}"
+    end
+  end
+
+  class Tool < Thor
+    desc "env SUBCOMMAND ...ARGS", "Manage an environment"
+    subcommand "env", Env
+  end
+  
 end
+
+# Process the command
+REANDeploy::Tool.start(ARGV)
