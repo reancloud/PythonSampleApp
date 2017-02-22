@@ -28,7 +28,7 @@ class REANDeploy
     
     # Logging output.
     def log(*items)
-      puts "#{SCRIPT_NAME}: #{items.join(' ')}"
+      $stderr.puts "#{SCRIPT_NAME}: #{items.join(' ')}"
     end
 
     # Fatal exit.
