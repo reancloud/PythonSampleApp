@@ -1,0 +1,8 @@
+.project
+.buildpath
+.settings
+.bundle
+tmp
+*~
+/config..yml
+/config.yml
