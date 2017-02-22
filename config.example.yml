@@ -1,9 +1,4 @@
 dnow:
-  base_url: https://deploynow-elb-dev-1823816995.us-east-1.elb.amazonaws.com
+  base_url: https://deploynow-elb-dev-1823816995.us-east-1.elb.amazonaws.com/DeployNow/rest
   username: my-user
   password: my-password
-  provider:
-    name: uscis-joseph.khoobyar
-    region: us-east-1
-    aws_access_key_id: ...
-    aws_secret_access_key: ...

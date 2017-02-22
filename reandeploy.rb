@@ -49,14 +49,14 @@ class REANDeploy
   
     # GET request to REANDeploy
     def dnow_get(path, *args)
-      rp = @conn.get(path, *args)
+      rp = conn.get(path, *args)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status != 200
       JSON.parse rp.body
     end
       
     # POST request to REANDeploy
     def dnow_post(path, body, *args)
-      rp = @conn.post(path, *args) do |rq|
+      rp = conn.post(path, *args) do |rq|
         rq.headers['Content-Type'] = 'application/json'
         rq.body = (String===body ? body : body.to_json)
       end
@@ -68,7 +68,9 @@ class REANDeploy
   class Env < Thor
     include Util
     
-    desc "deploy <ID-or-NAME>", "Deploy an environment identified by ID or by NAME"
+    option :deploy_config,      desc: "JSON file describing deployment configuration"
+    desc "deploy <ID-or-NAME>",
+         "Deploy an environment identified by ID or by NAME"
     def deploy id_or_name
       
       # Called from the command-line, only a String will ever make it here.
@@ -84,8 +86,16 @@ class REANDeploy
         end
       end
       
-      # Now, armed with an ID, we can deploy the environment.
+      # Parse the deployment configuration as JSON, if it exists.
+      if deploy_config = options[:deploy_config]
+        die "unable to parse deployment config JSON: #{deploy_config.inspect}" unless File.exists?
+        deploy_config = JSON.parse(File.read(deploy_config))
+      end
+      
+      # Now we can deploy the environment.
       log "deploying environment ##{id_or_name}"
+      env = dnow_post "env/deploy/#{id_or_name}", deployConfig: deploy_config
+      log env.inspect
     end
   end
 
