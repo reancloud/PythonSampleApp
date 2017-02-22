@@ -68,9 +68,9 @@ class REANDeploy
   class Env < Thor
     include Util
     
-    option :deploy_config,      desc: "JSON file describing deployment configuration"
-    desc "deploy <ID-or-NAME>",
-         "Deploy an environment identified by ID or by NAME"
+    option :deploy_config, desc: "JSON file describing deployment configuration"
+    option :wait, default: true, type: :boolean, desc: "Wait for the deployment to finish"
+    desc "deploy <ID-or-NAME>", "Deploy an environment identified by ID or by NAME"
     def deploy id_or_name
       
       # Called from the command-line, only a String will ever make it here.
@@ -93,9 +93,18 @@ class REANDeploy
       end
       
       # Now we can deploy the environment.
-      log "deploying environment ##{id_or_name}"
+      log "env deploy ##{id_or_name}"
       env = dnow_post "env/deploy/#{id_or_name}", deployConfig: deploy_config
-      log env.inspect
+      log "env deploy ##{id_or_name}: #{env['status']} #{env['name']} (#{env['tfRunId']})"
+      
+      # Optionally wait for the deployment to complete.
+      if options[:wait]
+        begin
+          sleep 5
+          envDeployment = dnow_get "env/deploy/deployment/#{env['tfRunId']}"
+          log "env deploy ##{id_or_name}: #{envDeployment['status']} #{env['name']} (#{env['tfRunId']})"
+        end while envDeployment['status'] == 'DEPLOYING'
+      end
     end
   end
 
