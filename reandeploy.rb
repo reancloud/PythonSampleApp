@@ -63,28 +63,24 @@ class REANDeploy
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
       JSON.parse rp.body
     end
+    
+    # DELETE request to REANDeploy
+    def dnow_delete(path, *args)
+      rp = conn.delete(path, *args)
+      die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
+      JSON.parse rp.body
+    end
+      
   end
   
   class Env < Thor
     include Util
     
     option :deploy_config, desc: "JSON file describing deployment configuration"
-    option :wait, default: true, type: :boolean, desc: "Wait for the deployment to finish"
+    option :wait, default: true, type: :boolean, desc: "Wait for the operation to finish"
     desc "deploy <ID-or-NAME>", "Deploy an environment identified by ID or by NAME"
     def deploy id_or_name
-      
-      # Called from the command-line, only a String will ever make it here.
-      if String===id_or_name
-        
-        # If a numeric ID was not passed, we need to get the environment by name.
-        if id_or_name !~ /^\d+$/
-          die "getting an environment by name is not yet supported"
-          
-        # Otherwise, just use the numeric ID.
-        else
-          id_or_name = id_or_name.to_i
-        end
-      end
+      id = get_env_id(id_or_name)
       
       # Parse the deployment configuration as JSON, if it exists.
       if deploy_config = options[:deploy_config]
@@ -93,17 +89,54 @@ class REANDeploy
       end
       
       # Now we can deploy the environment.
-      log "env deploy ##{id_or_name}"
-      env = dnow_post "env/deploy/#{id_or_name}", deployConfig: deploy_config
-      log "env deploy ##{id_or_name}: #{env['status']} #{env['name']} (#{env['tfRunId']})"
+      log "env deploy ##{id}"
+      env = dnow_post "env/deploy/#{id}", deployConfig: deploy_config
+      log "env deploy ##{id}: #{env['status']} #{env['name'].inspect} (#{env['tfRunId']})"
       
       # Optionally wait for the deployment to complete.
       if options[:wait]
         begin
           sleep 5
           envDeployment = dnow_get "env/deploy/deployment/#{env['tfRunId']}"
-          log "env deploy ##{id_or_name}: #{envDeployment['status']} #{env['name']} (#{env['tfRunId']})"
+          log "env deploy ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
         end while envDeployment['status'] == 'DEPLOYING'
+      end
+    end
+    
+    option :wait, default: true, type: :boolean, desc: "Wait for the operation to finish"
+    desc "destroy <ID-or-NAME>", "Destroy an environment identified by ID or by NAME"
+    def destroy id_or_name
+      id = get_env_id(id_or_name)
+      
+      # Now we can destroy the environment.
+      log "env destroy ##{id}"
+      env = dnow_delete "env/deploy/#{id}"
+      log "env destroy ##{id}: #{env['status']} #{env['name'].inspect} (#{env['tfRunId']})"
+      
+      # Optionally wait for the destroy to complete.
+      if options[:wait]
+        begin
+          sleep 5
+          envDeployment = dnow_get "env/deploy/deployment/#{env['tfRunId']}"
+          log "env destroy ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
+        end while envDeployment['status'] == 'DESTROYING'
+      end
+    end
+    
+    protected
+    
+    def get_env_id(name)
+      # Short-circuit in case we are called from somewhere other than the command-line.
+      if Fixnum===name
+        name
+        
+      # If a numeric ID was not passed, we need to get the environment by name.
+      elsif name !~ /^\d+$/
+        die "getting an environment by name is not yet supported"
+        
+      # Otherwise, just use the numeric ID.
+      else
+        name.to_i
       end
     end
   end
