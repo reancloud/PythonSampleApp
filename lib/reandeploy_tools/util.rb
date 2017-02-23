@@ -1,5 +1,7 @@
 module REANDeployTools
   module Util
+    SCRIPT_NAME = 'reandeploy'
+    
     protected
     
     # Logging output.
