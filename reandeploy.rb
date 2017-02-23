@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+#
+# Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
+#
 
 # Fix output buffering if running in Jenkins.
 $stdout.sync = true
