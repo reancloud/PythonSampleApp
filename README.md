@@ -67,7 +67,7 @@ Deploying some environment with ID 123, setting input variables from a JSON file
 #### Help description
 
 ```
- be ./reandeploy.rb env help destroy
+$ be ./reandeploy.rb env help destroy
 Usage:
   reandeploy.rb destroy <ID-or-NAME>
 
