@@ -76,6 +76,7 @@ class REANDeploy
   class Env < Thor
     include Util
     
+    option :vars, desc: "JSON file describing input variables"
     option :deploy_config, desc: "JSON file describing deployment configuration"
     option :wait, default: true, type: :boolean, desc: "Wait for the operation to finish"
     desc "deploy <ID-or-NAME>", "Deploy an environment identified by ID or by NAME"
@@ -86,6 +87,27 @@ class REANDeploy
       if deploy_config = options[:deploy_config]
         die "unable to parse deployment config JSON: #{deploy_config.inspect}" unless File.exists?
         deploy_config = JSON.parse(File.read(deploy_config))
+      end
+      
+      # Apply any input variables from a JSON file, if it exists.
+      if vars = options[:vars]
+        die "unable to parse input vars JSON: #{vars.inspect}" unless File.exists? vars
+        vars = JSON.parse(File.read(vars))
+      
+        # Only apply input variables if they have been defined.
+        resources = dnow_get("env/resources/#{id}")
+        if input_resource = resources.find{|r| r['resourceName']=='Input Variables' }
+
+          # Only set variables that are already defined and have scalar values.
+          input_vars = input_resource['attributes'].find{|a| a['name']=='input_variables'}
+          input_vars['validValue'].each_key do |key|
+            input_vars['validValue'][key] = vars[key] if vars.include?(key) && !(Array===vars[key] || Hash===vars[key])
+          end
+          input_vars['value'] = input_vars['validValue'].to_json
+            
+          # Retrieve the environment, then save the input variables back.
+          dnow_post "env/saveAll", environment: dnow_get("env/#{id}"), resourcesToSave: [input_resource]
+        end
       end
       
       # Now we can deploy the environment.
