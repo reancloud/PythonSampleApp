@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'reandeploy_tools'
+
+REANDeployTools::Cli::Main.start(ARGV)
