@@ -76,7 +76,8 @@ class REANDeploy
   class Env < Thor
     include Util
     
-    option :vars, desc: "JSON file describing input variables"
+    option :inputs, desc: "JSON file describing input variables"
+    option :outputs, desc: "filename to write outputs to, as JSON"
     option :deploy_config, desc: "JSON file describing deployment configuration"
     option :wait, default: true, type: :boolean, desc: "Wait for the operation to finish"
     desc "deploy <ID-or-NAME>", "Deploy an environment identified by ID or by NAME"
@@ -89,13 +90,15 @@ class REANDeploy
         deploy_config = JSON.parse(File.read(deploy_config))
       end
       
+      # Get the existing resources for this environment.
+      resources = dnow_get("env/resources/#{id}")
+      
       # Apply any input variables from a JSON file, if it exists.
-      if vars = options[:vars]
+      if vars = options[:inputs]
         die "unable to parse input vars JSON: #{vars.inspect}" unless File.exists? vars
         vars = JSON.parse(File.read(vars))
       
         # Only apply input variables if they have been defined.
-        resources = dnow_get("env/resources/#{id}")
         if input_resource = resources.find{|r| r['resourceName']=='Input Variables' }
 
           # Only set variables that are already defined and have scalar values.
@@ -122,6 +125,19 @@ class REANDeploy
           envDeployment = dnow_get "env/deploy/deployment/#{env['tfRunId']}"
           log "env deploy ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
         end while envDeployment['status'] == 'DEPLOYING'
+        
+        # Fail unless the deployment succeeded.
+        exit 1 unless envDeployment['status'] == 'DEPLOYED'
+          
+        # If we have waited for the deployment to complete, then we can collect outputs.
+        if envDeployment['status'] == 'DEPLOYED' and
+              outputs = options[:outputs] and
+              output_resource = resources.find{|r| r['resourceName']=='output' }
+          resource_status = dnow_get "env/deploy/#{id}"
+          if output_status = resource_status[output_resource['id'].to_s]
+            File.write(outputs, output_status.find{|x| x['otherAttributes']}['otherAttributes'].to_json)
+          end
+        end
       end
     end
     
@@ -142,6 +158,9 @@ class REANDeploy
           envDeployment = dnow_get "env/deploy/deployment/#{env['tfRunId']}"
           log "env destroy ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
         end while envDeployment['status'] == 'DESTROYING'
+        
+        # Fail unless the destroy succeeded.
+        exit 1 unless envDeployment['status'] == 'DESTROYEDj'
       end
     end
     
