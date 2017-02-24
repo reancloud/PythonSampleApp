@@ -1,4 +1,0 @@
-dnow:
-  base_url: https://deploynow-elb-dev-1823816995.us-east-1.elb.amazonaws.com/DeployNow/rest
-  username: my-user
-  password: my-password
