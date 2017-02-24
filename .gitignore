@@ -4,5 +4,4 @@
 .bundle
 tmp
 *~
-/config..yml
-/config.yml
+*.gem
