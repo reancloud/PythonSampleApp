@@ -90,7 +90,7 @@ module REANDeployTools
           end while envDeployment['status'] == 'DESTROYING'
 
           # Fail unless the destroy succeeded.
-          exit 1 unless envDeployment['status'] == 'DESTROYEDj'
+          exit 1 unless envDeployment['status'] == 'DESTROYED'
         end
       end
 
