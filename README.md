@@ -11,7 +11,7 @@ This tool supports the following commands
 
 You can check out the code from git, and then install the gem with a command similar to:
 
-`gem build reandeploy-tools.gem && gem install reandeploy-tools-1.2.3.gem`
+`gem build reandeploy-tools.gemspec && gem install reandeploy-tools-1.2.3.gem`
 
 ### Running from source
 
