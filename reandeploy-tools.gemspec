@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.description   = gem.summary = 'Tools for use with REAN Deploy, written in Ruby'
   gem.homepage      = 'https://github.com/reancloud/reandeploy-tools'
   gem.files         = `git ls-files bin lib README.md Gemfile Gemfile.lock`.split($\)
+	gem.executables   = `git ls-files bin`.split($\).map{ |f| File.basename(f) }
   gem.name          = 'reandeploy-tools'
   gem.test_files    = `git ls-files spec`.split($\)
   gem.version       = REANDeployTools::VERSION
