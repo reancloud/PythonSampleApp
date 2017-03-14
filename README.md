@@ -31,7 +31,7 @@ After doing this, you can run the tool using `bundle exec bin/reandeploy` as the
 {
   "dnow": {
     "base_url": "",
-    "username": "n",
+    "username": "",
     "password": ""
   }
   
