@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    reandeploy-tools (0.1.0)
+    reandeploy-tools (0.1.4)
       faraday (~> 0.9.2)
       thor (~> 0.19.1)
 
