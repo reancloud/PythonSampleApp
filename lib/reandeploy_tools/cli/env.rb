@@ -109,10 +109,12 @@ module REANDeployTools
         
         case format = options[:format]
         when 'tf', 'cf'
+          # Download the Terraform source code and save it in the output directory.
           tarball = client.get "env/download/terraform/#{id}"
           log "env export ##{id} (#{format}) => #{tarball.filename} (#{tarball.length})"
-          
           create_file tarball.filename, tarball.content
+          
+          # Unpack all of the Terraform source code.
           empty_directory 'terraform'
           inside 'terraform' do
             run "tar xzf ../#{tarball.filename.shellescape}"
@@ -148,7 +150,7 @@ NOTES
             say File.read(JOLT_NOTES)
             say <<NOTES
 
-WARNING: Please carefully read the above notes and then manually complete the conversion process.         
+WARNING: Please carefully read the above notes and then manually complete the conversion process.
 NOTES
           end
         end
