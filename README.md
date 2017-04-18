@@ -4,6 +4,7 @@ This tool supports the following commands
 
 * `env deploy`: Deploy an environment.  Supports setting input variables and collecting terraform outputs.
 * `env destroy`: Destroy an environment.
+* `env export`: Export an environment as JSON, Terraform or CloudFormation.
 
 ## Installation
 
@@ -27,16 +28,13 @@ After doing this, you can run the tool using `bundle exec bin/reandeploy` as the
 
 ### Config file
 
-```
-{
-  "dnow": {
-    "base_url": "",
-    "username": "",
-    "password": ""
-  }
-  
-}
+An example configuration file:
 
+```yaml
+dnow:
+  base_url: http://localhost:8182/DeployNow/rest
+  username: admin
+  password: somePassW0rd
 ```
 
 ### Commands Help
