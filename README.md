@@ -25,6 +25,20 @@ After doing this, you can run the tool using `bundle exec bin/reandeploy` as the
 
 ## Usage - Environment Commands
 
+### Config file
+
+```
+{
+  "dnow": {
+    "base_url": "",
+    "username": "",
+    "password": ""
+  }
+  
+}
+
+```
+
 ### Commands Help
 
 ```
