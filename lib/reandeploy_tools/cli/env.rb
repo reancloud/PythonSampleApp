@@ -1,5 +1,6 @@
 require 'thor'
 require 'json'
+require 'tempfile'
 
 module REANDeployTools
   module Cli
@@ -91,6 +92,29 @@ module REANDeployTools
 
           # Fail unless the destroy succeeded.
           exit 1 unless envDeployment['status'] == 'DESTROYED'
+        end
+      end
+
+      option :format, enum: %w(json blueprint tf cf), required: true, desc: "Export format: json, blueprint, tf, cf"
+      option :output, required: true, desc: "Output file for json or blueprint formats, output directory for tf and cf formats"
+      
+      desc "export <ID-or-NAME>", "Export an environment identified by ID or by NAME"
+      def export id_or_name
+        id = get_env_id(id_or_name)
+        self.destination_root = options[:output]
+        
+        case format = options[:format]
+        when 'tf', 'cf'
+          tarball = client.get "env/download/terraform/#{id}"
+          log "env export ##{id} (#{format}) => #{tarball.filename} (#{tarball.length})"
+          
+          create_file tarball.filename, tarball.content
+          empty_directory 'terraform'
+          inside('terraform') { run "tar xzvf ../#{tarball.filename}" }
+            
+          if format == 'cf'
+            empty_directory 'CloudFormation'
+          end
         end
       end
 
