@@ -4,6 +4,7 @@ This tool supports the following commands
 
 * `env deploy`: Deploy an environment.  Supports setting input variables and collecting terraform outputs.
 * `env destroy`: Destroy an environment.
+* `env export`: Export an environment as JSON, Terraform or CloudFormation.
 
 ## Installation
 
