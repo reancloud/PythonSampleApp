@@ -9,12 +9,15 @@ file 'tmp/jolt' do
   end
 end
 
-file 'vendor/jolt/jolt-cli.jar' => 'tmp/jolt' do
+file 'tmp/jolt/cli/target/maven-archiver/pom.properties' => 'tmp/jolt' do
   Dir.chdir 'tmp/jolt' do
     sh "mvn clean package"
   end
+end
+
+file 'vendor/jolt/jolt-cli.jar' => 'tmp/jolt/cli/target/maven-archiver/pom.properties' do
   mkdir_p "vendor/jolt"
-  sh "cp -va tmp/jolt/cli/target/jolt-cli-*-SNAPSHOTt.jar vendor/jolt/jolt-cli.jar"
+  sh "cp -va tmp/jolt/cli/target/jolt-cli-*-SNAPSHOT.jar vendor/jolt/jolt-cli.jar && touch vendor/jolt/jolt-cli.jar"
 end
 
 task :clean  do
