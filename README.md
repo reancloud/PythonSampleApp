@@ -145,9 +145,17 @@ Export an environment identified by ID or by NAME
 
 #### Examples
 
-Destroying some environment with ID 123
+Exporting some environment with ID 123 as a blueprint
 
-`reandeploy env destroy 123`
+`reandeploy env export 123 --format=blueprint --output=env-123.blueprint.reandeploy`
+
+Exporting some environment with ID 123 as Terraform
+
+`reandeploy env export 123 --format=ff --output=env-123-directory`
+
+Exporting some environment with ID 123 as CloudFormation
+
+`reandeploy env export 123 --format=cf --output=env-123-directory`
 
 Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 
