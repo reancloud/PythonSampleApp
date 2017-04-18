@@ -10,9 +10,9 @@ file 'tmp/jolt' do
 end
 
 file 'vendor/jolt/jolt-cli.jar' => 'tmp/jolt' do
-  #Dir.chdir 'tmp/jolt' do
-  #  sh "mvn clean package"
-  #end
+  Dir.chdir 'tmp/jolt' do
+    sh "mvn clean package"
+  end
   mkdir_p "vendor/jolt"
   sh "cp -va tmp/jolt/cli/target/jolt-cli-*-SNAPSHOTt.jar vendor/jolt/jolt-cli.jar"
 end
