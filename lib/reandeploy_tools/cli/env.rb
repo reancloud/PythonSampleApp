@@ -129,7 +129,7 @@ module REANDeployTools
               Dir['../terraform/*.tf.json'].each do |tffile|
                 
                 # Attempt to convert this file.  
-                cfjson = run("jolt transform #{JOLT_TRANSFORM} #{tffile.shellescape}", capture: true) || ''
+                cfjson = jolt_transform tffile
                 case cfjson
                 when '', '[]', '{}', 'null'
                   failures << File.basename(tffile)
@@ -171,6 +171,20 @@ NOTES
         else
           name.to_i
         end
+      end
+      
+      private
+      
+      def jolt_transform(tffile)
+        @jolt_cmd ||= begin
+          jolt_cli_jar = File.expand_path('../../../../vendor/jolt/jolt-cli.jar', __FILE__)
+          if File.exist? jolt_cli_jar
+            "java -jar #{jolt_cli_jar.shellescape}"
+          else
+            "jolt"
+          end
+        end
+        run("#{@jolt_cmd} transform #{JOLT_TRANSFORM} #{tffile.shellescape}", capture: true) || ''
       end
     end
   end
