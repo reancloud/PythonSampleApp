@@ -28,16 +28,13 @@ After doing this, you can run the tool using `bundle exec bin/reandeploy` as the
 
 ### Config file
 
-```
-{
-  "dnow": {
-    "base_url": "",
-    "username": "",
-    "password": ""
-  }
-  
-}
+An example configuration file:
 
+```yaml
+dnow:
+  base_url: http://localhost:8182/DeployNow/rest
+  username: admin
+  password: somePassW0rd
 ```
 
 ### Commands Help
