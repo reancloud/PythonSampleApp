@@ -1,6 +1,7 @@
 require 'thor'
 require 'json'
 require 'tempfile'
+require 'shellwords'
 
 module REANDeployTools
   module Cli
@@ -98,6 +99,9 @@ module REANDeployTools
       option :format, enum: %w(json blueprint tf cf), required: true, desc: "Export format: json, blueprint, tf, cf"
       option :output, required: true, desc: "Output file for json or blueprint formats, output directory for tf and cf formats"
       
+      JOLT_TRANSFORM = File.expand_path('../../../jolt-cf2tf/transform.json', __FILE__).shellescape
+      JOLT_NOTES = File.expand_path('../../../jolt-cf2tf/notes.txt', __FILE__)
+      
       desc "export <ID-or-NAME>", "Export an environment identified by ID or by NAME"
       def export id_or_name
         id = get_env_id(id_or_name)
@@ -110,10 +114,36 @@ module REANDeployTools
           
           create_file tarball.filename, tarball.content
           empty_directory 'terraform'
-          inside('terraform') { run "tar xzvf ../#{tarball.filename}" }
+          inside 'terraform' do
+            run "tar xzf ../#{tarball.filename.shellescape}"
+          end
             
           if format == 'cf'
+            failures = []
+              
             empty_directory 'CloudFormation'
+            inside 'CloudFormation' do
+              Dir['../terraform/*.tf.json'].each do |tffile|
+                
+                # Attempt to convert this file.  
+                cfjson = run("jolt transform #{JOLT_TRANSFORM} #{tffile.shellescape}", capture: true) || ''
+                case cfjson
+                when '', '[]', '{}', 'null'
+                  failures << File.basename(tffile)
+                  say "WARNING: Could not to convert #{File.basename(tffile)} to CloudFormation"
+                else
+                  cffile = File.basename(tffile,'.tf.json') + '.cf.json'
+                  create_file cffile, cfjson
+                end
+              end
+            end
+           
+            say <<NOTES
+WARNING: CloudFormation conversion support is very limited and requires manual intervention.
+         See the following notes about this conversion process.
+         
+NOTES
+            say File.read(JOLT_NOTES)
           end
         end
       end
