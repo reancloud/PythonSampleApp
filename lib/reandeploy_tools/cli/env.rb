@@ -117,7 +117,8 @@ module REANDeployTools
           inside 'terraform' do
             run "tar xzf ../#{tarball.filename.shellescape}"
           end
-            
+          
+          # Optionally convert Terraform to CloudFormation 
           if format == 'cf'
             failures = []
               
@@ -138,12 +139,17 @@ module REANDeployTools
               end
             end
            
+            # Make sure that people are warned about the alpha nature of this conversion.
             say <<NOTES
 WARNING: CloudFormation conversion support is very limited and requires manual intervention.
          See the following notes about this conversion process.
          
 NOTES
             say File.read(JOLT_NOTES)
+            say <<NOTES
+
+WARNING: Please carefully read the above notes and then manually complete the conversion process.         
+NOTES
           end
         end
       end
