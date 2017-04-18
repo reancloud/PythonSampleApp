@@ -16,12 +16,16 @@ module REANDeployTools
   class Client
     include Util
     include Config
+    
+    # Utility class for handling attachments.
+    class Attachment < Struct.new(:filename, :length, :content_type, :content)
+    end
   
     # GET request to REANDeploy
     def get(path, *args)
       rp = conn.get(path, *args)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status != 200
-      JSON.parse rp.body
+      unwrap_body rp, args
     end
       
     # POST request to REANDeploy
@@ -31,17 +35,35 @@ module REANDeployTools
         rq.body = (String===body ? body : body.to_json)
       end
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
-      JSON.parse rp.body
+      unwrap_body rp, args
     end
     
     # DELETE request to REANDeploy
     def delete(path, *args)
       rp = conn.delete(path, *args)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
-      JSON.parse rp.body
+      unwrap_body rp, args
     end
     
     private
+    
+    def unwrap_body(rp, args)
+      if Hash===args.last
+        case args.last[:result]
+        when :body then return rp.body
+        when :response then return rp
+        end
+      end
+      
+      case content_type = rp['Content-Type']
+      when 'application/json', 'text/json'
+        JSON.parse(rp.body)
+      else
+        if /^attachment; filename="([^"]+)"/ === rp['Content-Disposition']
+          Attachment.new(File.basename($1), (rp['Content-Length'].to_i rescue nil), content_type, rp.body)
+        end
+      end
+    end
     
     # Connection to REANDeploy
     def conn

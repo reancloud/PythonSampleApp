@@ -1,5 +1,7 @@
 require 'thor'
 require 'json'
+require 'tempfile'
+require 'shellwords'
 
 module REANDeployTools
   module Cli
@@ -94,6 +96,79 @@ module REANDeployTools
         end
       end
 
+      option :format, enum: %w(json blueprint tf cf), required: true, desc: "Export format"
+      option :output, required: true, desc: "Output file for json or blueprint formats.  Output directory for tf and cf formats."
+      
+      JOLT_TRANSFORM = File.expand_path('../../../jolt-cf2tf/transform.json', __FILE__).shellescape
+      JOLT_NOTES = File.expand_path('../../../jolt-cf2tf/notes.txt', __FILE__)
+      
+      desc "export <ID-or-NAME>", "Export an environment identified by ID or by NAME"
+      def export id_or_name
+        id = get_env_id(id_or_name)
+        self.destination_root = options[:output]
+        
+        case format = options[:format]
+        when 'json'
+          json = client.get "env/export/#{id}", result: :body
+          file = options[:output]
+          File.write file, json
+          log "env export ##{id} (#{format}) => #{file} (#{json.length} bytes)"
+          
+        when 'blueprint'
+          json = client.get "env/export/blueprint/#{id}", result: :body
+          file = options[:output]
+          File.write file, json
+          log "env export ##{id} (#{format}) => #{file} (#{json.length} bytes)"
+          
+        when 'tf', 'cf'
+          # Download the Terraform source code and save it in the output directory.
+          tarball = client.get "env/download/terraform/#{id}"
+          create_file tarball.filename, tarball.content
+          
+          # Unpack all of the Terraform source code.
+          empty_directory 'terraform'
+          inside 'terraform' do
+            run "tar xzf ../#{tarball.filename.shellescape}"
+          end
+          
+          # Optionally convert Terraform to CloudFormation 
+          if format == 'cf'
+            failures = []
+              
+            empty_directory 'CloudFormation'
+            inside 'CloudFormation' do
+              Dir['../terraform/*.tf.json'].each do |tffile|
+                
+                # Attempt to convert this file.  
+                cfjson = jolt_transform tffile
+                case cfjson
+                when '', '[]', '{}', 'null'
+                  failures << File.basename(tffile)
+                  say "WARNING: Could not to convert #{File.basename(tffile)} to CloudFormation"
+                else
+                  cffile = File.basename(tffile,'.tf.json') + '.cf.json'
+                  create_file cffile, cfjson
+                end
+              end
+            end
+           
+            # Make sure that people are warned about the alpha nature of this conversion.
+            say <<NOTES
+WARNING: CloudFormation conversion support is very limited and requires manual intervention.
+         See the following notes about this conversion process.
+         
+NOTES
+            say File.read(JOLT_NOTES)
+            say <<NOTES
+
+WARNING: Please carefully read the above notes and then manually complete the conversion process.
+NOTES
+          end
+          
+          log "env export ##{id} (#{format}) => #{options[:output]} (directory)"
+        end
+      end
+
       protected
 
       def get_env_id(name)
@@ -109,6 +184,20 @@ module REANDeployTools
         else
           name.to_i
         end
+      end
+      
+      private
+      
+      def jolt_transform(tffile)
+        @jolt_cmd ||= begin
+          jolt_cli_jar = File.expand_path('../../../../vendor/jolt/jolt-cli.jar', __FILE__)
+          if File.exist? jolt_cli_jar
+            "java -jar #{jolt_cli_jar.shellescape}"
+          else
+            "jolt"
+          end
+        end
+        run("#{@jolt_cmd} transform #{JOLT_TRANSFORM} #{tffile.shellescape}", capture: true) || ''
       end
     end
   end

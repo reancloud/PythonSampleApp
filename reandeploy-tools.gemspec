@@ -6,7 +6,8 @@ Gem::Specification.new do |gem|
   gem.email         = 'joseph.khoobyar@reancloud.com'
   gem.description   = gem.summary = 'Tools for use with REAN Deploy, written in Ruby'
   gem.homepage      = 'https://github.com/reancloud/reandeploy-tools'
-  gem.files         = `git ls-files bin lib README.md Gemfile Gemfile.lock`.split($\)
+  gem.files         = `git ls-files bin lib README.md Gemfile Gemfile.lock`.split($\) +
+                      %w(lib/jolt-cf2tf/transform.json lib/jolt-cf2tf/notes.txt)
 	gem.executables   = `git ls-files bin`.split($\).map{ |f| File.basename(f) }
   gem.name          = 'reandeploy-tools'
   gem.test_files    = `git ls-files spec`.split($\)

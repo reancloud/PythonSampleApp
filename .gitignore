@@ -2,6 +2,8 @@
 .buildpath
 .settings
 .bundle
-tmp
+/tmp
+/target
+/vendor/jolt
 *~
 *.gem

@@ -10,6 +10,7 @@ module REANDeployTools
   
     class Base < Thor
       include Util
+      include Thor::Actions
       
       def self.inherited(base)
         base.instance_eval do
