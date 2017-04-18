@@ -96,8 +96,8 @@ module REANDeployTools
         end
       end
 
-      option :format, enum: %w(json blueprint tf cf), required: true, desc: "Export format: json, blueprint, tf, cf"
-      option :output, required: true, desc: "Output file for json or blueprint formats, output directory for tf and cf formats"
+      option :format, enum: %w(json blueprint tf cf), required: true, desc: "Export format"
+      option :output, required: true, desc: "Output file for json or blueprint formats.  Output directory for tf and cf formats."
       
       JOLT_TRANSFORM = File.expand_path('../../../jolt-cf2tf/transform.json', __FILE__).shellescape
       JOLT_NOTES = File.expand_path('../../../jolt-cf2tf/notes.txt', __FILE__)
@@ -108,10 +108,21 @@ module REANDeployTools
         self.destination_root = options[:output]
         
         case format = options[:format]
+        when 'json'
+          json = client.get "env/export/#{id}", result: :body
+          file = options[:output]
+          File.write file, json
+          log "env export ##{id} (#{format}) => #{file} (#{json.length} bytes)"
+          
+        when 'blueprint'
+          json = client.get "env/export/blueprint/#{id}", result: :body
+          file = options[:output]
+          File.write file, json
+          log "env export ##{id} (#{format}) => #{file} (#{json.length} bytes)"
+          
         when 'tf', 'cf'
           # Download the Terraform source code and save it in the output directory.
           tarball = client.get "env/download/terraform/#{id}"
-          log "env export ##{id} (#{format}) => #{tarball.filename} (#{tarball.length})"
           create_file tarball.filename, tarball.content
           
           # Unpack all of the Terraform source code.
@@ -153,6 +164,8 @@ NOTES
 WARNING: Please carefully read the above notes and then manually complete the conversion process.
 NOTES
           end
+          
+          log "env export ##{id} (#{format}) => #{options[:output]} (directory)"
         end
       end
 

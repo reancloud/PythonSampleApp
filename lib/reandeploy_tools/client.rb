@@ -25,7 +25,7 @@ module REANDeployTools
     def get(path, *args)
       rp = conn.get(path, *args)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status != 200
-      unwrap_body rp
+      unwrap_body rp, args
     end
       
     # POST request to REANDeploy
@@ -35,19 +35,26 @@ module REANDeployTools
         rq.body = (String===body ? body : body.to_json)
       end
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
-      unwrap_body rp
+      unwrap_body rp, args
     end
     
     # DELETE request to REANDeploy
     def delete(path, *args)
       rp = conn.delete(path, *args)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
-      unwrap_body rp
+      unwrap_body rp, args
     end
     
     private
     
-    def unwrap_body(rp)
+    def unwrap_body(rp, args)
+      if Hash===args.last
+        case args.last[:result]
+        when :body then return rp.body
+        when :response then return rp
+        end
+      end
+      
       case content_type = rp['Content-Type']
       when 'application/json', 'text/json'
         JSON.parse(rp.body)

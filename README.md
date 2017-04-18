@@ -122,6 +122,33 @@ Destroying some environment with ID 123
 
 `reandeploy env destroy 123`
 
+### reandeploy env export
+
+`reandeploy env export ID-or-NAME [options]`
+
+#### Help
+
+```
+$ reandeploy env help export
+Usage:
+  reandeploy export <ID-or-NAME> --format=FORMAT --output=OUTPUT
+
+Options:
+  --format=FORMAT    # Export format
+                     # Possible values: json, blueprint, tf, cf
+  --output=OUTPUT    # Output file for json or blueprint formats, output directory for tf and cf formats
+  [--config=CONFIG]  # location of the reandeploy-tools config file
+                     # Default: /Users/joe/.reandeploy-tools
+
+Export an environment identified by ID or by NAME
+```
+
+#### Examples
+
+Destroying some environment with ID 123
+
+`reandeploy env destroy 123`
+
 Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 
 [Bundler]: http://bundler.io/
