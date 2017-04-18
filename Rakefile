@@ -11,7 +11,7 @@ end
 
 file 'tmp/jolt/cli/target/maven-archiver/pom.properties' => 'tmp/jolt' do
   Dir.chdir 'tmp/jolt' do
-    sh "mvn clean package"
+    sh "mvn clean package" unless File.exist? 'cli/target/maven-archiver/pom.properties'
   end
 end
 
@@ -28,7 +28,11 @@ task :clean  do
 end
 
 task :build => 'vendor/jolt/jolt-cli.jar' do
-  system "gem build reandeploy-tools.gemspec"
+  sh "gem build reandeploy-tools.gemspec"
+end
+
+task :install => 'vendor/jolt/jolt-cli.jar' do
+  sh "gem install reandeploy-tools-#{REANDeployTools::VERSION}.gem"
 end
 
 task :default => :build

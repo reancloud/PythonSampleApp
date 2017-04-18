@@ -9,9 +9,9 @@ This tool supports the following commands
 
 ### Installing as a local gem
 
-You can check out the code from git, and then install the gem with a command similar to:
+You can check out the code from git, and then build and install the gem using:
 
-`gem build reandeploy-tools.gemspec && gem install reandeploy-tools-1.2.3.gem`
+`rake build install`
 
 ### Running from source
 
@@ -44,9 +44,10 @@ After doing this, you can run the tool using `bundle exec bin/reandeploy` as the
 ```
 $ reandeploy help env
 Commands:
-  reandeploy env deploy <ID-or-NAME>   # Deploy an environment identified by ID or by NAME
-  reandeploy env destroy <ID-or-NAME>  # Destroy an environment identified by ID or by NAME
-  reandeploy env help [COMMAND]        # Describe subcommands or one specific subcommand
+  reandeploy env deploy <ID-or-NAME>                                  # Deploy an environment identified by ID or by NAME
+  reandeploy env destroy <ID-or-NAME>                                 # Destroy an environment identified by ID or by NAME
+  reandeploy env export <ID-or-NAME> --format=FORMAT --output=OUTPUT  # Export an environment identified by ID or by NAME
+  reandeploy env help [COMMAND]                                       # Describe subcommands or one specific subcommand
 
 Options:
   [--config=CONFIG]  # location of the reandeploy-tools config file
@@ -138,7 +139,7 @@ Options:
                      # Possible values: json, blueprint, tf, cf
   --output=OUTPUT    # Output file for json or blueprint formats, output directory for tf and cf formats
   [--config=CONFIG]  # location of the reandeploy-tools config file
-                     # Default: /Users/joe/.reandeploy-tools
+                     # Default: ~/.reandeploy-tools
 
 Export an environment identified by ID or by NAME
 ```
