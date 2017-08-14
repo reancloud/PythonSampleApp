@@ -53,6 +53,30 @@ Options:
 
 ```
 
+### reandeploy env get-outputs
+
+`reandeploy env get-outputs ID-or-NAME [options]`
+
+#### Help
+
+```
+$ reandeploy env help get-outputs
+Usage:
+  reandeploy get-outputs <ID-or-NAME> --outputs OUTPUTS
+
+Options:
+  --outputs=OUTPUTS                # filename to write outputs to, as JSON
+  [--config=CONFIG]                # location of the reandeploy-tools config file
+                                   # Default: ~/.reandeploy-tools
+
+Get outputs for an environment identified by ID or by NAME
+```
+
+#### Examples
+
+Get outputs for some environment with ID 123
+
+`reandeploy env deploy 123 --outputs output.json`
 
 ### reandeploy env deploy
 
@@ -85,7 +109,7 @@ Deploying some environment with ID 123
 
 Deploying some environment with ID 123, passing a DeployConfig from a JSON file
 
-`reandeploy env deploy 123 --config config.json`
+`reandeploy env deploy 123 --deploy-config config.json`
 
 Deploying some environment with ID 123, setting input variables from a JSON file
 
