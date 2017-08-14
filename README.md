@@ -53,16 +53,16 @@ Options:
 
 ```
 
-### reandeploy env get-outputs
+### reandeploy env get_outputs
 
-`reandeploy env get-outputs ID-or-NAME [options]`
+`reandeploy env get_outputs ID-or-NAME [options]`
 
 #### Help
 
 ```
-$ reandeploy env help get-outputs
+$ reandeploy env help get_outputs
 Usage:
-  reandeploy get-outputs <ID-or-NAME> --outputs OUTPUTS
+  reandeploy get_outputs <ID-or-NAME> --outputs OUTPUTS
 
 Options:
   --outputs=OUTPUTS                # filename to write outputs to, as JSON
@@ -76,7 +76,7 @@ Get outputs for an environment identified by ID or by NAME
 
 Get outputs for some environment with ID 123
 
-`reandeploy env deploy 123 --outputs output.json`
+`reandeploy env get_outputs 123 --outputs output.json`
 
 ### reandeploy env deploy
 

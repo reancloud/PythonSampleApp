@@ -8,8 +8,8 @@ module REANDeployTools
     class Env < Base
 
       option :outputs, required: true, desc: "filename to write outputs to, as JSON"
-      desc "get-outputs <ID-or-NAME>", "Get outputs for an environment identified by ID or by NAME"
-      def deploy id_or_name
+      desc "get_outputs <ID-or-NAME>", "Get outputs for an environment identified by ID or by NAME"
+      def get_outputs id_or_name
         id = get_env_id(id_or_name)
          
         envDeployment = client.get "env/deploy/deployment/#{env['tfRunId']}"
