@@ -51,7 +51,7 @@ module REANDeployTools
         log "env deploy ##{id}"
         env = client.post("env/deploy/#{id}", deployConfig: deploy_config) do |rq|
           rq.headers['headerEnvId'] = id.to_s
-          rq.headers['modifiedOn'] = Time.new.utc.to_i.to_s
+          rq.headers['modifiedOn'] = (Time.new.utc.to_i + 3600).to_s
         end
         log "env deploy ##{id}: #{env['status']} #{env['name'].inspect} (#{env['tfRunId']})"
 
