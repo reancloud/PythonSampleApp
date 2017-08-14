@@ -22,25 +22,26 @@ module REANDeployTools
     end
   
     # GET request to REANDeploy
-    def get(path, *args)
-      rp = conn.get(path, *args)
+    def get(path, *args, &block)
+      rp = conn.get(path, *args, &block)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status != 200
       unwrap_body rp, args
     end
       
     # POST request to REANDeploy
-    def post(path, body, *args)
+    def post(path, body, *args, &block)
       rp = conn.post(path, *args) do |rq|
         rq.headers['Content-Type'] = 'application/json'
         rq.body = (String===body ? body : body.to_json)
+        block.call(rq) if block
       end
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
       unwrap_body rp, args
     end
     
     # DELETE request to REANDeploy
-    def delete(path, *args)
-      rp = conn.delete(path, *args)
+    def delete(path, *args, &block)
+      rp = conn.delete(path, *args, &block)
       die "request failed #{rp.env.url} (#{rp.status})" if rp.status / 100 != 2
       unwrap_body rp, args
     end
