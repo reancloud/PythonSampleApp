@@ -13,7 +13,7 @@ module REANDeployTools
         id = get_env_id(id_or_name)
          
         envDeployment = client.get "env/deploy/deployment/#{env['tfRunId']}"
-        log "env get-outputs ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
+        log "env get_outputs ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
 
         # Fail if the environment is not deployed.
         exit 1 unless envDeployment['status'] == 'DEPLOYED'
@@ -24,6 +24,19 @@ module REANDeployTools
           if output_status = resource_status[output_resource['id'].to_s]
             File.write(outputs, output_status.find{|x| x['otherAttributes']}['otherAttributes'].to_json)
           end
+        end
+      end
+
+      option :output, required: true, desc: "filename to write output to, as JSON"
+      desc "get_validation_params <ID-or-NAME>", "Get validation params for an environment identified by ID or by NAME"
+      def get_validation_params id_or_name
+        id = get_env_id(id_or_name)
+         
+        validation_params = client.get "env/validation/param/#{id}"
+        log "env get_validation_params ##{id}"
+
+        if output = options[:output]
+          File.write(output, validation_params.to_json)
         end
       end
 

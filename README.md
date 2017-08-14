@@ -46,6 +46,7 @@ Commands:
   reandeploy env destroy <ID-or-NAME>                                 # Destroy an environment identified by ID or by NAME
   reandeploy env export <ID-or-NAME> --format=FORMAT --output=OUTPUT  # Export an environment identified by ID or by NAME
   reandeploy env get_outputs <ID-or-NAME> --outputs=OUTPUT            # Get outputs for an environment identified by ID or by NAME
+  reandeploy env get_validation_params <ID-or-NAME> --outputs=OUTPUT  # Get validation params for an environment identified by ID or by NAME
   reandeploy env help [COMMAND]                                       # Describe subcommands or one specific subcommand
 
 Options:
@@ -78,6 +79,31 @@ Get outputs for an environment identified by ID or by NAME
 Get outputs for some environment with ID 123
 
 `reandeploy env get_outputs 123 --outputs output.json`
+
+### reandeploy env get_validation_params
+
+`reandeploy env get_validation_params ID-or-NAME [options]`
+
+#### Help
+
+```
+$ reandeploy env help get_validation_params
+Usage:
+  reandeploy get_validation_params <ID-or-NAME> --output OUTPUT
+
+Options:
+  --output=OUTPUT                  # filename to write output to, as JSON
+  [--config=CONFIG]                # location of the reandeploy-tools config file
+                                   # Default: ~/.reandeploy-tools
+
+Get validation parameters for an environment identified by ID or by NAME
+```
+
+#### Examples
+
+Get validation parameters for some environment with ID 123
+
+`reandeploy env get_validaton_params 123 --output output.json`
 
 ### reandeploy env deploy
 
