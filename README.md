@@ -45,6 +45,7 @@ Commands:
   reandeploy env deploy <ID-or-NAME>                                  # Deploy an environment identified by ID or by NAME
   reandeploy env destroy <ID-or-NAME>                                 # Destroy an environment identified by ID or by NAME
   reandeploy env export <ID-or-NAME> --format=FORMAT --output=OUTPUT  # Export an environment identified by ID or by NAME
+  reandeploy env get_outputs <ID-or-NAME> --outputs=OUTPUT            # Get outputs for an environment identified by ID or by NAME
   reandeploy env help [COMMAND]                                       # Describe subcommands or one specific subcommand
 
 Options:
