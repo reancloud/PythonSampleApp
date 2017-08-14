@@ -1,4 +1,4 @@
 # Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 module REANDeployTools
-  VERSION = '0.2.3'
+  VERSION = '0.2.4'
 end
