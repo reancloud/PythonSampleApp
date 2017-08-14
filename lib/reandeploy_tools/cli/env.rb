@@ -40,13 +40,19 @@ module REANDeployTools
             input_vars['value'] = input_vars['validValue'].to_json
 
             # Retrieve the environment, then save the input variables back.
-            client.post "env/saveAll", environment: client.get("env/#{id}"), resourcesToSave: [input_resource]
+            client.post("env/saveAll", environment: client.get("env/#{id}"), resourcesToSave: [input_resource]) do |rq|
+              rq.headers['headerEnvId'] = id.to_s
+              rq.headers['modifiedOn'] = (Time.new.utc.to_i * 1000).to_s
+            end
           end
         end
 
         # Now we can deploy the environment.
         log "env deploy ##{id}"
-        env = client.post "env/deploy/#{id}", deployConfig: deploy_config
+        env = client.post("env/deploy/#{id}", deployConfig: deploy_config) do |rq|
+          rq.headers['headerEnvId'] = id.to_s
+          rq.headers['modifiedOn'] = (Time.new.utc.to_i * 1000).to_s
+        end
         log "env deploy ##{id}: #{env['status']} #{env['name'].inspect} (#{env['tfRunId']})"
 
         # Optionally wait for the deployment to complete.
@@ -80,7 +86,10 @@ module REANDeployTools
 
         # Now we can destroy the environment.
         log "env destroy ##{id}"
-        env = client.delete "env/deploy/#{id}"
+        env = client.delete("env/deploy/#{id}") do |rq|
+          rq.headers['headerEnvId'] = id.to_s
+          rq.headers['modifiedOn'] = (Time.new.utc.to_i * 1000).to_s
+        end
         log "env destroy ##{id}: #{env['status']} #{env['name'].inspect} (#{env['tfRunId']})"
 
         # Optionally wait for the destroy to complete.
