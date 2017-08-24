@@ -86,18 +86,25 @@ module REANDeployTools
           rq.headers['headerEnvId'] = id.to_s
           rq.headers['modifiedOn'] = (Time.new.utc.to_i * 1000).to_s
         end
-        log "env deploy ##{id}: #{env['status']} #{env['name'].inspect} (#{env['tfRunId']})"
+        tfRunid = env['tfRunId']
+        envStatus = env['status']
+        log "env deploy ##{id}: #{envStatus} #{env['name'].inspect} (#{tfRunId})"
 
         # Optionally wait for the deployment to complete.
         if options[:wait]
           begin
             sleep 5
-            envDeployment = client.get "env/deploy/deployment/#{env['tfRunId']}"
-            log "env deploy ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
-          end while envDeployment['status'] == 'DEPLOYING'
+            
+            # Workaround for DEP-4951: use Environment level status instead of EnvDeployment
+            env = client.get "env/#{id}"
+            envStatus = env['status']
+            #envDeployment = client.get "env/deploy/deployment/#{tfRunId}"
+            #envStatus = envDeployment['status']
+            log "env deploy ##{id}: #{envStatus} #{env['name'].inspect} (#{tfRunId})"
+          end while envStatus == 'DEPLOYING'
 
           # Fail unless the deployment succeeded.
-          exit 1 unless envDeployment['status'] == 'DEPLOYED'
+          exit 1 unless envStatus == 'DEPLOYED'
 
           # If we have waited for the deployment to complete, then we can collect outputs.
           if outputs = options[:outputs] and output_resource = resources.find{|r| r['resourceName']=='output' }
