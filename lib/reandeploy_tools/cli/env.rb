@@ -86,7 +86,7 @@ module REANDeployTools
           rq.headers['headerEnvId'] = id.to_s
           rq.headers['modifiedOn'] = (Time.new.utc.to_i * 1000).to_s
         end
-        tfRunid = env['tfRunId']
+        tfRunId = env['tfRunId']
         envStatus = env['status']
         log "env deploy ##{id}: #{envStatus} #{env['name'].inspect} (#{tfRunId})"
 
