@@ -19,6 +19,9 @@ module REANDeploy
         # Fail if the environment is not deployed.
         exit 1 unless envDeployment['status'] == 'DEPLOYED'
 
+        # Get the existing resources for this environment.
+        resources = client.get("env/resources/#{id}")
+
         # If the environment is deployed, then we can collect outputs.
         if outputs = options[:outputs] and output_resource = resources.find{|r| r['resourceName']=='output' }
           resource_status = client.get "env/deploy/#{id}"
