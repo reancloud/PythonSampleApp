@@ -15,7 +15,7 @@ module REANDeploy
       
       def self.inherited(base)
         base.instance_eval do
-          class_option :config, default: REANDeploy::Config.config_file, desc: "location of the reanplatform-tools config file"
+          class_option :config, default: REANPlatformTools::Config.config_file, desc: "location of the reanplatform-tools config file"
         end unless base.name =~ /::Main$/
       end
       
@@ -23,7 +23,7 @@ module REANDeploy
       
       # FIXME: There should be a *documented* way to get notified by Thor about class options.
       def options=(_options)
-        REANDeploy::Config.config_file = _options['config'] if _options.include? 'config'
+        REANPlatformTools::Config.config_file = _options['config'] if _options.include? 'config'
         super
       end
       

@@ -16,7 +16,7 @@ require 'faraday'
 module REANDeploy
   class Client
     include Util
-    include Config
+    include ::REANPlatformTools::Config
     
     # Utility class for handling attachments.
     class Attachment < Struct.new(:filename, :length, :content_type, :content)
