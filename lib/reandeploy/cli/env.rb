@@ -3,7 +3,7 @@ require 'json'
 require 'tempfile'
 require 'shellwords'
 
-module REANDeployTools
+module REANDeploy
   module Cli
     class Env < Base
 
@@ -12,11 +12,15 @@ module REANDeployTools
       def get_outputs id_or_name
         id = get_env_id(id_or_name)
          
+        env = client.get "env/#{id}"
         envDeployment = client.get "env/deploy/deployment/#{env['tfRunId']}"
         log "env get_outputs ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
 
         # Fail if the environment is not deployed.
         exit 1 unless envDeployment['status'] == 'DEPLOYED'
+
+        # Get the existing resources for this environment.
+        resources = client.get("env/resources/#{id}")
 
         # If the environment is deployed, then we can collect outputs.
         if outputs = options[:outputs] and output_resource = resources.find{|r| r['resourceName']=='output' }

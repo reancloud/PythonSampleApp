@@ -1,3 +1,4 @@
+# Copyright (c) 2016-2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 
 require "reandeploy_tools/version"
@@ -28,11 +29,11 @@ task :clean  do
 end
 
 task :build => 'vendor/jolt/jolt-cli.jar' do
-  sh "gem build reandeploy-tools.gemspec"
+  sh "gem build reanplatform-tools.gemspec"
 end
 
 task :install => 'vendor/jolt/jolt-cli.jar' do
-  sh "gem install reandeploy-tools-#{REANDeployTools::VERSION}.gem"
+  sh "gem install reanplatform-tools-#{REANPlatformTools::VERSION}.gem"
 end
 
 task :default => :build

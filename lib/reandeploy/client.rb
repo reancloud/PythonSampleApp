@@ -1,3 +1,4 @@
+# Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 require 'openssl'
 
 # Workaround for invalid SSL certificates at DeployNow ELB.
@@ -12,10 +13,10 @@ require 'uri'
 require 'json'
 require 'faraday'
 
-module REANDeployTools
+module REANDeploy
   class Client
     include Util
-    include Config
+    include ::REANPlatformTools::Config
     
     # Utility class for handling attachments.
     class Attachment < Struct.new(:filename, :length, :content_type, :content)

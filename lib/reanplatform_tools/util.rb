@@ -1,12 +1,10 @@
-module REANDeployTools
+module REANPlatformTools
   module Util
-    SCRIPT_NAME = 'reandeploy'
-    
     protected
     
     # Logging output.
     def log(*items)
-      $stderr.puts "#{SCRIPT_NAME}: #{items.join(' ')}"
+      $stderr.puts "#{script_name}: #{items.join(' ')}"
     end
 
     # Fatal exit.
