@@ -1,4 +1,4 @@
 # Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 module REANPlatformTools
-  VERSION = '0.3.0'
+  VERSION = '0.3.1'
 end
