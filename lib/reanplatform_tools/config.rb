@@ -6,6 +6,7 @@ module REANPlatformTools
     class << self
       include Util
       
+      attr_accessor :script_name
       attr_writer :config_file
       
       def config_file

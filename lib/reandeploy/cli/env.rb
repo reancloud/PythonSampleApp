@@ -12,6 +12,7 @@ module REANDeploy
       def get_outputs id_or_name
         id = get_env_id(id_or_name)
          
+        env = client.get "env/#{id}"
         envDeployment = client.get "env/deploy/deployment/#{env['tfRunId']}"
         log "env get_outputs ##{id}: #{envDeployment['status']} #{env['name'].inspect} (#{env['tfRunId']})"
 
