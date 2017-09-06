@@ -18,8 +18,8 @@ module REANTest
       option :git_pass,                     desc: "git password (overrides \"gitPass\" in --job-config)"
       option :git_url,                      desc: "git URL      (overrides \"gitURL\" in --job-config)"
       option :git_branch,                   desc: "git branch   (overrides \"branchName\" in --job-config)"
-      desc "runTest <TYPE>", "Run a cross-browser test job of the specified TYPE: functionaltest | urltest"
-      def runTest(type)
+      desc "submit <TYPE>", "Run a cross-browser test job of the specified TYPE: functionaltest | urltest"
+      def submit(type)
         raise "invalid test type: #{type}" unless type=='functionaltest' || type=='urltest'
         
         # Get the base job configuration, as JSON.
