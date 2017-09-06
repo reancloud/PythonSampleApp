@@ -1,4 +1,4 @@
-module REANDeployTools
+module REANDeploy
   module Cli
     class Main < Base
       desc "env SUBCOMMAND ...ARGS", "Manage an environment"

@@ -1,6 +1,7 @@
+# Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 require 'yaml'
 
-module REANDeployTools
+module REANDeploy
   module Config
     class << self
       include Util
@@ -19,7 +20,7 @@ module REANDeployTools
     end
 
     def config
-      ::REANDeployTools::Config.config
+      ::REANDeploy::Config.config
     end
   end
 end

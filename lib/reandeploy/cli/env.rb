@@ -3,7 +3,7 @@ require 'json'
 require 'tempfile'
 require 'shellwords'
 
-module REANDeployTools
+module REANDeploy
   module Cli
     class Env < Base
 
