@@ -12,6 +12,7 @@ module REANTest
       option :output,      required: true,  desc: "filename to write output to, as JSON"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
       option :job_name,                     desc: "job name     (overrides \"appName\" in --job-config)"
+      option :test_url,                     desc: "test URL     (overrides \"testURL\" in --job-config)"
       option :git_user,                     desc: "git user     (overrides \"gitUser\" in --job-config)"
       option :git_pass,                     desc: "git password (overrides \"gitPass\" in --job-config)"
       option :git_url,                      desc: "git URL      (overrides \"gitURL\" in --job-config)"
@@ -24,6 +25,7 @@ module REANTest
           
         # Allow parts of the configuration to be customized by other arguments.
         input['appName'] = options[:job_name] if options[:job_name]
+        input['testURL'] = options[:test_url] if options[:test_url]
         input['gitUser'] = options[:git_user] if options[:git_user]
         input['gitPass'] = options[:git_pass] if options[:git_pass]
         input['gitURL'] = options[:git_url] if options[:git_url]
