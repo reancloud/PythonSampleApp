@@ -17,6 +17,7 @@ module REANTest
       option :region,                       required: true, desc: "AWS region"
       option :aws_secret_access_key,        required: true, desc: "AWS secret access key"
       option :aws_access_key_id,            required: true, desc: "AWS access key id"
+      option :reandeploy_env, type: :numeric, desc: "REAN Deploy environment ID to read both input and output parameters from"
       option :all_param,                    desc: "filename to read both input and output parameters from, as JSON"
       option :input_param,                  desc: "filename to read input parameter from, as JSON"
       option :output_param,                 desc: "filename to read output parameter from, as JSON"
@@ -25,8 +26,13 @@ module REANTest
         input = {}
           
         # REAN Deploy creates a single JSON file with both input and output, so we support it.
-        if options[:all_param]
+        if options[:reandeploy_env]
+          die "cannot specify both --reandeploy-env and --all-param" if options[:all_param]
+          all_params = read_reandeploy_env_validation_params(options[:reandeploy_env].to_i)
+        elsif options[:all_param]
           all_params = read_json(options[:all_param])
+        end
+        if all_params
           input['input'] = all_params['input']
           input['output'] = all_params['output']
         end
@@ -91,7 +97,7 @@ module REANTest
       def collect_status(id, cmd='status')
         job = client.get "infratest/jobDetails/#{id}"
         die "infra #{cmd}: failed to get job details" unless Hash===job
-        job['status'] = parse_status(job)
+        job = parse_details(job)
         log "infra #{cmd} #{id}: #{job['status']}"
         
         if options[:wait]
@@ -99,7 +105,7 @@ module REANTest
             sleep 5
             job = client.get "infratest/jobDetails/#{id}"
             die "infra #{cmd}: failed to get job details" unless Hash===job
-            job['status'] = parse_status(job)
+            job = parse_details(job)
             log "infra #{cmd} #{id}: #{job['status']}"
           end
         end
@@ -108,16 +114,33 @@ module REANTest
       end
       
       # REAN Test does not include Job status as part of job details API, so we must detect it
-      def parse_status(details)
-        if details.length <= 1
-          'RUNNING'
-        elsif details['failed'] == 0
-          'SUCCESS'
-        elsif details['success'] == 0
-          'FAILED'
-        else
-          options[:allow_unstable] ? 'UNSTABLE' : 'FAILED'
+      def parse_details(details)
+        if not Hash===details
+          {'status' => 'FAILED'}
+        elsif details.length == 0
+          {'status' => 'RUNNING'}
+        elsif details.length == 1
+          details = details.values[0]
+          if details['failed'] == 0
+            details['status'] = 'SUCCESS'
+          elsif details['success'] == 0 || details.length == 0
+            details['status'] = 'FAILED'
+          elsif options[:allow_unstable]
+            details['status'] = 'UNSTABLE'
+          else
+            details['status'] = 'FAILED'
+          end
         end
+        details
+      end
+      
+      # Integration with REAN Deploy to read environment validation parameters
+      def read_reandeploy_env_validation_params(id)
+        rd_client = ::REANDeploy::Cli.client
+         
+        validation_params = client.get "env/validation/param/#{id}"
+        out "reandeploy: env get_validation_params ##{id}"
+        validation_params
       end
     end
   end
