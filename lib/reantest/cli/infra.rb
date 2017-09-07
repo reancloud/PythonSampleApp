@@ -45,10 +45,9 @@ module REANTest
         input['region'] = options[:region]
         input['secreteKey'] = options[:aws_secret_access_key]
         input['accessKey'] = options[:aws_access_key_id]
-        input['input'].values{|o| o.delete('user_data') if Hash===o}
+        input['input'].values.each{|o| o.delete('user_data') if Hash===o}
         input['input'] = input['input'].to_json
         input['output'] = input['output'].to_json
-        File.write('payload.json', input.to_json)
         
         # Execute the testing job.
         id = client.post "infratest/awspec", input
