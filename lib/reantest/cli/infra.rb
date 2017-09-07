@@ -25,7 +25,7 @@ module REANTest
         end
 
         # Fail if the job did not succeed.
-        exit 1 unless job['status'] == 'SUCCESS' || (options[:allow_unstable] && job['status'] == 'UNSTABLE')
+        exit 1 unless job['status'] == 'SUCCESS' || job['status'] == 'UNSTABLE'
       end
       
       private

@@ -6,7 +6,7 @@ require 'shellwords'
 
 module REANTest
   module Cli
-    class Job < Base
+    class Browser < Base
       DEFAULTS = {
         browsers:           '{"Chrome":["53"]}',
         run_crawl:          false,
@@ -36,6 +36,39 @@ module REANTest
         
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id, 'functionaltest'
+        job['name'] = input['appName']
+        
+        # Output job status.
+        if output = options[:output]
+          File.write(output, job.to_json)
+        end
+
+        # If we waited until the end, then fail if the job did not succeed.
+        exit 1 if options[:wait] && job['status'] != 'SUCCESS'
+      end
+
+      option :job_config,  required: true,  desc: "filename to read job config from, as JSON"
+      option :output,      required: true,  desc: "filename to write job status to, as JSON"
+      option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
+      option :job_name,                     desc: "job name     (overrides \"appName\" in --job-config)"
+      option :test_url,                     desc: "test URL     (overrides \"testURL\" in --job-config)"
+      option :git_user,                     desc: "git user     (overrides \"gitUser\" in --job-config)"
+      option :git_pass,                     desc: "git password (overrides \"gitPass\" in --job-config)"
+      option :git_url,                      desc: "git URL      (overrides \"gitURL\" in --job-config)"
+      option :git_branch,                   desc: "git branch   (overrides \"branchName\" in --job-config)"
+      desc "loadtest", "Submits a cross-browser load test job"
+      def loadtest
+        
+        # Get the base job configuration, as JSON.
+        input = options[:job_config] ? JSON.parse(File.read(options[:job_config])) : {}
+        input['browsers'] ||= DEFAULTS[:browsers]
+        input['executionStrategy'] ||= 'loadTest'
+          
+        # Submit the testing job.
+        id = submit_job 'loadtest', input
+        
+        # Collect job status, possibly waiting until execution completes.
+        job = collect_status id, 'loadtest'
         job['name'] = input['appName']
         
         # Output job status.
@@ -123,7 +156,7 @@ module REANTest
         # Execute the testing job.
         id = client.post "RunTest", input
         die 'failed to run job' unless String===id && id.length > 0
-        log "job #{type}: jobId #{id}"
+        log "browser #{type}: jobId #{id}"
         id
       end
       
@@ -131,14 +164,14 @@ module REANTest
       def collect_status(id, cmd='status')
         job = client.get "RunTest/jobStatus/#{id}"
         die 'failed to get job status' unless String===job && job.length > 0
-        log "job #{cmd} #{id}: #{job}"
+        log "browser #{cmd} #{id}: #{job}"
         
         if options[:wait]
           while job == 'SUBMITTED' || job == 'RUNNING'
             sleep 5
             job = client.get "RunTest/jobStatus/#{id}"
             die 'failed to get job status' unless String===job && job.length > 0
-            log "job #{cmd} #{id}: #{job}"
+            log "browser #{cmd} #{id}: #{job}"
           end
         end
         
