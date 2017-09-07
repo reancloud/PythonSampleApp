@@ -59,9 +59,13 @@ module REANPlatformTools
       case content_type = rp['Content-Type']
       when 'application/json', 'text/json'
         JSON.parse(rp.body)
+      when 'text/plain'
+        rp.body
       else
         if /^attachment; filename="([^"]+)"/ === rp['Content-Disposition']
           Attachment.new(File.basename($1), (rp['Content-Length'].to_i rescue nil), content_type, rp.body)
+        else
+          die "unable to automatically parse response body"
         end
       end
     end
