@@ -116,9 +116,9 @@ module REANTest
       # REAN Test does not include Job status as part of job details API, so we must detect it
       def parse_details(details)
         if not Hash===details
-          {'status' => 'FAILED'}
+          details = {'status' => 'FAILED'}
         elsif details.length == 0
-          {'status' => 'RUNNING'}
+          details = {'status' => 'RUNNING'}
         elsif details.length == 1
           details = details.values[0]
           if details['failed'] == 0
@@ -136,9 +136,10 @@ module REANTest
       
       # Integration with REAN Deploy to read environment validation parameters
       def read_reandeploy_env_validation_params(id)
+        require 'reandeploy'
         rd_client = ::REANDeploy::Cli.client
          
-        validation_params = client.get "env/validation/param/#{id}"
+        validation_params = rd_client.get "env/validation/param/#{id}"
         out "reandeploy: env get_validation_params ##{id}"
         validation_params
       end
