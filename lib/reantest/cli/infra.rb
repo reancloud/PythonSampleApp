@@ -13,29 +13,47 @@ module REANTest
       option :output,      required: true,  desc: "filename to write job status to, as JSON"
       option :allow_unstable,  default: false, type: :boolean, desc: "Partial success (UNSTABLE) is acceptable"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
-      option :job_name,                     desc: "job name"
-      option :region,                       desc: "AWS region"
-      option :aws_secret_access_key,        desc: "AWS secret access key"
-      option :aws_access_key_id,            desc: "AWS access key id"
+      option :job_name,                     required: true, desc: "job name"
+      option :region,                       required: true, desc: "AWS region"
+      option :aws_secret_access_key,        required: true, desc: "AWS secret access key"
+      option :aws_access_key_id,            required: true, desc: "AWS access key id"
+      option :all_param,                    desc: "filename to read both input and output parameters from, as JSON"
       option :input_param,                  desc: "filename to read input parameter from, as JSON"
       option :output_param,                 desc: "filename to read output parameter from, as JSON"
       desc "autotest", "Submits a REAN-defined infrastructure test job"
       def autotest
         input = {}
           
-        # Allow parts of the configuration to be customized by other arguments.
-        input['name'] = options[:job_name] if options[:job_name]
-        input['region'] = options[:region] if options[:region]
-        input['secreteKey'] = options[:aws_secret_acces_key] if options[:aws_secret_acces_key]
-        input['accessKey'] = options[:aws_access_key_id] if options[:aws_access_key_id]
-        input['input'] = File.read(options[:inputParam]) if options[:inputParam]
-        input['output'] = File.read(options[:outputParam]) if options[:outputParam]
+        # REAN Deploy creates a single JSON file with both input and output, so we support it.
+        if options[:all_param]
+          all_params = read_json(options[:all_param])
+          input['input'] = all_params['input']
+          input['output'] = all_params['output']
+        end
+        
+        # Explicit input or output parameters can override the above.
+        input['input'] = read_json(options[:input_param]) if options[:input_param]
+        input['output'] = read_json(options[:output_param]) if options[:output_param]
+          
+        # Always require some input and output in order to execute.
+        unless Hash===input['input'] && Hash===input['output']
+          die 'infra autotest: no input/output parameters specified'
+        end
+          
+        # Until TES-618 hits the master branch for REAN Test, we need to support the old API's bugs and format.
+        input['name'] = options[:job_name]
+        input['region'] = options[:region]
+        input['secreteKey'] = options[:aws_secret_access_key]
+        input['accessKey'] = options[:aws_access_key_id]
+        input['input'].values{|o| o.delete('user_data') if Hash===o}
+        input['input'] = input['input'].to_json
+        input['output'] = input['output'].to_json
+        File.write('payload.json', input.to_json)
         
         # Execute the testing job.
         id = client.post "infratest/awspec", input
-        die 'failed to run job' unless String===id && id.length > 0
+        die 'infra autotest: failed to run job' unless String===id && id.length > 0
         log "infra autotest: jobId #{id}"
-        id
         
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id, 'autotest'
@@ -73,15 +91,15 @@ module REANTest
       # Collect job status and possibly wait until completion.
       def collect_status(id, cmd='status')
         job = client.get "infratest/jobDetails/#{id}"
-        die 'failed to get job details' unless Hash===job
+        die "infra #{cmd}: failed to get job details" unless Hash===job
         job['status'] = parse_status(job)
         log "infra #{cmd} #{id}: #{job['status']}"
         
         if options[:wait]
-          while job.length == 0
+          while job.length <= 1
             sleep 5
             job = client.get "infratest/jobDetails/#{id}"
-            die 'failed to get job details' unless Hash===job
+            die "infra #{cmd}: failed to get job details" unless Hash===job
             job['status'] = parse_status(job)
             log "infra #{cmd} #{id}: #{job['status']}"
           end
@@ -92,7 +110,7 @@ module REANTest
       
       # REAN Test does not include Job status as part of job details API, so we must detect it
       def parse_status(details)
-        if details.length == 0
+        if details.length <= 1
           'RUNNING'
         elsif details['failed'] == 0
           'SUCCESS'
