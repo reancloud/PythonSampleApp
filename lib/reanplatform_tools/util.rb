@@ -16,9 +16,14 @@ module REANPlatformTools
       die "reading JSON file: #{e.message}"
     end
     
+    # Writing a line.
+    def out(line)
+      $stderr.puts line
+    end
+    
     # Logging output.
     def log(*items)
-      $stderr.puts "#{script_name}: #{items.join(' ')}"
+      out "#{script_name}: #{items.join(' ')}"
     end
 
     # Fatal exit.
