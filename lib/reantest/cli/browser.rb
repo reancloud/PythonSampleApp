@@ -42,9 +42,14 @@ module REANTest
         if output = options[:output]
           File.write(output, job.to_json)
         end
-
-        # If we waited until the end, then fail if the job did not succeed.
-        exit 1 if options[:wait] && job['status'] != 'SUCCESS'
+        
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "browser functionaltest: reports are available on #{reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS'
+        end
       end
 
       option :job_config,  required: true,  desc: "filename to read job config from, as JSON"
@@ -75,9 +80,14 @@ module REANTest
         if output = options[:output]
           File.write(output, job.to_json)
         end
-
-        # If we waited until the end, then fail if the job did not succeed.
-        exit 1 if options[:wait] && job['status'] != 'SUCCESS'
+        
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "browser loadtest: reports are available on #{reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS'
+        end
       end
 
       option :job_config,  required: false, desc: "filename to read job config from, as JSON"
@@ -111,9 +121,14 @@ module REANTest
         if output = options[:output]
           File.write(output, job.to_json)
         end
-
-        # If we waited until the end, then fail if the job did not succeed.
-        exit 1 if options[:wait] && job['status'] != 'SUCCESS'
+        
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "browser urltest: reports are available on #{reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS'
+        end
       end
 
       option :output, required: false, desc: "filename to write output to, as JSON"
@@ -134,6 +149,10 @@ module REANTest
       end
       
       private
+      
+      def reports_url(id)
+        "#{client.config['reantest']['reports_url']}/#{id}/"
+      end
       
       # Submit a test to run and return a job ID.
       def submit_job(type, input)

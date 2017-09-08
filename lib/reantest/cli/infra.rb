@@ -69,8 +69,13 @@ module REANTest
           File.write(output, job.to_json)
         end
 
-        # If we waited until the end, then fail if the job did not succeed.
-        exit 1 if options[:wait] && job['status'] != 'SUCCESS' && job['status'] != 'UNSTABLE'
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "infra autotest: reports are available on #{reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS' || job['status'] == 'UNSTABLE'
+        end
       end
       
       option :output, required: false, desc: "filename to write output to, as JSON"
@@ -93,11 +98,15 @@ module REANTest
       
       private
       
+      def reports_url(id)
+        "#{client.config['reantest']['reports_url']}/#{id}/Infra_Test/"
+      end
+      
       # Collect job status and possibly wait until completion.
       def collect_status(id, cmd='status')
         job = client.get "infratest/jobDetails/#{id}"
         die "infra #{cmd}: failed to get job details" unless Hash===job
-        job = parse_details(job)
+        job = parse_details(id, job)
         log "infra #{cmd} #{id}: #{job['status']}"
         
         if options[:wait]
@@ -105,7 +114,7 @@ module REANTest
             sleep 5
             job = client.get "infratest/jobDetails/#{id}"
             die "infra #{cmd}: failed to get job details" unless Hash===job
-            job = parse_details(job)
+            job = parse_details(id, job)
             log "infra #{cmd} #{id}: #{job['status']}"
           end
         end
@@ -114,13 +123,14 @@ module REANTest
       end
       
       # REAN Test does not include Job status as part of job details API, so we must detect it
-      def parse_details(details)
+      def parse_details(id, details)
         if not Hash===details
-          details = {'status' => 'FAILED'}
+          details = {'id' => id, 'status' => 'FAILED'}
         elsif details.length == 0
-          details = {'status' => 'RUNNING'}
+          details = {'id' => id, 'status' => 'RUNNING'}
         elsif details.length == 1
           details = details.values[0]
+          details['id'] = id
           if details['failed'] == 0
             details['status'] = 'SUCCESS'
           elsif details['success'] == 0 || details.length == 0
