@@ -190,7 +190,7 @@ module REANTest
         log "browser #{cmd} #{id}: #{job}"
         
         if options[:wait]
-          elapsed = options[:timeout].to_i
+          elapsed = options[:wait_timeout].to_i
             
           while (job == 'SUBMITTED' || job == 'RUNNING') && elapsed > 0
             sleep 5
@@ -201,7 +201,7 @@ module REANTest
             log "browser #{cmd} #{id}: #{job}"
           end
           
-          die "browser #{cmd}: TIMED OUT" if elapsed <= 0
+          die "browser #{cmd}: TIMED OUT" if (job == 'SUBMITTED' || job == 'RUNNING') && elapsed <= 0
         end
         
         {'id' => id, 'status' => job}

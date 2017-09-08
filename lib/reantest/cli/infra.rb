@@ -112,7 +112,8 @@ module REANTest
         log "infra #{cmd} #{id}: #{job['status']}"
         
         if options[:wait]
-          elapsed = options[:timeout].to_i
+          elapsed = options[:wait_timeout].to_i
+            
           while job['status'] == 'RUNNING' && elapsed > 0
             sleep 5
             elapsed -= 5
@@ -123,7 +124,7 @@ module REANTest
             log "infra #{cmd} #{id}: #{job['status']}"
           end
           
-          die "infra #{cmd}: TIMED OUT" if elapsed <= 0
+          die "infra #{cmd}: TIMED OUT" if job['status'] == 'RUNNING' && elapsed <= 0
         end
         
         job
