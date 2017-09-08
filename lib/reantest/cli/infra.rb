@@ -13,6 +13,7 @@ module REANTest
       option :output,      required: true,  desc: "filename to write job status to, as JSON"
       option :allow_unstable,  default: false, type: :boolean, desc: "Partial success (UNSTABLE) is acceptable"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 900, desc: "Timeout, in seconds, when using --wait"
       option :job_name,                     required: true, desc: "job name"
       option :region,                       required: true, desc: "AWS region"
       option :aws_secret_access_key,        required: true, desc: "AWS secret access key"
@@ -69,13 +70,19 @@ module REANTest
           File.write(output, job.to_json)
         end
 
-        # If we waited until the end, then fail if the job did not succeed.
-        exit 1 if options[:wait] && job['status'] != 'SUCCESS' && job['status'] != 'UNSTABLE'
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "infra autotest: reports are available on #{reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS' || job['status'] == 'UNSTABLE'
+        end
       end
       
       option :output, required: false, desc: "filename to write output to, as JSON"
       option :allow_unstable,  default: false, type: :boolean, desc: "Partial success (UNSTABLE) is acceptable"
       option :wait,   default: false, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 900, desc: "Timeout, in seconds, when using --wait"
       desc "status <ID>", "Get infrastructure test job status by ID"
       def status id
         
@@ -93,34 +100,45 @@ module REANTest
       
       private
       
+      def reports_url(id)
+        "#{client.config['reantest']['reports_url']}/#{id}/Infra_Test/"
+      end
+      
       # Collect job status and possibly wait until completion.
       def collect_status(id, cmd='status')
         job = client.get "infratest/jobDetails/#{id}"
         die "infra #{cmd}: failed to get job details" unless Hash===job
-        job = parse_details(job)
+        job = parse_details(id, job)
         log "infra #{cmd} #{id}: #{job['status']}"
         
         if options[:wait]
-          while job.length <= 1
+          elapsed = options[:wait_timeout].to_i
+            
+          while job['status'] == 'RUNNING' && elapsed > 0
             sleep 5
+            elapsed -= 5
+            
             job = client.get "infratest/jobDetails/#{id}"
             die "infra #{cmd}: failed to get job details" unless Hash===job
-            job = parse_details(job)
+            job = parse_details(id, job)
             log "infra #{cmd} #{id}: #{job['status']}"
           end
+          
+          die "infra #{cmd}: TIMED OUT" if job['status'] == 'RUNNING' && elapsed <= 0
         end
         
         job
       end
       
       # REAN Test does not include Job status as part of job details API, so we must detect it
-      def parse_details(details)
+      def parse_details(id, details)
         if not Hash===details
-          details = {'status' => 'FAILED'}
+          details = {'id' => id, 'status' => 'FAILED'}
         elsif details.length == 0
-          details = {'status' => 'RUNNING'}
+          details = {'id' => id, 'status' => 'RUNNING'}
         elsif details.length == 1
           details = details.values[0]
+          details['id'] = id
           if details['failed'] == 0
             details['status'] = 'SUCCESS'
           elsif details['success'] == 0 || details.length == 0
