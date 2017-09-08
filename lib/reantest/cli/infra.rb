@@ -13,6 +13,7 @@ module REANTest
       option :output,      required: true,  desc: "filename to write job status to, as JSON"
       option :allow_unstable,  default: false, type: :boolean, desc: "Partial success (UNSTABLE) is acceptable"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 900, desc: "Timeout, in seconds, when using --wait"
       option :job_name,                     required: true, desc: "job name"
       option :region,                       required: true, desc: "AWS region"
       option :aws_secret_access_key,        required: true, desc: "AWS secret access key"
@@ -81,6 +82,7 @@ module REANTest
       option :output, required: false, desc: "filename to write output to, as JSON"
       option :allow_unstable,  default: false, type: :boolean, desc: "Partial success (UNSTABLE) is acceptable"
       option :wait,   default: false, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 900, desc: "Timeout, in seconds, when using --wait"
       desc "status <ID>", "Get infrastructure test job status by ID"
       def status id
         
@@ -110,13 +112,18 @@ module REANTest
         log "infra #{cmd} #{id}: #{job['status']}"
         
         if options[:wait]
-          while job.length <= 1
+          elapsed = options[:timeout].to_i
+          while job['status'] == 'RUNNING' && elapsed > 0
             sleep 5
+            elapsed -= 5
+            
             job = client.get "infratest/jobDetails/#{id}"
             die "infra #{cmd}: failed to get job details" unless Hash===job
             job = parse_details(id, job)
             log "infra #{cmd} #{id}: #{job['status']}"
           end
+          
+          die "infra #{cmd}: TIMED OUT" if elapsed <= 0
         end
         
         job

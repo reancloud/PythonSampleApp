@@ -16,6 +16,7 @@ module REANTest
       option :job_config,  required: true,  desc: "filename to read job config from, as JSON"
       option :output,      required: true,  desc: "filename to write job status to, as JSON"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 900, desc: "Timeout, in seconds, when using --wait"
       option :reuse_vm,    type: :boolean,  desc: "reuse VM     (overrides \"executionStrategy\" in --job-config)"
       option :job_name,                     desc: "job name     (overrides \"appName\" in --job-config)"
       option :test_url,                     desc: "test URL     (overrides \"testURL\" in --job-config)"
@@ -55,6 +56,7 @@ module REANTest
       option :job_config,  required: true,  desc: "filename to read job config from, as JSON"
       option :output,      required: true,  desc: "filename to write job status to, as JSON"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 3900, desc: "Timeout, in seconds, when using --wait"
       option :job_name,                     desc: "job name     (overrides \"appName\" in --job-config)"
       option :test_url,                     desc: "test URL     (overrides \"testURL\" in --job-config)"
       option :git_user,                     desc: "git user     (overrides \"gitUser\" in --job-config)"
@@ -93,6 +95,7 @@ module REANTest
       option :job_config,  required: false, desc: "filename to read job config from, as JSON"
       option :output,      required: true,  desc: "filename to write job status to, as JSON"
       option :wait,        default: true, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, default: 900, desc: "Timeout, in seconds, when using --wait"
       option :reuse_vm,    type: :boolean,        desc: "reuse VM           (overrides \"executionStrategy\" in --job-config)"
       option :job_name,                           desc: "job name           (overrides \"appName\" in --job-config)"
       option :test_url,                           desc: "test URL           (overrides \"testURL\" in --job-config)"
@@ -133,6 +136,7 @@ module REANTest
 
       option :output, required: false, desc: "filename to write output to, as JSON"
       option :wait,   default: false, type: :boolean, desc: "Wait for the test execution to complete"
+      option :wait_timeout, type: :numeric, desc: "Timeout, in seconds, when using --wait"
       desc "status <ID>", "Get cross-browser test job status by ID"
       def status id
         
@@ -186,12 +190,18 @@ module REANTest
         log "browser #{cmd} #{id}: #{job}"
         
         if options[:wait]
-          while job == 'SUBMITTED' || job == 'RUNNING'
+          elapsed = options[:timeout].to_i
+            
+          while (job == 'SUBMITTED' || job == 'RUNNING') && elapsed > 0
             sleep 5
+            elapsed -= 5
+            
             job = client.get "RunTest/jobStatus/#{id}"
             die 'failed to get job status' unless String===job && job.length > 0
             log "browser #{cmd} #{id}: #{job}"
           end
+          
+          die "browser #{cmd}: TIMED OUT" if elapsed <= 0
         end
         
         {'id' => id, 'status' => job}
