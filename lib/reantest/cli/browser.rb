@@ -59,6 +59,7 @@ module REANTest
       option :wait_timeout, type: :numeric, default: 3900, desc: "Timeout, in seconds, when using --wait"
       option :job_name,                     desc: "job name     (overrides \"appName\" in --job-config)"
       option :test_url,                     desc: "test URL     (overrides \"testURL\" in --job-config)"
+      option :page_load_timeout, type: :numeric,  desc: "page load timeout  (overrides \"pageLoadTimeOut\" in --job-config)"
       option :git_user,                     desc: "git user     (overrides \"gitUser\" in --job-config)"
       option :git_pass,                     desc: "git password (overrides \"gitPass\" in --job-config)"
       option :git_url,                      desc: "git URL      (overrides \"gitURL\" in --job-config)"
@@ -160,7 +161,7 @@ module REANTest
       
       # Submit a test to run and return a job ID.
       def submit_job(type, input)
-        raise "invalid test type: #{type}" unless type=='functionaltest' || type=='urltest'
+        raise "invalid test type: #{type}" unless type=='functionaltest' || type=='urltest' || type=='loadtest'
           
         # Allow parts of the configuration to be customized by other arguments.
         input['type'] = type
