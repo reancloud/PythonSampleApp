@@ -38,19 +38,9 @@ module REANTest
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id, 'functionaltest'
         job['name'] = input['appName']
-        
-        # Output job status.
-        if output = options[:output]
-          File.write(output, job.to_json)
-        end
-        
-        if options[:wait]
-          # If we waited until the end, then output the reports URL.
-          log "browser functionaltest: reports are available on #{reports_url(id)}"
           
-          # If we waited until the end, then fail if the job did not succeed.
-          exit 1 unless job['status'] == 'SUCCESS'
-        end
+        # Report on job results.
+        report_on_job 'functionaltest', id, job
       end
 
       option :job_config,  required: true,  desc: "filename to read job config from, as JSON"
@@ -78,19 +68,9 @@ module REANTest
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id, 'loadtest'
         job['name'] = input['appName']
-        
-        # Output job status.
-        if output = options[:output]
-          File.write(output, job.to_json)
-        end
-        
-        if options[:wait]
-          # If we waited until the end, then output the reports URL.
-          log "browser loadtest: reports are available on #{reports_url(id)}"
           
-          # If we waited until the end, then fail if the job did not succeed.
-          exit 1 unless job['status'] == 'SUCCESS'
-        end
+        # Report on job results.
+        report_on_job 'loadtest', id, job
       end
 
       option :job_config,  required: false, desc: "filename to read job config from, as JSON"
@@ -120,19 +100,9 @@ module REANTest
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id, 'urltest'
         job['name'] = input['appName']
-        
-        # Output job status.
-        if output = options[:output]
-          File.write(output, job.to_json)
-        end
-        
-        if options[:wait]
-          # If we waited until the end, then output the reports URL.
-          log "browser urltest: reports are available on #{reports_url(id)}"
           
-          # If we waited until the end, then fail if the job did not succeed.
-          exit 1 unless job['status'] == 'SUCCESS'
-        end
+        # Report on job results.
+        report_on_job 'urltest', id, job
       end
 
       option :output, required: false, desc: "filename to write output to, as JSON"
@@ -143,20 +113,22 @@ module REANTest
         
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id
-
-        # Output job status.
-        if output = options[:output]
-          File.write output, job.to_json
-        end
-
+          
+        # Report on job results.
+        report_on_job 'status', id, job
+          
         # Fail if the job did not succeed.
         exit 1 unless job['status'] == 'SUCCESS'
       end
       
       private
       
-      def reports_url(id)
+      def raw_reports_url(id)
         "#{client.config['reantest']['reports_url']}/#{id}/"
+      end
+      
+      def consolidated_reports_url(id)
+        "#{client.config['reantest']['reports_url']}/#/dashboard/consolidateReport/#{id}"
       end
       
       # Submit a test to run and return a job ID.
@@ -206,6 +178,24 @@ module REANTest
         end
         
         {'id' => id, 'status' => job}
+      end
+      
+      # Report on job completion.
+      def report_on_job(type, id, job)
+        
+        # Output job status.
+        if output = options[:output]
+          File.write(output, job.to_json)
+        end
+        
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "browser #{type}: consolidated reports are available at #{consolidated_reports_url(id)}"
+          log "browser #{type}: raw reports are available at #{raw_reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS'
+        end
       end
     end
   end
