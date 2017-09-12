@@ -64,19 +64,9 @@ module REANTest
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id, 'autotest'
         job['name'] = input['name']
-        
-        # Output job status.
-        if output = options[:output]
-          File.write(output, job.to_json)
-        end
-
-        if options[:wait]
-          # If we waited until the end, then output the reports URL.
-          log "infra autotest: reports are available on #{reports_url(id)}"
           
-          # If we waited until the end, then fail if the job did not succeed.
-          exit 1 unless job['status'] == 'SUCCESS' || job['status'] == 'UNSTABLE'
-        end
+        # Report on job results.
+        report_on_job 'autotest', id, job
       end
       
       option :output, required: false, desc: "filename to write output to, as JSON"
@@ -88,11 +78,9 @@ module REANTest
         
         # Collect job status, possibly waiting until execution completes.
         job = collect_status id
-
-        # Output job status.
-        if output = options[:output]
-          File.write output, job.to_json
-        end
+          
+        # Report on job results.
+        report_on_job 'status', id, job
 
         # Fail if the job did not succeed.
         exit 1 unless job['status'] == 'SUCCESS' || job['status'] == 'UNSTABLE'
@@ -100,7 +88,7 @@ module REANTest
       
       private
       
-      def reports_url(id)
+      def raw_reports_url(id)
         "#{client.config['reantest']['reports_url']}/#{id}/Infra_Test/"
       end
       
@@ -150,6 +138,23 @@ module REANTest
           end
         end
         details
+      end
+      
+      # Report on job completion.
+      def report_on_job(type, id, job)
+        
+        # Output job status.
+        if output = options[:output]
+          File.write(output, job.to_json)
+        end
+        
+        if options[:wait]
+          # If we waited until the end, then output the reports URL.
+          log "infra #{type}: raw reports are available at #{raw_reports_url(id)}"
+          
+          # If we waited until the end, then fail if the job did not succeed.
+          exit 1 unless job['status'] == 'SUCCESS' || job['status'] == 'UNSTABLE'
+        end
       end
       
       # Integration with REAN Deploy to read environment validation parameters
