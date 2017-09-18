@@ -1,13 +1,5 @@
 # Copyright (c) 2017 REAN Cloud (https://www.reancloud.com) All rights reserved
 require 'openssl'
-
-# Workaround for invalid SSL certificates at DeployNow ELB.
-# FIXME: Make this configuration driven
-OpenSSL::SSL.instance_eval do
-  remove_const :VERIFY_PEER if const_defined? :VERIFY_PEER # Hack to prevent warning (bundle exec preloads stuff)
-end
-OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-
 require 'timeout'
 require 'uri'
 require 'json'
@@ -72,11 +64,31 @@ module REANPlatformTools
     
     # Connection
     def conn
-      @conn ||= create_conn
+      @conn ||= begin
+        configure_ssl!
+        create_conn
+      end
     end
     
     def create_conn
       raise 'not implemented'
+    end
+    
+    # Workaround for SSL certificate handling issue
+    def configure_ssl!
+      
+      # Workaround for invalid SSL certificates in deployments.  Opt-in only.
+      if config.key?('verify_ssl') && (FalseClass === config['verify_ssl'] || config['verify_ssl'] == 'false')
+      
+        # FIXME: Make this configuration driven
+        OpenSSL::SSL.instance_eval do
+          remove_const :VERIFY_PEER if const_defined? :VERIFY_PEER # Hack to prevent warning (bundle exec preloads stuff)
+          const_set :VERIFY_PEER, const_get(:VERIFY_NONE)
+        end
+      end
+      
+      # Make sure that this hack only runs once.
+      self.class.class_eval 'def configure_ssl!; end'
     end
   end
 end
