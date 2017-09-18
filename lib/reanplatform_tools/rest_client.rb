@@ -12,6 +12,29 @@ module REANPlatformTools
     # Utility class for handling attachments.
     class Attachment < Struct.new(:filename, :length, :content_type, :content)
     end
+
+    class << self
+
+      # Global SSL configuration.      
+      def configure_ssl!(config)
+        configure_verify_ssl! config
+      end
+      
+      # Workaround for invalid SSL certificates in deployments.  Opt-in only.
+      def configure_verify_ssl!(config)
+        if config.key?('verify_ssl') && (FalseClass === config['verify_ssl'] || config['verify_ssl'] == 'false')
+        
+          # FIXME: Make this configuration driven
+          OpenSSL::SSL.instance_eval do
+            remove_const :VERIFY_PEER if const_defined? :VERIFY_PEER # Hack to prevent warning (bundle exec preloads stuff)
+            const_set :VERIFY_PEER, const_get(:VERIFY_NONE)
+          end
+        end
+        
+        # Make sure that this hack only runs once.
+        instance_eval 'def configure_ssl!; end'
+      end
+    end    
   
     # GET request
     def get(path, *args, &block)
@@ -76,19 +99,10 @@ module REANPlatformTools
     
     # Workaround for SSL certificate handling issue
     def configure_ssl!
-      
-      # Workaround for invalid SSL certificates in deployments.  Opt-in only.
-      if config.key?('verify_ssl') && (FalseClass === config['verify_ssl'] || config['verify_ssl'] == 'false')
-      
-        # FIXME: Make this configuration driven
-        OpenSSL::SSL.instance_eval do
-          remove_const :VERIFY_PEER if const_defined? :VERIFY_PEER # Hack to prevent warning (bundle exec preloads stuff)
-          const_set :VERIFY_PEER, const_get(:VERIFY_NONE)
-        end
+      ::REANPlatformTools::RestClient.configure_ssl! config
+      if OpenSSL::SSL::VERIFY_PEER == OpenSSL::SSL::VERIFY_NONE
+        out "reanplatform: INSECURE WARNING: SSL certificate validation is disabled"
       end
-      
-      # Make sure that this hack only runs once.
-      self.class.class_eval 'def configure_ssl!; end'
     end
   end
 end
