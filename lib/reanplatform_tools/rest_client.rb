@@ -32,7 +32,7 @@ module REANPlatformTools
         end
         
         # Make sure that this hack only runs once.
-        instance_eval 'def configure_ssl!; end'
+        instance_eval 'def configure_ssl!(config); end'
       end
     end    
   
