@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-PROJECT = 'reandeploy'
+PROJECT = 'deploy'
 
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1'
@@ -49,16 +49,19 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'reanplatform = reandeploy.main:main'
+            'reanplatform = deploy.main:main'
         ],
-        'rean.platform': [
-            'reandeploy_configure = reandeploy.configure:Configure',
-            'reandeploy_getallvmconnections = reandeploy.getallvmconnections:GetALLVMConnections',
-            'reandeploy_isconnectionexists = reandeploy.isconnectionexists:IsConnectionExists',
-            'reandeploy_saveconnection = reandeploy.saveconnection:SaveConnection'
+        'reanplatform': [
+            'deploy_configure = deploy.configure:Configure',
+            'deploy_getallvmconnections = deploy.getallvmconnections:GetALLVMConnections',
+            'deploy_isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
+            'deploy_saveconnection = deploy.saveconnection:SaveConnection',
+            'deploy_getproviderbyname = deploy.getproviderbyname:GetProviderByName',
+            'deploy_checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
+            'deploy_createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport'
         ],
-        'rean.deploy.hooked': [
-            'sample-hook = reandeploy.hook:Hook',
+        'deploy.hooked': [
+            'sample-hook = deploy.hook:Hook',
         ],
     },
 

@@ -5,7 +5,7 @@ from cliff.command import Command
 
 import swagger_client
 from swagger_client.rest import ApiException
-from reandeploy.constants import Constants
+from deploy.constants import Constants
 
 class SaveConnection(Command):
 
@@ -37,7 +37,7 @@ class SaveConnection(Command):
             if parsed_args.securekeypath is None and parsed_args.password is None:
                 raise RuntimeError('Either \'password\' or \'secureKey\' String type field is required')
             elif parsed_args.securekeypath is not None and parsed_args.password is not None:
-                body = swagger_client.SaveVmConnection(
+                body = swagger_client.VmConnection(
                     parsed_args.type,
                     parsed_args.name,
                     parsed_args.user,
@@ -45,14 +45,14 @@ class SaveConnection(Command):
                     self.get_key(parsed_args)
                 )
             elif parsed_args.securekeypath is None:
-                body = swagger_client.SaveVmConnection(
+                body = swagger_client.VmConnection(
                     parsed_args.type,
                     parsed_args.name,
                     parsed_args.user,
                     parsed_args.password
                 )
             else:
-                body = swagger_client.SaveVmConnection(
+                body = swagger_client.VmConnection(
                     parsed_args.type,
                     parsed_args.name,
                     parsed_args.user,
@@ -67,17 +67,8 @@ class SaveConnection(Command):
             )
             api_instance.api_client.host = Constants.HOST_PATH
 
-            api_response = api_instance.save_vm_connection(body)
+            api_response = api_instance.save_vm_connection()
 
             pprint(api_response)
         except ApiException as e:
             self.log.error(e)
-
-class Error(Command):
-    "Always raises an error"
-
-    log = logging.getLogger(__name__)
-
-    def take_action(self, parsed_args):
-        self.log.info('causing error')
-        raise RuntimeError('this is the expected exception')

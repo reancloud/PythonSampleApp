@@ -1,13 +1,14 @@
 "Contains constats required for commands"
 import os
-from reandeploy.utility import Utility
+from deploy.utility import Utility
 
 class Constants(object):
     "Contains constats required for CLI"
 
     HOST_PATH = "https://deploynow.reancloud.com/DeployNow/rest"
     AUTHORIZATION = "Authorization"
-    CREDENTIALS = Utility.get_username_and_password()
+    CREDENTIALS = Utility.getUserNameAndPassword()
+    REAN_PLATFORM = 'reanplatform'
 
     def __setattr__(self, attr, value):
         if hasattr(self, attr):
