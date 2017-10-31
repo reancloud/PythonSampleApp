@@ -8,3 +8,14 @@
 *~
 *.gem
 *.json
+bin/
+include/
+lib/
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+
