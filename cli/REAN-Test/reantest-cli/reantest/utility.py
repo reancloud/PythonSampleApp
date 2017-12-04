@@ -43,9 +43,9 @@ class Utility():
         message = ""
 
         # Validation for Test URL 
-        if not validators.url(params.test_url):
+        if not validators.url(params.url):
             message = "Please enter valid Test URL."
-        
+
         #Valodation for Browser list
         elif (params.firefox == None and 
                 params.chrome == None and 
@@ -61,6 +61,38 @@ class Utility():
 
         return message
 
-    
+
+    @staticmethod
+    def validateSecurityTestInputs(self, params):
+        # All the parameters validations goes in this function
+        # log = logging.getLogger(__name__)
+        # self.log.debug(params)
+        message = ""
+
+        # Validation for Test URL
+        if not validators.url(params.url):
+            message = "Please enter valid Test URL."
+
+        #Validation for Security test type
+        elif(params.security_test_type == None
+              ):
+
+            message = "Please Provide security test type."
+
+        # Valodation for Browser list
+        elif (params.firefox == None and
+                      params.chrome == None and
+                      params.ie == None and
+                      params.opera == None and
+                      params.safari == None and
+                      params.ios == None and
+                      params.ui_perf_analysis == None and
+                      params.device == None
+              ):
+
+            message = "Please Provide atleast one browser to Test."
+
+        return message
+
 
         

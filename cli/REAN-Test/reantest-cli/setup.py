@@ -49,12 +49,16 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'reanplatform = reantest.main:main'
+            'rp = reantest.main:main'
         ],
         'rean.platform': [
-            'reantest_runurl = reantest.runurl:RunURL',
-            'reantest_runupa = reantest.runupa:RunUPA',
-            'reantest_getproperties = reantest.testnowutility:GetProperties',
+            'test_run-url-test = reantest.runurl:RunURLTest',
+            'test_run-upa-test = reantest.runupa:RunUPA',
+            'test_run-security-test = reantest.runsecuritytest:RunSecurityTest',
+            'test_run-crossbrowser-test = reantest.runcrossbrowsertest:RunCrossBrowserTest',
+            'test_runscalenowtest = reantest.runscalenowtest:RunScaleNowTest',
+            'test_getjobstatus = reantest.getjobstatus:GetJobStatus',
+            'test_getproperties = reantest.testnowutility:GetProperties',
             'hooked = reantest.hook:Hooked',
         ],
         'rean.test.hooked': [

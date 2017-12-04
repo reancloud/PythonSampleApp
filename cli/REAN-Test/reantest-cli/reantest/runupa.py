@@ -11,12 +11,11 @@ import json
 
 
 class RunUPA(Command):
-    "A simple command that prints a message."
 
     log = logging.getLogger(__name__)
 
 
-    "runurltest"
+    "runupatest"
     def get_parser(self, prog_name):
         parser = super(RunUPA, self).get_parser(prog_name)
         
@@ -29,19 +28,18 @@ class RunUPA(Command):
         # 'run_upa': 'str',
         # 'run_crawl': 'str'
 
-        parser.add_argument('--test_url', '-u', help='Set upa To test example:http://www.google.com.This option is mandatory', required=True)
-        parser.add_argument('--text_to_search', '-s', help='Set the text to search.This option is mandatory', required=True)
-        parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.This option is not mandatory')
-        parser.add_argument('--execution_strategy', '-e', help='Set Execution Statraegy options boost/vmReuse.This option is mandatory', required=True)
-        parser.add_argument('--run_upa', '-r', help='Set true if needs UPA test to run with the Test..This option is not mandatory')
-        parser.add_argument('--run_crawl', '-c', help='Set true if needs Crawl test to run with the Test.This option is not mandatory')
+        parser.add_argument('--url', '-u', help='Set upa To test example:http://www.google.com.', required=True)
+        parser.add_argument('--text_to_search', '-s', help='Set the text to search.', required=True)
+        parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.')
+        parser.add_argument('--upa', '-r', help='Set true if needs UPA test to run with the Test.')
+        parser.add_argument('--crawl', '-c', help='Set true if needs Crawl test to run with the Test.')
         
         
         parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on..This option is not mandatory.')
         parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on..This option is not mandatory.')
-        
-        
-        #parser.add_argument('--ie', '-I', help='message')
+        #parser.add_argument('--ie', '-I', help='Give the comma separated versions for IE to run test on.')
+        #parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
+
         #parser.add_argument('--opera', '-O', help='message')
         #parser.add_argument('--safari', '-S', help='message')
         #parser.add_argument('--ios', '-A', help='message')
@@ -70,13 +68,13 @@ class RunUPA(Command):
         #order should be maintained as the constructor takes values as parameter in the same order.  
         body = swagger_client.UpaTestDto(
             browser_list,
-            parsed_args.test_url,
+            parsed_args.url,
             parsed_args.text_to_search,
             parsed_args.page_load_time_out,
             "upatest",#type
-            parsed_args.execution_strategy,
-            parsed_args.run_upa,
-            parsed_args.run_crawl)
+            "boost",  # execution_strategy
+            parsed_args.upa,
+            parsed_args.crawl)
             
 
         self.log.debug(body)
