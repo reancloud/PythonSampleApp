@@ -1,12 +1,14 @@
 import logging
 from . import config
-from . import utility 
+from . import utility
 from cliff.command import Command
 
 import swagger_client
 from swagger_client.rest import ApiException
 from ast import literal_eval
 import json
+import time
+
 
 
 
@@ -37,10 +39,10 @@ class RunURLTest(Command):
         
         parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on.')
         parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on.')
-        
-        
+
         parser.add_argument('--ie', '-I', help='Give the comma separated versions for IE to run test on.')
         parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
+        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
         #parser.add_argument('--safari', '-S', help='message')
         #parser.add_argument('--ios', '-A', help='message')
         #parser.add_argument('--ui_perf_analysis', '-U', help='message')
@@ -78,12 +80,21 @@ class RunURLTest(Command):
             
 
         self.log.debug(body)
-        
+
         try:
              apiInstance = swagger_client.RunJobsApi()
-             api_response = apiInstance.submit_url_test_job(body)
-             self.log.debug(api_response)
-             print(api_response)
+             job_Id = apiInstance.submit_url_test_job(body)
+             self.log.debug("Response for URL Test is------------: %s \n" % job_Id)
+             print("The URL Test submitted successfully. Job Id is : ", job_Id)
+
+             if (job_Id != None and parsed_args.wait =="true"):
+                 apiInstance = swagger_client.RunTestApi()
+                 job_status = apiInstance.get_job_status(job_Id)
+                 while ("RUNNING" in job_status):
+                    print("The Status of Job_Id:",job_Id," is  ", job_status)
+                    time.sleep(5)
+                 print("The Status of Job_Id:", job_Id, " is  ", job_status)
+
         except Exception as e:
              self.log.error("Exception when calling RunUrlTest->submit_url_test_job: %s\n" % e)
 

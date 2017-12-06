@@ -94,5 +94,42 @@ class Utility():
 
         return message
 
+    @staticmethod
+    def validateAutomationTestInputs(self, params):
+        # All the parameters validations goes in this function
+        # log = logging.getLogger(__name__)
+        # self.log.debug(params)
+        message = ""
+
+        # Validation for Test URL
+        if not validators.url(params.url):
+            message = "Please enter valid Application URL."
+
+        # Validation for git url
+        elif (params.git_url == None and
+              params.app_name == None and
+              params.command_to_run_test == None and
+              params.automation_code_type == None and
+              params.report_file == None and
+              params.output_dir == None and
+              params.test_suite == None
+              ):
+            message = "Please enter all requried parameters."
+
+        # Valodation for Browser list
+        elif (params.firefox == None and
+                      params.chrome == None and
+                      params.ie == None and
+                      params.opera == None and
+                      params.safari == None and
+                      params.ios == None and
+                      params.ui_perf_analysis == None and
+                      params.device == None
+              ):
+
+            message = "Please Provide atleast one browser to Test."
+
+        return message
+
 
         

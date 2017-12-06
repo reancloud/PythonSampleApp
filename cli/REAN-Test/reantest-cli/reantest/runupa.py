@@ -7,6 +7,7 @@ import swagger_client
 from swagger_client.rest import ApiException
 from ast import literal_eval
 import json
+import time
 
 
 
@@ -37,6 +38,7 @@ class RunUPA(Command):
         
         parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on..This option is not mandatory.')
         parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on..This option is not mandatory.')
+        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
         #parser.add_argument('--ie', '-I', help='Give the comma separated versions for IE to run test on.')
         #parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
 
@@ -81,9 +83,18 @@ class RunUPA(Command):
         
         try:
              apiInstance = swagger_client.RunJobsApi()
-             api_response = apiInstance.submit_upa_test_job(body)
-             self.log.debug(api_response)
-             print(api_response)
+             job_Id = apiInstance.submit_upa_test_job(body)
+             self.log.debug("Response for UPA Test is------------: %s \n" % job_Id)
+             print("The UPA Test submitted successfully. Job Id is : ", job_Id)
+
+             if (job_Id != None and parsed_args.wait =="true"):
+                 apiInstance = swagger_client.RunTestApi()
+                 job_status = apiInstance.get_job_status(job_Id)
+                 while ("RUNNING" in job_status):
+                    print("The Status of Job_Id:",job_Id," is  ", job_status)
+                    time.sleep(5)
+                 print("The Status of Job_Id:", job_Id, " is  ", job_status)
+
         except Exception as e:
              self.log.error("Exception when calling RunUpaTest->submit_upa_test_job: %s\n" % e)
 

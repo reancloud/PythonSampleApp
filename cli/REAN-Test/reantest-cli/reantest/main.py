@@ -36,7 +36,7 @@ class REANPlatform(App):
         
         self.api_instance = swagger_client.TestNowUtilityApi()
         self.api_instance.api_client.set_default_header('Authorization', config.auth_header) 
-        self.api_instance.api_client.host = config.reantest_host # see [1]
+        self.api_instance.api_client.host = config.host  # see [1]
 
     def clean_up(self, cmd, result, err):
         self.LOG.debug('clean_up %s', cmd.__class__.__name__)
