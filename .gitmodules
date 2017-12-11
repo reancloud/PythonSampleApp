@@ -1,4 +1,0 @@
-[submodule "lib/jolt-cf2tf"]
-	path = lib/jolt-cf2tf
-	url = git@github.com:reancloud/jolt-tf2cf.git
-	branch = master

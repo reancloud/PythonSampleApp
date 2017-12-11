@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-require 'reantest'
-REANPlatformTools::Config.script_name = 'reantest'
-REANTest::Cli::Main.start(ARGV)
