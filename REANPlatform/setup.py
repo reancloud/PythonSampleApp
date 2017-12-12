@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-PROJECT = 'reantest'
+PROJECT = 'test'
 
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1'
@@ -49,20 +49,28 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'rp = reantest.main:main'
+            'rp_test = test.main:main',
+            'rp_deploy = test.main:main'
         ],
         'rean.platform': [
-            'test_run-url-test = reantest.runurl:RunURLTest',
-            'test_run-upa-test = reantest.runupa:RunUPA',
-            'test_run-security-test = reantest.runsecuritytest:RunSecurityTest',
-            'test_run-automation-test = reantest.runcrossbrowsertest:RunCrossBrowserTest',
-            'test_run-scale-test = reantest.runscalenowtest:RunScaleNowTest',
-            'test_get-job-status = reantest.getjobstatus:GetJobStatus',
-            'test_getproperties = reantest.testnowutility:GetProperties',
-            'hooked = reantest.hook:Hooked',
+            'run-url-test = test.runurl:RunURLTest',
+            'run-upa-test = test.runupa:RunUPA',
+            'run-security-test = test.runsecuritytest:RunSecurityTest',
+            'run-automation-test = test.runcrossbrowsertest:RunCrossBrowserTest',
+            'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
+            'get-job-status = test.getjobstatus:GetJobStatus',
+            'getproperties = test.testnowutility:GetProperties',
+              'deploy_configure = deploy.configure:Configure',
+            'getallvmconnections = deploy.getallvmconnections:GetALLVMConnections',
+            'isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
+            'saveconnection = deploy.saveconnection:SaveConnection',
+            'getproviderbyname = deploy.getproviderbyname:GetProviderByName',
+            'checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
+            'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
+            'hooked = deploy.hook:Hooked',
         ],
         'rean.test.hooked': [
-            'sample-hook = reantest.hook:Hook',
+            'sample-hook = deploy.hook:Hook',
         ],
     },
 
