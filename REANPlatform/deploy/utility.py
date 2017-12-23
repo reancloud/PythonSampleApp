@@ -24,6 +24,19 @@ class Utility(object):
                 return credentials
 
     @staticmethod
+    def getHost():
+        "gets configured username and password"
+        path = os.path.expanduser('~')
+        if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):
+            os.chdir(path + '/.' + Constants.REAN_PLATFORM)
+            if os.path.isfile(Constants.REAN_PLATFORM + '.yaml'):
+                with open(Constants.REAN_PLATFORM + ".yaml", 'r') as stream:
+                    data_loaded = yaml.load(stream)
+
+                host = data_loaded['deploy']['host']
+                return host
+
+    @staticmethod
     def encryptData(val):
         "Encrypts credentials"
         cipher = XOR.new(Constants.REAN_SECRET_KEY)

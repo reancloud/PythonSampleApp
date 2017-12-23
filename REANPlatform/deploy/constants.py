@@ -5,7 +5,7 @@ from deploy.utility import Utility
 class Constants(object):
     "Contains constats required for CLI"
 
-    HOST_PATH = "https://deploynow.reancloud.com/DeployNow/rest"
+    HOST_PATH = Utility.getHost()
     AUTHORIZATION = "Authorization"
     CREDENTIALS = Utility.getUserNameAndPassword()
     REAN_PLATFORM = 'reanplatform'

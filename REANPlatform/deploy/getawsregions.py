@@ -6,26 +6,28 @@ from swagger_client.rest import ApiException
 from deploy.constants import Constants
 
 
-class GetProviderByName(Command):
+class GetAwsRegions(Command):
 
-    "GetProvider by name"
+    "GetAwsRegions"
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
-        parser = super(GetProviderByName, self).get_parser(prog_name)
-        parser.add_argument('--name', '-n', help='Set name to check existance', required=True)
+        parser = super(GetAwsRegions, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
-
+        
+        # create an instance of the API class
         api_instance = swagger_client.ProviderApi()
+
         api_instance.api_client.set_default_header(
             Constants.AUTHORIZATION,
             Constants.CREDENTIALS
         )
-        api_instance.api_client.host = Constants.HOST_PATH
-        try:
-            api_response = api_instance.get_provider_by_name(parsed_args.name)
+        api_instance.api_client.host = Constants.HOST_PATH       
+        try: 
+            # Get available aws regions
+            api_response = api_instance.get_aws_regions()
             pprint(api_response)
         except ApiException as e:
-            self.log.error(e)
+            print("Exception when calling ProviderApi->get_aws_regions: %s\n" % e)

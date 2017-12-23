@@ -18,11 +18,13 @@ class Configure(Command):
     def get_parser(self, prog_name):
         parser = super(Configure, self).get_parser(prog_name)
         parser.add_argument('--username', '-u', help='Set username', required=True)
+        parser.add_argument('--hosturl', '-url', help='host url', required=True)
         return parser
 
     def createFile(self, parsed_args, path):
         data = {
             'deploy' : {
+                'host' : parsed_args.hosturl,
                 'username' : Utility.encryptData(parsed_args.username),
                 'password' : Utility.encryptData(getpass.getpass())
             }
