@@ -40,7 +40,7 @@ setup(
     scripts=[],
 
     provides=[],
-    install_requires=['cliff','validators'],
+    install_requires=['cliff','validators','boto3'],
 
     namespace_packages=[],
     packages=find_packages(),
@@ -53,7 +53,11 @@ setup(
             'rean-mnc = mnc.main:main'
         ],
         'rean.mnc': [
-
+            'configure = mnc.configure:Configure',
+            'rule = mnc.rule:Rule',
+            'rule install = mnc.rule_install:RuleInstall',
+            'rule list = mnc.rule_list:RuleList',
+            'rule remove = mnc.rule_remove:RuleRemove'
         ],
         'rean.test': [
             'run-url-test = test.runurl:RunURLTest',
