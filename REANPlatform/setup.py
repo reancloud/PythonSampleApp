@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-PROJECT = 'test'
+PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1'
@@ -16,22 +16,21 @@ setup(
     name=PROJECT,
     version=VERSION,
 
-    description='CLI for REAN Platform with cliff',
+    description='CLI for REAN Platform',
     long_description=long_description,
 
     author='Rajashri Dalavi',
     author_email='rajashri.dalavi@reancloud.com',
 
-    url='https://github.com/openstack/cliff',
-    download_url='https://github.com/openstack/cliff/tarball/master',
+    url='https://www.reancloud.com/',
+    download_url='https://www.reancloud.com/',
 
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
                  'Programming Language :: Python',
-                 'Programming Language :: Python :: 2',
-                 'Programming Language :: Python :: 2.7',
                  'Programming Language :: Python :: 3',
                  'Programming Language :: Python :: 3.2',
+                 'Programming Language :: Python :: 3.6',
                  'Intended Audience :: Developers',
                  'Environment :: Console',
                  ],
@@ -49,10 +48,14 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'rp_test = test.main:main',
-            'rp_deploy = deploy.main:main'
+            'rean-test = test.main:main',
+            'rean-deploy = deploy.main:main',
+            'rean-mnc = mnc.main:main'
         ],
-        'rean.platform': [
+        'rean.mnc': [
+
+        ],
+        'rean.test': [
             'run-url-test = test.runurl:RunURLTest',
             'run-upa-test = test.runupa:RunUPA',
             'run-security-test = test.runsecuritytest:RunSecurityTest',
@@ -60,6 +63,8 @@ setup(
             'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
             'get-job-status = test.getjobstatus:GetJobStatus',
             'getproperties = test.testnowutility:GetProperties',
+        ],
+        'rean.deploy': [
             'deploy-configure = deploy.configure:Configure',
             'create-environment = deploy.createenvironment:CreateEnv',
             'deploy-environment = deploy.deployenvironment:DepolyEnv',

@@ -7,13 +7,13 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
-class REANPlatform(App):
+class Deploy(App):
 
     def __init__(self):
-        super(REANPlatform, self).__init__(
-            description='CLI for REAN Platform.',
+        super(Deploy, self).__init__(
+            description='CLI for REAN Deploy.',
             version='0.1',
-            command_manager=CommandManager('rean.platform'),
+            command_manager=CommandManager('rean.deploy'),
             deferred_help=True,
             )
 
@@ -29,7 +29,7 @@ class REANPlatform(App):
 
     def prepare_to_run_command(self, cmd):
         self.LOG.debug('prepare_to_run_command %s', cmd.__class__.__name__)
-        self.LOG.debug('Initialize the api_instance in prepare_to_run_command')  
+        self.LOG.debug('Initialize the api_instance in prepare_to_run_command')
 
     def clean_up(self, cmd, result, err):
         self.LOG.debug('clean_up %s', cmd.__class__.__name__)
@@ -38,7 +38,7 @@ class REANPlatform(App):
 
 
 def main(argv=sys.argv[1:]):
-    myapp = REANPlatform()
+    myapp = Deploy()
     return myapp.run(argv)
 
 

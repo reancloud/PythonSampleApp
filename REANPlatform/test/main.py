@@ -10,13 +10,13 @@ from . import config
 
 
 
-class REANPlatform(App):
+class Test(App):
 
     def __init__(self):
-        super(REANPlatform, self).__init__(
-            description='CLI for REAN Platform.',
+        super(Test, self).__init__(
+            description='CLI for REAN Test.',
             version='0.1',
-            command_manager=CommandManager('rean.platform'),
+            command_manager=CommandManager('rean.test'),
             deferred_help=True,
             )
 
@@ -25,7 +25,7 @@ class REANPlatform(App):
         # api_instance = swagger_client.TestNowUtilityApi()
 
         # Set a relevant user agent so we know which software is actually using ESI
-        # api_instance.api_client.set_default_header('Authorization', config.auth_header) 
+        # api_instance.api_client.set_default_header('Authorization', config.auth_header)
         # api_instance.api_client.host = config.reantest_host # see [1]
 
         self.LOG.debug('main.Function :: initialize_app')
@@ -33,9 +33,9 @@ class REANPlatform(App):
     def prepare_to_run_command(self, cmd):
         self.LOG.debug('prepare_to_run_command %s', cmd.__class__.__name__)
         self.LOG.debug('Initialize the api_instance in prepare_to_run_command')
-        
+
         self.api_instance = swagger_client.TestNowUtilityApi()
-        self.api_instance.api_client.set_default_header('Authorization', config.auth_header) 
+        self.api_instance.api_client.set_default_header('Authorization', config.auth_header)
         self.api_instance.api_client.host = config.host  # see [1]
 
     def clean_up(self, cmd, result, err):
@@ -45,7 +45,7 @@ class REANPlatform(App):
 
 
 def main(argv=sys.argv[1:]):
-    myapp = REANPlatform()
+    myapp = Test()
     return myapp.run(argv)
 
 
