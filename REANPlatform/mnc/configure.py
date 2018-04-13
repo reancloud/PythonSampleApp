@@ -26,4 +26,4 @@ class Configure(Command):
         return parser
 
     def take_action(self, parsed_args):
-        return True
+        print(self.app)
