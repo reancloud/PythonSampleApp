@@ -1,5 +1,4 @@
 import logging
-import json
 from cliff.command import Command
 
 
@@ -27,6 +26,7 @@ class RuleInstall(Command):
             '--customer-email-domain', help='Set the customer email domain', action="store", required=False)
         parser.add_argument(
             '--action', help='Set the action', action="store_true", required=False)
+
         return parser
 
     def take_action(self, parsed_args):

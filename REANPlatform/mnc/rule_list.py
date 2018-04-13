@@ -1,5 +1,4 @@
 import logging
-import json
 from cliff.command import Command
 
 
@@ -12,9 +11,9 @@ class RuleList(Command):
         parser = super(RuleList, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--rule-name', help='Set the rule name', action="append", required=False)
+            '--rule-name', help='Set the rule name', action="append", nargs='*', required=False)
         parser.add_argument(
-            '--rule-type', help='Set the rule type', action="append", required=False)
+            '--rule-type', help='Set the rule type', action="append", nargs='*', required=False)
         parser.add_argument(
             '--customer-acc', help='Set the customer account number', action="store", required=False, type=int)
 

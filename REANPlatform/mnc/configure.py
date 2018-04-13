@@ -1,5 +1,4 @@
 import logging
-import json
 from cliff.command import Command
 
 
@@ -11,9 +10,19 @@ class Configure(Command):
     def get_parser(self, prog_name):
         parser = super(Configure, self).get_parser(prog_name)
 
-        # 'jobId': 'str',
         parser.add_argument(
-            '--job_id', '-j', help='Set Job Id to get Job status example:396f4cfc2c4d46c7921532741c7ab63e.', required=True)
+            '--configuration-bucket', help='Managed Cloud CLI configuration bucket', action="store", required=True)
+        parser.add_argument(
+            '--deploy-endpoint', help='REANDeploy endpoint', action="store", required=False)
+        parser.add_argument(
+            '--deploy-api-key', help='REANDeploy API key', action="store", required=False)
+        parser.add_argument(
+            '--deploy-group', help='REANDeploy group for Managed Cloud', action="store", required=False)
+        parser.add_argument(
+            '--master-provider', help='REANDeploy provider for Managed Cloud AWS master account', action="store", required=False)
+        parser.add_argument(
+            '--artifactory-bucket', help='Managed Cloud artifactory S3 bucket', action="store", required=False)
+
         return parser
 
     def take_action(self, parsed_args):

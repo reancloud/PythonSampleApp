@@ -1,8 +1,6 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-import time
-from pprint import pprint
 
 
 class MNC(App):
