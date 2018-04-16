@@ -5,6 +5,8 @@ import boto3
 import botocore
 import uuid
 import logging
+import deploy_sdk_client
+from deploy_sdk_client.rest import ApiException
 from pathlib import Path
 from cliff.app import App
 from cliff.commandmanager import CommandManager
@@ -79,7 +81,7 @@ class MNC(App):
                                self.configuration_bucket)
 
                 if cmd.__class__.__name__ != "Configure":
-                    raise Exception(e)
+                    raise RuntimeError(e)
 
             elif error_code == 404:
                 self.LOG.debug(
@@ -173,6 +175,40 @@ class MNC(App):
                        self.rean_deploy_mnc_group)
         self.LOG.debug('mnc_artifact_bucket value is %s',
                        self.mnc_artifact_bucket)
+
+        if cmd.__class__.__name__ != "Configure":
+
+            if self.configuration_bucket is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --configuration-bucket')
+
+            if self.mnc_artifact_bucket is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --artifactory-bucket')
+
+            if self.rean_deploy_api_key is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --deploy-api-key')
+
+            if self.rean_deploy_endpoint is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --deploy-endpoint')
+
+            if self.rean_deploy_mnc_group is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --deploy-group')
+
+            if self.mnc_master_account_number is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --master-acc-no')
+
+            if self.rean_deploy_mnc_master_provider is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --master-provider')
+
+            self.deploy_api_instance = deploy_sdk_client.ConnectionApi()
+            self.deploy_api_instance.api_client.host = self.rean_deploy_endpoint
+            self.LOG.debug('Created REANDeploy API Instance')
 
     def clean_up(self, cmd, result, err):
         self.LOG.debug('Inside Cleanup %s', cmd.__class__.__name__)

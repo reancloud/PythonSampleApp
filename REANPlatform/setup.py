@@ -40,7 +40,7 @@ setup(
     scripts=[],
 
     provides=[],
-    install_requires=['cliff','validators','boto3'],
+    install_requires=['cliff', 'validators', 'boto3', 'deploy_sdk_client'],
 
     namespace_packages=[],
     packages=find_packages(),
