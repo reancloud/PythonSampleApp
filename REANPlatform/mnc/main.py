@@ -9,7 +9,6 @@ from pathlib import Path
 from cliff.app import App
 from cliff.commandmanager import CommandManager
 
-
 class MNC(App):
 
     def __init__(self):
@@ -24,7 +23,7 @@ class MNC(App):
         self.LOG.debug('main.Function :: initialize_app')
 
     def prepare_to_run_command(self, cmd):
-        self.LOG.debug('prepare_to_run_command %s', cmd.__class__.__name__)
+        self.LOG.debug('Prapare to run command %s', cmd.__class__.__name__)
 
         configuration_bucket_file_path = os.path.expanduser(
             '~/.mnc/config_bucket.yaml')
@@ -62,14 +61,14 @@ class MNC(App):
         self.LOG.debug('configuration_bucket value is %s ',
                        self.configuration_bucket)
 
-        s3 = boto3.resource('s3')
+        self.s3 = boto3.resource('s3')
         try:
             local_configuration_file_name = uuid.uuid4().hex
-            local_configuration_file_path = '/tmp/' + local_configuration_file_name
+            self.local_configuration_file_path = '/tmp/' + local_configuration_file_name
             self.LOG.debug('Local configuration file path is %s',
-                           local_configuration_file_path)
-            s3.meta.client.download_file(
-                self.configuration_bucket, 'mnc_configuration.yml', local_configuration_file_path)
+                           self.local_configuration_file_path)
+            self.s3.meta.client.download_file(
+                self.configuration_bucket, 'mnc_configuration.yml', self.local_configuration_file_path)
 
         except botocore.exceptions.ClientError as e:
             error_code = int(e.response['Error']['Code'])
@@ -78,13 +77,17 @@ class MNC(App):
                 self.LOG.debug('Bucket access denied, Error is %s', str(e))
                 self.LOG.error('%s bucket access denied',
                                self.configuration_bucket)
+
+                if cmd.__class__.__name__ != "Configure":
+                    raise Exception(e)
+
             elif error_code == 404:
                 self.LOG.debug(
                     'Failed to find managed cloud configuration file at bucket %s', self.configuration_bucket)
                 self.LOG.debug('Error is %s', str(e))
 
-        if Path(local_configuration_file_path).is_file():
-            with open(local_configuration_file_path) as local_configuration_file_details:
+        if Path(self.local_configuration_file_path).is_file():
+            with open(self.local_configuration_file_path) as local_configuration_file_details:
 
                 try:
                     local_configuration_file_content = yaml.safe_load(
@@ -102,7 +105,7 @@ class MNC(App):
                 except KeyError as e:
                     self.mnc_master_account_number = None
                     self.LOG.debug(
-                        'Failed to find mnc_master_account_number key in local configuration file %s', local_configuration_file_path)
+                        'Failed to find mnc_master_account_number key in local configuration file %s', self.local_configuration_file_path)
                     self.LOG.debug('Error is %s', str(e))
 
                 try:
@@ -111,7 +114,7 @@ class MNC(App):
                 except KeyError as e:
                     self.rean_deploy_endpoint = None
                     self.LOG.debug(
-                        'Failed to find rean_deploy_endpoint key in local configuration file %s', local_configuration_file_path)
+                        'Failed to find rean_deploy_endpoint key in local configuration file %s', self.local_configuration_file_path)
                     self.LOG.debug('Error is %s', str(e))
 
                 try:
@@ -119,7 +122,7 @@ class MNC(App):
                 except KeyError as e:
                     self.rean_deploy_api_key = None
                     self.LOG.debug(
-                        'Failed to find rean_deploy_api_key key in local configuration file %s', local_configuration_file_path)
+                        'Failed to find rean_deploy_api_key key in local configuration file %s', self.local_configuration_file_path)
                     self.LOG.debug('Error is %s', str(e))
 
                 try:
@@ -128,7 +131,7 @@ class MNC(App):
                 except KeyError as e:
                     self.rean_deploy_mnc_master_provider = None
                     self.LOG.debug(
-                        'Failed to find rean_deploy_mnc_master_provider key in local configuration file %s', local_configuration_file_path)
+                        'Failed to find rean_deploy_mnc_master_provider key in local configuration file %s', self.local_configuration_file_path)
                     self.LOG.debug('Error is %s', str(e))
 
                 try:
@@ -137,7 +140,7 @@ class MNC(App):
                 except KeyError as e:
                     self.rean_deploy_mnc_group = None
                     self.LOG.debug(
-                        'Failed to find rean_deploy_mnc_group key in local configuration file %s', local_configuration_file_path)
+                        'Failed to find rean_deploy_mnc_group key in local configuration file %s', self.local_configuration_file_path)
                     self.LOG.debug('Error is %s', str(e))
 
                 try:
@@ -145,7 +148,7 @@ class MNC(App):
                 except KeyError as e:
                     self.mnc_artifact_bucket = None
                     self.LOG.debug(
-                        'Failed to find mnc_artifact_bucket key in local configuration file %s', local_configuration_file_path)
+                        'Failed to find mnc_artifact_bucket key in local configuration file %s', self.local_configuration_file_path)
                     self.LOG.debug('Error is %s', str(e))
 
         else:
@@ -172,7 +175,18 @@ class MNC(App):
                        self.mnc_artifact_bucket)
 
     def clean_up(self, cmd, result, err):
-        self.LOG.debug('clean_up %s', cmd.__class__.__name__)
+        self.LOG.debug('Inside Cleanup %s', cmd.__class__.__name__)
+
+        if Path(self.local_configuration_file_path).is_file():
+            try:
+                os.remove(self.local_configuration_file_path)
+                self.LOG.debug('Successfuly removed file %s',
+                               self.local_configuration_file_path)
+            except OSError as e:
+                self.LOG.error('Failed to remove file %s',
+                                   self.local_configuration_file_path)
+                self.LOG.debug('Error is %s', str(e))
+                return False
 
 
 def main(argv=sys.argv[1:]):
