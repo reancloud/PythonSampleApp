@@ -137,6 +137,15 @@ class MNC(App):
                     self.LOG.debug('Error is %s', str(e))
 
                 try:
+                    self.rean_deploy_mnc_master_connection = local_configuration_file_content[
+                        'rean_deploy_mnc_master_connection']
+                except KeyError as e:
+                    self.rean_deploy_mnc_master_connection = None
+                    self.LOG.debug(
+                        'Failed to find rean_deploy_mnc_master_connection key in local configuration file %s', self.local_configuration_file_path)
+                    self.LOG.debug('Error is %s', str(e))
+
+                try:
                     self.rean_deploy_mnc_group = local_configuration_file_content[
                         'rean_deploy_mnc_group']
                 except KeyError as e:
@@ -158,6 +167,7 @@ class MNC(App):
             self.rean_deploy_endpoint = None
             self.rean_deploy_api_key = None
             self.rean_deploy_mnc_master_provider = None
+            self.rean_deploy_mnc_master_connection = None
             self.rean_deploy_mnc_group = None
             self.mnc_artifact_bucket = None
             self.LOG.debug('Failed to find managed cloud bucket details file %s',
@@ -171,6 +181,8 @@ class MNC(App):
                        self.rean_deploy_api_key)
         self.LOG.debug('rean_deploy_mnc_master_provider value is %s',
                        self.rean_deploy_mnc_master_provider)
+        self.LOG.debug('rean_deploy_mnc_master_connection value is %s',
+                       self.rean_deploy_mnc_master_connection)
         self.LOG.debug('rean_deploy_mnc_group value is %s',
                        self.rean_deploy_mnc_group)
         self.LOG.debug('mnc_artifact_bucket value is %s',
@@ -206,9 +218,10 @@ class MNC(App):
                 raise RuntimeError(
                     'The following arguments is required for initial configuration: --master-provider')
 
-            self.deploy_api_instance = deploy_sdk_client.ConnectionApi()
-            self.deploy_api_instance.api_client.host = self.rean_deploy_endpoint
-            self.LOG.debug('Created REANDeploy API Instance')
+            if self.rean_deploy_mnc_master_connection is None:
+                raise RuntimeError(
+                    'The following arguments is required for initial configuration: --master-connection')
+
 
     def clean_up(self, cmd, result, err):
         self.LOG.debug('Inside Cleanup %s', cmd.__class__.__name__)
