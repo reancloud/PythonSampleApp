@@ -18,8 +18,8 @@ pipeline {
                           #!/bin/bash
                           set -e
                           pycodestyle conftest.py
-                          pycodestyle common/
-                          pycodestyle tests/*.py
+                          pycodestyle REANPlatform/deploy/
+                         
                     '''
                   }
                   catch (Exception e) {
