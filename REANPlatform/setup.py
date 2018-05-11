@@ -66,7 +66,7 @@ setup(
             'deploy-configure = deploy.configure:Configure',
             'create-provider = deploy.createprovider:SaveProvider',
             'delete-provider = deploy.deleteprovider:DeleteProvider',
-            'list-provider = deploy.listproviders:ListProviders',
+            'list-provider = deploy.listproviders:ListProvider',
     #        'create-environment = deploy.createenvironment:CreateEnv',        
     #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
     #        'list-connections = deploy.listconnections:ListConnections',

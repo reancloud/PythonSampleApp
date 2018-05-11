@@ -1,3 +1,4 @@
+"""List provider module."""
 import logging
 from pprint import pprint
 from cliff.command import Command
@@ -6,16 +7,18 @@ from deploy_sdk_client.rest import ApiException
 from deploy.constants import Constants
 
 
-class ListProviders(Command):
+class ListProvider(Command):
+    """List of providers."""
 
-    "ListProviders"
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
-        parser = super(ListProviders, self).get_parser(prog_name)
+        """Parser of ListProviders."""
+        parser = super(ListProvider, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
+        """take_action ListProvider."""
         try:
             # create an instance of the API class
             api_instance = deploy_sdk_client.ProviderApi()

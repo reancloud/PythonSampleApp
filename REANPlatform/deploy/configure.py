@@ -1,4 +1,4 @@
-"Configure REAN-Deploy CLI"
+"""Configure REAN-Deploy CLI."""
 import os
 import io
 import getpass
@@ -11,11 +11,12 @@ from deploy.utility import Utility
 
 
 class Configure(Command):
+    """Configure REAN-Deploy CLI."""
 
-    "Configure REAN-Deploy CLI"
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
+        """get_parser."""
         parser = super(Configure, self).get_parser(prog_name)
         parser.add_argument('--username', '-u',
                             help='Set username',
@@ -29,6 +30,7 @@ class Configure(Command):
         return parser
 
     def createFile(self, parsed_args, path):
+        """Create file of credentials."""
         data = {
             'deploy': {
                 'host': parsed_args.hosturl,
@@ -41,6 +43,7 @@ class Configure(Command):
             yaml.dump(data, outputfile, default_flow_style=False, allow_unicode=True)   # noqa: E501
 
     def take_action(self, parsed_args):
+        """take_action."""
         try:
             path = os.path.expanduser('~')
             if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):

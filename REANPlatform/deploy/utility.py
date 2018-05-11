@@ -1,4 +1,4 @@
-"Utility class contains all common method requried for CLI"
+"""Utility class contains all common method requried for CLI."""
 import os
 from deploy.utilityconstants import Constants
 import yaml
@@ -7,11 +7,11 @@ import base64
 
 
 class Utility(object):
-    "Utility class contains all common method requried for CLI"
+    """Utility class contains all common method requried for CLI."""
 
     @staticmethod
     def getUserNameAndPassword():
-        "gets configured username and password"
+        """Get configured username and password."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):
             os.chdir(path + '/.' + Constants.REAN_PLATFORM)
@@ -28,7 +28,7 @@ class Utility(object):
 
     @staticmethod
     def getHost():
-        "gets configured username and password"
+        """Get configured username and password."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):
             os.chdir(path + '/.' + Constants.REAN_PLATFORM)
@@ -41,14 +41,14 @@ class Utility(object):
 
     @staticmethod
     def encryptData(val):
-        "Encrypts credentials"
+        """Encrypts credentials."""
         cipher = XOR.new(Constants.REAN_SECRET_KEY)
         encoded = base64.b64encode(cipher.encrypt(val))
         return encoded
 
     @staticmethod
     def decryptData(encoded):
-        "Decrypts credentials"
+        """Decrypts credentials."""
         cipher = XOR.new(Constants.REAN_SECRET_KEY)
         decoded = cipher.decrypt(base64.b64decode(encoded))
         return decoded
