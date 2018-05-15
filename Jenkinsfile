@@ -17,7 +17,6 @@ pipeline {
                     sh '''
                           #!/bin/bash
                           set -e
-                          pycodestyle conftest.py
                           pycodestyle REANPlatform/deploy/
                          
                     '''
@@ -33,7 +32,6 @@ pipeline {
                     sh '''
                           #!/bin/bash
                           set -e
-                          pydocstyle conftest.py
                           pydocstyle REANPlatform/deploy/
                     '''
                   }
