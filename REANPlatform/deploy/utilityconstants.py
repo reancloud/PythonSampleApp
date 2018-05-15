@@ -4,7 +4,7 @@
 class Constants(object):
     """Contains constats required for Utility."""
 
-    REAN_PLATFORM = 'reanplatform'
+    PLATFORM_CONFIG_FILE_NAME = 'reanplatform'
     REAN_SECRET_KEY = 'ReanPlatform@24'
 
     def __setattr__(self, attr, value):

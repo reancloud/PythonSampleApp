@@ -10,19 +10,19 @@ import json
 
 
 class SaveProvider(Command):
-    """SaveProvider."""
+    """Save the provider."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SaveProvider, self).get_parser(prog_name)
-        parser.add_argument('--name', '-n', help='Set name for Provider',
+        parser.add_argument('--name', '-n', help='Provider name',
                             required=True)
         parser.add_argument('--type', '-t', help='Type of provider',
                             required=True)
-        parser.add_argument('--input_json_file', '-f',
-                            help='Json File with applicable key-value pair \
+        parser.add_argument('--provider_details', '-f',
+                            help='Json file with applicable key-value pair \
                             for provider type', required=True)
         return parser
 
@@ -37,10 +37,11 @@ class SaveProvider(Command):
         api_instance.api_client.host = Constants.HOST_PATH
 
         try:
-            file_path = parsed_args.input_json_file
+            file_path = parsed_args.provider_details
 
             if not os.path.isfile(file_path):
-                raise RuntimeError('No such file or directory')
+                raise RuntimeError('Provider details file %s \
+                                does not exists' % file_path)
 
             # Parse parameters
             with open(file_path, "r") as handle:
@@ -53,7 +54,6 @@ class SaveProvider(Command):
                             json=jsondata
                         )
             api_response = api_instance.save_provider(provider)
-
-            pprint(api_response)
+            pprint("Provider is created: %s" % (parsed_args.name))
         except ApiException as e:
             self.log.error(e)

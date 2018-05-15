@@ -1,4 +1,4 @@
-"""Configure REAN-Deploy CLI."""
+"""Configure platform."""
 import os
 import io
 import getpass
@@ -11,7 +11,7 @@ from deploy.utility import Utility
 
 
 class Configure(Command):
-    """Configure REAN-Deploy CLI."""
+    """Configure platform."""
 
     log = logging.getLogger(__name__)
 
@@ -19,12 +19,12 @@ class Configure(Command):
         """get_parser."""
         parser = super(Configure, self).get_parser(prog_name)
         parser.add_argument('--username', '-u',
-                            help='Set username',
+                            help='Platform username',
                             required=True
                             )
-        parser.add_argument('--hosturl',
+        parser.add_argument('--platform_url',
                             '-url',
-                            help='host url',
+                            help='Platform host url',
                             required=True
                             )
         return parser
@@ -33,23 +33,24 @@ class Configure(Command):
         """Create file of credentials."""
         data = {
             'deploy': {
-                'host': parsed_args.hosturl,
+                'host': parsed_args.platform_url,
                 'username': Utility.encryptData(parsed_args.username),
                 'password': Utility.encryptData(getpass.getpass())
             }
         }
-        os.chdir(path + '/.' + Constants.REAN_PLATFORM)
-        with io.open(Constants.REAN_PLATFORM + '.yaml', 'w', encoding='utf8') as outputfile:  # noqa: E501
+        os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
+        with io.open(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml', 'w', encoding='utf8') as outputfile:  # noqa: E501
             yaml.dump(data, outputfile, default_flow_style=False, allow_unicode=True)   # noqa: E501
 
     def take_action(self, parsed_args):
         """take_action."""
         try:
             path = os.path.expanduser('~')
-            if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):
+            if os.path.exists(path + '/.\
+                            ' + Constants.PLATFORM_CONFIG_FILE_NAME):
                 self.createFile(parsed_args, path)
             else:
-                os.makedirs(path + '/.' + Constants.REAN_PLATFORM)
+                os.makedirs(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
                 self.createFile(parsed_args, path)
 
         except ApiException as e:

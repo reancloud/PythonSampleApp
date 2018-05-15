@@ -13,10 +13,11 @@ class Utility(object):
     def getUserNameAndPassword():
         """Get configured username and password."""
         path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):
-            os.chdir(path + '/.' + Constants.REAN_PLATFORM)
-            if os.path.isfile(Constants.REAN_PLATFORM + '.yaml'):
-                with open(Constants.REAN_PLATFORM + ".yaml", 'r') as stream:
+        if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
+            os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
+            if os.path.isfile(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                with open(Constants.PLATFORM_CONFIG_FILE_NAME + "\
+                        .yaml", 'r') as stream:
                     data_loaded = yaml.load(stream)
 
                 username = Utility.decryptData(
@@ -30,10 +31,11 @@ class Utility(object):
     def getHost():
         """Get configured username and password."""
         path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + Constants.REAN_PLATFORM):
-            os.chdir(path + '/.' + Constants.REAN_PLATFORM)
-            if os.path.isfile(Constants.REAN_PLATFORM + '.yaml'):
-                with open(Constants.REAN_PLATFORM + ".yaml", 'r') as stream:
+        if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
+            os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
+            if os.path.isfile(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                with open(Constants.PLATFORM_CONFIG_FILE_NAME + "\
+                        .yaml", 'r') as stream:
                     data_loaded = yaml.load(stream)
 
                 host = data_loaded['deploy']['host']

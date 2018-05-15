@@ -15,9 +15,9 @@ class DeleteProvider(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DeleteProvider, self).get_parser(prog_name)
-        parser.add_argument('--name', '-n', help='Set name to \
-                            check existance', required=False)
-        parser.add_argument('--id', '-id', help='provider id', required=False)
+        parser.add_argument('--name', '-n', help='Provider name\
+                            ', required=False)
+        parser.add_argument('--id', '-id', help='Provider id', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -44,12 +44,12 @@ class DeleteProvider(Command):
                 prov_id = data.id
 
             if(prov_id is None):
-                raise RuntimeError('Provider \'name\' or \'id\' does not exit')
+                raise RuntimeError('Provider with id does not exist' % prov_id)
 
             api_response = api_instance.delete_provider(prov_id)
 
             if api_response is None:
                 pprint("Provider deleted successfully")
-        except ApiException as e:
+        except Exception as e:
             print("Exception when calling ProviderApi->\
             delete_provider: %s\n" % e)

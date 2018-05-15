@@ -9,7 +9,7 @@ class Constants(object):
     HOST_PATH = Utility.getHost()
     AUTHORIZATION = "Authorization"
     CREDENTIALS = Utility.getUserNameAndPassword()
-    REAN_PLATFORM = 'reanplatform'
+    PLATFORM_CONFIG_FILE_NAME = 'reanplatform'
 
     def __setattr__(self, attr, value):
         """__setattr__."""

@@ -8,7 +8,7 @@ from deploy.constants import Constants
 
 
 class ListProvider(Command):
-    """List of providers."""
+    """List of providers for current user."""
 
     log = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class ListProvider(Command):
         return parser
 
     def take_action(self, parsed_args):
-        """take_action ListProvider."""
+        """take_action of ListProvider."""
         try:
             # create an instance of the API class
             api_instance = deploy_sdk_client.ProviderApi()
@@ -30,6 +30,7 @@ class ListProvider(Command):
 
             # Get all providers for user
             api_response = api_instance.get_all_providers()
+            pprint("Provider list ::")
             pprint(api_response)
         except ApiException as e:
             print("Exception when calling ProviderApi->\
