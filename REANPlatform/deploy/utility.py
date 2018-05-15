@@ -16,8 +16,7 @@ class Utility(object):
         if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
             os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
             if os.path.isfile(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(Constants.PLATFORM_CONFIG_FILE_NAME + "\
-                        .yaml", 'r') as stream:
+                with open(Constants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
 
                 username = Utility.decryptData(
@@ -34,8 +33,7 @@ class Utility(object):
         if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
             os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
             if os.path.isfile(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(Constants.PLATFORM_CONFIG_FILE_NAME + "\
-                        .yaml", 'r') as stream:
+                with open(Constants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
 
                 host = data_loaded['deploy']['host']

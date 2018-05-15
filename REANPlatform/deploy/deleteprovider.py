@@ -5,6 +5,7 @@ from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from deploy.constants import Constants
+from deploy import set_provider_header
 
 
 class DeleteProvider(Command):
@@ -22,13 +23,7 @@ class DeleteProvider(Command):
 
     def take_action(self, parsed_args):
         """Delete provider action."""
-        api_instance = deploy_sdk_client.ProviderApi()
-
-        api_instance.api_client.set_default_header(
-            Constants.AUTHORIZATION,
-            Constants.CREDENTIALS
-        )
-        api_instance.api_client.host = Constants.HOST_PATH
+        api_instance = set_provider_header.set_header()
         try:
             if(parsed_args.id is None and parsed_args.name is None):
                 raise RuntimeError('Either \'name\' or \

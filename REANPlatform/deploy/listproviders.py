@@ -5,6 +5,7 @@ from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from deploy.constants import Constants
+from deploy import set_provider_header
 
 
 class ListProvider(Command):
@@ -21,12 +22,7 @@ class ListProvider(Command):
         """take_action of ListProvider."""
         try:
             # create an instance of the API class
-            api_instance = deploy_sdk_client.ProviderApi()
-            api_instance.api_client.set_default_header(
-                Constants.AUTHORIZATION,
-                Constants.CREDENTIALS
-            )
-            api_instance.api_client.host = Constants.HOST_PATH
+            api_instance = set_provider_header.set_header()
 
             # Get all providers for user
             api_response = api_instance.get_all_providers()
