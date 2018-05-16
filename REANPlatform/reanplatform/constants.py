@@ -1,6 +1,6 @@
 """Contains constats required for commands."""
 import os
-from deploy.utility import Utility
+from reanplatform.utility import Utility
 
 
 class Constants(object):

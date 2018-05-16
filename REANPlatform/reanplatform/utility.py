@@ -1,6 +1,6 @@
 """Utility class contains all common method requried for CLI."""
 import os
-from deploy.utilityconstants import Constants
+from reanplatform.utilityconstants import Constants
 import yaml
 from Crypto.Cipher import XOR
 import base64

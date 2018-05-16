@@ -4,7 +4,6 @@ from pprint import pprint
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from deploy.constants import Constants
 import json
 from deploy import set_provider_header
 from prettytable import PrettyTable

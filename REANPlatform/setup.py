@@ -42,10 +42,18 @@ setup(
 
     entry_points={
         'console_scripts': [
-    #        'rean-test = test.main:main',
+            'rean-platform = reanplatform.main:main',
             'rean-deploy = deploy.main:main'
-    #        'rean-mnc = mnc.main:main'
         ],
+         'rean.platform': [
+             'rean-configure = rean_platform_conf.configure:Configure',
+        ],
+        'rean.deploy': [
+            'create-provider = deploy.createprovider:SaveProvider',
+            'delete-provider = deploy.deleteprovider:DeleteProvider',
+            'list-provider = deploy.listproviders:ListProvider'
+        ],
+
     #    'rean.mnc': [
     #        'configure = mnc.configure:Configure',
     #        'rule = mnc.rule:Rule',
@@ -62,11 +70,11 @@ setup(
     #        'get-job-status = test.getjobstatus:GetJobStatus',
     #        'getproperties = test.testnowutility:GetProperties',
     #    ],
-        'rean.deploy': [
-            'deploy-configure = deploy.configure:Configure',
-            'create-provider = deploy.createprovider:SaveProvider',
-            'delete-provider = deploy.deleteprovider:DeleteProvider',
-            'list-provider = deploy.listproviders:ListProvider',
+    #    'rean.deploy': [
+    #        'deploy-configure = deploy.configure:Configure',
+    #        'create-provider = deploy.createprovider:SaveProvider',
+    #        'delete-provider = deploy.deleteprovider:DeleteProvider',
+    #        'list-provider = deploy.listproviders:ListProvider',
     #        'create-environment = deploy.createenvironment:CreateEnv',        
     #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
     #        'list-connections = deploy.listconnections:ListConnections',
@@ -85,7 +93,7 @@ setup(
     #        'import-environment = deploy.importenvironment:ImportEnvironment',
     #        'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
     #        'hooked = deploy.hook:Hooked',
-        ],
+    #    ],
     #    'rean.test.hooked': [
     #        'sample-hook = deploy.hook:Hook',
     #   ],

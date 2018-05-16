@@ -1,7 +1,8 @@
 """Provider set_header module."""
 import deploy_sdk_client
+import reanplatform
+from reanplatform.constants import Constants
 from deploy_sdk_client.rest import ApiException
-from deploy.constants import Constants
 
 
 def set_header():

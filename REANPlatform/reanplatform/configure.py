@@ -6,8 +6,8 @@ import logging
 import yaml
 from deploy_sdk_client.rest import ApiException
 from cliff.command import Command
-from deploy.constants import Constants
-from deploy.utility import Utility
+from reanplatform.constants import Constants
+from reanplatform.utility import Utility
 
 
 class Configure(Command):
