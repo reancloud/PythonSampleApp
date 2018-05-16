@@ -1,4 +1,4 @@
-"""Rean-Deploy main class."""
+"""Rean-Platform main class."""
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
