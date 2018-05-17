@@ -46,7 +46,10 @@ setup(
             'rean-deploy = deploy.main:main'
         ],
          'rean.platform': [
-             'rean-configure = rean_platform_conf.configure:Configure',
+             'rean-configure = reanplatform.configure:Configure',
+             'rean-deploy = reanplatform.reanhelp:Helpdeploy',
+             'rean-test =reanplatform.reanhelp:Helptest',
+             'rean-mnc = reanplatform.reanhelp:Helpmnc'
         ],
         'rean.deploy': [
             'create-provider = deploy.createprovider:SaveProvider',

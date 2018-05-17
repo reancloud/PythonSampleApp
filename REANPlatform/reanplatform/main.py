@@ -13,7 +13,7 @@ class ReanPlatform(App):
             description='CLI for REAN Platform.',
             version='0.1',
             command_manager=CommandManager('rean.platform'),
-            deferred_help=True,
+            deferred_help=False,
             )
 
     def initialize_app(self, argv):
