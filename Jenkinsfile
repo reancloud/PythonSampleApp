@@ -18,6 +18,7 @@ pipeline {
                           #!/bin/bash
                           set -e
                           pycodestyle REANPlatform/deploy/
+                          pycodestyle REANPlatform/reanplatform/
                          
                     '''
                   }
@@ -33,6 +34,7 @@ pipeline {
                           #!/bin/bash
                           set -e
                           pydocstyle REANPlatform/deploy/
+                          pydocstyle REANPlatform/reanplatform/
                     '''
                   }
                   catch (Exception e) {
