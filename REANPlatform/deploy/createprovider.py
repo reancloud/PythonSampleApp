@@ -47,6 +47,6 @@ class SaveProvider(Command):
                             json=jsondata
                         )
             api_response = api_instance.save_provider(provider)
-            pprint("Provider is created: %s" % (parsed_args.name))
+            pprint("Provider created successfully : %s" % (parsed_args.name))
         except ApiException as e:
             self.log.error(e)

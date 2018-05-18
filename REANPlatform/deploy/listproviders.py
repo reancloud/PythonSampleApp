@@ -10,7 +10,7 @@ from prettytable import PrettyTable
 
 
 class ListProvider(Command):
-    """List of providers for current user."""
+    """List of providers."""
 
     log = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class ListProvider(Command):
                                 api_response,
                                 default=lambda o: o.__dict__,
                                 sort_keys=True, indent=4
-                                )
+                                ).replace("\"_", '"')
                     )
         except ApiException as e:
             print("Exception when calling ProviderApi->\
