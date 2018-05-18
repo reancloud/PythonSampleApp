@@ -10,7 +10,7 @@ from prettytable import PrettyTable
 
 
 class ListProvider(Command):
-    """List of providers."""
+    """List providers."""
 
     log = logging.getLogger(__name__)
 

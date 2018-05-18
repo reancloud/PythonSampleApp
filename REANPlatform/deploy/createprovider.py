@@ -10,7 +10,7 @@ import json
 
 
 class SaveProvider(Command):
-    """Save the provider."""
+    """Save provider."""
 
     log = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class SaveProvider(Command):
         parser = super(SaveProvider, self).get_parser(prog_name)
         parser.add_argument('--name', '-n', help='Provider name',
                             required=True)
-        parser.add_argument('--type', '-t', help='Type of provider',
+        parser.add_argument('--type', '-t', help='Provider type',
                             required=True)
         parser.add_argument('--provider_details', '-f',
                             help='Json file with applicable key-value pair \
