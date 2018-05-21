@@ -4,7 +4,7 @@ A REANPlatform CLI
 > This is the REANPlatform CLI.
 
 Requirements
-1. python version <= 3
+1. python version >= 3
 2. git
 3. python-pip
 
