@@ -9,8 +9,8 @@ Requirements
 2. git
 3. python-pip
 
->Usages
-===================
+## >Usages
+
 Work-in-progress
 
     1. rean-platform rean-configure --username <USERNAME> --platform_url <PLATFORM_URL>
@@ -19,8 +19,7 @@ Work-in-progress
         b. delete-provider
         c. list-provider
 
-> Development Steps
-=======================
+## > Development Steps
 
 ```
 sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
@@ -30,8 +29,7 @@ xz-utils tk-dev
  easy_install REANPlatform-0.1-py3.5.egg
  ```
 
-> Test
-=====
+##> Test
 For help
 
 ```
