@@ -12,12 +12,9 @@ Requirements
 
 Work-in-progress
 
-    1. rean-platform rean-configure --username <USERNAME> --platform_url <PLATFORM_URL>
-    2. rean-deploy 
-        a. create-provider
-        b. delete-provider
-        c. list-provider
-
+    1. rean-platforml --help
+    2. rean-deploy --help
+  
 ## Development Steps
 
 ```
@@ -29,18 +26,17 @@ xz-utils tk-dev
  ```
 
 ## Test
+
 For help
 
 ```
-{
-  "e": "rean-platform --help"
-}
-```
+ rean-platform --help
+ rean-platform rean-configure --username <USERNAME> --platform_url <PLATFORM_URL>
 
-To show provider list
+ rean-deploy provider list -f <table>/<json>
+ rean-deploy delete-provider --name <NAME> --id <ID>
+ rean-deploy create-provider --name <NAME> --type <TYPE> --provider_details <PROVIDER_DETAILS>
 
-```
-{
-  "e": "rean-deploy provider list"
-}
+ rean-deploy list-connections -f <table>/<json>
+ rean-deploy list-connections  --type <TYPE> --name <NAME> --user <USER> --password <PASSWORD> --securekeypath <SECUREKEYPATH>
 ```
