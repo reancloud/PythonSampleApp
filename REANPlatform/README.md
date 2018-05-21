@@ -4,12 +4,11 @@ A REANPlatform CLI
 > This is the REANPlatform CLI.
 
 Requirements
-
 1. python version <= 3
 2. git
 3. python-pip
 
-## >Usages
+## Usages
 
 Work-in-progress
 
@@ -19,7 +18,7 @@ Work-in-progress
         b. delete-provider
         c. list-provider
 
-## > Development Steps
+## Development Steps
 
 ```
 sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
@@ -29,7 +28,7 @@ xz-utils tk-dev
  easy_install REANPlatform-0.1-py3.5.egg
  ```
 
-##> Test
+## Test
 For help
 
 ```
