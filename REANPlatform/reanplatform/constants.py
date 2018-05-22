@@ -6,7 +6,7 @@ from reanplatform.utility import Utility
 class Constants(object):
     """Contains constats required for CLI."""
 
-    HOST_PATH = Utility.getHost()
+    PLATFORM_URL = Utility.getPlatformUrl()
     AUTHORIZATION = "Authorization"
     CREDENTIALS = Utility.getUserNameAndPassword()
     PLATFORM_CONFIG_FILE_NAME = 'reanplatform'

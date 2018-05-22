@@ -4,6 +4,7 @@ from reanplatform.utilityconstants import Constants
 import yaml
 from Crypto.Cipher import XOR
 import base64
+import json
 
 
 class Utility(object):
@@ -27,7 +28,7 @@ class Utility(object):
                 return credentials
 
     @staticmethod
-    def getHost():
+    def getPlatformUrl():
         """Get configured username and password."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
@@ -52,3 +53,9 @@ class Utility(object):
         cipher = XOR.new(Constants.REAN_SECRET_KEY)
         decoded = cipher.decrypt(base64.b64decode(encoded))
         return decoded
+
+    def print_exception(e):
+        """Print exception method."""
+        print("Exception message: ")
+        err = json.loads(e.body)
+        print("%s %s" % (err['message'], err['status']))

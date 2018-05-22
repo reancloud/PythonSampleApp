@@ -5,8 +5,9 @@ from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 import json
-from deploy import set_provider_header
+from reanplatform.set_header import set_header_parameter
 from prettytable import PrettyTable
+from reanplatform.utility import Utility
 
 
 class ListProvider(Command):
@@ -18,7 +19,7 @@ class ListProvider(Command):
         """Parser of ListProviders."""
         parser = super(ListProvider, self).get_parser(prog_name)
         parser.add_argument('--formate', '-f',
-                            help='List formate eg. json Or table',
+                            help='Allowed values are: [ json, table ]',
                             type=str, default='json',
                             nargs='?',
                             required=False)
@@ -28,20 +29,20 @@ class ListProvider(Command):
         """take_action of ListProvider."""
         try:
             # create an instance of the API class
-            api_instance = set_provider_header.set_header()
+            provider_api_instance = deploy_sdk_client.ProviderApi()
+            api_instance = set_header_parameter(provider_api_instance)
 
             # Get all providers for user
             api_response = api_instance.get_all_providers()
             if parsed_args.formate == 'table':
-                table = PrettyTable(['Name', 'Id', 'Type', 'Created by'])
+                table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for provider in api_response:
                     table.add_row(
                                 [
                                     provider.name,
                                     provider.id,
-                                    provider.type,
-                                    provider.created_by
+                                    provider.type
                                 ]
                             )
                 print("Provider list ::\n%s" % (table))
@@ -55,5 +56,4 @@ class ListProvider(Command):
                                 ).replace("\"_", '"')
                     )
         except ApiException as e:
-            print("Exception when calling ProviderApi->\
-                    get_all_providers: %s\n" % e)
+            Utility.print_exception(e)

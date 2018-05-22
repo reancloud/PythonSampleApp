@@ -4,9 +4,10 @@ from pprint import pprint
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from deploy import set_provider_header
+from reanplatform.set_header import set_header_parameter
 import os
 import json
+from reanplatform.utility import Utility
 
 
 class SaveProvider(Command):
@@ -28,7 +29,8 @@ class SaveProvider(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        api_instance = set_provider_header.set_header()
+        provider_api_instance = deploy_sdk_client.ProviderApi()
+        api_instance = set_header_parameter(provider_api_instance)
         try:
             file_path = parsed_args.provider_details
 
@@ -47,6 +49,14 @@ class SaveProvider(Command):
                             json=jsondata
                         )
             api_response = api_instance.save_provider(provider)
-            pprint("Provider created successfully : %s" % (parsed_args.name))
+
+            # Get all providers for user
+            list_api_response = api_instance.get_all_providers()
+            for provider in list_api_response:
+                if provider.name == parsed_args.name:
+                    id = provider.id
+                    break
+            print("Provider created successfully \
+                    Name: %s,  Id: %i" % (parsed_args.name, id))
         except ApiException as e:
-            self.log.error(e)
+            Utility.print_exception(e)
