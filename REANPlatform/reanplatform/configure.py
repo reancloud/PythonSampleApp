@@ -27,15 +27,25 @@ class Configure(Command):
                             help='Platform URL',
                             required=True
                             )
+        parser.add_argument('--password',
+                            '-p',
+                            help='Platform password',
+                            required=False
+                            )
         return parser
 
     def createFile(self, parsed_args, path):
         """Create file of credentials."""
+        if parsed_args.password:
+            password = parsed_args.password
+        else:
+            password = getpass.getpass()
+
         data = {
             'deploy': {
                 'host': parsed_args.platform_url,
                 'username': Utility.encryptData(parsed_args.username),
-                'password': Utility.encryptData(getpass.getpass())
+                'password': Utility.encryptData(password)
             }
         }
         os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
