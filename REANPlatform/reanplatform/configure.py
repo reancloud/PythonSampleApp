@@ -24,7 +24,7 @@ class Configure(Command):
                             )
         parser.add_argument('--platform_url',
                             '-url',
-                            help='Platform host url',
+                            help='Platform URL',
                             required=True
                             )
         return parser
