@@ -20,7 +20,7 @@ class SaveConnection(Command):
         parser = super(SaveConnection, self).get_parser(prog_name)
         parser.add_argument(
                             '--type',
-                            '-t', help='Connection type eg. SSH ',
+                            '-t', help='Allowed values are: [ SSH, WinRM ]',
                             required=False
                         )
         parser.add_argument(
