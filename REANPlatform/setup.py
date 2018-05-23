@@ -49,7 +49,7 @@ setup(
             'rean-deploy = deploy.main:main'
         ],
          'rean.platform': [
-             'rean-configure = reanplatform.configure:Configure',
+             'configure = reanplatform.configure:Configure',
              'rean-deploy = reanplatform.reanhelp:Helpdeploy',
              'rean-test =reanplatform.reanhelp:Helptest',
              'rean-mnc = reanplatform.reanhelp:Helpmnc'
