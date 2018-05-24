@@ -31,7 +31,6 @@ class ListConnections(Command):
             api_instance = set_header_parameter(conn_api_instance)
             api_response = api_instance.get_all_vm_connections()
 
- 
             if parsed_args.format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
@@ -53,8 +52,8 @@ class ListConnections(Command):
                                 ).replace("\"_", '"')
                     )
             else:
-                raise RuntimeError("Please specify correct fromate, Allowed values are: [json, table]")
-
+                raise RuntimeError("Please specify correct fromate, Allowed \
+                        values are: [json, table]")
 
         except ApiException as e:
             Utility.print_exception(e)

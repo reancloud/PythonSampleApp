@@ -18,8 +18,8 @@ class ListProvider(Command):
     def get_parser(self, prog_name):
         """Parser of ListProviders."""
         parser = super(ListProvider, self).get_parser(prog_name)
-        parser.add_argument('--formate', '-f',
-                            help='Allowed values are: [ json, table ]',
+        parser.add_argument('--format', '-f',
+                            help='Allowed values are: [json, table]',
                             type=str, default='json',
                             nargs='?',
                             required=False)
@@ -34,7 +34,7 @@ class ListProvider(Command):
 
             # Get all providers for user
             api_response = api_instance.get_all_providers()
-            if parsed_args.formate == 'table':
+            if parsed_args.format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for provider in api_response:

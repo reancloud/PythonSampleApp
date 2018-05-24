@@ -33,11 +33,12 @@ class DeleteConnection(Command):
         api_instance = set_header_parameter(conn_api_instance)
         try:
             con_id = parsed_args.id
-            all_vms = api_instance.get_all_vm_connections()
-            for vm_conn in all_vms:
-                if(vm_conn.name == parsed_args.name):
-                    con_id = vm_conn.id
-                    break
+            if parsed_args.name and parsed_args.id is None:
+                all_vms = api_instance.get_all_vm_connections()
+                for vm_conn in all_vms:
+                    if(vm_conn.name == parsed_args.name):
+                        con_id = vm_conn.id
+                        break
 
             if(con_id is None):
                 raise RuntimeError("Exception : connection does not exit", parsed_args.name)    # noqa: E501
