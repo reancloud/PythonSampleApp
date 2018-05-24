@@ -58,7 +58,7 @@ setup(
             'list-provider = deploy.listproviders:ListProvider',
             'create-provider = deploy.createprovider:SaveProvider',
             'delete-provider = deploy.deleteprovider:DeleteProvider',
-            'list-connections = deploy.listconnections:ListConnections',
+            'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection'
         ],
