@@ -18,7 +18,7 @@ class ListConnections(Command):
         """get_parser."""
         parser = super(ListConnections, self).get_parser(prog_name)
         parser.add_argument('--formate', '-f',
-                            help='Allowed values are: [ json, table ]',
+                            help='Allowed values are: [json, table]',
                             type=str, default='json',
                             nargs='?',
                             required=False)
