@@ -71,7 +71,8 @@ class SaveConnection(Command):
                         )
         parser.add_argument(
                             '--bastionsecurekeypath',
-                            '-b_key', help='Bastion connection secure key path',
+                            '-b_key', help='Bastion connection secure \
+                            key path',
                             required=False
                         )
         return parser
@@ -96,7 +97,7 @@ class SaveConnection(Command):
                 bastion_data = {
                         'host': parsed_args.bastionhost,
                         'password': parsed_args.bastionpassword,
-                        'secure_key':'helloo',
+                        'secure_key': self.get_key(parsed_args),
                         'port':  parsed_args.bastionport,
                         'user': parsed_args.bastionuser
                     }
