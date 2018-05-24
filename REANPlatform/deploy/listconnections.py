@@ -17,7 +17,7 @@ class ListConnections(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ListConnections, self).get_parser(prog_name)
-        parser.add_argument('--formate', '-f',
+        parser.add_argument('--format', '-f',
                             help='Allowed values are: [json, table]',
                             type=str, default='json',
                             nargs='?',
@@ -31,20 +31,20 @@ class ListConnections(Command):
             api_instance = set_header_parameter(conn_api_instance)
             api_response = api_instance.get_all_vm_connections()
 
-            if parsed_args.formate == 'table':
-                table = PrettyTable(['Name', 'Id', 'Type', 'User'])
+ 
+            if parsed_args.format == 'table':
+                table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for connection in api_response:
                     table.add_row(
                                 [
                                     connection.name,
                                     connection.id,
-                                    connection.type,
-                                    connection.user
+                                    connection.type
                                 ]
-                            )
+                         )
                 print("Connection list \n%s" % (table))
-            else:
+            elif parsed_args.format == 'json' or parsed_args.format == '':
                 print(
                         json.dumps(
                                 api_response,
@@ -52,6 +52,9 @@ class ListConnections(Command):
                                 sort_keys=True, indent=4
                                 ).replace("\"_", '"')
                     )
+            else:
+                raise RuntimeError("Please specify correct fromate, Allowed values are: [json, table]")
+
 
         except ApiException as e:
             Utility.print_exception(e)
