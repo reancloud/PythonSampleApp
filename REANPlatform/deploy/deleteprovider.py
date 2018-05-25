@@ -26,4 +26,6 @@ class DeleteProvider(Command):
             api_response = api_instance.delete_provider(parsed_args.id)
             print("Provider deleted successfully")
         except Exception as e:
+            print("======================")
+            print(e)
             Utility.print_exception(e)
