@@ -4,7 +4,7 @@ A REANPlatform CLI
 > This is the REANPlatform CLI.
 
 Requirements
-1. python version >= 3
+1. python version >= 3 (Update python version https://github.com/pyenv/pyenv)
 2. git
 3. python-pip
 
@@ -31,7 +31,7 @@ For help
 
 ```
  rean-platform --help
- rean-platform rean-configure --username <USERNAME> --platform_url <PLATFORM_URL>
+ rean-platform configure --username <USERNAME> --platform_url <PLATFORM_URL>
 
  rean-deploy provider list -f <table>/<json>
  rean-deploy delete-provider --name <NAME> --id <ID>

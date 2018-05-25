@@ -1,23 +1,22 @@
-"""List provider module."""
+"""List connections module."""
 import logging
-from pprint import pprint
 from cliff.command import Command
 import deploy_sdk_client
-from deploy_sdk_client.rest import ApiException
 import json
+from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from prettytable import PrettyTable
 from reanplatform.utility import Utility
 
 
-class ListProvider(Command):
-    """List providers."""
+class ListConnections(Command):
+    """List connections."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
-        """Parser of ListProviders."""
-        parser = super(ListProvider, self).get_parser(prog_name)
+        """get_parser."""
+        parser = super(ListConnections, self).get_parser(prog_name)
         parser.add_argument('--format', '-f',
                             help='Allowed values are: [json, table]',
                             type=str, default='json',
@@ -26,28 +25,25 @@ class ListProvider(Command):
         return parser
 
     def take_action(self, parsed_args):
-        """take_action of ListProvider."""
+        """take_action."""
         try:
-            # create an instance of the API class
-            provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance)
+            conn_api_instance = deploy_sdk_client.ConnectionApi()
+            api_instance = set_header_parameter(conn_api_instance)
+            api_response = api_instance.get_all_vm_connections()
 
-            # Get all providers for user
-            api_response = api_instance.get_all_providers()
             if parsed_args.format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
-                for provider in api_response:
+                for connection in api_response:
                     table.add_row(
                                 [
-                                    provider.name,
-                                    provider.id,
-                                    provider.type
+                                    connection.name,
+                                    connection.id,
+                                    connection.type
                                 ]
-                            )
-                print("Provider list ::\n%s" % (table))
-
-            else:
+                         )
+                print("Connection list \n%s" % (table))
+            elif parsed_args.format == 'json' or parsed_args.format == '':
                 print(
                         json.dumps(
                                 api_response,
@@ -55,5 +51,9 @@ class ListProvider(Command):
                                 sort_keys=True, indent=4
                                 ).replace("\"_", '"')
                     )
+            else:
+                raise RuntimeError("Please specify correct fromate, Allowed \
+                        values are: [json, table]")
+
         except ApiException as e:
             Utility.print_exception(e)

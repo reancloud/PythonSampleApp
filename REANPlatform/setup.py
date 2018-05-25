@@ -17,13 +17,15 @@ setup(
     version=VERSION,
     description='CLI for REAN Platform',
     long_description=long_description,
-    url='https://www.reancloud.com/',
-    download_url='https://www.reancloud.com/',
+    url='https://github.com/reancloud/',
+    download_url='https://github.com/reancloud/deploy_sdk_client',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
                  'Programming Language :: Python',
                  'Programming Language :: Python :: 3',
                  'Programming Language :: Python :: 3.2',
+                 'Programming Language :: Python :: 3.5.1',
+                 'Programming Language :: Python :: 3.5.5',
                  'Programming Language :: Python :: 3.6',
                  'Intended Audience :: Developers',
                  'Environment :: Console',
@@ -34,8 +36,9 @@ setup(
     scripts=[],
 
     provides=[],
-    install_requires=['cliff', 'validators', 'boto3', 'deploy_sdk_client'],
-
+     
+    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
+   
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -46,15 +49,18 @@ setup(
             'rean-deploy = deploy.main:main'
         ],
          'rean.platform': [
-             'rean-configure = reanplatform.configure:Configure',
+             'configure = reanplatform.configure:Configure',
              'rean-deploy = reanplatform.reanhelp:Helpdeploy',
              'rean-test =reanplatform.reanhelp:Helptest',
              'rean-mnc = reanplatform.reanhelp:Helpmnc'
         ],
         'rean.deploy': [
+            'list-provider = deploy.listproviders:ListProvider',
             'create-provider = deploy.createprovider:SaveProvider',
             'delete-provider = deploy.deleteprovider:DeleteProvider',
-            'list-provider = deploy.listproviders:ListProvider'
+            'list-connection = deploy.listconnections:ListConnections',
+            'create-connection = deploy.createconnection:SaveConnection',
+            'delete-connection = deploy.deleteconnection:DeleteConnection'
         ],
 
     #    'rean.mnc': [
