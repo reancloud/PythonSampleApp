@@ -63,7 +63,8 @@ setup(
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'list-environment = deploy.listenvironments:ListEnvironments',
             # 'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
-            'deploy-environment = deploy.depolyenvironment:DepolyEnvironment'
+            'deploy-environment = deploy.depolyenvironment:DepolyEnvironment',
+            'import-blueprint = deploy.importblueprint:ImportBlueprint'
         ],
     },
 

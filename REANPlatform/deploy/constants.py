@@ -1,11 +1,11 @@
 "Contains constats required for commands"
 import os
-from deploy.utility import Utility
+from reanplatform.utility import Utility
 
 class Constants(object):
     "Contains constats required for CLI"
 
-    HOST_PATH = Utility.getHost()
+    HOST_PATH = Utility.getPlatformUrl()
     AUTHORIZATION = "Authorization"
     CREDENTIALS = Utility.getUserNameAndPassword()
     REAN_PLATFORM = 'reanplatform'
@@ -14,4 +14,4 @@ class Constants(object):
         if hasattr(self, attr):
             raise Exception("Attempting to alter read-only value")
 
-self.__dict__[attr] = value
+        self.__dict__[attr] = value
