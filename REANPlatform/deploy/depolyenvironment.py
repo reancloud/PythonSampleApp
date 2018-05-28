@@ -25,6 +25,6 @@ class DepolyEnv(Command):
         try:
             body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id)
             api_response = api_instance.deploy(parsed_args.env_id, body=body)
-            print(api_response)
+            print("Environment successfully deployed")
         except ApiException as e:
             Utility.print_exception(e)
