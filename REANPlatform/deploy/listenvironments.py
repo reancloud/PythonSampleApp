@@ -56,7 +56,7 @@ class ListEnvironments(Command):
                                 ).replace("\"_", '"')
                     )
             else:
-                raise RuntimeError("Please specify correct formate, Allowed \
+                raise RuntimeError("Please specify correct format, Allowed \
                         values are: [json, table]")
         except ApiException as e:
             Utility.print_exception(e)
