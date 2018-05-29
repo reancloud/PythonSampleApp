@@ -27,7 +27,7 @@ class ListEnvironments(Command):
     def take_action(self, parsed_args):
         """take_action of ListEnvironment."""
         try:
-            # create an instance of the API class 
+            # Create an instance of the API class
             environment_api_instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(environment_api_instance)
 
@@ -56,7 +56,7 @@ class ListEnvironments(Command):
                                 ).replace("\"_", '"')
                     )
             else:
-                raise RuntimeError("Please specify correct fromate, Allowed \
+                raise RuntimeError("Please specify correct formate, Allowed \
                         values are: [json, table]")
         except ApiException as e:
             Utility.print_exception(e)

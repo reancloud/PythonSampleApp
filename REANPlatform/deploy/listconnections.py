@@ -52,7 +52,7 @@ class ListConnections(Command):
                                 ).replace("\"_", '"')
                     )
             else:
-                raise RuntimeError("Please specify correct fromate, Allowed \
+                raise RuntimeError("Please specify correct formate, Allowed \
                         values are: [json, table]")
 
         except ApiException as e:
