@@ -75,30 +75,22 @@ class Depoly(Command):
                 except ApiException as e:
                     Utility.print_exception(e)
 
-            elif parsed_args.env_id:
+            if parsed_args.env_id and parsed_args.name:
                 try:
-                    body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id)
-                    api_response = api_instance.deploy(parsed_args.env_id, body=body)
-                    pprint(api_response)
+                    body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id, env_name=parsed_args.name)
+                    api_response = api_instance.deploy(parsed_args.env_id)
                     print("Environment deploying by ID")
+                    pprint(api_response)
                 except ApiException as e:
                     Utility.print_exception(e)
             else:
-                print("You are going wrong")            
+                print("You are going wrong")
 
         elif parsed_args.cmd == 'blueprint':
-            if parsed_args.env_id:           
+            if parsed_args.env_id: 
                 try:
                     body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id)  # DeploymentConfiguration |  (optional)
                     api_response = api_instance.deploy_as_blueprint(parsed_args.env_id)
-                    pprint(api_response)
                     print("Blueprint deploying by ID")
                 except ApiException as e:
                     Utility.print_exception(e)
-
-        # Check the deployment status
-        # try:
-        #     status = api_instance.get_deploy_status(parsed_args.env_id, parsed_args.name)
-        #     pprint(status)
-        # except ApiException as e:
-        #     Utility.print_exception(e)
