@@ -75,9 +75,9 @@ class Depoly(Command):
                 except ApiException as e:
                     Utility.print_exception(e)
 
-            if parsed_args.env_id and parsed_args.name:
+            if parsed_args.env_id:
                 try:
-                    body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id, env_name=parsed_args.name)
+                    body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id)
                     api_response = api_instance.deploy(parsed_args.env_id)
                     print("Environment deploying by ID")
                     pprint(api_response)
