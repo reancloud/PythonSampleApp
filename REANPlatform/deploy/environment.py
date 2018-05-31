@@ -26,7 +26,7 @@ class Environment(Command):
                                                         )
         parser_destroy.add_argument('--env_id', '-id',
                                     help='Environment id',
-                                    required=True
+                                    required=False
                                     )
         parser_destroy.add_argument('action', nargs='?',
                                     type=str,
@@ -34,9 +34,14 @@ class Environment(Command):
                                     help='Destroy command\
                                     argument default action'
                                     )
-        # parser.add_argument('--env_name', '-name', help='Environment name', required=False)  # noqa: E501
-        # parser.add_argument('--version', '-v', help='Environment version', required=False) # noqa: E501
-
+        parser_destroy.add_argument('--env_name', '-name',
+                                    help='Environment name',
+                                    required=False
+                                    )
+        parser_destroy.add_argument('--env_version', '-env_v',
+                                    help='Environment version',
+                                    required=False
+                                    )
         return parser
 
     def take_action(self, parsed_args):
@@ -45,10 +50,12 @@ class Environment(Command):
         env_api_instance = set_header_parameter(api_instance)
 
         if parsed_args.action == 'destroy':
-            # DOTO : destroy by env name
             try:
                 environment_id = parsed_args.env_id
+                if environment_id is None:
+                    get_env_resp = env_api_instance.get_environment_by_version_and_name(env_name=parsed_args.env_name, env_version=parsed_args.env_version)  # noqa: E501
+                    environment_id = get_env_resp.config.env_id
                 response = env_api_instance.destroy(environment_id)
-                print("Environment status :", response.status)
+                print("Environment status %s: %s" % (response.environment.name, response.status))  # noqa: E501
             except ApiException as e:
                 Utility.print_exception(e)
