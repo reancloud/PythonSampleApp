@@ -3,7 +3,6 @@ import logging
 from pprint import pprint
 from cliff.command import Command
 import deploy_sdk_client
-from deploy.constants import Constants
 from deploy_sdk_client.rest import ApiException
 import json
 from reanplatform.set_header import set_header_parameter
