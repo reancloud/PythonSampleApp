@@ -32,7 +32,7 @@ class Environment(Command):
                                     type=str,
                                     default='destroy',
                                     help='Destroy command\
-                                    argument default action'
+                                    default action'
                                     )
         parser_destroy.add_argument('--env_name', '-name',
                                     help='Environment name',
