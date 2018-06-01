@@ -62,7 +62,6 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'deploy-env = deploy.deployenv:DepolyEnv',
-            'deploy-blueprint = deploy.deployblueprint:DeployBlueprint',
             'get-status = deploy.getdeploymentstatus:Status',
             're-deploy = deploy.redeployenvironment:ReDepoly' 
         ],
