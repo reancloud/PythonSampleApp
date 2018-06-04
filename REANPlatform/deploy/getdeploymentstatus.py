@@ -1,4 +1,4 @@
-"""Get Deployment Status."""
+"""Get Deployment Status By Env ID and Deployment Name."""
 import os
 from pprint import pprint
 import logging
@@ -23,8 +23,11 @@ class Status(Command):
             parser.add_argument('--env_id', '-id',
                                 help='Environment id',
                                 required=True)
-        except Exception:
-            print("Please provide required arguments")
+            parser.add_argument('--deployment_name', '-dname',
+                                help='Deployment Name',
+                                required=False)
+        except Exception as e:
+            Utility.print_exception(e)
 
         return parser
 
@@ -35,8 +38,17 @@ class Status(Command):
 
         # Check the deployment status
         try:
-            api_response = api_instance.get_deploy_status(parsed_args.env_id)
-            pprint("Deployment status is " + api_response.status)
+            if parsed_args.deployment_name:
+                api_response = api_instance.get_deploy_status_0(
+                    parsed_args.env_id,
+                    parsed_args.deployment_name
+                )
+                pprint("Deployment status is " + api_response.status)
+            elif parsed_args.env_id:
+                api_response = api_instance.get_deploy_status(
+                    parsed_args.env_id
+                )
+                pprint("Default deployment status is " + api_response.status)
         except ApiException as e:
             Utility.print_exception(e)
             pprint("Environment is not deployed yet")
