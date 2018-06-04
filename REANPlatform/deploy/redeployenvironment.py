@@ -39,7 +39,8 @@ class ReDepoly(Command):
                             help='Environment Version ID',
                             required=False)
         parser.add_argument('--input_json', '-json',
-                            help='Input Json in a format of string \'{"Key" : "Value"}\'',
+                            help='Input Json in a format of string \'{"Key" \
+                            : "Value"}\'',
                             required=False)
 
         return parser
@@ -49,8 +50,17 @@ class ReDepoly(Command):
         try:
             api_instance = deploy_sdk_client.EnvironmentApi()
             env_api_instance = set_header_parameter(api_instance)
-            body = deploy_sdk_client.DeploymentConfiguration(environment_id=parsed_args.env_id, deployment_name=parsed_args.deployment_name, deployment_description=parsed_args.deployment_description, region=parsed_args.region, provider_name=parsed_args.provider_name, input_json=parsed_args.input_json)
-            api_response = api_instance.re_deploy(parsed_args.env_name, parsed_args.env_version, body=body)
+            body = deploy_sdk_client.DeploymentConfiguration(
+                environment_id=parsed_args.env_id,
+                deployment_name=parsed_args.deployment_name,
+                deployment_description=parsed_args.deployment_description,
+                region=parsed_args.region,
+                provider_name=parsed_args.provider_name,
+                input_json=parsed_args.input_json)
+            api_response = api_instance.re_deploy(
+                parsed_args.env_name,
+                parsed_args.env_version,
+                body=body)
             print(api_response)
         except ApiException as e:
             Utility.print_exception(e)

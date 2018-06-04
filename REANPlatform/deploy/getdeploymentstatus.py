@@ -24,7 +24,7 @@ class Status(Command):
         except Exception:
             print("Please provide required arguments")
 
-        return parser  
+        return parser
 
     def take_action(self, parsed_args):
         """take_action."""
@@ -36,6 +36,5 @@ class Status(Command):
             api_response = api_instance.get_deploy_status(parsed_args.env_id)
             pprint("Deployment status is " + api_response.status)
         except ApiException as e:
-            pprint("Environment is not deployed yet")
             Utility.print_exception(e)
-
+            pprint("Environment is not deployed yet")
