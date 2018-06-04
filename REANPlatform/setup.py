@@ -61,8 +61,8 @@ setup(
             'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
-            'environment = deploy.environment:Environment'      
-            
+            'environment = deploy.environment:Environment',   
+            'blueprint = deploy.blueprint:Blueprint'
         ],
 
     #    'rean.mnc': [
