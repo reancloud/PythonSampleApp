@@ -37,13 +37,9 @@ class GetDeploymentId(Command):
         # Check the deployment status
         try:
             api_response = api_instance.get_all_deployments_for_environment_by_id_0(parsed_args.env_id, parsed_args.deployment_name)
+            pprint(api_response)
             id = str(api_response.id)
             pprint("Deployment ID is " + id)
         except ApiException as e:
             pprint("Environment is not deployed yet")
-            Utility.print_exception(e)
-        try:
-            api_response_map = api_instance.get_parent_deployment_mapping_data(parsed_args.env_id, parsed_args.deployment_name)
-            pprint(api_response_map)
-        except ApiException as e:
             Utility.print_exception(e)
