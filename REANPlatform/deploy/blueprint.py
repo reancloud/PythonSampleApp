@@ -72,10 +72,11 @@ class Blueprint(Command):
         env_instance = set_header_parameter(api_env_instance)
         attribute_file = 'import_blueprint_attributes.txt'
         dir_path = os.path.expanduser('~') + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME      # noqa: E501
+        blueprint_all_env = env_instance.prepare_import_blueprint(file=parsed_args.file)   # noqa: E501
+
         try:
 
             if parsed_args.action == 'prepare':
-                blueprint_all_env = env_instance.prepare_import_blueprint(file=parsed_args.file)   # noqa: E501
                 prepare_data = []
                 for one_env in blueprint_all_env.environment_imports:
                     default_data = {}
@@ -86,7 +87,6 @@ class Blueprint(Command):
                                 'connection_id': one_env.import_config.connection_id,  # noqa: E501
                                 'provider_id': one_env.import_config.provider_id,   # noqa: E501
                                 'env_version': one_env.import_config.env_version,     # noqa: E501
-                                'region': one_env.import_config.region,     # noqa: E501
                                 'description': one_env.import_config.description   # noqa: E501
                         }
                     }
@@ -96,12 +96,12 @@ class Blueprint(Command):
                 os.chdir(dir_path)
                 with open(attribute_file, 'w') as outfile:
                     json.dump(prepare_data, outfile)
+
                 print("Blueprint attributes file created successfully...\n\
                     Please update the attributes in %s before\
                     import a blueprint" % (dir_path + '/' + attribute_file))
 
             elif parsed_args.action == 'import':
-                blueprint_all_env = env_instance.prepare_import_blueprint(file=parsed_args.file)   # noqa: E501
                 os.chdir(dir_path)
                 with open(attribute_file, "r") as handle:
                     filedata = handle.read()
@@ -122,14 +122,13 @@ class Blueprint(Command):
                                     blueprint_all_env.environment_imports[index].import_config.connection_id = blueprint_data_to_update[env_name_ver_key]['connection_id']    # noqa: E501
                                     blueprint_all_env.environment_imports[index].import_config.provider_id = blueprint_data_to_update[env_name_ver_key]['provider_id']   # noqa: E501
                                     blueprint_all_env.environment_imports[index].import_config.name = blueprint_data_to_update[env_name_ver_key]['name']    # noqa: E501
-                                    blueprint_all_env.environment_imports[index].import_config.region = blueprint_data_to_update[env_name_ver_key]['region']     # noqa: E501
                                     blueprint_all_env.environment_imports[index].import_config.description = blueprint_data_to_update[env_name_ver_key]['description']     # noqa: E501
                                     index = index + 1
                                 else:
                                     raise RuntimeError("Please provide connection_id and provider_id in the file location %s:" % (dir_path + '/' + attribute_file))  # noqa: E501
 
                 env_instance.import_blueprint(body=blueprint_all_env)
-                print("Blueprint imported successfully :")
+                print("Blueprint imported successfully")
 
         except ApiException as e:
             Utility.print_exception(e)
