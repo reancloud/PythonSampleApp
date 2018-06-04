@@ -1,3 +1,4 @@
+"""Get Deployment ID."""
 import os
 from pprint import pprint
 import logging
@@ -10,6 +11,7 @@ from reanplatform.utility import Utility
 
 class GetDeploymentId(Command):
     """Get Deployment Status."""
+
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
@@ -27,7 +29,7 @@ class GetDeploymentId(Command):
         except Exception as e:
             Utility.print_exception(e)
 
-        return parser  
+        return parser
 
     def take_action(self, parsed_args):
         """take_action."""
