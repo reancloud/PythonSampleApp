@@ -1,3 +1,4 @@
+"""Get Deployment Status."""
 import os
 from pprint import pprint
 import logging
@@ -10,6 +11,7 @@ from reanplatform.utility import Utility
 
 class Status(Command):
     """Get Deployment Status."""
+
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):

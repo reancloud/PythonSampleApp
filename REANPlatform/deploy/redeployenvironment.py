@@ -1,3 +1,4 @@
+"""Re-Deploy an Environment."""
 import os
 import logging
 from cliff.command import Command
@@ -9,6 +10,7 @@ from reanplatform.utility import Utility
 
 class ReDepoly(Command):
     """Redeploy an environment by name and version."""
+
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
