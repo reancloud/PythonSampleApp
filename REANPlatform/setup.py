@@ -64,7 +64,8 @@ setup(
             'list-environment = deploy.listenvironments:ListEnvironments',
             # 'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'deploy-environment = deploy.depolyenvironment:DepolyEnv',
-            'import-blueprint = deploy.importblueprint:ImportBlueprint'
+            'import-blueprint = deploy.importblueprint:ImportBlueprint',
+            'get-deployment-id = deploy.getdeploymentid:GetDeploymentId'
         ],
     },
 

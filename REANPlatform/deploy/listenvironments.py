@@ -33,7 +33,7 @@ class ListEnvironments(Command):
             # Get all environments for user
             api_response = api_instance.get_all_environments()
             if parsed_args.format == 'table':
-                table = PrettyTable(['Name', 'Id', 'Region', 'Status'])
+                table = PrettyTable(['Name', 'Id', 'Region', 'Version'])
                 table.padding_width = 1
                 for environment in api_response:
                     table.add_row(
@@ -41,7 +41,7 @@ class ListEnvironments(Command):
                                     environment.name,
                                     environment.id,
                                     environment.region,
-                                    environment.status
+                                    environment.env_version
                                 ]
                             )
                 print("Environment list ::\n%s" % (table))
