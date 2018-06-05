@@ -48,7 +48,7 @@ class Environment(Command):
                                                         "destroy-deployment",
                                                         help='Destroy\
                                                         deployment,\
-                                                        Usage:[rean-deploy\
+                                                        Usage: [rean-deploy\
                                                         environment\
                                                         destroy-deployment\
                                                         --deployment_id\
