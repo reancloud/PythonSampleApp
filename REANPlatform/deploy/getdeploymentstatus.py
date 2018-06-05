@@ -28,7 +28,9 @@ class Status(Command):
                                 help='Deployment Name',
                                 required=False)
             parser.add_argument('--run_id', '-run_id',
-                                help='Terraform Run ID',
+                                help='Terraform Run ID. This parameter \
+                                is not required when Environment id and \
+                                Deployment Name is specified',
                                 required=False)
         except Exception as e:
             Utility.print_exception(e)
