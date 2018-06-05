@@ -58,11 +58,7 @@ setup(
             'list-provider = deploy.listproviders:ListProvider',
             'create-provider = deploy.createprovider:SaveProvider',
             'delete-provider = deploy.deleteprovider:DeleteProvider',
-            'list-connection = deploy.listconnections:ListConnections',
-            'create-connection = deploy.createconnection:SaveConnection',
-            'delete-connection = deploy.deleteconnection:DeleteConnection',
-            'environment = deploy.environment:Environment'      
-            
+            'connection = deploy.connection:Connection'
         ],
 
     #    'rean.mnc': [
