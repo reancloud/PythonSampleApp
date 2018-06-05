@@ -1,6 +1,8 @@
 """Re-Deploy an Environment."""
 import os
+import os.path
 import logging
+import json
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
@@ -17,12 +19,14 @@ class ReDepoly(Command):
         """get_parser."""
         parser = super(ReDepoly, self).get_parser(prog_name)
         parser.add_argument('--env_name', '-ename',
-                            help='Environment name',
+                            help='Environment name. This parameter is not \
+                            required when deploymentId is specified',
                             required=False)
         parser.add_argument('--env_version', '-env_v',
-                            help='Environment version',
+                            help='Environment version. This parameter is \
+                            not required when deploymentId is specified',
                             required=False)
-        parser.add_argument('--deployment_id', '-id', type=int,
+        parser.add_argument('--deployment_id', '-id',
                             help='Deployment id',
                             required=False)
         parser.add_argument('--deployment_name', '-dname', default='default',
@@ -43,16 +47,45 @@ class ReDepoly(Command):
                             version of an environment. A value should be the \
                             version of same environmen',
                             required=False)
-        parser.add_argument('--input_json', '-json',
-                            help='Input Json in a format of string \'{"Key" \
-                            : "Value"}\'',
+        parser.add_argument('--json_file', '-json',
+                            help='Input Json file with path',
                             required=False)
+        # parser.add_argument('--input_json', '-json',
+        #                     help='Input Json in a format of string \'{"Key" \
+        #                     : "Value"}\'',
+        #                     required=False)
 
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
         try:
+            jsonfile = parsed_args.json_file
+            # check file exists
+            if os.path.isfile(jsonfile) is False:
+                print('File not found: ' + jsonfile)
+                usage()
+
+            # get a file object and read it in as a string
+            fileobj = open(jsonfile)
+            jsonstr = fileobj.read()
+            fileobj.close()
+
+            # do character conversion here
+            outstr = jsonstr.replace('"', '\\"').replace('\n', '\\n')
+
+            # print the converted string
+            new = "\"" + outstr + "\""
+            print(new)
+
+            # with open(jsonfile) as json_data:
+            #     d = json.load(json_data)
+            #     print(d)
+        except ApiException as e:
+            Utility.print_exception(e)
+
+        try:
+            print("===================")
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
             body = deploy_sdk_client.DeploymentConfiguration(
@@ -60,7 +93,8 @@ class ReDepoly(Command):
                 deployment_description=parsed_args.deployment_description,
                 region=parsed_args.region,
                 provider_name=parsed_args.provider_name,
-                input_json=parsed_args.input_json)
+                input_json=new
+            )
             if parsed_args.env_name and parsed_args.env_version:
                 api_response = api_instance.re_deploy(
                     parsed_args.env_name,
@@ -69,11 +103,6 @@ class ReDepoly(Command):
                 )
                 print(api_response)
             if parsed_args.deployment_id:
-                body = deploy_sdk_client.DeploymentConfiguration(
-                deployment_description=parsed_args.deployment_description,
-                region=parsed_args.region,
-                provider_name=parsed_args.provider_name,
-                input_json=parsed_args.input_json)
                 api_response= api_instance.re_deploy_0(
                     parsed_args.deployment_id,
                     body=body

@@ -1,0 +1,15 @@
+{
+  "subnet_ids": [
+    "subnet-caa99297"
+  ],
+  "security_group_ids": [
+    "sg-05310273"
+  ],
+  "lambdaFunctionName": "rean_mnc_rule_processor",
+  "notifierLambdaFunctionName": "rean_mnc_notifier",
+  "artifactBucketName": "mnc-rule-bucket",
+  "artifactAbsolutePath": "QA/v1.1.2/rean_mnc_rule_processor_v1.1.2.zip",
+  "owner": "vaibhav.fulsundar",
+  "environment": "Production",
+  "product": "REAN Managed Cloud"
+}
