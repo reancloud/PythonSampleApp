@@ -24,6 +24,7 @@ class Status(Command):
                                 help='Environment id',
                                 required=False)
             parser.add_argument('--deployment_name', '-dname',
+                                default='default',
                                 help='Deployment Name',
                                 required=False)
             parser.add_argument('--run_id', '-run_id',
@@ -41,15 +42,10 @@ class Status(Command):
 
         # Check the deployment status
         try:
-            if parsed_args.deployment_name:
+            if parsed_args.env_id:
                 api_response = api_instance.get_deploy_status_0(
                     parsed_args.env_id,
                     parsed_args.deployment_name
-                )
-                pprint(api_response)
-            elif parsed_args.env_id:
-                api_response = api_instance.get_deploy_status(
-                    parsed_args.env_id
                 )
                 pprint(api_response)
             elif parsed_args.run_id:
