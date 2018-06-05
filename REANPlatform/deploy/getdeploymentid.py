@@ -21,8 +21,9 @@ class GetDeploymentId(Command):
 
         try:
             parser.add_argument('--deployment_name', '-n',
+                                default='default',
                                 help='Deployment Name',
-                                required=True)
+                                required=False)
             parser.add_argument('--env_id', '-id',
                                 help='Environment Id',
                                 required=True)
