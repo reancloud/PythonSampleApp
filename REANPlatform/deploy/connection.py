@@ -73,8 +73,9 @@ class Connection(Command):
                                                         help='Create connections\
                                                         Usage: [rean-deploy\
                                                         connection create\
-                                                        --id conn_id/--name\
-                                                        conn_name]'
+                                                        --name con_name\
+                                                        --type type\
+                                                        --user user]'
                                                     )
 
         create_connection_parser.add_argument(
