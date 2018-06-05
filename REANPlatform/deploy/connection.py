@@ -17,7 +17,6 @@ class Connection(Command):
 
     def get_parser(self, prog_name):
         """get_parser."""
-
         parser = super(Connection, self).get_parser(prog_name)
 
         connection_parser = parser.add_subparsers(help='Connection sub-commands')  # noqa: E501
