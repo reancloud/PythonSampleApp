@@ -22,9 +22,12 @@ class Status(Command):
         try:
             parser.add_argument('--env_id', '-id',
                                 help='Environment id',
-                                required=True)
+                                required=False)
             parser.add_argument('--deployment_name', '-dname',
                                 help='Deployment Name',
+                                required=False)
+            parser.add_argument('--run_id', '-run_id',
+                                help='Terraform Run ID',
                                 required=False)
         except Exception as e:
             Utility.print_exception(e)
@@ -43,12 +46,16 @@ class Status(Command):
                     parsed_args.env_id,
                     parsed_args.deployment_name
                 )
-                pprint("Deployment status is " + api_response.status)
+                pprint(api_response)
             elif parsed_args.env_id:
                 api_response = api_instance.get_deploy_status(
                     parsed_args.env_id
                 )
-                pprint("Default deployment status is " + api_response.status)
+                pprint(api_response)
+            elif parsed_args.run_id:
+                api_response = api_instance.get_deployment_status(
+                    parsed_args.run_id
+                )
+                pprint(api_response)
         except ApiException as e:
             Utility.print_exception(e)
-            pprint("Environment is not deployed yet")
