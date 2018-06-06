@@ -55,9 +55,7 @@ setup(
              'rean-mnc = reanplatform.reanhelp:Helpmnc'
         ],
         'rean.deploy': [
-            'list-provider = deploy.listproviders:ListProvider',
-            'create-provider = deploy.createprovider:SaveProvider',
-            'delete-provider = deploy.deleteprovider:DeleteProvider',
+            'provider = deploy.provider:Provider',
             'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection'
