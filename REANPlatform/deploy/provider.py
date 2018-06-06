@@ -125,7 +125,7 @@ class Provider(Command):
                                     ]
                                 )
                     print("Provider list ::\n%s" % (table))
-                else:
+                elif parsed_args.format == 'json' or parsed_args.format == '':
                     print(
                             json.dumps(
                                     api_response,
@@ -133,6 +133,9 @@ class Provider(Command):
                                     sort_keys=True, indent=4
                                     ).replace("\"_", '"')
                         )
+                else:
+                    raise RuntimeError("Please specify correct fromate to\
+                     list, Allowed values are: [json, table]")
             elif parsed_args.action == 'delete':
                 prov_id = parsed_args.prov_id
                 if parsed_args.prov_name and parsed_args.prov_id is None:
