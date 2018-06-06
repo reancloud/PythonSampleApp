@@ -103,7 +103,7 @@ class Provider(Command):
         return parser
 
     def take_action(self, parsed_args):
-        """take_action of ListProvider."""
+        """take_action of provider."""
         provider_api_instance = deploy_sdk_client.ProviderApi()
         api_instance = set_header_parameter(provider_api_instance)
         self.provider_operations(api_instance, parsed_args)
