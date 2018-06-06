@@ -1,4 +1,4 @@
-"""List connections module."""
+"""Connections module."""
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -11,7 +11,7 @@ from reanplatform.utility import Utility
 
 
 class Connection(Command):
-    """List connections."""
+    """Rean-deploy connections."""
 
     log = logging.getLogger(__name__)
 
