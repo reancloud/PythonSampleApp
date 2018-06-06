@@ -20,22 +20,24 @@ class DepolyEnv(Command):
         parser = super(DepolyEnv, self).get_parser(prog_name)
 
         parser.add_argument('--env_name', '-ename',
-                            help='Environment name',
+                            help='Environment name, This parameter is \
+                            not required when environmentId is specified',
                             required=False)
         parser.add_argument('--env_version', '-env_v',
-                            help='Environment version',
+                            help='Environment version. This parameter is \
+                            not required when environmentId is specified',
                             required=False)
         parser.add_argument('--deployment_name', '-dname', default='default',
                             help='Deployment Name',
                             required=False)
         parser.add_argument('--env_id', '-id',
-                            help='environment id',
+                            help='Environment Id',
                             required=False)
         parser.add_argument('--deployment_description', '-desc',
-                            help='deployment Description',
+                            help='Deployment Description',
                             required=False)
         parser.add_argument('--provider_name', '-pname',
-                            help='provider Name',
+                            help='Provider Name',
                             required=False)
         parser.add_argument('--region', '-region',
                             help='Region Name',
