@@ -46,8 +46,9 @@ class Provider(Command):
                                                         "delete",
                                                         help='Delete provider\
                                                         Usage: [rean-deploy\
-                                                        provider delete\
-                                                        --id provider_id]'
+                                                        provider delete --id\
+                                                        prov_id/--prov_name\
+                                                        prov_name]'
                                                     )
         delete_provider_parser.add_argument(
                                             '--prov_id', '-id',
