@@ -70,10 +70,13 @@ class Blueprint(Command):
         """take_action."""
         api_env_instance = deploy_sdk_client.EnvironmentApi()
         env_instance = set_header_parameter(api_env_instance)
+        self.blueprint_oprations(env_instance, parsed_args)
+
+    def blueprint_oprations(self, env_instance, parsed_args):
+        """blueprint_oprations."""
         attribute_file = 'import_blueprint_attributes.txt'
         dir_path = os.path.expanduser('~') + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME      # noqa: E501
         blueprint_all_env = env_instance.prepare_import_blueprint(file=parsed_args.file)   # noqa: E501
-
         try:
 
             if parsed_args.action == 'prepare':
