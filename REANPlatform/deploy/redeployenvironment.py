@@ -1,5 +1,6 @@
 """Re-Deploy an Environment."""
 import os
+import re
 import os.path
 import logging
 import json
@@ -57,30 +58,74 @@ class ReDepoly(Command):
 
         return parser
 
-    def take_action(self, parsed_args):
-        """take_action."""
+    def validate(self, env_name, env_version, deployment_id):
+        """Validate Parsed Arguments"""
+        if env_name and env_version and deployment_id:
+            message = "Please Provide either Deployment ID or Environment \
+            Name and Version."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        elif env_version and deployment_id:
+            message = "Please Provide either Deployment ID or Environment \
+            Name and Version. Do Not Provide Environment Version and \
+            Deployment ID Both."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        elif env_name and deployment_id:
+            message = "Please Provide either Deployment ID or Environment \
+            Name and Version. Do Not Provide Environment Name and \
+            Deployment ID Both."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+
+    def re_deploy_environment(self, instance, api_instance, env_name,
+                              env_version, deployment_id,
+                              deployment_description, region,
+                              provider_name, deployment_name):
+        """ReDeploy An Environment"""
         try:
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
             body = deploy_sdk_client.DeploymentConfiguration(
-                deployment_name=parsed_args.deployment_name,
-                deployment_description=parsed_args.deployment_description,
-                region=parsed_args.region,
-                provider_name=parsed_args.provider_name,
-                input_json=parsed_args.json_str
+                deployment_name=deployment_name,
+                deployment_description=deployment_description,
+                region=region,
+                provider_name=provider_name,
+                # input_json=json_str
             )
-            if parsed_args.env_name and parsed_args.env_version:
+            if env_name and env_version:
                 api_response = api_instance.re_deploy(
-                    parsed_args.env_name,
-                    parsed_args.env_version,
+                    env_name,
+                    env_version,
                     body=body
                 )
                 print(api_response)
-            if parsed_args.deployment_id:
-                api_response= api_instance.re_deploy_0(
-                    parsed_args.deployment_id,
+            if deployment_id:
+                api_response = api_instance.re_deploy_0(
+                    deployment_id,
                     body=body
                 )
                 print(api_response)
         except ApiException as e:
             Utility.print_exception(e)
+
+    def take_action(self, parsed_args):
+        """take_action."""
+        # Define parsed_args
+        env_name = parsed_args.env_name
+        env_version = parsed_args.env_version
+        deployment_name = parsed_args.deployment_name
+        deployment_id = parsed_args.deployment_id
+        deployment_description = parsed_args.deployment_description
+        region = parsed_args.region
+        provider_name = parsed_args.provider_name
+
+        # Define an instance for REAN Deploy API
+        instance = deploy_sdk_client.EnvironmentApi()
+        api_instance = set_header_parameter(instance)
+
+        # Validate parsed agruments
+        self.validate(env_name, env_version, deployment_id)
+        # Re Deploy an environment
+        self.re_deploy_environment(instance, api_instance, env_name,
+                                   env_version, deployment_id,
+                                   deployment_description, region,
+                                   provider_name, deployment_name):
