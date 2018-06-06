@@ -1,4 +1,4 @@
-"""List provider module."""
+"""Provider module."""
 import logging
 from pprint import pprint
 from cliff.command import Command
@@ -12,7 +12,7 @@ from reanplatform.utility import Utility
 
 
 class Provider(Command):
-    """List providers."""
+    """Rean-Deploy provider."""
 
     log = logging.getLogger(__name__)
 
