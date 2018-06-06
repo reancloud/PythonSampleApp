@@ -68,7 +68,7 @@ class Provider(Command):
 
         create_provider_par = provider_parser.add_parser(
                                                         "create",
-                                                        help='Delete provider\
+                                                        help='Create provider\
                                                         Usage: [rean-deploy\
                                                         provider create\
                                                         --name provider_name\
