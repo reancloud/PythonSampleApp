@@ -50,7 +50,7 @@ class GetDeploymentId(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        # Define an instance for REAN Deploy API
+        # Initialise instance and api_instance in get_deployment_id
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
 
