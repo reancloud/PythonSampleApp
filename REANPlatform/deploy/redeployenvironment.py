@@ -59,7 +59,7 @@ class ReDepoly(Command):
 
         return parser
 
-    def validate(self, env_name, env_version, 
+    def validate(self, env_name, env_version,
                  deployment_id, json_file, json_str):
         """Validate Parsed Arguments."""
         if env_name and env_version and deployment_id:
@@ -106,8 +106,6 @@ class ReDepoly(Command):
                               input_json, deployment_description, region,
                               provider_name, deployment_name):
         """Redeploy An Environment."""
-        
-
         try:
             body = deploy_sdk_client.DeploymentConfiguration(
                 deployment_name=deployment_name,

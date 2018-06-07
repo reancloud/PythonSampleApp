@@ -40,7 +40,7 @@ class Status(Command):
 
     def validate(self, env_id, deployment_name, run_id):
         """Validate Parsed Arguments."""
-        if env_id is not None and deployment_name is not None and run_id is not None:
+        if env_id and deployment_name and run_id:
             message = "Please Provide either Run ID or Environment ID and \
             Deployment Name."
             exception_msg = re.sub(' +', ' ', message)
@@ -83,4 +83,4 @@ class Status(Command):
         self.validate(env_id, deployment_name, run_id)
         # Get deployment status
         self.deployment_status(instance, api_instance,
-                                env_id, deployment_name, run_id)
+                               env_id, deployment_name, run_id)
