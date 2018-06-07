@@ -130,7 +130,7 @@ class DepolyEnv(Command):
 
     def take_action(self, parsed_args):
         """Deploy Environment Action."""
-        # Initialise instance and api_instance in deploy environment
+        # Initialise instance and api_instance in deploy_env
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
 
