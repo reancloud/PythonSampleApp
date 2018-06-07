@@ -76,9 +76,10 @@ class Status(Command):
         deployment_name = parsed_args.deployment_name
         run_id = parsed_args.run_id
 
-        # Create an instance for REAN Deploy API
+        # Initialise instance and api_instance to get deployment status
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
+
         # Validate parsed agruments
         self.validate(env_id, deployment_name, run_id)
         # Get deployment status

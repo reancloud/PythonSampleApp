@@ -143,7 +143,7 @@ class ReDepoly(Command):
         json_str = parsed_args.json_str
         provider_name = parsed_args.provider_name
 
-        # Define an instance for REAN Deploy API
+        # Initialise instance and api_instance to redeploy an environment
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
 
