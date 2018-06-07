@@ -32,19 +32,28 @@ class GetDeploymentId(Command):
 
         return parser
 
+    def get_deployment_id(self, instance, api_instance,
+                          env_id, deployment_name):
+        """Get Deployment ID."""
+        try:
+            res = api_instance.get_all_deployments_for_environment_by_id_0(
+                env_id,
+                deployment_name
+            )
+            pprint(res)
+        except ApiException as e:
+            Utility.print_exception(e)
+
     def take_action(self, parsed_args):
         """take_action."""
+        # Define parsed_args
+        env_id = parsed_args.env_id
+        deployment_name = parsed_args.deployment_name
+
+        # Define an instance for REAN Deploy API
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
 
-        # Check the deployment status
-        try:
-            res = api_instance.get_all_deployments_for_environment_by_id_0(
-                parsed_args.env_id,
-                parsed_args.deployment_name
-            )
-            pprint(res)
-            id = str(res.id)
-            pprint("Deployment ID is " + id)
-        except ApiException as e:
-            Utility.print_exception(e)
+        # Get deployment id
+        self.get_deployment_id(instance, api_instance,
+                               env_id, deployment_name)
