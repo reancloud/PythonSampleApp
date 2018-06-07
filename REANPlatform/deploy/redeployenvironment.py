@@ -86,7 +86,7 @@ class ReDepoly(Command):
             raise Exception(exception_msg)
 
     def convert_json_to_string(self, json_file):
-        """Convert Json to String"""
+        """Convert Json to String."""
         try:
             # check file exists
             if os.path.isfile(json_file) is False:
