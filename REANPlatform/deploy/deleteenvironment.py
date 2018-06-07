@@ -31,7 +31,7 @@ class DeleteEnvironment(Command):
 
     def take_action(self, parsed_args):
         """Delete environment action."""
-        # Initialise instance and api_instance in delete environment
+        # Initialise instance and api_instance in delete_env
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
 
