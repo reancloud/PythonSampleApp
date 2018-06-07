@@ -41,7 +41,7 @@ class DestroyEnvironment(Command):
         env_name = parsed_args.env_name
         env_version = parsed_args.env_version
 
-        self.validate(env_id, env_name, env_version)
+        self.validate_parameters(env_id, env_name, env_version)
 
         api_instance = deploy_sdk_client.EnvironmentApi()
         env_api_instance = set_header_parameter(api_instance)
@@ -50,7 +50,7 @@ class DestroyEnvironment(Command):
         elif env_name and env_version:
             self.destroy_env_by_envname(env_name, env_version, env_api_instance)    # noqa: E501
 
-    def validate(self, env_id, env_name, env_version):
+    def validate_parameters(self, env_id, env_name, env_version):
         """Validate cli parameter."""
         if env_id:
             if env_name or env_version:
