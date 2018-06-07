@@ -62,7 +62,7 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',  
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
-            'import-blueprint = deploy.blueprint_import:ImportBlueprint'
+            'import-blueprint = deploy.blueprint_import:ImportBlueprint'  
         ],
 
     #    'rean.mnc': [
