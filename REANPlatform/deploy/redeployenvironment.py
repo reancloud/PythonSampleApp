@@ -46,7 +46,7 @@ class ReDepoly(Command):
                             help='Please provide this attribute only if you \
                             want to upgrade existing deployment with newer \
                             version of an environment. A value should be the \
-                            version of same environmen',
+                            version of same environment',
                             required=False)
         parser.add_argument('--json_file', '-file',
                             help='Input Json file with full path',
@@ -59,7 +59,7 @@ class ReDepoly(Command):
         return parser
 
     def validate(self, env_name, env_version, deployment_id):
-        """Validate Parsed Arguments"""
+        """Validate Parsed Arguments."""
         if env_name and env_version and deployment_id:
             message = "Please Provide either Deployment ID or Environment \
             Name and Version."
@@ -79,17 +79,17 @@ class ReDepoly(Command):
             raise Exception(exception_msg)
 
     def re_deploy_environment(self, instance, api_instance, env_name,
-                              env_version, deployment_id,
+                              env_version, deployment_id, json_str,
                               deployment_description, region,
                               provider_name, deployment_name):
-        """ReDeploy An Environment"""
+        """Redeploy An Environment."""
         try:
             body = deploy_sdk_client.DeploymentConfiguration(
                 deployment_name=deployment_name,
                 deployment_description=deployment_description,
                 region=region,
                 provider_name=provider_name,
-                # input_json=json_str
+                input_json=json_str
             )
             if env_name and env_version:
                 api_response = api_instance.re_deploy(
@@ -116,6 +116,7 @@ class ReDepoly(Command):
         deployment_id = parsed_args.deployment_id
         deployment_description = parsed_args.deployment_description
         region = parsed_args.region
+        json_str = parsed_args.json_str
         provider_name = parsed_args.provider_name
 
         # Define an instance for REAN Deploy API
@@ -126,6 +127,6 @@ class ReDepoly(Command):
         self.validate(env_name, env_version, deployment_id)
         # Re Deploy an environment
         self.re_deploy_environment(instance, api_instance, env_name,
-                                   env_version, deployment_id,
+                                   env_version, deployment_id, json_str,
                                    deployment_description, region,
-                                   provider_name, deployment_name):
+                                   provider_name, deployment_name)

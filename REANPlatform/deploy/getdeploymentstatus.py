@@ -31,7 +31,7 @@ class Status(Command):
                                 is not required when -run_id is specified',
                                 required=False)
             parser.add_argument('--run_id', '-run_id',
-                                help='Terraform Run ID,
+                                help='Terraform Run ID',
                                 required=False)
         except Exception as e:
             Utility.print_exception(e)
@@ -40,19 +40,14 @@ class Status(Command):
 
     def validate(self, env_id, deployment_name, run_id):
         """Validate Parsed Arguments."""
-        if env_id and deployment_name and run_id:
+        if env_id is not None and deployment_name is not None and run_id is not None:
             message = "Please Provide either Run ID or Environment ID and \
-            Deployment Name. Do Not Provide All Of Them."
+            Deployment Name."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if env_id and run_id:
             message = "Please Provide either Run ID or Environment ID and \
             Deployment Name. Do Not Provide Environment ID and Run ID Both."
-            exception_msg = re.sub(' +', ' ', message)
-            raise Exception(exception_msg)
-        if deployment_name and run_id:
-            message = "Please Provide either Run ID or Environment ID and \
-            Deployment Name. Do Not Provide Deployment Name and Run ID Both."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
 
@@ -88,4 +83,4 @@ class Status(Command):
         self.validate(env_id, deployment_name, run_id)
         # Get deployment status
         self.deployment_status(instance, api_instance,
-                               env_id, deployment_name, run_id)
+                                env_id, deployment_name, run_id)
