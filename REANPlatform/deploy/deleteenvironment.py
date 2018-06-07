@@ -16,18 +16,27 @@ class DeleteEnvironment(Command):
         """get_parser."""
         parser = super(DeleteEnvironment, self).get_parser(prog_name)
         parser.add_argument('--id', '-id',
-                            help='Environment id',
+                            help='Environment id to delete an envionment',
                             required=True)
         return parser
 
-    def take_action(self, parsed_args):
+    def delete_env(self, instance, api_instance, env_id):
         """Delete environment action."""
         try:
-            environment_api_instance = deploy_sdk_client.EnvironmentApi()
-            print(environment_api_instance)
-            api_instance = set_header_parameter(environment_api_instance)
-            api_response = api_instance.delete_environment(parsed_args.id)
-            print("Environment deleted successfully")
+            api_response = api_instance.delete_environment(env_id)
+            print(api_response)
         except Exception as e:
             print(e)
             Utility.print_exception(e)
+
+    def take_action(self, parsed_args):
+        """Delete environment action."""
+        # Create an instance of the API class
+        instance = deploy_sdk_client.EnvironmentApi()
+        api_instance = set_header_parameter(instance)
+
+        # Define parsed argument
+        env_id = parsed_args.id
+
+        # Delete an environment by ID
+        self.delete_env(instance, api_instance, env_id)
