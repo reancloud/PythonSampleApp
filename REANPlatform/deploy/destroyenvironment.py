@@ -60,6 +60,10 @@ class DestroyEnvironment(Command):
             if env_id:
                 raise RuntimeError("Environment name and version is\
                     specified. Do not provide environment id")
+        else:
+            raise RuntimeError("Destroy environment. Usage: [rean-deploy\
+                environment destroy --env_id Or --env_name\
+                env_name --env_version env_version")
 
     def destroy_env_by_envid(self, env_id, env_api_instance):
         """destroy_env_by_envid."""
