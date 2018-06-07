@@ -24,16 +24,12 @@ class ListEnvironments(Command):
                             required=False)
         return parser
 
-    def take_action(self, parsed_args):
-        """take_action of ListEnvironment."""
+    def list_environment(self, instance, api_instance, output_format):
+        """List Environment."""
         try:
-            # Create an instance of the API class
-            environment_api_instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(environment_api_instance)
-
             # Get all environments for user
             api_response = api_instance.get_all_environments()
-            if parsed_args.format == 'table':
+            if output_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Region', 'Version'])
                 table.padding_width = 1
                 for environment in api_response:
@@ -47,7 +43,7 @@ class ListEnvironments(Command):
                             )
                 print("Environment list ::\n%s" % (table))
 
-            elif parsed_args.format == 'json' or parsed_args.format == '':
+            elif output_format == 'json' or output_format == '':
                 print(
                         json.dumps(
                                 api_response,
@@ -60,3 +56,15 @@ class ListEnvironments(Command):
                         values are: [json, table]")
         except ApiException as e:
             Utility.print_exception(e)
+
+    def take_action(self, parsed_args):
+        """take_action of ListEnvironment."""
+        # Define parsed
+        output_format = parsed_args.format
+
+        # Create an instance of the API class
+        instance = deploy_sdk_client.EnvironmentApi()
+        api_instance = set_header_parameter(instance)
+
+        # List Environments
+        self.list_environment(instance, api_instance, output_format)
