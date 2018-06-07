@@ -51,18 +51,16 @@ class ListEnvironments(Command):
                                 sort_keys=True, indent=4
                                 ).replace("\"_", '"')
                     )
-            else:
-                raise RuntimeError("Please specify correct format, Allowed \
-                        values are: [json, table]")
+
         except ApiException as e:
             Utility.print_exception(e)
 
     def take_action(self, parsed_args):
         """take_action of ListEnvironment."""
-        # Define parsed
+        # Define parsed argument
         output_format = parsed_args.format
 
-        # Create an instance of the API class
+        # Initialise instance and api_instance in list_environment
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance)
 
