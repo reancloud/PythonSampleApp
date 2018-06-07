@@ -48,17 +48,19 @@ class ReDepoly(Command):
                             version of an environment. A value should be the \
                             version of same environment',
                             required=False)
-        parser.add_argument('--json_file', '-file',
-                            help='Input Json file with full path',
+        parser.add_argument('--json_file', '-j-file',
+                            help='Pass input variable json file with \
+                            full path',
                             required=False)
-        parser.add_argument('--json_str', '-json',
-                            help='Input Json in a format of string \'{"Key" \
-                            : "Value"}\'',
+        parser.add_argument('--json_str', '-j-str',
+                            help='Pass input variables in a string \
+                            like \'{"Key": "Value"}\'',
                             required=False)
 
         return parser
 
-    def validate(self, env_name, env_version, deployment_id):
+    def validate(self, env_name, env_version, 
+                 deployment_id, json_file, json_str):
         """Validate Parsed Arguments."""
         if env_name and env_version and deployment_id:
             message = "Please Provide either Deployment ID or Environment \
@@ -77,19 +79,42 @@ class ReDepoly(Command):
             Deployment ID Both."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
+        if json_file and json_str:
+            message = "Please provide Input Variable json either in the \
+            form of file or in the form if string."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+
+    def convert_json_to_string(self, json_file):
+        """Convert Json to String"""
+        try:
+            # check file exists
+            if os.path.isfile(json_file) is False:
+                print('File not found: ' + json_file)
+
+            # get a file object and read it in as a string
+            fileobj = open(json_file)
+            jsonstr = fileobj.read()
+            fileobj.close()
+            return jsonstr
+
+        except ApiException as e:
+            Utility.print_exception(e)
 
     def re_deploy_environment(self, instance, api_instance, env_name,
                               env_version, deployment_id, json_str,
-                              deployment_description, region,
+                              input_json, deployment_description, region,
                               provider_name, deployment_name):
         """Redeploy An Environment."""
+        
+
         try:
             body = deploy_sdk_client.DeploymentConfiguration(
                 deployment_name=deployment_name,
                 deployment_description=deployment_description,
                 region=region,
                 provider_name=provider_name,
-                input_json=json_str
+                input_json=input_json
             )
             if env_name and env_version:
                 api_response = api_instance.re_deploy(
@@ -116,6 +141,7 @@ class ReDepoly(Command):
         deployment_id = parsed_args.deployment_id
         deployment_description = parsed_args.deployment_description
         region = parsed_args.region
+        json_file = parsed_args.json_file
         json_str = parsed_args.json_str
         provider_name = parsed_args.provider_name
 
@@ -124,9 +150,17 @@ class ReDepoly(Command):
         api_instance = set_header_parameter(instance)
 
         # Validate parsed agruments
-        self.validate(env_name, env_version, deployment_id)
+        self.validate(env_name, env_version, deployment_id,
+                      json_file, json_str)
+
+        # Set json format
+        if json_str:
+            input_json = json_str
+        elif json_file:
+            input_json = self.convert_json_to_string(json_file)
+
         # Re Deploy an environment
         self.re_deploy_environment(instance, api_instance, env_name,
                                    env_version, deployment_id, json_str,
-                                   deployment_description, region,
+                                   input_json, deployment_description, region,
                                    provider_name, deployment_name)
