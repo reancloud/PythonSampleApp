@@ -44,7 +44,7 @@ class DestroyDeployment(Command):
         deployment_name = parsed_args.deployment_name
         deployment_id = parsed_args.deployment_id
 
-        self.validate(env_name, deployment_name, deployment_id)
+        self.validate_parameters(env_name, deployment_name, deployment_id)
 
         api_instance = deploy_sdk_client.EnvironmentApi()
         env_api_instance = set_header_parameter(api_instance)
@@ -53,7 +53,7 @@ class DestroyDeployment(Command):
         elif env_name and deployment_name:
             self.destroy_by__envname_deployment_name(env_name, deployment_name, env_api_instance)   # noqa: E501
 
-    def validate(self, env_name, deployment_name, deployment_id):
+    def validate_parameters(self, env_name, deployment_name, deployment_id):
         """Validate cli parameter."""
         if deployment_id:
             if deployment_name or env_name:
