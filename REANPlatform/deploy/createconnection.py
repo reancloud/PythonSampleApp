@@ -45,7 +45,8 @@ class SaveConnection(Command):
                         )
         parser.add_argument(
                             '--securekeypath',
-                            '-key', help='Secure key path',
+                            '-key', help='Secure key path. Provide this \
+                            attribute only if Connection protocol type is SSH.',
                             required=False
                         )
 
