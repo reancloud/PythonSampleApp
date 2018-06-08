@@ -42,9 +42,7 @@ class DestroyDeployment(Command):
         """Validate cli parameter."""
         exception_msg = "Specify either ---env_id OR --deployment_id OR\
                 --env_id and --deployment_name"
-        if env_id and deployment_name and deployment_id:
-            raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif env_id and deployment_id:
+        if env_id and deployment_id:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
         elif deployment_name and deployment_id:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
