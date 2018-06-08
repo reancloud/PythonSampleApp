@@ -20,9 +20,12 @@ class DeleteEnvironment(Command):
                             required=True)
         return parser
 
-    def delete_env(self, instance, api_instance, env_id):
+    def delete_env(self, env_id):
         """Delete environment action."""
         try:
+            # Initialise instance and api_instance
+            instance = deploy_sdk_client.EnvironmentApi()
+            api_instance = set_header_parameter(instance)
             api_response = api_instance.delete_environment(env_id)
             print(api_response)
         except Exception as e:
@@ -31,12 +34,8 @@ class DeleteEnvironment(Command):
 
     def take_action(self, parsed_args):
         """Delete environment action."""
-        # Initialise instance and api_instance in delete_env
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance)
-
         # Define parsed argument
         env_id = parsed_args.id
 
         # Delete an environment by ID
-        self.delete_env(instance, api_instance, env_id)
+        self.delete_env(env_id)
