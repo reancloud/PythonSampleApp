@@ -19,10 +19,13 @@ class DeleteConnection(Command):
         """get_parser."""
         parser = super(DeleteConnection, self).get_parser(prog_name)
         parser.add_argument('--conn_name', '-n',
-                            help='Connection name',
+                            help='Connection name. This parameter is\
+                            not required when --conn_id is specified',
                             required=False
                             )
-        parser.add_argument('--conn_id', '-id', help='Connection ID',
+        parser.add_argument('--conn_id', '-id', help='Connection ID.\
+                            This parameter is not required\
+                            when --conn_name is specified',
                             required=False
                             )
         return parser
