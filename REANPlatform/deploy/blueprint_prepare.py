@@ -2,6 +2,7 @@
 import os
 import logging
 import json
+import re
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
@@ -68,9 +69,9 @@ class PrepareBlueprint(Command):
             os.chdir(dir_path)
             with open(attribute_file, 'w') as outfile:
                 json.dump(prepare_data, outfile)
-
-            print("Blueprint attributes file created successfully...\
-                Please update the attributes in %s before\
-                import a blueprint" % (dir_path + '/' + attribute_file))
+            msg = "Blueprint attributes file created successfully.\
+                Before import a blueprint, Update the blueprint attributes\
+                in file: " + (dir_path + '/' + attribute_file)
+            print(re.sub(' +', ' ', msg))
         except ApiException as e:
             Utility.print_exception(e)
