@@ -97,10 +97,12 @@ class DepolyEnv(Command):
         except ApiException as e:
             Utility.print_exception(e)
 
-    def deploy_env(self, instance, api_instance, deployment_name,
-                   deployment_description, region, provider_name,
-                   input_json, env_id, env_name, env_version):
+    def deploy_env(self, deployment_name, deployment_description, region,
+                   provider_name, input_json, env_id, env_name, env_version):
         """Deploy Environment."""
+        # Initialise instance and api_instance
+        instance = deploy_sdk_client.EnvironmentApi()
+        api_instance = set_header_parameter(instance)
         # Prepare deployment configuration body
         body = deploy_sdk_client.DeploymentConfiguration(
             deployment_name=deployment_name,
@@ -130,10 +132,6 @@ class DepolyEnv(Command):
 
     def take_action(self, parsed_args):
         """Deploy Environment Action."""
-        # Initialise instance and api_instance in deploy_env
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance)
-
         # Define parsed arguments
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
@@ -154,6 +152,6 @@ class DepolyEnv(Command):
         elif json_file:
             input_json = self.convert_json_to_string(json_file)
 
-        self.deploy_env(instance, api_instance, deployment_name,
-                        deployment_description, region, provider_name,
-                        input_json, env_id, env_name, env_version)
+        self.deploy_env(deployment_name, deployment_description, region,
+                        provider_name, input_json, env_id, env_name,
+                        env_version)
