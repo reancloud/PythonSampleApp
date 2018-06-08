@@ -43,21 +43,31 @@ class DeleteProvider(Command):
         prov_name = parsed_args.prov_name
         self.validate_parameters(prov_id, prov_name)
 
-        self.delete_provider(prov_id, prov_name)
+        if prov_id:
+            self.delete_provider_by_id(prov_id)
+        elif prov_name:
+            self.delete_provider_by_name(prov_name)
 
-    def delete_provider(self, prov_id, prov_name):
+    def delete_provider_by_id(self, prov_id):
         """delete_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
             api_instance = set_header_parameter(provider_api_instance)
-            if prov_name:
-                prov_id = self.get_id(prov_name, api_instance)
+            api_response = api_instance.delete_provider(prov_id)
+            print("Provider deleted successfully id", prov_id)
+        except ApiException as e:
+            Utility.print_exception(e)
 
+    def delete_provider_by_name(self, prov_name):
+        """delete_provider_by_name."""
+        try:
+            provider_api_instance = deploy_sdk_client.ProviderApi()
+            api_instance = set_header_parameter(provider_api_instance)
+            prov_id = self.get_id(prov_name, api_instance)
             if(prov_id is None):
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
-            api_response = api_instance.delete_provider(prov_id)
-            print("Provider deleted successfully id", prov_id)
+            self.delete_provider_by_id(prov_id)
         except ApiException as e:
             Utility.print_exception(e)
 
