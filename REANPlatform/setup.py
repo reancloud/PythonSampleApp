@@ -62,7 +62,8 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
-            'deploy-env = deploy.deployenv:DepolyEnv'
+            'list-environment = deploy.listenvironments:ListEnvironments',
+            'deploy-env = deploy.deployenv:DepolyEnv'            
         ],
 
     #    'rean.mnc': [
