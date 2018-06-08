@@ -60,9 +60,12 @@ setup(
             'delete-provider = deploy.deleteprovider:DeleteProvider',
             'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
-            'delete-connection = deploy.deleteconnection:DeleteConnection',  
+            'delete-connection = deploy.deleteconnection:DeleteConnection',
+            'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
+            'list-environment = deploy.listenvironments:ListEnvironments',
+            'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
-            'import-blueprint = deploy.blueprint_import:ImportBlueprint'  
+            'import-blueprint = deploy.blueprint_import:ImportBlueprint'
         ],
 
     #    'rean.mnc': [
