@@ -31,6 +31,7 @@ class ListProvider(Command):
         self.list_provider(format)
 
     def list_provider(self, format):
+        """list_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
             api_instance = set_header_parameter(provider_api_instance)

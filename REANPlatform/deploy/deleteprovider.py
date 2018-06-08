@@ -30,6 +30,7 @@ class DeleteProvider(Command):
         return parser
 
     def validate_parameters(self, id, prov_name):
+        """validate_parameters."""
         exception_msg = "Specify either --prov_id OR --prov_name"
         if id and prov_name:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
@@ -45,6 +46,7 @@ class DeleteProvider(Command):
         self.delete_provider(prov_id, prov_name)
 
     def delete_provider(self, prov_id, prov_name):
+        """delete_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
             api_instance = set_header_parameter(provider_api_instance)
