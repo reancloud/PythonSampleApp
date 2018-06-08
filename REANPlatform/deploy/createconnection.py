@@ -95,11 +95,14 @@ class SaveConnection(Command):
                     line_stripping = line_stripping + '\n' + line.strip('\n')
                 return line_stripping
 
-    def create_connections(self, instance, api_instance, bastionhost, password,
-                           bastionpassword, bastionport, bastionuser,
-                           connection_type, name, securekeypath, user):
+    def create_connections(self, bastionhost, password, bastionpassword
+                           bastionport, bastionuser, connection_type,
+                           name, securekeypath, user):
         """Create connections."""
         try:
+            # Initialise instance and api_instance
+            instance = deploy_sdk_client.ConnectionApi()
+            api_instance = set_header_parameter(instance)
             body = None
             bastion_data = None
             if bastionhost:
@@ -145,10 +148,6 @@ class SaveConnection(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        # Initialise instance and api_instance
-        instance = deploy_sdk_client.ConnectionApi()
-        api_instance = set_header_parameter(instance)
-
         # Define parsed argument
         bastionhost = parsed_args.bastionhost
         bastionpassword = parsed_args.bastionpassword
@@ -161,6 +160,6 @@ class SaveConnection(Command):
         password = parsed_args.password
 
         self.validate(connection_type, securekeypath)
-        self.create_connections(instance, api_instance, bastionhost, password,
-                                bastionpassword, bastionport, bastionuser,
-                                connection_type, name, securekeypath, user)
+        self.create_connections(bastionhost, password, bastionpassword
+                                bastionport, bastionuser, connection_type,
+                                name, securekeypath, user)
