@@ -21,8 +21,8 @@ class GetDeploymentId(Command):
 
         try:
             parser.add_argument('--deployment_name', '-n',
-                                default='default',
-                                help='Deployment Name',
+                                help='Deployment Name. Provide this attribute \
+                                to get ID of specific deployment.',
                                 required=False)
             parser.add_argument('--env_id', '-id',
                                 help='Environment Id',
@@ -36,13 +36,19 @@ class GetDeploymentId(Command):
                           env_id, deployment_name):
         """Get Deployment ID."""
         try:
-            res = api_instance.get_all_deployments_for_environment_by_id_0(
-                env_id,
-                deployment_name
-            )
-            pprint(res)
+            if env_id and deployment_name:
+                res = api_instance.get_all_deployments_for_environment_by_id_0(
+                    env_id,
+                    deployment_name
+                )
+                pprint(res)
+            elif env_id:
+                res = api_instance.get_all_deployments_for_environment_by_id(
+                    env_id
+                )
+                pprint(res)
         except ApiException as e:
-            Utility.print_exception(e)
+                Utility.print_exception(e)
 
     def take_action(self, parsed_args):
         """take_action."""
