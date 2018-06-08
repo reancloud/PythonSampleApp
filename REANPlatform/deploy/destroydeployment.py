@@ -6,6 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 import json
+import re
 from reanplatform.utility import Utility
 
 
@@ -18,68 +19,80 @@ class DestroyDeployment(Command):
         """get_parser."""
         parser = super(DestroyDeployment, self).get_parser(prog_name)
         parser.add_argument(
-                            '--env_name', '-name',
-                            help='Environment name. This parameter is\
-                            not required when deployment_id provided',
+                            '--deployment_id', '-d_id',
+                            help='Deployment id. This parameter is\
+                            not required when --env_id OR --deployment_name\
+                            and --env_id are specified',
+                            required=False
+                            )
+        parser.add_argument('--env_id', '-id',
+                            help='Environment id. This parameter is\
+                            not required when --deployment_id is specified',
                             required=False
                             )
         parser.add_argument(
                             '--deployment_name', '-d_name',
                             help='Deployment name. This parameter is\
-                            not required when deployment_id provided',
-                            required=False
-                            )
-        parser.add_argument(
-                            '--deployment_id', '-d_id',
-                            help='Deployment id. This parameter is\
-                            not required when env_name and\
-                            deployment_name are provided',
+                            not required when --deployment_id is specified',
                             required=False
                             )
         return parser
 
+    def validate_parameters(self, env_id, deployment_name, deployment_id):
+        """Validate cli parameter."""
+        exception_msg = "Specify either ---env_id OR --deployment_id OR\
+                --env_id and --deployment_name"
+        if env_id and deployment_name and deployment_id:
+            raise RuntimeError(re.sub(' +', ' ', exception_msg))
+        elif env_id and deployment_id:
+            raise RuntimeError(re.sub(' +', ' ', exception_msg))
+        elif deployment_name and deployment_id:
+            raise RuntimeError(re.sub(' +', ' ', exception_msg))
+        elif deployment_name and env_id is None:
+            raise RuntimeError(re.sub(' +', ' ', exception_msg))
+
     def take_action(self, parsed_args):
         """take_action."""
-        env_name = parsed_args.env_name
+        env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
         deployment_id = parsed_args.deployment_id
 
-        self.validate_parameters(env_name, deployment_name, deployment_id)
+        self.validate_parameters(env_id, deployment_name, deployment_id)
 
-        api_instance = deploy_sdk_client.EnvironmentApi()
-        env_api_instance = set_header_parameter(api_instance)
-        if deployment_id:
-            self.destroy_deployment_id(deployment_id, env_api_instance)
-        elif env_name and deployment_name:
-            self.destroy_by__envname_deployment_name(env_name, deployment_name, env_api_instance)   # noqa: E501
+        if env_id and deployment_name:
+            self.destroy_by_envid_deploymentname(env_id, deployment_name)
+        elif env_id:
+            self.destroy_env_by_envid(env_id)
+        elif deployment_id:
+            self.destroy_by_deploymentid(deployment_id)
 
-    def validate_parameters(self, env_name, deployment_name, deployment_id):
-        """Validate cli parameter."""
-        if deployment_id:
-            if deployment_name or env_name:
-                raise RuntimeError("Deployment id is specified. Do not\
-                    provide environment name and deployment name")
-        elif env_name and deployment_name:
-            if deployment_id:
-                raise RuntimeError("Environment name and deployment\
-                    name is specified. Do not provide deployment id")
-        else:
-            raise RuntimeError('Destroy deployment, Usage: [rean-deploy\
-                destroy-deployment --deployment_id id Or --env_name env_name\
-                --deployment_name deployment_name')
+    def destroy_env_by_envid(self, env_id):
+        """destroy_env_by_envid."""
+        try:
+            api_instance = deploy_sdk_client.EnvironmentApi()
+            env_api_instance = set_header_parameter(api_instance)
+            response = env_api_instance.destroy(env_id)
+            print("Environment status %s: %s" % (response.environment.name, response.status))  # noqa: E501
+        except ApiException as e:
+            Utility.print_exception(e)
 
-    def destroy_deployment_id(self, deployment_id, env_api_instance):
+    def destroy_by_deploymentid(self, deployment_id):
         """destroy_deployment_id."""
         try:
+            api_instance = deploy_sdk_client.EnvironmentApi()
+            env_api_instance = set_header_parameter(api_instance)
             deployment_response = env_api_instance.destroy_deployment(deployment_id)     # noqa: E501
             print("Deployment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
         except ApiException as e:
             Utility.print_exception(e)
 
-    def destroy_by__envname_deployment_name(self, env_name, deployment_name, env_api_instance):     # noqa: E501
-        """destroy_by__envname_deployment_name."""
+    def destroy_by_envid_deploymentname(self, env_id, deployment_name):
+        """destroy_by_envid_deploymentname."""
         try:
-            deployment_response = env_api_instance.destroy_deployment_0(env_name, deployment_name)  # noqa: E501
+            api_instance = deploy_sdk_client.EnvironmentApi()
+            env_api_instance = set_header_parameter(api_instance)
+            get_env_name = api_instance.get_environment(env_id)
+            deployment_response = env_api_instance.destroy_deployment_0(get_env_name.name, deployment_name)  # noqa: E501
             print("Deployment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
         except ApiException as e:
             Utility.print_exception(e)
