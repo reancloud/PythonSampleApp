@@ -8,6 +8,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from os.path import basename
 
 
 class ImportBlueprint(Command):
@@ -19,37 +20,42 @@ class ImportBlueprint(Command):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
         parser.add_argument(
-                            '--file', '-f',
+                            '--blueprint_file', '-b_file',
                             help='Blueprint file. REAN Deploy blueprint\
                             file path. A path can be absolute path.',
-                            required=False
+                            required=True
+                            )
+        parser.add_argument(
+                            '--attribute_file', '-a_file',
+                            help='Blueprint attributes. REAN Deploy blueprint\
+                            attributes file path. A path can be absolute\
+                            path.', required=True
                             )
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
-        file_path = parsed_args.file
-        attribute_file = 'import_blueprint_attributes.txt'
-        dir_path = os.getcwd()
+        blueprint_path = parsed_args.blueprint_file
+        attribute_path = os.getcwd() + '/' + 'import_blueprint_attributes.json'
 
-        self.validate_parameters(file_path)
+        self.validate_parameters(blueprint_path, attribute_path)
 
-        self.blueprint_import(file_path, dir_path, attribute_file)    # noqa: E501
+        self.blueprint_import(blueprint_path, attribute_path)    # noqa: E501
 
-    def validate_parameters(self, file_path):
+    def validate_parameters(self, blueprint_path, attribute_path):
         """Validate cli parameters."""
-        if file_path is None:
+        if blueprint_path is None and attribute_path is None:
             raise RuntimeError("Please provide REAN Deploy\
-                blueprint file absolute path")
+                blueprint file and attributes file absolute path")
 
-    def blueprint_import(self, file_path, dir_path, attribute_file):      # noqa: E501
+    def blueprint_import(self, blueprint_path, attribute_path):      # noqa: E501
         """blueprint_import."""
         try:
             api_env_instance = deploy_sdk_client.EnvironmentApi()
             env_instance = set_header_parameter(api_env_instance)
-            blueprint_all_env = env_instance.prepare_import_blueprint(file=file_path)   # noqa: E501
-            os.chdir(dir_path)
-            with open(attribute_file, "r") as handle:
+            blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
+            os.chdir(os.path.dirname(attribute_path))
+            with open(basename(attribute_path), "r") as handle:
                 filedata = handle.read()
 
             jsondata = json.loads(filedata)
@@ -60,20 +66,21 @@ class ImportBlueprint(Command):
                 key = one_env.import_config.name+one_env.import_config.env_version   # noqa: E501
 
                 # Data load from prepar blueprint attribute file
-                for blueprint_data_to_update in jsondata:
-                    for env_name_ver_key in blueprint_data_to_update:
-
-                        if env_name_ver_key == key:
-                            if blueprint_data_to_update[env_name_ver_key]['connection_id'] and blueprint_data_to_update[env_name_ver_key]['provider_id']:    # noqa: E501
-                                blueprint_all_env.environment_imports[index].import_config.connection_id = blueprint_data_to_update[env_name_ver_key]['connection_id']    # noqa: E501
-                                blueprint_all_env.environment_imports[index].import_config.provider_id = blueprint_data_to_update[env_name_ver_key]['provider_id']   # noqa: E501
-                                blueprint_all_env.environment_imports[index].import_config.name = blueprint_data_to_update[env_name_ver_key]['name']    # noqa: E501
-                                blueprint_all_env.environment_imports[index].import_config.description = blueprint_data_to_update[env_name_ver_key]['description']     # noqa: E501
-                                index = index + 1
-                            else:
-                                raise RuntimeError("Please provide connection_id and provider_id in the file location %s:" % (dir_path + '/' + attribute_file))  # noqa: E501
+                for blueprint_attribute_key in jsondata:
+                    if blueprint_attribute_key == key:
+                        if (jsondata[blueprint_attribute_key]['connection_id'] and jsondata[blueprint_attribute_key]['provider_id']):     # noqa: E501
+                            blueprint_all_env.environment_imports[index].import_config.connection_id = jsondata[blueprint_attribute_key]['connection_id']    # noqa: E501
+                            blueprint_all_env.environment_imports[index].import_config.provider_id = jsondata[blueprint_attribute_key]['provider_id']   # noqa: E501
+                            blueprint_all_env.environment_imports[index].import_config.name = jsondata[blueprint_attribute_key]['name']    # noqa: E501
+                            blueprint_all_env.environment_imports[index].import_config.description = jsondata[blueprint_attribute_key]['description']     # noqa: E501
+                            index = index + 1
+                        else:
+                            raise RuntimeError("Connection_id and provider_id are\
+                                missing to %s environment in the file location %s:\
+                                " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path))  # noqa: E501
 
             env_instance.import_blueprint(body=blueprint_all_env)
             print("Blueprint imported successfully")
+
         except ApiException as e:
             Utility.print_exception(e)
