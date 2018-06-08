@@ -62,6 +62,8 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
+            'list-environment = deploy.listenvironments:ListEnvironments',
+            'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'get-status = deploy.getdeploymentstatus:Status',
             're-deploy = deploy.redeployenvironment:ReDepoly'
         ],
