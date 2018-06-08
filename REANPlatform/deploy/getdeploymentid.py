@@ -32,10 +32,12 @@ class GetDeploymentId(Command):
 
         return parser
 
-    def get_deployment_id(self, instance, api_instance,
-                          env_id, deployment_name):
+    def get_deployment_id(self, env_id, deployment_name):
         """Get Deployment ID."""
         try:
+            # Initialise instance and api_instance
+            instance = deploy_sdk_client.EnvironmentApi()
+            api_instance = set_header_parameter(instance)
             if env_id and deployment_name:
                 res = api_instance.get_all_deployments_for_environment_by_id_0(
                     env_id,
@@ -56,10 +58,5 @@ class GetDeploymentId(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        # Initialise instance and api_instance in get_deployment_id
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance)
-
         # Get deployment id
-        self.get_deployment_id(instance, api_instance,
-                               env_id, deployment_name)
+        self.get_deployment_id(env_id, deployment_name)
