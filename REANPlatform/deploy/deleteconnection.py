@@ -44,25 +44,37 @@ class DeleteConnection(Command):
         conn_id = parsed_args.conn_id
 
         self.validate_parameters(conn_id, conn_name)
-        self.delete_connection(conn_name, conn_id)
 
-    def delete_connection(self, conn_name, conn_id):
+        if conn_id:
+            self.delete_connection_by_id(conn_id)
+        elif conn_name:
+            self.delete_connection_by_name(conn_name)
+
+    def delete_connection_by_id(self, conn_id):
         """delete_connection."""
-        # create an instance of the API class
+        try:
+            conn_api_instance = deploy_sdk_client.ConnectionApi()
+            api_instance = set_header_parameter(conn_api_instance)
+            api_response = api_instance.delete_vm_connection(conn_id)
+            print("Connection deleted successfully :%s " % str(api_response.name))    # noqa: E501
+        except ApiException as e:
+            Utility.print_exception(e)
+
+    def delete_connection_by_name(self, conn_name):
+        """delete_connection_by_name."""
         conn_api_instance = deploy_sdk_client.ConnectionApi()
         api_instance = set_header_parameter(conn_api_instance)
+        conn_id = None
         try:
-            if conn_name:
-                all_vms = api_instance.get_all_vm_connections()
-                for vm_conn in all_vms:
-                    if(vm_conn.name == conn_name):
-                        conn_id = vm_conn.id
-                        break
+            all_vms = api_instance.get_all_vm_connections()
+            for vm_conn in all_vms:
+                if(vm_conn.name == conn_name):
+                    conn_id = vm_conn.id
+                    break
 
             if(conn_id is None):
                 raise RuntimeError("Exception : connection does not exit", conn_name)    # noqa: E501
+            self.delete_connection_by_id(conn_id)
 
-            api_response = api_instance.delete_vm_connection(conn_id)
-            print("Connection deleted successfully :%s " % str(api_response.name))    # noqa: E501
         except ApiException as e:
             Utility.print_exception(e)
