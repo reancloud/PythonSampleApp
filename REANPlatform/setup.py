@@ -51,7 +51,7 @@ setup(
          'rean.platform': [
              'configure = reanplatform.configure:Configure',
              'rean-deploy = reanplatform.reanhelp:Helpdeploy',
-             'rean-test = reanplatform.reanhelp:Helptest',
+             'rean-test =reanplatform.reanhelp:Helptest',
              'rean-mnc = reanplatform.reanhelp:Helpmnc'
         ],
         'rean.deploy': [
@@ -60,9 +60,7 @@ setup(
             'delete-provider = deploy.deleteprovider:DeleteProvider',
             'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
-            'delete-connection = deploy.deleteconnection:DeleteConnection',  
-            'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
-            'import-blueprint = deploy.blueprint_import:ImportBlueprint'  
+            'delete-connection = deploy.deleteconnection:DeleteConnection'
         ],
 
     #    'rean.mnc': [
