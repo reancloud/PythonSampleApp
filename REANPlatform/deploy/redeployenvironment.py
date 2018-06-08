@@ -101,12 +101,15 @@ class ReDepoly(Command):
         except ApiException as e:
             Utility.print_exception(e)
 
-    def re_deploy_environment(self, instance, api_instance, env_name,
-                              env_version, deployment_id, json_str,
-                              input_json, deployment_description, region,
-                              provider_name, deployment_name):
+    def re_deploy_environment(self, env_name, env_version, deployment_id,
+                              json_str, input_json, region,
+                              deployment_description, provider_name,
+                              deployment_name):
         """Redeploy An Environment."""
         try:
+            # Initialise instance and api_instance
+            instance = deploy_sdk_client.EnvironmentApi()
+            api_instance = set_header_parameter(instance)
             body = deploy_sdk_client.DeploymentConfiguration(
                 deployment_name=deployment_name,
                 deployment_description=deployment_description,
@@ -143,10 +146,6 @@ class ReDepoly(Command):
         json_str = parsed_args.json_str
         provider_name = parsed_args.provider_name
 
-        # Initialise instance and api_instance in re_deploy_environment
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance)
-
         # Validate parsed agruments
         self.validate(env_name, env_version, deployment_id,
                       json_file, json_str)
@@ -158,7 +157,7 @@ class ReDepoly(Command):
             input_json = self.convert_json_to_string(json_file)
 
         # Re Deploy an environment
-        self.re_deploy_environment(instance, api_instance, env_name,
-                                   env_version, deployment_id, json_str,
-                                   input_json, deployment_description, region,
-                                   provider_name, deployment_name)
+        self.re_deploy_environment(env_name, env_version, deployment_id,
+                                   json_str, input_json, region,
+                                   deployment_description, provider_name,
+                                   deployment_name)

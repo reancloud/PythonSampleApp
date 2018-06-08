@@ -51,10 +51,12 @@ class Status(Command):
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
 
-    def deployment_status(self, instance, api_instance,
-                          env_id, deployment_name, run_id):
+    def deployment_status(self, env_id, deployment_name, run_id):
         """Get Deployment Status."""
         try:
+            # Initialise instance and api_instance to get deployment status
+            instance = deploy_sdk_client.EnvironmentApi()
+            api_instance = set_header_parameter(instance)
             if env_id:
                 api_response = api_instance.get_deploy_status_0(
                     env_id,
@@ -75,13 +77,7 @@ class Status(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
         run_id = parsed_args.run_id
-
-        # Initialise instance and api_instance to get deployment status
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance)
-
         # Validate parsed agruments
         self.validate(env_id, deployment_name, run_id)
         # Get deployment status
-        self.deployment_status(instance, api_instance,
-                               env_id, deployment_name, run_id)
+        self.deployment_status(env_id, deployment_name, run_id)
