@@ -48,7 +48,7 @@ class ListProvider(Command):
                                 ]
                             )
                 print("Provider list ::\n%s" % (table))
-            elif format == 'json' or parsed_args.format == '':
+            elif format == 'json' or format == '':
                 print(
                         json.dumps(
                                 api_response,
