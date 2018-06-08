@@ -18,21 +18,31 @@ class SaveProvider(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SaveProvider, self).get_parser(prog_name)
-        parser.add_argument('--name', '-n', help='Provider name',
+        parser.add_argument('--prov_name', '-n', help='Provider name',
                             required=True)
-        parser.add_argument('--type', '-t', help='Provider type',
+        parser.add_argument('--prov_type', '-t', help='Provider type',
                             required=True)
         parser.add_argument('--provider_details', '-f',
                             help='Json file with applicable key-value pair \
-                            for provider type', required=True)
+                            for provider type. File absolute path',
+                            required=True
+                            )
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
+        prov_name = parsed_args.prov_name
+        prov_type = parsed_args.prov_type
+        provider_details = parsed_args.provider_details
+
+        self.create_provider(prov_name, prov_type, provider_details)
+
+    def create_provider(self, prov_name, prov_type, provider_details):
+        """create_provider."""
         provider_api_instance = deploy_sdk_client.ProviderApi()
         api_instance = set_header_parameter(provider_api_instance)
         try:
-            file_path = parsed_args.provider_details
+            file_path = provider_details
 
             if not os.path.isfile(file_path):
                 raise RuntimeError('Provider details file %s \
@@ -44,8 +54,8 @@ class SaveProvider(Command):
 
             jsondata = json.loads(filedata)
             provider = deploy_sdk_client.SaveProvider(
-                            name=parsed_args.name,
-                            type=parsed_args.type,
+                            name=prov_name,
+                            type=prov_type,
                             json=jsondata
                         )
             api_response = api_instance.save_provider(provider)
@@ -53,10 +63,10 @@ class SaveProvider(Command):
             # Get all providers for user
             list_api_response = api_instance.get_all_providers()
             for provider in list_api_response:
-                if provider.name == parsed_args.name:
+                if provider.name == prov_name:
                     id = provider.id
                     break
             print("Provider created successfully \
-                    Name: %s,  Id: %i" % (parsed_args.name, id))
+                    Name: %s,  Id: %i" % (prov_name, id))
         except ApiException as e:
             Utility.print_exception(e)
