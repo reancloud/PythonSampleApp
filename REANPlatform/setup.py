@@ -64,7 +64,7 @@ setup(
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
             'list-environment = deploy.listenvironments:ListEnvironments',
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
-            'get-deployment-id = deploy.getdeploymentid:GetDeploymentId'
+            'get-deployment-id = deploy.getdeploymentid:GetDeployments'
         ],
 
     #    'rean.mnc': [
