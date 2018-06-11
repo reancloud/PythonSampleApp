@@ -18,9 +18,9 @@ class SaveProvider(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SaveProvider, self).get_parser(prog_name)
-        parser.add_argument('--prov_name', '-n', help='Provider name',
+        parser.add_argument('--name', '-n', help='Provider name',
                             required=True)
-        parser.add_argument('--prov_type', '-t', help='Provider type',
+        parser.add_argument('--type', '-t', help='Provider type',
                             required=True)
         parser.add_argument('--provider_details', '-f',
                             help='Json file with applicable key-value pair \
@@ -31,8 +31,8 @@ class SaveProvider(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        prov_name = parsed_args.prov_name
-        prov_type = parsed_args.prov_type
+        prov_name = parsed_args.name
+        prov_type = parsed_args.type
         provider_details = parsed_args.provider_details
 
         self.create_provider(prov_name, prov_type, provider_details)

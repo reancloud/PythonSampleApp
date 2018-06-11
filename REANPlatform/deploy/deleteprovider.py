@@ -17,12 +17,12 @@ class DeleteProvider(Command):
         """get_parser."""
         parser = super(DeleteProvider, self).get_parser(prog_name)
         parser.add_argument(
-                            '--prov_id', '-id',
+                            '--id', '-id',
                             help='Provider id. This parameter is\
                             not required when --prov_name is specified',
                             required=False)
         parser.add_argument(
-                            '--prov_name', '-name',
+                            '--name', '-name',
                             help='Provider name. This parameter is\
                             not required when --prov_id is specified',
                             required=False
@@ -39,8 +39,8 @@ class DeleteProvider(Command):
 
     def take_action(self, parsed_args):
         """Delete provider action."""
-        prov_id = parsed_args.prov_id
-        prov_name = parsed_args.prov_name
+        prov_id = parsed_args.id
+        prov_name = parsed_args.name
         self.validate_parameters(prov_id, prov_name)
 
         if prov_id:
