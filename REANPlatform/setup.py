@@ -51,7 +51,7 @@ setup(
          'rean.platform': [
              'configure = reanplatform.configure:Configure',
              'rean-deploy = reanplatform.reanhelp:Helpdeploy',
-             'rean-test =reanplatform.reanhelp:Helptest',
+             'rean-test = reanplatform.reanhelp:Helptest',
              'rean-mnc = reanplatform.reanhelp:Helpmnc'
         ],
         'rean.deploy': [
@@ -64,6 +64,8 @@ setup(
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
             'list-environment = deploy.listenvironments:ListEnvironments',
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
+            'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
+            'import-blueprint = deploy.blueprint_import:ImportBlueprint',
             'get-deployment-id = deploy.getdeploymentid:GetDeployments'
         ],
 
