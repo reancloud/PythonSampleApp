@@ -65,7 +65,8 @@ setup(
             'list-environment = deploy.listenvironments:ListEnvironments',
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
-            'import-blueprint = deploy.blueprint_import:ImportBlueprint'
+            'import-blueprint = deploy.blueprint_import:ImportBlueprint',
+            'get-deployment-id = deploy.getdeploymentid:GetDeployments'
         ],
 
     #    'rean.mnc': [
