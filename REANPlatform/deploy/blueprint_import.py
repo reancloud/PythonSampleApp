@@ -36,7 +36,7 @@ class ImportBlueprint(Command):
     def take_action(self, parsed_args):
         """take_action."""
         blueprint_path = parsed_args.blueprint_file
-        attribute_path = os.getcwd() + '/' + 'import_blueprint_attributes.json'
+        attribute_path = parsed_args.attribute_file
 
         self.validate_parameters(blueprint_path, attribute_path)
 
@@ -60,6 +60,7 @@ class ImportBlueprint(Command):
 
             jsondata = json.loads(filedata)
             index = 0
+            env_names = []
 
             # Read data from blueprint
             for one_env in blueprint_all_env.environment_imports:
@@ -73,6 +74,7 @@ class ImportBlueprint(Command):
                             blueprint_all_env.environment_imports[index].import_config.provider_id = jsondata[blueprint_attribute_key]['provider_id']   # noqa: E501
                             blueprint_all_env.environment_imports[index].import_config.name = jsondata[blueprint_attribute_key]['name']    # noqa: E501
                             blueprint_all_env.environment_imports[index].import_config.description = jsondata[blueprint_attribute_key]['description']     # noqa: E501
+                            env_names.append(blueprint_all_env.environment_imports[index].import_config.name)           # noqa: E501
                             index = index + 1
                         else:
                             raise RuntimeError("Connection_id and provider_id are\
@@ -80,7 +82,7 @@ class ImportBlueprint(Command):
                                 " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path))  # noqa: E501
 
             env_instance.import_blueprint(body=blueprint_all_env)
-            print("Blueprint imported successfully")
+            print("Blueprint imported successfully. Environment names : ", env_names)       # noqa: E501
 
         except ApiException as e:
             Utility.print_exception(e)
