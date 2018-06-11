@@ -60,7 +60,8 @@ setup(
             'delete-provider = deploy.deleteprovider:DeleteProvider',
             'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
-            'delete-connection = deploy.deleteconnection:DeleteConnection'
+            'delete-connection = deploy.deleteconnection:DeleteConnection',
+            'destroy-deployment = deploy.destroydeployment:DestroyDeployment'
         ],
 
     #    'rean.mnc': [
