@@ -96,7 +96,7 @@ class SaveConnection(Command):
                     line_stripping = line_stripping + '\n' + line.strip('\n')
                 return line_stripping
 
-    def create_connections(self, bastionhost, password, bastionpassword
+    def create_connections(self, bastionhost, password, bastionpassword,
                            bastionport, bastionuser, connection_type,
                            name, securekeypath, user):
         """Create connections."""
@@ -161,6 +161,6 @@ class SaveConnection(Command):
         password = parsed_args.password
 
         self.validate(connection_type, securekeypath)
-        self.create_connections(bastionhost, password, bastionpassword
+        self.create_connections(bastionhost, password, bastionpassword,
                                 bastionport, bastionuser, connection_type,
                                 name, securekeypath, user)
