@@ -3,6 +3,7 @@ import logging
 from cliff.command import Command
 import deploy_sdk_client
 import json
+import re
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from prettytable import PrettyTable
@@ -26,12 +27,17 @@ class ListConnections(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
+        format = parsed_args.format
+        self.list_connection(format)
+
+    def list_connection(self, format):
+        """list_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
             api_instance = set_header_parameter(conn_api_instance)
             api_response = api_instance.get_all_vm_connections()
 
-            if parsed_args.format == 'table':
+            if format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for connection in api_response:
@@ -43,7 +49,7 @@ class ListConnections(Command):
                                 ]
                          )
                 print("Connection list \n%s" % (table))
-            elif parsed_args.format == 'json' or parsed_args.format == '':
+            elif format == 'json' or format == '':
                 print(
                         json.dumps(
                                 api_response,
@@ -52,8 +58,9 @@ class ListConnections(Command):
                                 ).replace("\"_", '"')
                     )
             else:
-                raise RuntimeError("Please specify correct format, Allowed \
-                        values are: [json, table]")
+                exception_msg = "Please specify correct fromate, Allowed \
+                        values are: [json, table]"
+                raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
         except ApiException as e:
             Utility.print_exception(e)
