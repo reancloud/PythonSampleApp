@@ -2,6 +2,7 @@
 import os
 import logging
 import json
+import re
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
@@ -64,7 +65,7 @@ class ImportBlueprint(Command):
 
             # Read data from blueprint
             for one_env in blueprint_all_env.environment_imports:
-                key = one_env.import_config.name+one_env.import_config.env_version   # noqa: E501
+                key = one_env.import_config.name + '-' + one_env.import_config.env_version   # noqa: E501
 
                 # Data load from prepar blueprint attribute file
                 for blueprint_attribute_key in jsondata:
@@ -77,9 +78,10 @@ class ImportBlueprint(Command):
                             env_names.append(blueprint_all_env.environment_imports[index].import_config.name)           # noqa: E501
                             index = index + 1
                         else:
-                            raise RuntimeError("Connection_id and provider_id are\
-                                missing to %s environment in the file location %s:\
-                                " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path))  # noqa: E501
+                            exception_msg = "Connection_id and provider_id are\
+                                missing to %s environment in the file\
+                                 location %s: " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path)   # noqa: E501
+                            raise RuntimeError(re.sub(' +', ' ', exception_msg))  # noqa: E501
 
             env_instance.import_blueprint(body=blueprint_all_env)
             print("Blueprint imported successfully. Environment names : ", env_names)       # noqa: E501

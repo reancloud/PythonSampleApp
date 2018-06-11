@@ -52,7 +52,7 @@ class PrepareBlueprint(Command):
 
             prepare_data = {}
             for one_env in blueprint_all_env.environment_imports:
-                prepare_data[one_env.import_config.name+one_env.import_config.env_version] = {  # noqa: E501
+                prepare_data[one_env.import_config.name+'-'+one_env.import_config.env_version] = {  # noqa: E501
                     'name': one_env.import_config.name,
                     'connection_id': one_env.import_config.connection_id,
                     'provider_id': one_env.import_config.provider_id,
