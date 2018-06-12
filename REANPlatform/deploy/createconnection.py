@@ -1,3 +1,4 @@
+# pylint: disable=E0202, W0221
 """Create connection module."""
 import os
 import re
@@ -53,7 +54,7 @@ class SaveConnection(Command):
 
         parser.add_argument(
                             '--bastionhost',
-                            '-host', help='Bastion host',
+                            '-b_host', help='Bastion host',
                             required=False
                         )
 
@@ -80,10 +81,33 @@ class SaveConnection(Command):
                         )
         return parser
 
-    def validate(self, connection_type, securekeypath):
+    def validate(self, connection_type, password, securekeypath,
+                 bastionhost, bastionuser, bastionsecurekeypath,
+                 bastionpassword):
         """Validate parsed arguments."""
         if connection_type == 'WinRM' and securekeypath:
             message = "WinRM Does Not Required SecureKey."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        if password is None and connection_type == 'WinRM':
+            message = "password must not be none for 'WinRM'."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        if connection_type == 'SSH' and (password or securekeypath) is None:
+            message = "password or securekeypath must not be none for 'SSH'."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        if bastionuser is None and bastionhost:
+            message = "bastion user must not be none for bastion connection."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        if bastionuser and (bastionsecurekeypath or bastionpassword) is None:
+            message = "bastionpassword or bastionsecurekeypath must not be \
+            none for bastion connection."
+            exception_msg = re.sub(' +', ' ', message)
+            raise Exception(exception_msg)
+        if connection_type == 'WinRM' and bastionuser:
+            message = "Bastion connection is not allowed in case of WinRM."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
 
@@ -96,9 +120,10 @@ class SaveConnection(Command):
                     line_stripping = line_stripping + '\n' + line.strip('\n')
                 return line_stripping
 
-    def create_connections(self, bastionhost, password, bastionpassword,
-                           bastionport, bastionuser, connection_type,
-                           name, securekeypath, user):
+    def create_connections(self, name, connection_type, user, password,
+                           securekeypath, bastionhost, bastionuser,
+                           bastionpassword, bastionsecurekeypath,
+                           bastionport):
         """Create connections."""
         try:
             # Initialise instance and api_instance
@@ -156,11 +181,14 @@ class SaveConnection(Command):
         bastionuser = parsed_args.bastionuser
         connection_type = parsed_args.type
         securekeypath = parsed_args.securekeypath
+        bastionsecurekeypath = parsed_args.bastionsecurekeypath
         name = parsed_args.name
         user = parsed_args.user
         password = parsed_args.password
 
-        self.validate(connection_type, securekeypath)
-        self.create_connections(bastionhost, password, bastionpassword,
-                                bastionport, bastionuser, connection_type,
-                                name, securekeypath, user)
+        self.validate(connection_type, password, securekeypath, bastionhost,
+                      bastionuser, bastionpassword, bastionsecurekeypath)
+        self.create_connections(name, connection_type, user, password,
+                                securekeypath, bastionhost, bastionuser,
+                                bastionpassword, bastionsecurekeypath,
+                                bastionport)
