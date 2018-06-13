@@ -1,4 +1,3 @@
-# pylint: disable=E0202, W0221
 """Create connection module."""
 import os
 import re
@@ -81,7 +80,7 @@ class SaveConnection(Command):
                         )
         return parser
 
-    def validate(self, connection_type, password, securekeypath,
+    def validate(connection_type, password, securekeypath,
                  bastionhost, bastionuser, bastionsecurekeypath,
                  bastionpassword):
         """Validate parsed arguments."""
@@ -111,7 +110,7 @@ class SaveConnection(Command):
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
 
-    def get_key(self, securekeypath):
+    def get_key(securekeypath):
         """get_key."""
         line_stripping = ''
         if os.path.exists(securekeypath):
@@ -120,7 +119,7 @@ class SaveConnection(Command):
                     line_stripping = line_stripping + '\n' + line.strip('\n')
                 return line_stripping
 
-    def create_connections(self, name, connection_type, user, password,
+    def create_connections(name, connection_type, user, password,
                            securekeypath, bastionhost, bastionuser,
                            bastionpassword, bastionsecurekeypath,
                            bastionport):
@@ -146,7 +145,7 @@ class SaveConnection(Command):
                     name=name,
                     user=user,
                     password=password,
-                    secure_key=self.get_key(securekeypath)
+                    secure_key=SaveConnection.get_key(securekeypath)
                 )
             elif(connection_type == 'SSH' and securekeypath):
                 body = deploy_sdk_client.VmConnection(
@@ -154,7 +153,7 @@ class SaveConnection(Command):
                     type=connection_type,
                     name=name,
                     user=user,
-                    secure_key=self.get_key(securekeypath)
+                    secure_key=SaveConnection.get_key(securekeypath)
                 )
             elif((connection_type == 'WinRM' and password) or
                     (connection_type == 'SSH' and password)):
@@ -166,9 +165,7 @@ class SaveConnection(Command):
                         password=password
                     )
             api_response = api_instance.save_vm_connection(body)
-            print("Connection created successfully :%s, id: %s" %
-            (api_response.name, api_response.id))  # noqa: E501
-
+            print("Connection created successfully :%s, id: %s" % (api_response.name, api_response.id))  # noqa: E501
         except ApiException as e:
             Utility.print_exception(e)
 
@@ -186,9 +183,9 @@ class SaveConnection(Command):
         user = parsed_args.user
         password = parsed_args.password
 
-        self.validate(connection_type, password, securekeypath, bastionhost,
-                      bastionuser, bastionpassword, bastionsecurekeypath)
-        self.create_connections(name, connection_type, user, password,
-                                securekeypath, bastionhost, bastionuser,
-                                bastionpassword, bastionsecurekeypath,
-                                bastionport)
+        SaveConnection.validate(connection_type, password, securekeypath, bastionhost,  # noqa: E501
+                                bastionuser, bastionpassword, bastionsecurekeypath)  # noqa: E501
+        SaveConnection.create_connections(name, connection_type, user, password,  # noqa: E501
+                                          securekeypath, bastionhost, bastionuser,  # noqa: E501
+                                          bastionpassword, bastionsecurekeypath,  # noqa: E501
+                                          bastionport)
