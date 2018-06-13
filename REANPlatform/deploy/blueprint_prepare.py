@@ -33,17 +33,19 @@ class PrepareBlueprint(Command):
         blueprint_path = parsed_args.file
         attribute_path = os.getcwd() + '/' + 'import_blueprint_attributes.json'    # noqa: E501
 
-        self.validate_parameters(attribute_path)
+        PrepareBlueprint.validate_parameters(attribute_path)
 
-        self.blueprint_prepare(blueprint_path, attribute_path)       # noqa: E501
+        PrepareBlueprint.blueprint_prepare(blueprint_path, attribute_path)       # noqa: E501
 
-    def validate_parameters(self, file_path):
+    @staticmethod 
+    def validate_parameters(file_path):
         """Validate cli parameters."""
         if file_path is None:
             raise RuntimeError("Please provide REAN Deploy\
                 blueprint file absolute path")
 
-    def blueprint_prepare(self, blueprint_path, attribute_path):     # noqa: E501
+    @staticmethod 
+    def blueprint_prepare(blueprint_path, attribute_path):     # noqa: E501
         """blueprint_prepare."""
         try:
             api_env_instance = deploy_sdk_client.EnvironmentApi()

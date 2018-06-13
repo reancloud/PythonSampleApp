@@ -29,7 +29,8 @@ class DeleteProvider(Command):
                         )
         return parser
 
-    def validate_parameters(self, id, prov_name):
+    @staticmethod
+    def validate_parameters(id, prov_name):
         """validate_parameters."""
         exception_msg = "Specify either --prov_id OR --prov_name"
         if id and prov_name:
@@ -41,14 +42,15 @@ class DeleteProvider(Command):
         """Delete provider action."""
         prov_id = parsed_args.id
         prov_name = parsed_args.name
-        self.validate_parameters(prov_id, prov_name)
+        DeleteProvider.validate_parameters(prov_id, prov_name)
 
         if prov_id:
-            self.delete_provider_by_id(prov_id)
+            DeleteProvider.delete_provider_by_id(prov_id)
         elif prov_name:
-            self.delete_provider_by_name(prov_name)
+            DeleteProvider.delete_provider_by_name(prov_name)
 
-    def delete_provider_by_id(self, prov_id):
+    @staticmethod
+    def delete_provider_by_id(prov_id):
         """delete_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
@@ -58,19 +60,21 @@ class DeleteProvider(Command):
         except ApiException as e:
             Utility.print_exception(e)
 
-    def delete_provider_by_name(self, prov_name):
+    @staticmethod
+    def delete_provider_by_name(prov_name):
         """delete_provider_by_name."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
             api_instance = set_header_parameter(provider_api_instance)
-            prov_id = self.get_id(prov_name, api_instance)
+            prov_id = DeleteProvider.get_id(prov_name, api_instance)
             if(prov_id is None):
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
-            self.delete_provider_by_id(prov_id)
+            DeleteProvider.delete_provider_by_id(prov_id)
         except ApiException as e:
             Utility.print_exception(e)
 
+    @staticmethod
     def get_id(self, name, api_instance):
         """get_id."""
         id = None
