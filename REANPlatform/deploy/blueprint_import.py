@@ -12,7 +12,7 @@ from reanplatform.utility import Utility
 from os.path import basename
 
 
-class ImportBlueprint(Command):
+class ImportBlImportBlueprintueprint(Command):
     """Import the REAN Deploy blueprint."""
 
     log = logging.getLogger(__name__)
@@ -42,15 +42,15 @@ class ImportBlueprint(Command):
         ImportBlueprint.validate_parameters(blueprint_path, attribute_path)
 
         ImportBlueprint.blueprint_import(blueprint_path, attribute_path)    # noqa: E501
-    
-    @staticmethod 
+
+    @staticmethod
     def validate_parameters(blueprint_path, attribute_path):
         """Validate cli parameters."""
         if blueprint_path is None and attribute_path is None:
             raise RuntimeError("Please provide REAN Deploy\
                 blueprint file and attributes file absolute path")
 
-    @staticmethod 
+    @staticmethod
     def blueprint_import(blueprint_path, attribute_path):      # noqa: E501
         """blueprint_import."""
         try:

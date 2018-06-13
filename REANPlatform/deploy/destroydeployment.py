@@ -56,10 +56,10 @@ class DestroyDeployment(Command):
         deployment_name = parsed_args.deployment_name
         deployment_id = parsed_args.deployment_id
 
-        DestroyDeployment.validate_parameters(env_id, deployment_name, deployment_id)
+        DestroyDeployment.validate_parameters(env_id, deployment_name, deployment_id)   # noqa: E501
 
         if env_id and deployment_name:
-            DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)
+            DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)      # noqa: E501
         elif env_id:
             DestroyDeployment.destroy_env_by_envid(env_id)
         elif deployment_id:

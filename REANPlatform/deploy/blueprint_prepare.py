@@ -37,14 +37,14 @@ class PrepareBlueprint(Command):
 
         PrepareBlueprint.blueprint_prepare(blueprint_path, attribute_path)       # noqa: E501
 
-    @staticmethod 
+    @staticmethod
     def validate_parameters(file_path):
         """Validate cli parameters."""
         if file_path is None:
             raise RuntimeError("Please provide REAN Deploy\
                 blueprint file absolute path")
 
-    @staticmethod 
+    @staticmethod
     def blueprint_prepare(blueprint_path, attribute_path):     # noqa: E501
         """blueprint_prepare."""
         try:
