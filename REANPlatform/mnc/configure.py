@@ -42,10 +42,6 @@ class Configure(Command):
         parser.add_argument(
             '--configuration-bucket', help='Managed Cloud CLI configuration bucket', action="store", required=False)
         parser.add_argument(
-            '--deploy-endpoint', help='REANDeploy endpoint', action="store", required=False)
-        parser.add_argument(
-            '--deploy-api-key', help='REANDeploy API key', action="store", required=False)
-        parser.add_argument(
             '--deploy-group', help='REANDeploy group for Managed Cloud', action="store", required=False)
         parser.add_argument(
             '--master-provider', help='REANDeploy provider for Managed Cloud AWS master account', action="store", required=False)
@@ -79,16 +75,6 @@ class Configure(Command):
             mnc_artifact_bucket = self.app.mnc_artifact_bucket
         else:
             mnc_artifact_bucket = parsed_args['artifactory_bucket']
-
-        if not parsed_args['deploy_api_key']:
-            rean_deploy_api_key = self.app.rean_deploy_api_key
-        else:
-            rean_deploy_api_key = parsed_args['deploy_api_key']
-
-        if not parsed_args['deploy_endpoint']:
-            rean_deploy_endpoint = self.app.rean_deploy_endpoint
-        else:
-            rean_deploy_endpoint = parsed_args['deploy_endpoint']
 
         if not parsed_args['deploy_group']:
             rean_deploy_mnc_group = self.app.rean_deploy_mnc_group
@@ -125,22 +111,6 @@ class Configure(Command):
         else:
             self.app.LOG.debug(
                 'Value of mnc_artifact_bucket is %s', mnc_artifact_bucket)
-
-        if rean_deploy_api_key is None:
-            self.app.LOG.error(
-                'The following arguments is required for initial configuration: --deploy-api-key')
-            return False
-        else:
-            self.app.LOG.debug(
-                'Value of rean_deploy_api_key is %s', rean_deploy_api_key)
-
-        if rean_deploy_endpoint is None:
-            self.app.LOG.error(
-                'The following arguments is required for initial configuration: --deploy-endpoint')
-            return False
-        else:
-            self.app.LOG.debug(
-                'Value of rean_deploy_endpoint is %s', rean_deploy_endpoint)
 
         if rean_deploy_mnc_group is None:
             self.app.LOG.error(
@@ -208,8 +178,6 @@ class Configure(Command):
 
         configuration_file_data = dict(
             mnc_master_account_number=mnc_master_account_number,
-            rean_deploy_endpoint=rean_deploy_endpoint,
-            rean_deploy_api_key=rean_deploy_api_key,
             rean_deploy_mnc_master_provider=rean_deploy_mnc_master_provider,
             rean_deploy_mnc_master_connection=rean_deploy_mnc_master_connection,
             rean_deploy_mnc_group=rean_deploy_mnc_group,
