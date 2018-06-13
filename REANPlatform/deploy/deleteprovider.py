@@ -75,7 +75,7 @@ class DeleteProvider(Command):
             Utility.print_exception(e)
 
     @staticmethod
-    def get_id(self, name, api_instance):
+    def get_id(name, api_instance):
         """get_id."""
         id = None
         list_api_response = api_instance.get_all_providers()
