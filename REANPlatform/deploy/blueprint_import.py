@@ -12,7 +12,7 @@ from reanplatform.utility import Utility
 from os.path import basename
 
 
-class ImportBlImportBlueprintueprint(Command):
+class ImportBlueprint(Command):
     """Import the REAN Deploy blueprint."""
 
     log = logging.getLogger(__name__)
