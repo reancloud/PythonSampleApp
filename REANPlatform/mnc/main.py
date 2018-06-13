@@ -6,7 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 
 
-class  MNC(App):
+class MNC(App):
     """Rean-MNC CLI."""
 
     def __init__(self):
@@ -33,10 +33,12 @@ class  MNC(App):
         if err:
             self.LOG.debug('got an error: %s', err)
 
+
 def main(argv=sys.argv[1:]):
     """main."""
     mnc = MNC()
     return mnc.run(argv)
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

@@ -81,6 +81,7 @@ class RuleRemove(Command):
             Utility.print_exception(e)
 
     def get_deployment_ids(self, env_id, customer_acc, api_instance):
+        """get_deployment_ids."""
         all_deployment = None
         all_deployment = api_instance.get_all_deployments_for_environment_by_id(env_id)     # noqa: E501
         if all_deployment:
