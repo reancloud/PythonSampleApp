@@ -4,8 +4,11 @@ import re
 import os.path
 import logging
 import json
+import time
+import ast
 from cliff.command import Command
 import deploy_sdk_client
+from deploy.getdeploymentstatus import Status
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
@@ -45,6 +48,9 @@ class DepolyEnv(Command):
                             help='Pass input variable json file with \
                             full path',
                             required=False)
+        parser.add_argument('--run_id', '-run_id',
+                            help='Terraform Run ID',
+                            required=False)
 
         return parser
 
@@ -66,7 +72,7 @@ class DepolyEnv(Command):
     @staticmethod
     def re_deploy_environment(environment_id, deployment_name,
                               deployment_description, env_version_id,
-                              provider_name, input_json, region):
+                              provider_name, input_json, region, run_id):
         """Redeploy An Environment."""
         try:
             # Initialise instance and api_instance
@@ -81,10 +87,21 @@ class DepolyEnv(Command):
                 provider_name=provider_name,
                 input_json=input_json
             )
-            api_response = api_instance.deploy_1(
+            response = api_instance.deploy_1(
                 body=body
             )
-            print(api_response)
+            
+            # # Get deployment status
+            while 1:
+              
+                status = Status.deployment_status(environment_id, deployment_name, run_id)
+                status_dict = str(status)
+                if "DEPLOYING" in status_dict:
+                    time.sleep(1)
+                else:
+                    break
+                
+            print(response)
         except ApiException as e:
             Utility.print_exception(e)
 
@@ -98,12 +115,16 @@ class DepolyEnv(Command):
         region = parsed_args.region
         json_file = parsed_args.json_file
         provider_name = parsed_args.provider_name
+        run_id = parsed_args.run_id
         input_json = None
 
-        input_json = DepolyEnv.pass_json_as_object(json_file)
-        print(input_json)
+        # status = Status.deployment_status(environment_id, deployment_name, run_id)
+        # print(status)
+
+        if json_file:
+            input_json = DepolyEnv.pass_json_as_object(json_file)
 
         # Re Deploy an environment
         DepolyEnv.re_deploy_environment(environment_id, deployment_name,
                                         deployment_description, env_version_id,
-                                        provider_name, input_json, region)
+                                        provider_name, input_json, region, run_id)
