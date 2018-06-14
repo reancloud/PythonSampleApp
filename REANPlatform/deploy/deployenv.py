@@ -27,7 +27,7 @@ class DepolyEnv(Command):
                             attribute if deployment name is not default.',
                             required=False)
         parser.add_argument('--deployment_description', '-desc',
-                            help='Deployment Description',
+                            help='Description of deployment',
                             required=False)
         parser.add_argument('--provider_name', '-pname',
                             help='Provider Name',
@@ -65,8 +65,8 @@ class DepolyEnv(Command):
 
     @staticmethod
     def re_deploy_environment(environment_id, deployment_name,
-                              deployment_description, provider_name,
-                              input_json, region):
+                              deployment_description, env_version_id,
+                              provider_name, input_json, region):
         """Redeploy An Environment."""
         try:
             # Initialise instance and api_instance
@@ -76,6 +76,7 @@ class DepolyEnv(Command):
                 environment_id=environment_id,
                 deployment_name=deployment_name,
                 deployment_description=deployment_description,
+                env_version_id=env_version_id,
                 region=region,
                 provider_name=provider_name,
                 input_json=input_json
@@ -93,6 +94,7 @@ class DepolyEnv(Command):
         environment_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
         deployment_description = parsed_args.deployment_description
+        env_version_id= parsed_args.env_version_id
         region = parsed_args.region
         json_file = parsed_args.json_file
         provider_name = parsed_args.provider_name
@@ -103,5 +105,5 @@ class DepolyEnv(Command):
 
         # Re Deploy an environment
         DepolyEnv.re_deploy_environment(environment_id, deployment_name,
-                                        deployment_description, provider_name,
-                                        input_json, region)
+                                        deployment_description, env_version_id,
+                                        provider_name, input_json, region)
