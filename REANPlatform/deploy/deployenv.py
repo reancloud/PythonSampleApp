@@ -94,7 +94,7 @@ class DepolyEnv(Command):
         environment_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
         deployment_description = parsed_args.deployment_description
-        env_version_id= parsed_args.env_version_id
+        env_version_id = parsed_args.env_version_id
         region = parsed_args.region
         json_file = parsed_args.json_file
         provider_name = parsed_args.provider_name
