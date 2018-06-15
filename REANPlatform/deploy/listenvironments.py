@@ -24,7 +24,8 @@ class ListEnvironments(Command):
                             required=False)
         return parser
 
-    def list_environment(self, output_format):
+    @staticmethod
+    def list_environment(output_format):
         """List Environment."""
         try:
             # Initialise instance and api_instance in list_environment
@@ -64,4 +65,4 @@ class ListEnvironments(Command):
         output_format = parsed_args.format
 
         # List Environments
-        self.list_environment(output_format)
+        ListEnvironments.list_environment(output_format)

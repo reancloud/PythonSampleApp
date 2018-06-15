@@ -28,9 +28,10 @@ class ListProvider(Command):
     def take_action(self, parsed_args):
         """take_action of ListProvider."""
         format = parsed_args.format
-        self.list_provider(format)
+        ListProvider.list_provider(format)
 
-    def list_provider(self, format):
+    @staticmethod
+    def list_provider(format):
         """list_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
