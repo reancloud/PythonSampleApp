@@ -24,14 +24,11 @@ class Status(Command):
             parser.add_argument('--env_id', '-id',
                                 help='Environment ID. This parameter \
                                 is not required when -run_id is specified',
-                                required=False)
+                                required=True)
             parser.add_argument('--deployment_name', '-dname',
                                 default='default',
                                 help='Deployment Name. This parameter \
                                 is not required when -run_id is specified',
-                                required=False)
-            parser.add_argument('--run_id', '-run_id',
-                                help='Terraform Run ID',
                                 required=False)
         except Exception as e:
             Utility.print_exception(e)
@@ -39,21 +36,7 @@ class Status(Command):
         return parser
 
     @staticmethod
-    def validate(env_id, deployment_name, run_id):
-        """Validate Parsed Arguments."""
-        if env_id and deployment_name and run_id:
-            message = "Please Provide either Run ID or Environment ID and \
-            Deployment Name."
-            exception_msg = re.sub(' +', ' ', message)
-            raise Exception(exception_msg)
-        if env_id and run_id:
-            message = "Please Provide either Run ID or Environment ID and \
-            Deployment Name. Do Not Provide Environment ID and Run ID Both."
-            exception_msg = re.sub(' +', ' ', message)
-            raise Exception(exception_msg)
-
-    @staticmethod
-    def deployment_status(env_id, deployment_name, run_id):
+    def deployment_status(env_id, deployment_name):
         """Get Deployment Status."""
         try:
             # Initialise api_response
@@ -80,13 +63,9 @@ class Status(Command):
         # Define parsed arguments
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
-        run_id = parsed_args.run_id
-
-        # Validate parsed agruments
-        Status.validate(env_id, deployment_name, run_id)
 
         # Get deployment status
-        status = Status.deployment_status(env_id, deployment_name, run_id)
+        status = Status.deployment_status(env_id, deployment_name)
 
         if status:
             print(status)

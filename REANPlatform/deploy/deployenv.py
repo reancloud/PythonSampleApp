@@ -38,18 +38,15 @@ class DepolyEnv(Command):
         parser.add_argument('--region', '-region',
                             help='Region Name',
                             required=False)
-        parser.add_argument('--env_version_id', '-env-ver-id',
-                            help='Please provide this attribute only if you \
-                            want to upgrade existing deployment with newer \
-                            version of an environment. A value should be the \
-                            version of same environment',
-                            required=False)
-        parser.add_argument('--json_file', '-json',
+        parser.add_argument('--input_json_file', '-input_json',
                             help='Pass input variable json file with \
                             full path',
                             required=False)
-        parser.add_argument('--run_id', '-run_id',
-                            help='Terraform Run ID',
+        parser.add_argument('--dependsOn_json_file', '-dependsOn_json',
+                            help='Map of parent deployment where key is \
+                            a name of \"Depends On\" resource and value is \
+                            a name/id of the deployment for the parent \
+                            environment. For example, {\"dependsOnName\" : \"DeploymentName\"}',  # noqa: E501
                             required=False)
 
         return parser
@@ -71,22 +68,22 @@ class DepolyEnv(Command):
 
     @staticmethod
     def re_deploy_environment(environment_id, deployment_name,
-                              deployment_description, env_version_id,
-                              provider_name, input_json, region, run_id):
+                              deployment_description, provider_name,
+                              region, child_input_json, depends_on_json):
         """Redeploy An Environment."""
         try:
             # Initialise instance and api_instance and response
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
             response = None
-            body = deploy_sdk_client.DeploymentConfiguration(
+            body = deploy_sdk_client.DeploymentConfigurationDto(
                 environment_id=environment_id,
                 deployment_name=deployment_name,
                 deployment_description=deployment_description,
-                env_version_id=env_version_id,
                 region=region,
                 provider_name=provider_name,
-                input_json=input_json
+                input_json=child_input_json,
+                parent_deployments=depends_on_json
             )
             response = api_instance.deploy_1(
                 body=body
@@ -94,7 +91,7 @@ class DepolyEnv(Command):
 
             # Get deployment status
             while 1:
-                status = Status.deployment_status(environment_id, deployment_name, run_id)  # noqa: E501
+                status = Status.deployment_status(environment_id, deployment_name)  # noqa: E501
                 status_dict = str(status)
                 if "DEPLOYING" in status_dict:
                     time.sleep(1)
@@ -111,19 +108,21 @@ class DepolyEnv(Command):
         environment_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
         deployment_description = parsed_args.deployment_description
-        env_version_id = parsed_args.env_version_id
         region = parsed_args.region
-        json_file = parsed_args.json_file
+        child_json = parsed_args.input_json_file
+        parent_json = parsed_args.dependsOn_json_file
         provider_name = parsed_args.provider_name
-        run_id = parsed_args.run_id
-        input_json = None
+        child_input_json = None
+        depends_on_json = None
 
-        if json_file:
-            input_json = DepolyEnv.pass_json_as_object(json_file)
+        if child_json:
+            child_input_json = DepolyEnv.pass_json_as_object(child_json)
+        if parent_json:
+            depends_on_json = DepolyEnv.pass_json_as_object(parent_json)
 
         # Re Deploy an environment
-        ressult = DepolyEnv.re_deploy_environment(environment_id, deployment_name,  # noqa: E501
-                                        deployment_description, env_version_id,
-                                        provider_name, input_json, region, run_id)  # noqa: E501
-        if ressult:
-            print(ressult)
+        result = DepolyEnv.re_deploy_environment(environment_id, deployment_name,         # noqa: E501
+                                                  deployment_description, provider_name,  # noqa: E501
+                                                  region, child_input_json, depends_on_json)   # noqa: E501
+        if result:
+            print(result)
