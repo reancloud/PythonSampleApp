@@ -87,7 +87,6 @@ class Status(Command):
 
         # Get deployment status
         status = Status.deployment_status(env_id, deployment_name, run_id)
-        
+
         if status:
             print(status)
-        

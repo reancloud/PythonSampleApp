@@ -75,9 +75,10 @@ class DepolyEnv(Command):
                               provider_name, input_json, region, run_id):
         """Redeploy An Environment."""
         try:
-            # Initialise instance and api_instance
+            # Initialise instance and api_instance and response
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
+            response = None
             body = deploy_sdk_client.DeploymentConfiguration(
                 environment_id=environment_id,
                 deployment_name=deployment_name,
@@ -90,18 +91,17 @@ class DepolyEnv(Command):
             response = api_instance.deploy_1(
                 body=body
             )
-            
-            # # Get deployment status
+
+            # Get deployment status
             while 1:
-              
-                status = Status.deployment_status(environment_id, deployment_name, run_id)
+                status = Status.deployment_status(environment_id, deployment_name, run_id)  # noqa: E501
                 status_dict = str(status)
                 if "DEPLOYING" in status_dict:
                     time.sleep(1)
                 else:
                     break
-                
-            print(response)
+
+            return response
         except ApiException as e:
             Utility.print_exception(e)
 
@@ -118,13 +118,12 @@ class DepolyEnv(Command):
         run_id = parsed_args.run_id
         input_json = None
 
-        # status = Status.deployment_status(environment_id, deployment_name, run_id)
-        # print(status)
-
         if json_file:
             input_json = DepolyEnv.pass_json_as_object(json_file)
 
         # Re Deploy an environment
-        DepolyEnv.re_deploy_environment(environment_id, deployment_name,
+        ressult = DepolyEnv.re_deploy_environment(environment_id, deployment_name,  # noqa: E501
                                         deployment_description, env_version_id,
-                                        provider_name, input_json, region, run_id)
+                                        provider_name, input_json, region, run_id)  # noqa: E501
+        if ressult:
+            print(ressult)
