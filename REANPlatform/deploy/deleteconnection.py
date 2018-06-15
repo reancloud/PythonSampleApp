@@ -30,7 +30,8 @@ class DeleteConnection(Command):
                             )
         return parser
 
-    def validate_parameters(self, conn_id, conn_name):
+    @staticmethod
+    def validate_parameters(conn_id, conn_name):
         """validate_parameters."""
         exception_msg = "Specify either --conn_name OR --conn_id"
         if conn_id and conn_name:
@@ -43,14 +44,14 @@ class DeleteConnection(Command):
         conn_name = parsed_args.conn_name
         conn_id = parsed_args.conn_id
 
-        self.validate_parameters(conn_id, conn_name)
+        DeleteConnection.validate_parameters(conn_id, conn_name)
 
         if conn_id:
-            self.delete_connection_by_id(conn_id)
+            DeleteConnection.delete_connection_by_id(conn_id)
         elif conn_name:
-            self.delete_connection_by_name(conn_name)
+            DeleteConnection.delete_connection_by_name(conn_name)
 
-    def delete_connection_by_id(self, conn_id):
+    def delete_connection_by_id(conn_id):
         """delete_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
@@ -60,7 +61,7 @@ class DeleteConnection(Command):
         except ApiException as e:
             Utility.print_exception(e)
 
-    def delete_connection_by_name(self, conn_name):
+    def delete_connection_by_name(conn_name):
         """delete_connection_by_name."""
         conn_api_instance = deploy_sdk_client.ConnectionApi()
         api_instance = set_header_parameter(conn_api_instance)
@@ -74,7 +75,7 @@ class DeleteConnection(Command):
 
             if(conn_id is None):
                 raise RuntimeError("Exception : connection does not exit", conn_name)    # noqa: E501
-            self.delete_connection_by_id(conn_id)
+            DeleteConnection.delete_connection_by_id(conn_id)
 
         except ApiException as e:
             Utility.print_exception(e)

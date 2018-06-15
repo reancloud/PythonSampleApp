@@ -35,9 +35,10 @@ class SaveProvider(Command):
         prov_type = parsed_args.type
         provider_details = parsed_args.provider_details
 
-        self.create_provider(prov_name, prov_type, provider_details)
+        SaveProvider.create_provider(prov_name, prov_type, provider_details)
 
-    def create_provider(self, prov_name, prov_type, provider_details):
+    @staticmethod
+    def create_provider(prov_name, prov_type, provider_details):
         """create_provider."""
         provider_api_instance = deploy_sdk_client.ProviderApi()
         api_instance = set_header_parameter(provider_api_instance)

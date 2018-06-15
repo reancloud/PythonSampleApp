@@ -28,9 +28,10 @@ class ListConnections(Command):
     def take_action(self, parsed_args):
         """take_action."""
         format = parsed_args.format
-        self.list_connection(format)
+        ListConnections.list_connection(format)
 
-    def list_connection(self, format):
+    @staticmethod
+    def list_connection(format):
         """list_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
