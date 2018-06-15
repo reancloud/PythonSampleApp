@@ -42,7 +42,8 @@ class DepolyEnv(Command):
                             help='Pass input variable json file with \
                             full path',
                             required=False)
-        parser.add_argument('--dependsOn_json_file', '-dependsOn_json',
+        parser.add_argument('--parent_deployment_mappings',
+                            '-parent_mapping_json',
                             help='Map of parent deployment where key is \
                             a name of \"Depends On\" resource and value is \
                             a name/id of the deployment for the parent \
@@ -52,7 +53,7 @@ class DepolyEnv(Command):
         return parser
 
     @staticmethod
-    def pass_json_as_object(json_file):
+    def read_file_as_json_object(json_file):
         """Convert Json to String."""
         try:
             # check file exists
@@ -110,15 +111,15 @@ class DepolyEnv(Command):
         deployment_description = parsed_args.deployment_description
         region = parsed_args.region
         child_json = parsed_args.input_json_file
-        parent_json = parsed_args.dependsOn_json_file
+        parent_json = parsed_args.parent_deployment_mappings
         provider_name = parsed_args.provider_name
         child_input_json = None
         depends_on_json = None
 
         if child_json:
-            child_input_json = DepolyEnv.pass_json_as_object(child_json)
+            child_input_json = DepolyEnv.read_file_as_json_object(child_json)
         if parent_json:
-            depends_on_json = DepolyEnv.pass_json_as_object(parent_json)
+            depends_on_json = DepolyEnv.read_file_as_json_object(parent_json)
 
         # Re Deploy an environment
         result = DepolyEnv.re_deploy_environment(environment_id, deployment_name,         # noqa: E501
