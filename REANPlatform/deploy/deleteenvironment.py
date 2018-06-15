@@ -20,7 +20,8 @@ class DeleteEnvironment(Command):
                             required=True)
         return parser
 
-    def delete_env(self, env_id):
+    @staticmethod
+    def delete_env(env_id):
         """Delete environment action."""
         try:
             # Initialise instance and api_instance
@@ -38,4 +39,4 @@ class DeleteEnvironment(Command):
         env_id = parsed_args.id
 
         # Delete an environment by ID
-        self.delete_env(env_id)
+        DeleteEnvironment.delete_env(env_id)
