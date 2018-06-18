@@ -9,6 +9,7 @@ from reanplatform.set_header import set_header_parameter
 from prettytable import PrettyTable
 from reanplatform.utility import Utility
 from deploy.destroydeployment import DestroyDeployment
+import boto3
 
 
 class RuleRemove(Command):
@@ -63,7 +64,7 @@ class RuleRemove(Command):
                 for one_env in all_env:
                     deployment_id = None
                     if rule_name and customer_acc:
-                        if one_env.name == rule_name:
+                        if one_env.name == rule_name or (one_env.name.startswith(rule_name[0:20]) and one_env.name.endswith("assume_role")):    # noqa: E501
                             deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, api_instance)     # noqa: E501
                     elif customer_acc:
                         deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, api_instance)     # noqa: E501
@@ -83,8 +84,8 @@ class RuleRemove(Command):
     def get_deployment_ids(self, env_id, customer_acc, api_instance):
         """get_deployment_ids."""
         all_deployment = None
-        all_deployment = api_instance.get_all_deployments_for_environment_by_id(env_id)     # noqa: E501
+        all_deployment = api_instance.get_all_deployments_for_environment_by_id_0(env_id)     # noqa: E501
         if all_deployment:
             for single_deployment in all_deployment:
-                if single_deployment.input_json and customer_acc in single_deployment.input_json:   # noqa: E501
+                if customer_acc in single_deployment.deployment_name:   # noqa: E501
                     return single_deployment.id
