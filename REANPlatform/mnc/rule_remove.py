@@ -10,6 +10,7 @@ from prettytable import PrettyTable
 from reanplatform.utility import Utility
 from deploy.destroydeployment import DestroyDeployment
 import boto3
+import time
 
 
 class RuleRemove(Command):
@@ -25,7 +26,8 @@ class RuleRemove(Command):
         parser.add_argument('--rule_type', '-t', help='Rule type.',
                             required=False)
         parser.add_argument('--customer_acc', '-acc',
-                            help='Customer AWS account number.', required=True)
+                            help='Customer AWS account number.',
+                            required=False)
         parser.add_argument('--force', '-f',
                             help='Forcefully remove rule.',
                             required=False)
@@ -36,8 +38,6 @@ class RuleRemove(Command):
         exception_msg = "Specify either ---customer_acc OR --rule_name\
                 and --customer_acc"
         if rule_name is None and customer_acc is None:
-            raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif rule_name and customer_acc is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
@@ -64,28 +64,36 @@ class RuleRemove(Command):
                 for one_env in all_env:
                     deployment_id = None
                     if rule_name and customer_acc:
-                        if one_env.name == rule_name or (one_env.name.startswith(rule_name[0:20]) and one_env.name.endswith("assume_role")):    # noqa: E501
-                            deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, api_instance)     # noqa: E501
+                        if one_env.name.startswith(rule_name):
+                            deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, None, api_instance)     # noqa: E501
                     elif customer_acc:
-                        deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, api_instance)     # noqa: E501
+                        deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, None, api_instance)     # noqa: E501
+                    elif rule_name:
+                        if one_env.name.startswith(rule_name):
+                            deployment_id = self.get_deployment_ids(one_env.config.env_id, customer_acc, rule_name, api_instance)     # noqa: E501
 
                     if deployment_id:
-                        deployment_id_to_remove.append(deployment_id)
+                            if one_env.name.endswith('assume_role'):
+                                deployment_id_to_remove.insert(0, deployment_id)    # noqa: E501
+                            else:
+                                deployment_id_to_remove.append(deployment_id)
 
                 if deployment_id_to_remove:
                     for deployment_id in deployment_id_to_remove:
+                        print(deployment_id_to_remove)
                         DestroyDeployment.destroy_by_deploymentid(deployment_id)    # noqa: E501
+                        time.sleep(20)
                 else:
                     print("No deployment for account :", customer_acc)
 
         except ApiException as e:
             Utility.print_exception(e)
 
-    def get_deployment_ids(self, env_id, customer_acc, api_instance):
+    def get_deployment_ids(self, env_id, customer_acc, rule_name, api_instance):        # noqa: E501
         """get_deployment_ids."""
         all_deployment = None
         all_deployment = api_instance.get_all_deployments_for_environment_by_id_0(env_id)     # noqa: E501
         if all_deployment:
             for single_deployment in all_deployment:
-                if customer_acc in single_deployment.deployment_name:   # noqa: E501
+                if customer_acc and customer_acc in single_deployment.deployment_name or rule_name and single_deployment.deployment_name:   # noqa: E501
                     return single_deployment.id
