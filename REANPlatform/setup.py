@@ -43,10 +43,11 @@ setup(
     packages=find_packages(),
     include_package_data=True,
 
-    entry_points={
+    entry_points={   
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
-            'rean-deploy = deploy.main:main'
+            'rean-deploy = deploy.main:main',
+            'rean-mnc = mnc.main:main'
         ],
          'rean.platform': [
              'configure = reanplatform.configure:Configure',
@@ -66,18 +67,14 @@ setup(
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
-            'get-deployment-id = deploy.getdeploymentid:GetDeployments',
-            'get-status = deploy.getdeploymentstatus:Status',
-            'deploy-env = deploy.deployenv:DepolyEnv'
+            'get-deployment-id = deploy.getdeploymentid:GetDeployments'
         ],
-
-    #    'rean.mnc': [
-    #        'configure = mnc.configure:Configure',
+        'rean.mnc': [
+            'configure = mnc.configure:Configure',
     #        'rule = mnc.rule:Rule',
-    #        'rule install = mnc.rule_install:RuleInstall',
-    #        'rule list = mnc.rule_list:RuleList',
-    #        'rule remove = mnc.rule_remove:RuleRemove'
-    #    ],
+            'rule-list = mnc.rule_list:RuleList',
+            'rule-remove = mnc.rule_remove:RuleRemove'
+        ],
     #    'rean.test': [
     #        'run-url-test = test.runurl:RunURLTest',
     #        'run-upa-test = test.runupa:RunUPA',
