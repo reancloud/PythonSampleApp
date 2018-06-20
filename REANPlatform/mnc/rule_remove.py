@@ -36,7 +36,7 @@ class RuleRemove(Command):
     def validate_parameters(self, rule_name, rule_type, customer_acc):
         """Validate cli parameter."""
         exception_msg = "Specify either ---customer_acc OR --rule_name\
-                and --customer_acc"
+                OR --customer_acc and --rule_name"
         if rule_name is None and customer_acc is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
