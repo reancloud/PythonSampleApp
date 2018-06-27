@@ -84,25 +84,29 @@ class SaveConnection(Command):
                  bastionhost, bastionuser, bastionsecurekeypath,
                  bastionpassword):
         """Validate parsed arguments."""
+        if securekeypath:
+            if not os.path.exists(securekeypath):
+                message = "Provided private key does not exist."
+                exception_msg = re.sub(' +', ' ', message)
+                raise Exception(exception_msg)
         if connection_type == 'WinRM' and securekeypath:
-            message = "WinRM Does Not Required SecureKey."
+            message = "WinRM does not support connection using Private Key."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if password is None and connection_type == 'WinRM':
-            message = "password must not be none for 'WinRM'."
+            message = "Password must not be none for 'WinRM'."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if connection_type == 'SSH' and (password or securekeypath) is None:
-            message = "password or securekeypath must not be none for 'SSH'."
+            message = "Either password or securekeypath must be specified when connection type is 'SSH'."  noqa: E501
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if bastionuser is None and bastionhost:
-            message = "bastion user must not be none for bastion connection."
+            message = "Bastion user must not be empty for bastion connection."
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if bastionuser and (bastionsecurekeypath or bastionpassword) is None:
-            message = "bastionpassword or bastionsecurekeypath must not be \
-            none for bastion connection."
+            message = "Specify either bastionpassword or bastionsecurekeypath when bastion is enabled."  noqa: E501
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if connection_type == 'WinRM' and bastionuser:
@@ -110,15 +114,16 @@ class SaveConnection(Command):
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
 
+    @staticmethod
     def get_key(securekeypath):
         """get_key."""
         line_stripping = ''
-        if os.path.exists(securekeypath):
-            with open(securekeypath, 'r') as fin:
-                for line in fin.readlines():
-                    line_stripping = line_stripping + '\n' + line.strip('\n')
-                return line_stripping
+        with open(securekeypath, 'r') as fin:
+            for line in fin.readlines():
+                line_stripping = line_stripping + '\n' + line.strip('\n')
+            return line_stripping
 
+    @staticmethod
     def create_connections(name, connection_type, user, password,
                            securekeypath, bastionhost, bastionuser,
                            bastionpassword, bastionsecurekeypath,
