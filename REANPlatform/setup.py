@@ -67,14 +67,17 @@ setup(
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
-            'get-deployment-id = deploy.getdeploymentid:GetDeployments'
+            'get-deployment-id = deploy.getdeploymentid:GetDeployments',
+            'get-status = deploy.getdeploymentstatus:Status',
+            'deploy-env = deploy.deployenv:DepolyEnv'
         ],
+
         'rean.mnc': [
     #        'configure = mnc.configure:Configure',
     #        'rule = mnc.rule:Rule',
-    #        'rule-install = mnc.rule_install:RuleInstall',
+    #        'rule install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
-            'rule-remove = mnc.rule_remove:RuleRemove'
+    #        'rule remove = mnc.rule_remove:RuleRemove'
         ],
     #    'rean.test': [
     #        'run-url-test = test.runurl:RunURLTest',
