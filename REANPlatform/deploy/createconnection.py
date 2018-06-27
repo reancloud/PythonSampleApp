@@ -98,7 +98,7 @@ class SaveConnection(Command):
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if connection_type == 'SSH' and (password or securekeypath) is None:
-            message = "Either password or securekeypath must be specified when connection type is 'SSH'."  noqa: E501
+            message = "Either password or securekeypath must be specified when connection type is 'SSH'."    # noqa: E501
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if bastionuser is None and bastionhost:
@@ -106,7 +106,7 @@ class SaveConnection(Command):
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if bastionuser and (bastionsecurekeypath or bastionpassword) is None:
-            message = "Specify either bastionpassword or bastionsecurekeypath when bastion is enabled."  noqa: E501
+            message = "Specify either bastionpassword or bastionsecurekeypath when bastion is enabled."    # noqa: E501
             exception_msg = re.sub(' +', ' ', message)
             raise Exception(exception_msg)
         if connection_type == 'WinRM' and bastionuser:
