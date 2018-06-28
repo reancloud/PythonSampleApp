@@ -1,0 +1,47 @@
+#!/usr/bin/env groovy
+
+def setJobProperties() {
+  properties([
+    [
+      $class: 'BuildDiscarderProperty',
+      strategy: [
+        $class: 'BuildRotator',
+        daysToKeep: 5,
+        numToKeep: 10,
+        artifactsDaysToKeep: 5,
+        artifactsNumToKeep: 10
+      ]
+    ]
+  ])
+}
+
+pipeline {
+    
+    agent {
+        node {
+            label 'master'
+        }
+    }
+
+    parameters {
+        string(defaultValue: '', description: 'Enter version number / git latest tag to be promoted from qa', name: 'VERSION_NUMBER')
+    }
+
+    stages {
+        
+        stage('Promote artifacts from QA to Prod') {
+            steps {
+                sh '''
+                #!bin/bash
+                aws s3 cp s3://svc-rean-product-default-platform-artifacts/rean-mnc/qa/rean-mnc-$VERSION_NUMBER/ s3://svc-rean-product-default-platform-artifacts/rean-mnc/prod/rean-mnc-${VERSION_NUMBER}/ --recursive
+                '''
+            }
+        }
+        
+    }
+    post{
+        always{
+            deleteDir()
+        }
+    }
+}
