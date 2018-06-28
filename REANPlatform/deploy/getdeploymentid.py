@@ -32,7 +32,8 @@ class GetDeployments(Command):
 
         return parser
 
-    def get_deployments_by_env_id(self, env_id):
+    @staticmethod
+    def get_deployments_by_env_id(env_id):
         """Get Deployments By Env ID."""
         try:
             # Initialise instance and api_instance
@@ -45,7 +46,8 @@ class GetDeployments(Command):
         except ApiException as e:
                 Utility.print_exception(e)
 
-    def get_deployment_by_deployment_name(self, env_id, deployment_name):
+    @staticmethod
+    def get_deployment_by_deployment_name(env_id, deployment_name):
         """Get Deployments by Env ID And Deployment Name."""
         try:
             # Initialise instance and api_instance
@@ -66,6 +68,6 @@ class GetDeployments(Command):
         deployment_name = parsed_args.deployment_name
 
         if env_id and deployment_name:
-            self.get_deployment_by_deployment_name(env_id, deployment_name)
+            GetDeployments.get_deployment_by_deployment_name(env_id, deployment_name)  # noqa: E501
         elif env_id:
-            self.get_deployments_by_env_id(env_id)
+            GetDeployments.get_deployments_by_env_id(env_id)

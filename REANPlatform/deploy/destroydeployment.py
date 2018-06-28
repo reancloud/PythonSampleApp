@@ -38,7 +38,8 @@ class DestroyDeployment(Command):
                             )
         return parser
 
-    def validate_parameters(self, env_id, deployment_name, deployment_id):
+    @staticmethod
+    def validate_parameters(env_id, deployment_name, deployment_id):
         """Validate cli parameter."""
         exception_msg = "Specify either ---env_id OR --deployment_id OR\
                 --env_id and --deployment_name"
@@ -55,16 +56,17 @@ class DestroyDeployment(Command):
         deployment_name = parsed_args.deployment_name
         deployment_id = parsed_args.deployment_id
 
-        self.validate_parameters(env_id, deployment_name, deployment_id)
+        DestroyDeployment.validate_parameters(env_id, deployment_name, deployment_id)   # noqa: E501
 
         if env_id and deployment_name:
-            self.destroy_by_envid_deploymentname(env_id, deployment_name)
+            DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)      # noqa: E501
         elif env_id:
-            self.destroy_env_by_envid(env_id)
+            DestroyDeployment.destroy_env_by_envid(env_id)
         elif deployment_id:
-            self.destroy_by_deploymentid(deployment_id)
+            DestroyDeployment.destroy_by_deploymentid(deployment_id)
 
-    def destroy_env_by_envid(self, env_id):
+    @staticmethod
+    def destroy_env_by_envid(env_id):
         """destroy_env_by_envid."""
         try:
             api_instance = deploy_sdk_client.EnvironmentApi()
@@ -74,7 +76,8 @@ class DestroyDeployment(Command):
         except ApiException as e:
             Utility.print_exception(e)
 
-    def destroy_by_deploymentid(self, deployment_id):
+    @staticmethod
+    def destroy_by_deploymentid(deployment_id):
         """destroy_deployment_id."""
         try:
             api_instance = deploy_sdk_client.EnvironmentApi()
@@ -84,7 +87,8 @@ class DestroyDeployment(Command):
         except ApiException as e:
             Utility.print_exception(e)
 
-    def destroy_by_envid_deploymentname(self, env_id, deployment_name):
+    @staticmethod
+    def destroy_by_envid_deploymentname(env_id, deployment_name):
         """destroy_by_envid_deploymentname."""
         try:
             api_instance = deploy_sdk_client.EnvironmentApi()
