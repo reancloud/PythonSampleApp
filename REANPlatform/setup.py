@@ -1,10 +1,10 @@
 """ Setup of REAN Platform CLI."""
-#!/usr/bin/env python
+#   !/usr/bin/env python
 from setuptools import setup, find_packages
 
 PROJECT = 'REANPlatform'
 
-# Change docs/sphinx/conf.py too!
+#   Change docs/sphinx/conf.py too!
 VERSION = '0.1'
 
 try:
@@ -19,17 +19,17 @@ setup(
     long_description=LONG_DESCRIPTION,
     url='https://github.com/reancloud/',
     download_url='https://github.com/reancloud/deploy_sdk_client',
-    classifiers=['Development Status :: 3 - Alpha',
-                 'License :: OSI Approved :: Apache Software License',
-                 'Programming Language :: Python',
-                 'Programming Language :: Python :: 3',
-                 'Programming Language :: Python :: 3.2',
-                 'Programming Language :: Python :: 3.5.1',
-                 'Programming Language :: Python :: 3.5.5',
-                 'Programming Language :: Python :: 3.6',
-                 'Intended Audience :: Developers',
-                 'Environment :: Console',
-                ],
+    classifiers=[
+                'Development Status :: 3 - Alpha',
+                'License :: OSI Approved :: Apache Software License',
+                'Programming Language :: Python',
+                'Programming Language :: Python :: 3',
+                'Programming Language :: Python :: 3.2',
+                'Programming Language :: Python :: 3.5.1',
+                'Programming Language :: Python :: 3.5.5',
+                'Programming Language :: Python :: 3.6',
+                'Intended Audience :: Developers',
+                'Environment :: Console'],
 
     platforms=['Any'],
 
