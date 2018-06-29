@@ -33,7 +33,8 @@ pipeline {
                             sh '''
                                 #!/bin/bash
                                 set -e
-                                python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized */*.py
+                                python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized REANPlatform/*.py
+                                python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized -r */*.py
                             '''
                             println "\u001B[32mCode adheres to PyLint\u001B[0m"
                         } catch (Exception e) {
