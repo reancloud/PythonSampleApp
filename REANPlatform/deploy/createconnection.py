@@ -40,17 +40,18 @@ class SaveConnection(Command):
                             '--password',
                             '-p',
                             help='Password to login machine',
-                            required=True
+                            required=False
                         )
         parser.add_argument(
                             '--securekeypath',
-                            '-key', help='Secure key path',
+                            '-key', help='Secure key path. Provide this attribute only if  \
+                            Connection protocol type is SSH.',
                             required=False
                         )
 
         parser.add_argument(
                             '--bastionhost',
-                            '-host', help='Bastion host',
+                            '-b_host', help='Bastion host',
                             required=False
                         )
 
@@ -61,7 +62,7 @@ class SaveConnection(Command):
                         )
         parser.add_argument(
                             '--bastionport',
-                            '-port', help='Bastion port',
+                            '-b_port', help='Bastion port',
                             required=False
                         )
         parser.add_argument(
@@ -80,8 +81,7 @@ class SaveConnection(Command):
     def get_key(self, parsed_args):
         """get_key."""
         line_stripping = ''
-        if os.path.exists(parsed_args.securekeypath):
-            with open(parsed_args.securekeypath, 'r') as fin:
+        with open(parsed_args.securekeypath, 'r') as fin:
                 for line in fin.readlines():
                     line_stripping = line_stripping + '\n' + line.strip('\n')
                 return line_stripping
@@ -93,7 +93,7 @@ class SaveConnection(Command):
         body = None
         bastion_data = None
         try:
-            if parsed_args.bastionhost:
+            if (parsed_args.bastionhost and parsed_args.type == 'SSH'):
                 bastion_data = {
                         'host': parsed_args.bastionhost,
                         'password': parsed_args.bastionpassword,
@@ -102,7 +102,8 @@ class SaveConnection(Command):
                         'user': parsed_args.bastionuser
                     }
 
-            if(parsed_args.type == 'SSH' and parsed_args.securekeypath):
+            if((parsed_args.type == 'SSH' and parsed_args.securekeypath) or
+                (parsed_args.type == 'SSH' and parsed_args.password)):
                     body = deploy_sdk_client.VmConnection(
                         bastion_connection=bastion_data,
                         type=parsed_args.type,
@@ -110,8 +111,7 @@ class SaveConnection(Command):
                         user=parsed_args.user,
                         secure_key=self.get_key(parsed_args)
                     )
-            elif((parsed_args.type == 'WinRM' and parsed_args.password) or
-                    (parsed_args.type == 'SSH' and parsed_args.password)):
+            elif(parsed_args.type == 'WinRM' and parsed_args.password):
                     body = deploy_sdk_client.VmConnection(
                         bastion_connection=bastion_data,
                         type=parsed_args.type,
