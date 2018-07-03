@@ -1,0 +1,56 @@
+#!/usr/bin/env groovy
+
+def setJobProperties() {
+  properties([
+    [
+      $class: 'BuildDiscarderProperty',
+      strategy: [
+        $class: 'BuildRotator',
+        daysToKeep: 5,
+        numToKeep: 10,
+        artifactsDaysToKeep: 5,
+        artifactsNumToKeep: 10
+      ]
+    ]
+  ])
+}
+
+pipeline {
+    agent {
+        node {
+            label 'master'
+        }
+    }
+    stages {
+        stage ('Pytests and Code coverage') {
+            steps {
+                script {
+                    ansiColor('xterm') {
+                        println "\u001B[34m\u001B[1m*************************\u001B[0m"
+                        println "\u001B[34m\u001B[1mPytests\u001B[0m"
+                        println "\u001B[34m\u001B[1m*************************\u001B[0m"
+                        try {
+                            sh '''
+                                #!/bin/bash
+                                
+                                echo "Work in progress"
+                                
+                            '''
+                            println "\u001B[32mCode coverage ran sucessfully\u001B[0m"
+                        } catch (Exception e) {
+                            println "\u001B[31m********************************************************\u001B[0m"
+                            println "\u001B[31mFAILED: Code coverage and Pytest failed. Fix the issues \u001B[0m"
+                            println "\u001B[31m********************************************************\u001B[0m"
+                            sh 'exit 1'
+                        }
+                    }   
+                }
+            }
+        }
+    }
+    post {
+        always {
+            deleteDir()
+        }
+    }
+}
