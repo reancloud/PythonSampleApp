@@ -1,0 +1,63 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent {
+    node {
+      label 'master'
+    }
+  }
+  environment {    
+    S3_PATH = 's3://reancli-artifacts/DEVELOP/'
+    ARTIFACT_NAME = 'REANCLI'
+    PYTHON_CMD = 'python'
+    PIP_CMD = 'pip'
+  }
+    stages {
+    stage('Workspace Cleanup') {
+        steps {
+            deleteDir()
+      }
+    }
+    
+    stage('Checkout') { 
+      steps {
+      git branch: "$GIT_BRANCH", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: '$GIT_REPO'
+      }
+    }
+    
+    stage('Build') {
+    steps {
+    sh '''#!/bin/bash -l
+            set -e
+            virtualenv dev
+            source dev/bin/activate
+            cd REANPlatform/
+            ARTIFACT_VERSION=$(awk -v FS="VERSION =" 'NF>1{print $2}' setup.py | cut -d"'" -f2)
+            ${PYTHON_CMD} setup.py bdist_wheel
+            WHEEL_FILE_NAME="$(find dist/ -type f -printf "%f\n")"
+            ${PIP_CMD} install dist/${WHEEL_FILE_NAME} --upgrade
+            zip -r ${ARTIFACT_NAME}-v${ARTIFACT_VERSION}-${BUILD_NUMBER}.zip *
+    '''
+    }
+}
+    stage("Publish to S3") {
+    steps {
+        sh ''' 
+          export AWS_DEFAULT_REGION=us-east-1
+          export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+          export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          cd REANPlatform;
+          echo "Creating Zip ..."
+          aws s3 cp *.zip ${S3_PATH}
+          echo "Copying Artifact to S3 Completed"
+        '''
+    }
+    }
+    }
+    
+    post {
+        always {
+            deleteDir()
+        }
+    }
+}
