@@ -7,7 +7,7 @@ pipeline {
     }
   }
   environment {    
-    S3_BUCKET_NAME = 's3://reancli-artifacts/'
+    S3_PATH = 's3://reancli-artifacts/DEVELOP/'
     ARTIFACT_NAME = 'REANCLI'
     PYTHON_CMD = 'python'
     PIP_CMD = 'pip'
@@ -29,7 +29,6 @@ pipeline {
     steps {
     sh '''#!/bin/bash -l
             set -e
-            which python
             virtualenv dev
             source dev/bin/activate
             cd REANPlatform/
@@ -37,7 +36,7 @@ pipeline {
             ${PYTHON_CMD} setup.py bdist_wheel
             WHEEL_FILE_NAME="$(find dist/ -type f -printf "%f\n")"
             ${PIP_CMD} install dist/${WHEEL_FILE_NAME} --upgrade
-            zip -r ${ARTIFACT_NAME}-${ARTIFACT_VERSION}-${BUILD_NUMBER}.zip *
+            zip -r ${ARTIFACT_NAME}-v${ARTIFACT_VERSION}-${BUILD_NUMBER}.zip *
     '''
     }
 }
@@ -49,7 +48,7 @@ pipeline {
           export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
           cd REANPlatform;
           echo "Creating Zip ..."
-          aws s3 cp *.zip ${S3_BUCKET_NAME}
+          aws s3 cp *.zip ${S3_PATH}
           echo "Copying Artifact to S3 Completed"
         '''
     }
