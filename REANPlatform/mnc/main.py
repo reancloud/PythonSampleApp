@@ -6,7 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 
 
-class MNC(App):
+class MNC(App):            # noqa: D203
     """Rean-MNC CLI."""
 
     def __init__(self):
