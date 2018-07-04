@@ -1,18 +1,16 @@
 """List Rules."""
 import logging
-from pprint import pprint
-from cliff.command import Command
-import deploy_sdk_client
 import json
-from deploy_sdk_client.rest import ApiException
-from reanplatform.set_header import set_header_parameter
-from prettytable import PrettyTable
-from reanplatform.utility import Utility
 import re
 from collections import OrderedDict
+from cliff.command import Command
+import deploy_sdk_client
+from deploy_sdk_client.rest import ApiException
+from reanplatform.utility import Utility
+from reanplatform.set_header import set_header_parameter
 
 
-class RuleList(Command):
+class RuleList(Command):        # noqa: D203.
     """List Manage Cloud Rules."""
 
     log = logging.getLogger(__name__)
@@ -31,10 +29,11 @@ class RuleList(Command):
                             required=False)
         return parser
 
-    def validate_parameters(self, rule_name, rule_type, customer_acc):
+    @staticmethod
+    def validate_parameters(rule_name, rule_type, customer_acc):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
-            raise RuntimeError("Specify either --rule_name OR --customer_acc OR --rule_name and --customer_acc")    # noqa: E501
+            raise RuntimeError("Specify either --rule_name OR --customer_acc OR --rule_name and --customer_acc")
 
     def take_action(self, parsed_args):
         """List Environment."""
@@ -42,7 +41,7 @@ class RuleList(Command):
         rule_type = parsed_args.rule_type
         customer_acc = parsed_args.customer_acc
         rule_name_key = None
-        self.validate_parameters(rule_name, rule_type, customer_acc)
+        RuleList.validate_parameters(rule_name, rule_type, customer_acc)
         try:
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
@@ -52,68 +51,64 @@ class RuleList(Command):
             #   input_json = ''
 
             for one_env in all_env:
-                    prepare_data = {}
-                    deployment_id = None
-                    input_json = None
-                    if rule_name and customer_acc:
-                        if (one_env.name.startswith(rule_name)):       # noqa: E501
-                            input_json = self.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name=None)     # noqa: E501
-                            if input_json:
-                                display_data = {
-                                        'Customer-Account': customer_acc,
-                                        'Rule-name': rule_name,
-                                        'Rule-type': None,
-                                        'Input-Parameters': input_json
-                                     }
-                    elif customer_acc:
-                        input_json = self.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)     # noqa: E501
-                        rule_name = ''
+                input_json = None
+                if rule_name and customer_acc:
+                    if one_env.name.startswith(rule_name):
+                        input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name=None)
                         if input_json:
-                            display_data['Customer-Account'] = customer_acc
-                            display_data['Rule-type'] = rule_type
-                            rule_name_key = one_env.name.replace('_config_rule_setup', '')      # noqa: E501
-                            display_data[rule_name_key] = {
-                                                "Input-Parameters": input_json
-                                        }
-                    elif rule_name:
-                        if (one_env.name.startswith(rule_name)):
-                            input_all_deployment = self.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)     # noqa: E501
+                            display_data = {
+                                'Customer-Account': customer_acc,
+                                'Rule-name': rule_name,
+                                'Rule-type': None,
+                                'Input-Parameters': input_json}
+                elif customer_acc:
+                    input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)
+                    rule_name = ''
+                    if input_json:
+                        display_data['Customer-Account'] = customer_acc
+                        display_data['Rule-type'] = rule_type
+                        rule_name_key = one_env.name.replace('_config_rule_setup', '')
+                        display_data[rule_name_key] = {
+                            "Input-Parameters": input_json}
+                elif rule_name:
+                    if one_env.name.startswith(rule_name):
+                        input_all_deployment = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)
 
-                            if input_all_deployment:
-                                display_data['Rule-Name'] = rule_name
-                                display_data['Rule-type'] = rule_type
-                                for input_json in input_all_deployment:
-                                    if input_json['input_data'] and ''.join(input_json['acc_no']):        # noqa: E501
-                                        display_data[''.join(input_json['acc_no'])] = {                 # noqa: E501
-                                                          "Input-Parameters": input_json['input_data']      # noqa: E501
-                                                        }
+                        if input_all_deployment:
+                            display_data['Rule-Name'] = rule_name
+                            display_data['Rule-type'] = rule_type
+                            for input_json in input_all_deployment:
+                                if input_json['input_data'] and ''.join(input_json['acc_no']):
+                                    display_data[''.join(input_json['acc_no'])] = {
+                                        "Input-Parameters": input_json['input_data']}
             if display_data:
                 print(json.dumps(display_data, indent=4))
             else:
                 print("Rule deployment not found")
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as exception:
+            Utility.print_exception(exception)
 
-    def get_input_json(self, env_id, customer_acc, api_instance, rule_name):
+    @staticmethod
+    def get_input_json(env_id, customer_acc, api_instance, rule_name):
         """get_input_json."""
         all_deployment = None
         input_data = None
         input_all_deployment = []
-        all_deployment = api_instance.get_all_deployments_for_environment_by_id_0(env_id)     # noqa: E501
+        all_deployment = api_instance.get_all_deployments_for_environment_by_id_0(env_id)
 
         if all_deployment:
             for single_deployment in all_deployment:
-                if customer_acc and customer_acc in single_deployment.deployment_name or rule_name:   # noqa: E501
-                    input_data = api_instance.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)      # noqa: E501         # noqa: E501
-                    if rule_name and 'client' in single_deployment.deployment_name:     # noqa: E501
+                if customer_acc and customer_acc in single_deployment.deployment_name or rule_name:
+                    input_data = api_instance.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)
+                    if rule_name and 'client' in single_deployment.deployment_name:
                         data = {}
                         data = {
-                            'deployment_name': single_deployment.deployment_name,       # noqa: E501
+                            'deployment_name': single_deployment.deployment_name,
                             'input_data': input_data,
-                            'acc_no':  re.findall(r'-?\d+\.?\d*', single_deployment.deployment_name)         # noqa: E501
+                            'acc_no': re.findall(r'-?\d+\.?\d*', single_deployment.deployment_name)
                         }
                         input_all_deployment.append(data)
                     else:   # for acc num
-                        if input_data and 'client' in single_deployment.deployment_name:         # noqa: E501
+                        if input_data and 'client' in single_deployment.deployment_name:
                             input_all_deployment = input_data
         return input_all_deployment
