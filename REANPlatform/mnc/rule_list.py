@@ -31,7 +31,7 @@ class RuleList(Command):        # noqa: D203.
         return parser
 
     # pylint: disable=R0201
-    def __validate_parameters(self, rule_name, rule_type, customer_acc):
+    def __validate_parameters(rule_name, rule_type, customer_acc):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
             raise RuntimeError("Specify either" + MncConstats.RULE_NAME + "OR" + MncConstats.CUSTOMER_ACC + "OR"  + "and" + MncConstats.CUSTOMER_ACC)
