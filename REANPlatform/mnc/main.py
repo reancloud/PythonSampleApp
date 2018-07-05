@@ -2,8 +2,6 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-import deploy_sdk_client
-from deploy_sdk_client.rest import ApiException
 
 
 class MNC(App):            # noqa: D203
@@ -16,7 +14,7 @@ class MNC(App):            # noqa: D203
             version='0.1',
             command_manager=CommandManager('rean.mnc'),
             deferred_help=True,
-            )
+        )
 
     def initialize_app(self, argv):
         """initialize_app."""
@@ -42,3 +40,4 @@ def main(argv=sys.argv[1:]):
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
+
