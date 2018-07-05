@@ -23,7 +23,7 @@ pipeline {
       git branch: "DEP-7026", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/reanplatform-cli.git'
       sh '''
       wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-      java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o deploy-sdk-client -c config.json
+      java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o ${SWAGGER_PACKAGE_NAME} -c config.json
       cat config.json
       ls
       python --version

@@ -1,0 +1,117 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent {
+    node {
+      label 'master'
+    }
+  }
+  environment {        
+    ARTIFACT_NAME = 'REANCLI'
+    PYTHON_CMD = '/usr/local/bin/python3'
+    PIP_CMD = '/usr/local/bin/pip3'
+  }
+    stages {
+    stage('Workspace Cleanup') {
+        steps {
+            deleteDir()
+      }
+    }
+    
+    stage('Checkout DeployNow Branch repo and Build Swagger.json') { 
+      steps {
+      git branch: "develop", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/DeployNow.git'
+      sh '''
+      GIT_BRANCH_COMMIT_ID="$(git log --format="%H" -n 1)"
+      GIT_BRANCH_NAME="$(git name-rev "${GIT_BRANCH_COMMIT_ID}" | cut -d' ' -f2- | cut -d'/' -f3-)"
+      BRANCH_CHECK="$(if [[ "${GIT_BRANCH}" == 'develop' ]]; then echo "DEVELOP"; elif [[ "${GIT_BRANCH}" == 'master' ]]; then echo "MASTER"; else echo "DIFFERENT-BRANCH"; fi)"
+      if [[ "$BRANCH_CHECK" == DEVELOP ]];
+      then
+          echo "Building from Develop Branch .."
+          wget ${S3_PATH}
+          echo {\n  \"packageName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"projectName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"packageVersion\": \"${SWAGGER_PACKAGE_VERSION}\"\n} > config.json
+          wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+          java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o ${SWAGGER_PACKAGE_NAME} -c config.json
+          mv ${SWAGGER_PACKAGE_NAME} ${SWAGGER_PACKAGE_NAME}-${SWAGGER_PACKAGE_VERSION}
+          ls
+      elif [[ "$BRANCH_CHECK" == MASTER ]];
+      then
+          echo "Building from Master Branch .."
+          wget ${S3_PATH}
+          echo {\n  \"packageName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"projectName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"packageVersion\": \"${SWAGGER_PACKAGE_VERSION}\"\n} > config.json
+          #wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+          #java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o ${SWAGGER_PACKAGE_NAME} -c config.json
+          #mv ${SWAGGER_PACKAGE_NAME} ${SWAGGER_PACKAGE_NAME}-${SWAGGER_PACKAGE_VERSION}
+          ls
+      else
+          echo "Not Develop/Master Branch. Skipping ...."
+      fi
+      echo "${BRANCH_CHECK},${GIT_BRANCH_COMMIT_ID}" > info.txt
+      '''
+      }
+    }
+
+    stage('Push Swagger.json in deploy-sdk-client repo') {
+    steps {
+    git branch: "develop", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/deploy-sdk-client.git'
+        sh '''
+        #!/bin/bash
+        export SWAGGER_JAR="$SWAGGER_PACKAGE_NAME-$SWAGGER_PACKAGE_VERSION"
+        BRANCH_CHECK="$(cat info.txt | cut -d ',' -f1)"
+        GIT_BRANCH_COMMIT_ID="$(cat info.txt | cut -d ',' -f2)"
+        if [[ "$BRANCH_CHECK" == DEVELOP ]];
+        then
+            ls
+            git add $SWAGGER_JAR
+            git commit -m "Adding swagger.json for ${GIT_BRANCH_COMMIT_ID} on develop branch"
+            git push origin develop
+        elif [[ "$BRANCH_CHECK" == MASTER ]];
+        then
+            git checkout master
+            ls
+            git add $SWAGGER_JAR
+            git commit -m "Adding swagger.json for ${GIT_BRANCH_COMMIT_ID} on develop branch"
+            git push origin develop
+        else
+            echo "Not Develop/Master Branch. Skipping ...."
+        fi;
+        '''
+      }
+    }
+    
+    stage('Push Swagger.json in auth-sdk-client repo') {
+    steps {
+        sh '''
+        #!/bin/bash -l
+        set -e
+        export SWAGGER_JAR="$SWAGGER_PACKAGE_NAME-$SWAGGER_PACKAGE_VERSION"
+        BRANCH_CHECK="$(cat info.txt | cut -d ',' -f1)"
+        GIT_BRANCH_COMMIT_ID="$(cat info.txt | cut -d ',' -f2)"
+        if [[ $BRANCH_CHECK == DEVELOP ]];
+        then
+            git branch: "develop", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/deploy-sdk-client.git'
+            ls
+            git add swagger.json
+            git commit -m "Adding swagger.json for ${GIT_BRANCH_COMMIT_ID} on develop branch"
+            git push origin develop
+        elif [[ $BRANCH_CHECK == MASTER ]];
+        then
+            git branch: "master", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/deploy-sdk-client.git'
+            ls
+            git add swagger.json
+            git commit -m "Adding swagger.json for ${GIT_BRANCH_COMMIT_ID} on develop branch"
+            git push origin develop
+        else
+            echo "Not Develop/Master Branch. Skipping ...."
+        fi;
+        '''
+      }
+    }
+    }
+    
+    post {
+        always {
+            deleteDir()
+        }
+    }
+}
