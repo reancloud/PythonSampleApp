@@ -4,6 +4,7 @@ import json
 import re
 from collections import OrderedDict
 from cliff.command import Command
+from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
@@ -18,22 +19,22 @@ class RuleList(Command):        # noqa: D203.
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleList, self).get_parser(prog_name)
-        parser.add_argument('--rule_name', '-rule_name',
+        parser.add_argument(MncConstats.RULE_NAME, '-rule_name',
                             help='Rule name',
                             required=False)
-        parser.add_argument('--rule_type', '-rule_type',
+        parser.add_argument(MncConstats.RULE_TYPE, '-rule_type',
                             help='Rule type',
                             required=False)
-        parser.add_argument('--customer_acc', '-customer_acc',
+        parser.add_argument(MncConstats.CUSTOMER_ACC, '-customer_acc',
                             help='Customer account number',
                             required=False)
         return parser
 
-    @staticmethod
-    def validate_parameters(rule_name, rule_type, customer_acc):
+    # pylint: disable=R0201
+    def __validate_parameters(self, rule_name, rule_type, customer_acc):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
-            raise RuntimeError("Specify either --rule_name OR --customer_acc OR --rule_name and --customer_acc")
+            raise RuntimeError("Specify either" + MncConstats.RULE_NAME + "OR" + MncConstats.CUSTOMER_ACC + "OR"  + "and" + MncConstats.CUSTOMER_ACC)
 
     def take_action(self, parsed_args):
         """List Environment."""
@@ -41,14 +42,13 @@ class RuleList(Command):        # noqa: D203.
         rule_type = parsed_args.rule_type
         customer_acc = parsed_args.customer_acc
         rule_name_key = None
-        RuleList.validate_parameters(rule_name, rule_type, customer_acc)
+        RuleList.__validate_parameters(rule_name, rule_type, customer_acc)
         try:
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
             all_env = api_instance.get_all_environments()
 
             display_data = OrderedDict()
-            #   input_json = ''
 
             for one_env in all_env:
                 input_json = None
