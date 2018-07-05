@@ -6,11 +6,10 @@ pipeline {
       label 'master'
     }
   }
-  environment {    
-    S3_PATH = 's3://reancli-artifacts/DEVELOP/'
+  environment {        
     ARTIFACT_NAME = 'REANCLI'
-    PYTHON_CMD = 'python'
-    PIP_CMD = 'pip'
+    PYTHON_CMD = '/usr/local/bin/python3'
+    PIP_CMD = '/usr/local/bin/pip3'
   }
     stages {
     stage('Workspace Cleanup') {
@@ -19,27 +18,39 @@ pipeline {
       }
     }
     
-    stage('Checkout') { 
+    stage('Checkout DeployNow repo and Build Swagger') { 
       steps {
-      git branch: "$GIT_BRANCH", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: '$GIT_REPO'
+      git branch: "DEP-7026", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/reanplatform-cli.git'
+      sh '''
+      wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+      java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o deploy-sdk-client -c config.json
+      cat config.json
+      ls
+      python --version
+      which python3
+      which pip3
+      '''
       }
     }
     
     stage('Build') {
     steps {
-    sh '''#!/bin/bash -l
-            set -e
-            virtualenv dev
-            source dev/bin/activate
-            cd REANPlatform/
-            ARTIFACT_VERSION=$(awk -v FS="VERSION =" 'NF>1{print $2}' setup.py | cut -d"'" -f2)
-            ${PYTHON_CMD} setup.py bdist_wheel
-            WHEEL_FILE_NAME="$(find dist/ -type f -printf "%f\n")"
-            ${PIP_CMD} install dist/${WHEEL_FILE_NAME} --upgrade
-            zip -r ${ARTIFACT_NAME}-v${ARTIFACT_VERSION}-${BUILD_NUMBER}.zip *
-    '''
+        withPythonEnv('/usr/local/bin/python3') {
+        sh '''#!/bin/bash -l
+        set -e
+        python --version
+        #virtualenv dev
+        #source dev/bin/activate
+        cd REANPlatform/
+        ARTIFACT_VERSION=$(awk -v FS="VERSION =" 'NF>1{print $2}' setup.py | cut -d"'" -f2)
+        ${PYTHON_CMD} setup.py bdist_wheel
+        WHEEL_FILE_NAME="$(find dist/ -type f -printf "%f\n")"
+        ${PIP_CMD} install dist/${WHEEL_FILE_NAME} --upgrade
+        zip -r ${ARTIFACT_NAME}-v${ARTIFACT_VERSION}-${BUILD_NUMBER}.zip *
+        '''
+        }
+      }
     }
-}
     stage("Publish to S3") {
     steps {
         sh ''' 
@@ -51,8 +62,8 @@ pipeline {
           aws s3 cp *.zip ${S3_PATH}
           echo "Copying Artifact to S3 Completed"
         '''
-    }
-    }
+        }
+      }
     }
     
     post {
