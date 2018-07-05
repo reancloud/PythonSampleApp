@@ -8,4 +8,3 @@ class MncConstats(object):      # noqa: D203
     RULE_TYPE = '--rule_type'
     CUSTOMER_ACC = '--customer_acc'
     FORCE = '--force'
-

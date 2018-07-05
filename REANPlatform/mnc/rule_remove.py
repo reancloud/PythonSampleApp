@@ -4,7 +4,7 @@ import time
 import re
 from cliff.command import Command
 import deploy_sdk_client
-
+from deploy_sdk_client.rest import ApiException
 from mnc.parameters_constants import MncConstats
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
@@ -97,4 +97,3 @@ class RuleRemove(Command):      # noqa: D203
                     else:
                         deployment_id_to_remove.append(single_deployment.id)
         return deployment_id_to_remove
-
