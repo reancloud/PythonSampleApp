@@ -6,8 +6,7 @@ pipeline {
       label 'master'
     }
   }
-  environment {    
-    S3_PATH = 's3://reancli-artifacts/DEVELOP/'
+  environment {        
     ARTIFACT_NAME = 'REANCLI'
     PYTHON_CMD = 'python'
     PIP_CMD = 'pip'
@@ -21,7 +20,7 @@ pipeline {
     
     stage('Checkout') { 
       steps {
-      git branch: "$GIT_BRANCH", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: '$GIT_REPO'
+      git branch: "$GIT_BRANCH", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/reanplatform-cli.git'
       }
     }
     
