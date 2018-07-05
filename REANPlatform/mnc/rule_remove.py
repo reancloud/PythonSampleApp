@@ -32,10 +32,10 @@ class RuleRemove(Command):      # noqa: D203
         return parser
 
     # pylint: disable=R0201
-    def __validate_parameters(self, rule_name, rule_type, customer_acc):
+    def __validate_parameters(rule_name, rule_type, customer_acc):
         """Validate cli parameter."""
-        exception_msg = "Specify either" + MncConstats.CUSTOMER_ACC + "OR" + MncConstats.RULE_NAME + \
-            "OR" + MncConstats.CUSTOMER_ACC + "and" + MncConstats.RULE_NAME
+        exception_msg = "Specify either " + MncConstats.CUSTOMER_ACC + " OR " + MncConstats.RULE_NAME + \
+            " OR " + MncConstats.CUSTOMER_ACC + " and " + MncConstats.RULE_NAME
         if rule_name is None and customer_acc is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
@@ -47,7 +47,7 @@ class RuleRemove(Command):      # noqa: D203
             customer_acc = parsed_args.customer_acc
             force = parsed_args.force
 
-            RuleRemove.__validate_parameters(self, rule_name, rule_type, customer_acc)
+            RuleRemove.__validate_parameters(rule_name, rule_type, customer_acc)
 
             if force is None:
                 force = input("Are you sure? [Yes/No] :")
