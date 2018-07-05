@@ -18,9 +18,19 @@ pipeline {
       }
     }
     
-    stage('Checkout') { 
+    stage('Checkout DeployNow repo and Build Swagger') { 
       steps {
-      git branch: "$GIT_BRANCH", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/reanplatform-cli.git'
+      git branch: "feature/MNC-755", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/DeployNow.git'
+      sh '''
+      cd dnow/war/ && mvn clean install -DskipTests && cd target/ && pwd
+      latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
+      echo $latestTag
+      echo -e "{\n\"packageName\": \"deploy_sdk_client\",\n\"projectName\":\"deploy_sdk_client\",\n\"packageVersion\":\"$latestTag\"\n}" > config.json
+      wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+      java -jar swagger-codegen-cli.jar generate   -i swagger.json -l python   -o deploy-sdk-client -c config.json
+      cat config.json
+      ls
+      '''
       }
     }
     
