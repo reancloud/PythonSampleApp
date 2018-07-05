@@ -4,7 +4,8 @@ import time
 import re
 from cliff.command import Command
 import deploy_sdk_client
-from deploy_sdk_client.rest import ApiException
+
+from mnc.parameters_constants import MncConstats
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.destroydeployment import DestroyDeployment
@@ -18,23 +19,23 @@ class RuleRemove(Command):      # noqa: D203
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleRemove, self).get_parser(prog_name)
-        parser.add_argument('--rule_name', '-n', help='Rule name.',
+        parser.add_argument(MncConstats.RULE_NAME, '-n', help='Rule name.',
                             required=False)
-        parser.add_argument('--rule_type', '-t', help='Rule type.',
+        parser.add_argument(MncConstats.RULE_TYPE, '-t', help='Rule type.',
                             required=False)
-        parser.add_argument('--customer_acc', '-acc',
+        parser.add_argument(MncConstats.CUSTOMER_ACC, '-acc',
                             help='Customer AWS account number.',
                             required=False)
-        parser.add_argument('--force', '-f',
+        parser.add_argument(MncConstats.FORCE, '-f',
                             help='Forcefully remove rule.',
                             required=False)
         return parser
 
-    @staticmethod
-    def validate_parameters(rule_name, rule_type, customer_acc):
+    # pylint: disable=R0201
+    def __validate_parameters(self, rule_name, rule_type, customer_acc):
         """Validate cli parameter."""
-        exception_msg = "Specify either ---customer_acc OR --rule_name\
-                OR --customer_acc and --rule_name"
+        exception_msg = "Specify either" + MncConstats.CUSTOMER_ACC + "OR" + MncConstats.RULE_NAME + \
+            "OR" + MncConstats.CUSTOMER_ACC + "and" + MncConstats.RULE_NAME
         if rule_name is None and customer_acc is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
@@ -46,14 +47,14 @@ class RuleRemove(Command):      # noqa: D203
             customer_acc = parsed_args.customer_acc
             force = parsed_args.force
 
-            RuleRemove.validate_parameters(rule_name, rule_type, customer_acc)
+            RuleRemove.__validate_parameters(self, rule_name, rule_type, customer_acc)
 
             if force is None:
                 force = input("Are you sure? [Yes/No] :")
             else:
                 print("Exit")
 
-            if force == 'yes' or force == 'Yes' or force == 'y' or force == 'Y':
+            if force.lower() == 'yes' or force.lower() == 'y':
                 instance = deploy_sdk_client.EnvironmentApi()
                 api_instance = set_header_parameter(instance)
                 all_env = api_instance.get_all_environments()
@@ -96,3 +97,4 @@ class RuleRemove(Command):      # noqa: D203
                     else:
                         deployment_id_to_remove.append(single_deployment.id)
         return deployment_id_to_remove
+
