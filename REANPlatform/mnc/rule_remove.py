@@ -19,14 +19,15 @@ class RuleRemove(Command):      # noqa: D203
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleRemove, self).get_parser(prog_name)
-        parser.add_argument(MncConstats.RULE_NAME, '-n', help='Rule name.',
+        parser.add_argument('--' + MncConstats.RULE_NAME, MncConstats.RULE_NAME_INITIAL,
+                            help='Rule name.',
                             required=False)
-        parser.add_argument(MncConstats.RULE_TYPE, '-t', help='Rule type.',
+        parser.add_argument('--' + MncConstats.RULE_TYPE, MncConstats.RULE_TYPE_INITIAL, help='Rule type.',
                             required=False)
-        parser.add_argument(MncConstats.CUSTOMER_ACC, '-acc',
+        parser.add_argument('--' + MncConstats.CUSTOMER_ACC, MncConstats.CUSTOMER_ACC_INITIAL,
                             help='Customer AWS account number.',
                             required=False)
-        parser.add_argument(MncConstats.FORCE, '-f',
+        parser.add_argument('--' + MncConstats.FORCE, MncConstats.FORCE_INITIAL,
                             help='Forcefully remove rule.',
                             required=False)
         return parser
@@ -34,25 +35,26 @@ class RuleRemove(Command):      # noqa: D203
     # pylint: disable=R0201
     def __validate_parameters(rule_name, rule_type, customer_acc):
         """Validate cli parameter."""
-        exception_msg = "Specify either " + MncConstats.CUSTOMER_ACC + " OR " + MncConstats.RULE_NAME + \
-            " OR " + MncConstats.CUSTOMER_ACC + " and " + MncConstats.RULE_NAME
+        exception_msg = "Specify either " + "--" + MncConstats.CUSTOMER_ACC + " OR " + "--" + MncConstats.RULE_NAME + \
+            " OR " + "--" + MncConstats.CUSTOMER_ACC + " and " + "--" + MncConstats.RULE_NAME
         if rule_name is None and customer_acc is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
         """take_action."""
         try:
-            rule_name = parsed_args.rule_name
-            rule_type = parsed_args.rule_type
-            customer_acc = parsed_args.customer_acc
-            force = parsed_args.force
+            argparse_dict = vars(parsed_args)
+            rule_name = argparse_dict[MncConstats.RULE_NAME]
+            rule_type = argparse_dict[MncConstats.RULE_TYPE]
+            customer_acc = argparse_dict[MncConstats.CUSTOMER_ACC]
+            force = argparse_dict[MncConstats.FORCE]
 
             RuleRemove.__validate_parameters(rule_name, rule_type, customer_acc)
 
             if force is None:
                 force = input("Are you sure? [Yes/No] :")
             else:
-                print("Exit")
+                logging.info("Exit")
 
             if force.lower() == 'yes' or force.lower() == 'y':
                 instance = deploy_sdk_client.EnvironmentApi()
@@ -79,7 +81,7 @@ class RuleRemove(Command):      # noqa: D203
                         DestroyDeployment.destroy_by_deploymentid(deployment_id)
                         time.sleep(20)
                 else:
-                    print("No deployment for account :", customer_acc)
+                    logging.info("No deployment for account :%s", customer_acc)
         except ApiException as exception:
             Utility.print_exception(exception)
 

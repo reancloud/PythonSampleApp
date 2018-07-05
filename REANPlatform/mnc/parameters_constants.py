@@ -2,9 +2,13 @@
 
 
 class MncConstats(object):      # noqa: D203
-    """Contains constats required for MNC CLI."""
+    """Contains constats required for MNCCLI."""
 
-    RULE_NAME = '--rule_name'
-    RULE_TYPE = '--rule_type'
-    CUSTOMER_ACC = '--customer_acc'
-    FORCE = '--force'
+    RULE_NAME = 'rule_name'
+    RULE_NAME_INITIAL = '-n'
+    RULE_TYPE = 'rule_type'
+    RULE_TYPE_INITIAL = '-t'
+    CUSTOMER_ACC = 'customer_acc'
+    CUSTOMER_ACC_INITIAL = '-acc'
+    FORCE = 'force'
+    FORCE_INITIAL = '-f'
