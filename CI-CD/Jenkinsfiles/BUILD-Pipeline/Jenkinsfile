@@ -20,7 +20,7 @@ pipeline {
     
     stage('Checkout DeployNow repo and Build Swagger') { 
       steps {
-      git branch: "feature/MNC-755", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/DeployNow.git'
+      git branch: "feature/MNC-2", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/DeployNow.git'
       sh '''
       cd dnow/war/ && mvn clean install -DskipTests && cd target/ && pwd
       latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
