@@ -2,6 +2,7 @@
 import logging
 import json
 import re
+import argparse
 from collections import OrderedDict
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
@@ -19,13 +20,13 @@ class RuleList(Command):        # noqa: D203.
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleList, self).get_parser(prog_name)
-        parser.add_argument(MncConstats.RULE_NAME, '-rule_name',
+        parser.add_argument('--' + MncConstats.RULE_NAME, MncConstats.RULE_NAME_INITIAL,
                             help='Rule name',
                             required=False)
-        parser.add_argument(MncConstats.RULE_TYPE, '-rule_type',
+        parser.add_argument('--' + MncConstats.RULE_TYPE, MncConstats.RULE_TYPE_INITIAL,
                             help='Rule type',
                             required=False)
-        parser.add_argument(MncConstats.CUSTOMER_ACC, '-customer_acc',
+        parser.add_argument('--' + MncConstats.CUSTOMER_ACC, MncConstats.CUSTOMER_ACC_INITIAL,
                             help='Customer account number',
                             required=False)
         return parser
@@ -34,13 +35,15 @@ class RuleList(Command):        # noqa: D203.
     def __validate_parameters(rule_name, rule_type, customer_acc):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
-            raise RuntimeError("Specify either " + MncConstats.RULE_NAME + " OR " + MncConstats.CUSTOMER_ACC + " OR " + MncConstats.RULE_NAME + " and " + MncConstats.CUSTOMER_ACC)
+            raise RuntimeError("Specify either " + '--' + MncConstats.RULE_NAME + " OR " + '--' + MncConstats.CUSTOMER_ACC + " OR " + '--'+ MncConstats.RULE_NAME + " and " + '--'+ MncConstats.CUSTOMER_ACC)
 
     def take_action(self, parsed_args):
         """List Environment."""
-        rule_name = parsed_args.rule_name
-        rule_type = parsed_args.rule_type
-        customer_acc = parsed_args.customer_acc
+        argparse_dict = vars(parsed_args)
+       
+        rule_name = argparse_dict[MncConstats.RULE_NAME]
+        rule_type = argparse_dict[MncConstats.RULE_TYPE]
+        customer_acc = argparse_dict[MncConstats.CUSTOMER_ACC]
         rule_name_key = None
         RuleList.__validate_parameters(rule_name, rule_type, customer_acc)
         try:
@@ -49,7 +52,6 @@ class RuleList(Command):        # noqa: D203.
             all_env = api_instance.get_all_environments()
 
             display_data = OrderedDict()
-
             for one_env in all_env:
                 input_json = None
                 if rule_name and customer_acc:
@@ -82,9 +84,9 @@ class RuleList(Command):        # noqa: D203.
                                     display_data[''.join(input_json['acc_no'])] = {
                                         "Input-Parameters": input_json['input_data']}
             if display_data:
-                print(json.dumps(display_data, indent=4))
+                logging.info(json.dumps(display_data, indent=4))
             else:
-                print("Rule deployment not found")
+                logging.info("Rule deployment not found")
         except ApiException as exception:
             Utility.print_exception(exception)
 
