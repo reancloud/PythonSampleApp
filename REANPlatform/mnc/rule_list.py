@@ -34,7 +34,7 @@ class RuleList(Command):        # noqa: D203.
     def __validate_parameters(rule_name, rule_type, customer_acc):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
-            raise RuntimeError("Specify either" + MncConstats.RULE_NAME + "OR" + MncConstats.CUSTOMER_ACC + "OR"  + "and" + MncConstats.CUSTOMER_ACC)
+            raise RuntimeError("Specify either " + MncConstats.RULE_NAME + " OR " + MncConstats.CUSTOMER_ACC + " OR " + MncConstats.RULE_NAME + " and " + MncConstats.CUSTOMER_ACC)
 
     def take_action(self, parsed_args):
         """List Environment."""
