@@ -20,12 +20,7 @@ class PrepareBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-                            '--file', '-f',
-                            help='Blueprint file. REAN Deploy blueprint\
-                            file path. A path can be absolute path.',
-                            required=False
-                            )
+        parser.add_argument('--file', '-f', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -54,7 +49,7 @@ class PrepareBlueprint(Command):
 
             prepare_data = {}
             for one_env in blueprint_all_env.environment_imports:
-                prepare_data[one_env.import_config.name+'-'+one_env.import_config.env_version] = {  # noqa: E501
+                prepare_data[one_env.import_config.name + '-' + one_env.import_config.env_version] = {  # noqa: E501
                     'name': one_env.import_config.name,
                     'connection_id': one_env.import_config.connection_id,
                     'provider_id': one_env.import_config.provider_id,

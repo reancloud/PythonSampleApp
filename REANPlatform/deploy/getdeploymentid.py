@@ -20,13 +20,8 @@ class GetDeployments(Command):
         parser = super(GetDeployments, self).get_parser(prog_name)
 
         try:
-            parser.add_argument('--deployment_name', '-n',
-                                help='Deployment Name. Provide this attribute \
-                                to get specific deployment.',
-                                required=False)
-            parser.add_argument('--env_id', '-id',
-                                help='Environment Id',
-                                required=True)
+            parser.add_argument('--deployment_name', '-n', help='Deployment Name. Provide this attribute to get specific deployment.', required=False)
+            parser.add_argument('--env_id', '-id', help='Environment Id', required=True)
         except Exception as e:
             Utility.print_exception(e)
 
@@ -53,10 +48,7 @@ class GetDeployments(Command):
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
-            res = api_instance.get_all_deployments_for_environment_by_id_0(
-                    env_id,
-                    deployment_name
-                )
+            res = api_instance.get_all_deployments_for_environment_by_id_0(env_id, deployment_name)
             pprint(res)
         except ApiException as e:
                 Utility.print_exception(e)

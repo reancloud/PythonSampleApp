@@ -18,11 +18,7 @@ class ListConnections(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ListConnections, self).get_parser(prog_name)
-        parser.add_argument('--format', '-f',
-                            help='Allowed values are: [json, table]',
-                            type=str, default='json',
-                            nargs='?',
-                            required=False)
+        parser.add_argument('--format', '-f', help='Allowed values are: [json, table]', type=str, default='json', nargs='?', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -42,22 +38,10 @@ class ListConnections(Command):
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for connection in api_response:
-                    table.add_row(
-                                [
-                                    connection.name,
-                                    connection.id,
-                                    connection.type
-                                ]
-                         )
+                    table.add_row([connection.name, connection.id, connection.type])
                 print("Connection list \n%s" % (table))
             elif format == 'json' or format == '':
-                print(
-                        json.dumps(
-                                api_response,
-                                default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4
-                                ).replace("\"_", '"')
-                    )
+                print(json.dumps(api_response, default=lambda o: o.__dict__, sort_keys=True, indent=4).replace("\"_", '"'))
             else:
                 exception_msg = "Please specify correct fromate, Allowed \
                         values are: [json, table]"

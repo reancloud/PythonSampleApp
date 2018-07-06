@@ -18,24 +18,9 @@ class DestroyDeployment(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DestroyDeployment, self).get_parser(prog_name)
-        parser.add_argument(
-                            '--deployment_id', '-d_id',
-                            help='Deployment id. This parameter is\
-                            not required when --env_id OR --deployment_name\
-                            and --env_id are specified',
-                            required=False
-                            )
-        parser.add_argument('--env_id', '-id',
-                            help='Environment id. This parameter is\
-                            not required when --deployment_id is specified',
-                            required=False
-                            )
-        parser.add_argument(
-                            '--deployment_name', '-d_name',
-                            help='Deployment name. This parameter is\
-                            not required when --deployment_id is specified',
-                            required=False
-                            )
+        parser.add_argument('--deployment_id', '-d_id', help='Deployment id. This parameter is not required when --env_id OR --deployment_name and --env_id are specified', required=False)
+        parser.add_argument('--env_id', '-id', help='Environment id. This parameter is not required when --deployment_id is specified', required=False)
+        parser.add_argument('--deployment_name', '-d_name', help='Deployment name. This parameter is not required when --deployment_id is specified', required=False)
         return parser
 
     @staticmethod

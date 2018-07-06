@@ -17,11 +17,7 @@ class ListEnvironments(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ListEnvironments, self).get_parser(prog_name)
-        parser.add_argument('--format', '-f',
-                            help='Allowed values are: [json, table]',
-                            type=str, default='json',
-                            nargs='?',
-                            required=False)
+        parser.add_argument('--format', '-f', help='Allowed values are: [json, table]', type=str, default='json', nargs='?', required=False)
         return parser
 
     @staticmethod
@@ -37,24 +33,11 @@ class ListEnvironments(Command):
                 table = PrettyTable(['Name', 'Id', 'Region', 'Version'])
                 table.padding_width = 1
                 for environment in api_response:
-                    table.add_row(
-                                [
-                                    environment.name,
-                                    environment.id,
-                                    environment.region,
-                                    environment.env_version
-                                ]
-                            )
+                    table.add_row([environment.name, environment.id, environment.region, environment.env_version])
                 print("Environment list ::\n%s" % (table))
 
             elif output_format == 'json' or output_format == '':
-                print(
-                        json.dumps(
-                                api_response,
-                                default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4
-                                ).replace("\"_", '"')
-                    )
+                print(json.dumps(api_response, default=lambda o: o.__dict__, sort_keys=True, indent=4).replace("\"_", '"'))
 
         except ApiException as e:
             Utility.print_exception(e)

@@ -3,13 +3,13 @@ import os
 import logging
 import json
 import re
+from os.path import basename
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from os.path import basename
 
 
 class ImportBlueprint(Command):
@@ -20,18 +20,8 @@ class ImportBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-                            '--blueprint_file', '-b_file',
-                            help='Blueprint file. REAN Deploy blueprint\
-                            file path. A path can be absolute path.',
-                            required=True
-                            )
-        parser.add_argument(
-                            '--attribute_file', '-a_file',
-                            help='Blueprint attributes. REAN Deploy blueprint\
-                            attributes file path. A path can be absolute\
-                            path.', required=True
-                            )
+        parser.add_argument('--blueprint_file', '-b_file', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=True)
+        parser.add_argument('--attribute_file', '-a_file', help='Blueprint attributes. REAN Deploy blueprint attributes file path. A path can be absolute path.', required=True)
         return parser
 
     def take_action(self, parsed_args):

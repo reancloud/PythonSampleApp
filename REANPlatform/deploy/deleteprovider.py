@@ -16,17 +16,8 @@ class DeleteProvider(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DeleteProvider, self).get_parser(prog_name)
-        parser.add_argument(
-                            '--id', '-id',
-                            help='Provider id. This parameter is\
-                            not required when --prov_name is specified',
-                            required=False)
-        parser.add_argument(
-                            '--name', '-name',
-                            help='Provider name. This parameter is\
-                            not required when --prov_id is specified',
-                            required=False
-                        )
+        parser.add_argument('--id', '-id', help='Provider id. This parameter is not required when --prov_name is specified', required=False)
+        parser.add_argument('--name', '-name', help='Provider name. This parameter is not required when --prov_id is specified', required=False)
         return parser
 
     @staticmethod

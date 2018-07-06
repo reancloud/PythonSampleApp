@@ -13,12 +13,7 @@ class Deploy(App):
 
     def __init__(self):
         """__init__."""
-        super(Deploy, self).__init__(
-            description='CLI for REAN Deploy.',
-            version='0.1',
-            command_manager=CommandManager('rean.deploy'),
-            deferred_help=True,
-            )
+        super(Deploy, self).__init__(description='CLI for REAN Deploy.', version='0.1', command_manager=CommandManager('rean.deploy'), deferred_help=True,)
 
     def initialize_app(self, argv):
         """initialize_app."""
