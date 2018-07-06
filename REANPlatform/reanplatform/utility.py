@@ -20,10 +20,8 @@ class Utility(object):
                 with open(Constants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
 
-                username = Utility.decryptData(
-                            data_loaded['deploy']['username']).decode('utf-8')
-                password = Utility.decryptData(
-                            data_loaded['deploy']['password']).decode('utf-8')
+                username = Utility.decryptData(data_loaded['deploy']['username']).decode('utf-8')
+                password = Utility.decryptData(data_loaded['deploy']['password']).decode('utf-8')
                 credentials = str(username) + ":" + str(password)
                 return credentials
 

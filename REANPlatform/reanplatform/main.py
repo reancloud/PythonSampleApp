@@ -9,12 +9,7 @@ class ReanPlatform(App):
 
     def __init__(self):
         """__init__."""
-        super(ReanPlatform, self).__init__(
-            description='CLI for REAN Platform.',
-            version='0.1',
-            command_manager=CommandManager('rean.platform'),
-            deferred_help=False,
-            )
+        super(ReanPlatform, self).__init__(description='CLI for REAN Platform.', version='0.1', command_manager=CommandManager('rean.platform'), deferred_help=False,)
 
     def initialize_app(self, argv):
         """initialize_app."""
