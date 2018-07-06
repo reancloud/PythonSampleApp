@@ -2,10 +2,7 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-import time
-import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from pprint import pprint
 
 
 class Deploy(App):
@@ -38,9 +35,11 @@ class Deploy(App):
 
 def main(argv=sys.argv[1:]):
     """main."""
-    myapp = Deploy()
-    return myapp.run(argv)
-
+    try:
+        myapp = Deploy()
+        return myapp.run(argv)
+    except ApiException as exception:
+        print(exception)
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

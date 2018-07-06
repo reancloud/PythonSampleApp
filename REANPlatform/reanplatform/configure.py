@@ -7,6 +7,7 @@ import yaml
 from deploy_sdk_client.rest import ApiException
 from cliff.command import Command
 from reanplatform.constants import Constants
+from reanplatform.utilityconstants import UtilityConstants
 from reanplatform.utility import Utility
 
 
@@ -21,17 +22,17 @@ class Configure(Command):
         parser.add_argument('--username', '-u',
                             help='Platform username',
                             required=True
-                            )
-        parser.add_argument('--platform_url',
+                           )
+        parser.add_argument('--platform_base_url',
                             '-url',
-                            help='Platform URL',
+                            help='Platform Base URL',
                             required=True
-                            )
+                           )
         parser.add_argument('--password',
                             '-p',
                             help='Platform password',
                             required=False
-                            )
+                           )
         return parser
 
     def createFile(self, parsed_args, path):
@@ -42,10 +43,10 @@ class Configure(Command):
             password = getpass.getpass()
 
         data = {
-            'deploy': {
-                'host': parsed_args.platform_url,
-                'username': Utility.encryptData(parsed_args.username),
-                'password': Utility.encryptData(password)
+            UtilityConstants.PLATFORM_REFERENCE: {
+                UtilityConstants.BASE_URL_REFERENCE: parsed_args.platform_base_url,
+                UtilityConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
+                UtilityConstants.PASSWORD_REFERENCE: Utility.encryptData(password)
             }
         }
         os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)

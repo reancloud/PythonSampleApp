@@ -46,13 +46,15 @@ setup(
     entry_points={
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
-            'rean-deploy = deploy.main:main'
+            'rean-deploy = deploy.main:main',
+            'rean-auth = auth.main:main'
         ],
          'rean.platform': [
              'configure = reanplatform.configure:Configure',
-             'rean-deploy = reanplatform.reanhelp:Helpdeploy',
-             'rean-test = reanplatform.reanhelp:Helptest',
-             'rean-mnc = reanplatform.reanhelp:Helpmnc'
+             'rean-deploy = reanplatform.reanhelp:HelpDeploy',
+             'rean-test = reanplatform.reanhelp:HelpTest',
+             'rean-mnc = reanplatform.reanhelp:HelpMnc',
+             'rean-auth = reanplatform.reanhelp:HelpAuth'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
@@ -70,6 +72,9 @@ setup(
             'get-status = deploy.getdeploymentstatus:Status',
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
+        'rean.auth': [
+            'get-user = auth.get_users:GetUsers'
+        ]
 
     #    'rean.mnc': [
     #        'configure = mnc.configure:Configure',
