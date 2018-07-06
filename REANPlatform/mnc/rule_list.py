@@ -58,11 +58,10 @@ class RuleList(Command):        # noqa: D203.
                     if one_env.name.startswith(rule_name):
                         input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name=None)
                         if input_json:
-                            display_data = {
-                                'Customer-Account': customer_acc,
-                                'Rule-name': rule_name,
-                                'Rule-type': None,
-                                'Input-Parameters': input_json}
+                            display_data['Customer-Account'] = customer_acc
+                            display_data['Rule-name'] = rule_name
+                            display_data['Rule-type'] = None
+                            display_data['Input-Parameters'] = input_json
                 elif customer_acc:
                     input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)
                     rule_name = ''
