@@ -12,7 +12,7 @@ from deploy.destroydeployment import DestroyDeployment
 
 
 class RuleRemove(Command):      # noqa: D203
-    """Remove deployed rule."""
+    """Remove Manage Cloud deployed rule."""
 
     log = logging.getLogger(__name__)
 

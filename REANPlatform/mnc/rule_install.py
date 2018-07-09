@@ -52,8 +52,8 @@ class RuleInstall(Command):     # noqa: D203
 
     def __validate_parameters(self, rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action):
         """Validate cli parameters."""
-        if rule_name is None and rule_type is None and customer_acc is None:
-            raise RuntimeError("Specify either --rule_name OR --customer_acc OR --rule_name and --customer_acc")    # noqa: E501
+        if rule_name is None or rule_type is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
+            raise RuntimeError("Specify all require parametes,for more help check 'rean-mnc rule-install --help'")    # noqa: E501
 
     def take_action(self, parsed_args):
         """List Environment."""
