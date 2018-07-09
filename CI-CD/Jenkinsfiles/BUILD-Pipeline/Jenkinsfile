@@ -1,4 +1,24 @@
 #!/usr/bin/env groovy
+def setJobProperties() {
+  properties([
+    [
+      $class: 'GithubProjectProperty',
+      displayName: 'Deploy Now',
+      projectUrlStr: 'https://github.com/reancloud/DeployNow'
+    ],
+     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10')), 
+     disableConcurrentBuilds(), 
+     pipelineTriggers([
+      [
+        $class: 'GitHubPushTrigger',
+        triggerMode: 'HEAVY_HOOKS',
+        branchRestriction: ([
+          targetBranch: 'develop master'
+        ]),
+      ]
+    ])
+  ])
+}
 
 pipeline {
   agent {
@@ -6,69 +26,86 @@ pipeline {
       label 'master'
     }
   }
-  environment {        
-    ARTIFACT_NAME = 'REANCLI'
-    PYTHON_CMD = '/usr/local/bin/python3'
-    PIP_CMD = '/usr/local/bin/pip3'
+  environment {
+    S3_PATH='https://s3.amazonaws.com/reancli-artifacts/swagger.json'
+    SWAGGER_PACKAGE_NAME='deploy-sdk-client'
+    SWAGGER_PACKAGE_VERSION='1.6'
+    GIT_CREDS='a42d79e6-240b-48be-843e-404ee7d65aff'
+    GIT_DEPLOY_NOW_REPO='git@github.com:reancloud/DeployNow.git'
+    GIT_DEPLOY_SDK_CLIENT_REPO='git@github.com:reancloud/deploy-sdk-client.git'
+    BUILD_NO = "${env.BUILD_NUMBER}"
   }
-    stages {
-    stage('Workspace Cleanup') {
-        steps {
-            deleteDir()
-      }
-    }
-    
-    stage('Checkout DeployNow repo and Build Swagger') { 
+  stages {
+    stage('Delete Workspace Dir') {
       steps {
-      git branch: "DEP-7026", credentialsId: '78b43893-ffd7-4e04-9439-065fc6763913', url: 'https://github.com/reancloud/reanplatform-cli.git'
-      sh '''
-      wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-      java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o ${SWAGGER_PACKAGE_NAME} -c config.json
-      cat config.json
-      ls
-      python --version
-      which python3
-      which pip3
-      '''
+        deleteDir()
       }
     }
-    
-    stage('Build') {
-    steps {
-        withPythonEnv('/usr/local/bin/python3') {
-        sh '''#!/bin/bash -l
-        set -e
-        python --version
-        #virtualenv dev
-        #source dev/bin/activate
-        cd REANPlatform/
-        ARTIFACT_VERSION=$(awk -v FS="VERSION =" 'NF>1{print $2}' setup.py | cut -d"'" -f2)
-        ${PYTHON_CMD} setup.py bdist_wheel
-        WHEEL_FILE_NAME="$(find dist/ -type f -printf "%f\n")"
-        ${PIP_CMD} install dist/${WHEEL_FILE_NAME} --upgrade
-        zip -r ${ARTIFACT_NAME}-v${ARTIFACT_VERSION}-${BUILD_NUMBER}.zip *
-        '''
+    stage('Checkout Develop branch ...') {
+      steps {
+        script {
+          try {
+            echo "\u001B[34m\u001B[1mCheckout github develop\u001B[0m"
+          checkout([$class: 'GitSCM', poll: true, branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '${GIT_CREDS}', url: "${GIT_DEPLOY_NOW_REPO}"]]])
+    dir('cli-deps-develop') {
+                checkout([$class: 'GitSCM', poll: false, branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '${GIT_CREDS}', url: "${GIT_DEPLOY_SDK_CLIENT_REPO}"]]])
+             }
+            echo "\u001B[34m\u001B[1mLogging into deploy-sdk-client\u001B[0m"
+            sh '''
+              cd cli-deps-develop/
+              git checkout develop
+              wget ${S3_PATH}
+              echo "{\n  \"packageName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"projectName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"packageVersion\": \"${SWAGGER_PACKAGE_VERSION}\"\n}" > config.json
+              wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+              java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o ${SWAGGER_PACKAGE_NAME} -c config.json
+              git add swagger.json ${SWAGGER_PACKAGE_NAME}/ config.json
+              git commit -m 'Add Swagger.json,config.json and ${SWAGGER_PACKAGE_NAME} by Jenkins on ${BUILD_NO}'
+              git push origin develop
+            '''
+            sh "echo 'Upload Complete for Git push develop...'"
+            }
+          catch (Exception e) {
+            println "\u001B[31mFailed : add ${SWAGGER_PACKAGE_NAME} failed\u001B[0m"
+            sh "exit 1"
+          }
         }
       }
     }
-    stage("Publish to S3") {
-    steps {
-        sh ''' 
-          export AWS_DEFAULT_REGION=us-east-1
-          export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-          export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
-          cd REANPlatform;
-          echo "Creating Zip ..."
-          aws s3 cp *.zip ${S3_PATH}
-          echo "Copying Artifact to S3 Completed"
-        '''
+   stage('Checkout Master branch ...') {
+      steps {
+        script {
+          try {
+            echo "\u001B[34m\u001B[1mCheckout github master\u001B[0m"
+          checkout([$class: 'GitSCM', poll: true, branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '${GIT_CREDS}', url: "${GIT_DEPLOY_NOW_REPO}"]]])
+    dir('cli-deps-master') {
+                checkout([$class: 'GitSCM', poll: false, branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '${GIT_CREDS}', url: "${GIT_DEPLOY_SDK_CLIENT_REPO}"]]])
+             }
+            echo "\u001B[34m\u001B[1mLogging into deploy-sdk-client\u001B[0m"
+            sh '''
+              cd cli-deps-master/
+              git checkout master
+              wget ${S3_PATH}
+              echo "{\n  \"packageName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"projectName\": \"${SWAGGER_PACKAGE_NAME}\",\n  \"packageVersion\": \"${SWAGGER_PACKAGE_VERSION}\"\n}" > config.json
+              wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+              java -jar swagger-codegen-cli.jar generate -i swagger.json -l python -o ${SWAGGER_PACKAGE_NAME} -c config.json
+              git add swagger.json ${SWAGGER_PACKAGE_NAME}/ config.json
+              git commit -m 'Add Swagger.json,config.json and deploy-sdk-client by Jenkins on ${BUILD_NO}'
+              git push origin master
+            '''
+            sh "echo 'Upload Complete for Git push master branch..."
+            }
+          catch (Exception e) {
+            println "\u001B[31mFailed : git master branch upload failed\u001B[0m"
+            sh "exit 1"
+            // exitCode = 1
+          }
+         }
         }
       }
     }
-    
-    post {
-        always {
-            deleteDir()
-        }
+  post {
+    always {
+      deleteDir()
     }
+  }
 }
