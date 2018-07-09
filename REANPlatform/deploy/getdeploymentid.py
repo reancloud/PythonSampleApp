@@ -38,9 +38,7 @@ class GetDeployments(Command):
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            api_instance = set_header_parameter(instance, base_url + deploy_url)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             res = api_instance.get_all_deployments_for_environment_by_id(
                 env_id
             )
@@ -54,9 +52,7 @@ class GetDeployments(Command):
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            api_instance = set_header_parameter(instance, base_url + deploy_url)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             res = api_instance.get_all_deployments_for_environment_by_id_0(
                 env_id,
                 deployment_name

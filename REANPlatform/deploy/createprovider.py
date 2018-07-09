@@ -41,9 +41,7 @@ class SaveProvider(Command):
     def create_provider(prov_name, prov_type, provider_details):
         """create_provider."""
         provider_api_instance = deploy_sdk_client.ProviderApi()
-        base_url = Utility.get_platform_base_url()
-        deploy_url = DeployConstants.DEPLOY_URL
-        api_instance = set_header_parameter(provider_api_instance, base_url + deploy_url)
+        api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         try:
             file_path = provider_details
 

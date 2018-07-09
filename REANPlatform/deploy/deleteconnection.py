@@ -53,9 +53,7 @@ class DeleteConnection(Command):
         """delete_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            api_instance = set_header_parameter(conn_api_instance, base_url + deploy_url)
+            api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.delete_vm_connection(conn_id)
             print("Connection deleted successfully :%s " % str(api_response.name))    # noqa: E501
         except ApiException as e:
@@ -64,9 +62,7 @@ class DeleteConnection(Command):
     def delete_connection_by_name(self, conn_name):
         """delete_connection_by_name."""
         conn_api_instance = deploy_sdk_client.ConnectionApi()
-        base_url = Utility.get_platform_base_url()
-        deploy_url = DeployConstants.DEPLOY_URL
-        api_instance = set_header_parameter(conn_api_instance, base_url + deploy_url)
+        api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         conn_id = None
         try:
             all_vms = api_instance.get_all_vm_connections()

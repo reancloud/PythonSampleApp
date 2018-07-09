@@ -74,9 +74,7 @@ class DepolyEnv(Command):
         try:
             # Initialise instance and api_instance and response
             instance = deploy_sdk_client.EnvironmentApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            api_instance = set_header_parameter(instance, base_url + deploy_url)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             response = None
             body = deploy_sdk_client.DeploymentConfigurationDto(
                 environment_id=environment_id,

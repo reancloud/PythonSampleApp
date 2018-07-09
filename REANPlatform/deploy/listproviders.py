@@ -35,9 +35,7 @@ class ListProvider(Command):
         """list_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            api_instance = set_header_parameter(provider_api_instance, base_url + deploy_url)
+            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.get_all_providers()
             if format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])

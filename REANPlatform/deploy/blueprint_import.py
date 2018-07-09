@@ -55,9 +55,7 @@ class ImportBlueprint(Command):
         """blueprint_import."""
         try:
             api_env_instance = deploy_sdk_client.EnvironmentApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            env_instance = set_header_parameter(api_env_instance, base_url + deploy_url)
+            env_instance = set_header_parameter(api_env_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), "r") as handle:

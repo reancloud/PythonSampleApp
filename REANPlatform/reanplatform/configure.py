@@ -44,7 +44,7 @@ class Configure(Command):
 
         data = {
             PlatformConstants.PLATFORM_REFERENCE: {
-                PlatformConstants.BASE_URL_REFERENCE: parsed_args.platform_base_url,
+                PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
                 PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
                 PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password)
             }
@@ -66,3 +66,12 @@ class Configure(Command):
 
         except ApiException as e:
             self.log.error(e)
+
+    def __parse_base_url(self, base_url):
+        """Parse base url.
+
+        Removes extra '/' if any from url.
+        """
+        if base_url[-1] == '/':
+            return base_url[:-1]
+        return base_url

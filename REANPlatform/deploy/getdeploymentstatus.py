@@ -42,9 +42,7 @@ class Status(Command):
 
             # Initialise instance and api_instance to get deployment status
             instance = deploy_sdk_client.EnvironmentApi()
-            base_url = Utility.get_platform_base_url()
-            deploy_url = DeployConstants.DEPLOY_URL
-            api_instance = set_header_parameter(instance, base_url + deploy_url)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             if env_id:
                 api_response = api_instance.get_deploy_status_0(
                     env_id,

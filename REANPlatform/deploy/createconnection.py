@@ -88,9 +88,7 @@ class SaveConnection(Command):
     def take_action(self, parsed_args):
         """take_action."""
         conn_api_instance = deploy_sdk_client.ConnectionApi()
-        base_url = Utility.get_platform_base_url()
-        deploy_url = DeployConstants.DEPLOY_URL
-        api_instance = set_header_parameter(conn_api_instance, base_url + deploy_url)
+        api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         body = None
         bastion_data = None
         try:

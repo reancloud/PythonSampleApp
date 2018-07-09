@@ -1,10 +1,4 @@
 """Configure platform."""
-import os
-import io
-import getpass
-import logging
-import yaml
-from deploy_sdk_client.rest import ApiException
 from cliff.command import Command
 
 
@@ -33,6 +27,7 @@ class HelpMnc(Command):
         """get_parser."""
     def take_action(self, parsed_args):
         """take_action."""
+
 
 class HelpAuth(Command):
     """Details of rean-auth cli."""

@@ -60,3 +60,9 @@ class Utility(object):
         print("Exception message: ")
         err = json.loads(exception.body)
         print("%s %s" % (err['message'], err['status']))
+
+    @staticmethod
+    def get_url(host_url):
+        """Get full URL."""
+        base_url = Utility.get_platform_base_url()
+        return base_url + host_url
