@@ -58,7 +58,7 @@ class DeleteProvider(Command):
             provider_api_instance = deploy_sdk_client.ProviderApi()
             api_instance = set_header_parameter(provider_api_instance)
             prov_id = DeleteProvider.get_id(prov_name, api_instance)
-            if(prov_id is None):
+            if prov_id is None:
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
             DeleteProvider.delete_provider_by_id(prov_id)

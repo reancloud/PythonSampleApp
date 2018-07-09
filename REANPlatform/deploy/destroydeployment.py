@@ -1,12 +1,10 @@
 """Destroy deployment module."""
 import logging
-from pprint import pprint
+import re
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
-import json
-import re
 from reanplatform.utility import Utility
 
 

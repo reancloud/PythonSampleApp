@@ -2,7 +2,6 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-import time
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from pprint import pprint

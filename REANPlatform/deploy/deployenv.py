@@ -1,15 +1,13 @@
 """Depoly/Re-Deploy an Environment."""
 import os
-import re
 import os.path
 import logging
 import json
 import time
-import ast
 from cliff.command import Command
 import deploy_sdk_client
-from deploy.getdeploymentstatus import Status
 from deploy_sdk_client.rest import ApiException
+from deploy.getdeploymentstatus import Status
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 
@@ -122,8 +120,6 @@ class DepolyEnv(Command):
             depends_on_json = DepolyEnv.read_file_as_json_object(parent_json)
 
         # Re Deploy an environment
-        result = DepolyEnv.re_deploy_environment(environment_id, deployment_name,         # noqa: E501
-                                                  deployment_description, provider_name,  # noqa: E501
-                                                  region, child_input_json, depends_on_json)   # noqa: E501
+        result = DepolyEnv.re_deploy_environment(environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json)   # noqa: E501
         if result:
             print(result)

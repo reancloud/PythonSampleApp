@@ -1,7 +1,4 @@
 """Get Deployment Status By Env ID and Deployment Name."""
-import os
-import re
-from pprint import pprint
 import logging
 from cliff.command import Command
 import deploy_sdk_client

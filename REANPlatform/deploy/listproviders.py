@@ -1,12 +1,11 @@
 """List provider module."""
 import logging
-from pprint import pprint
+import json
+from prettytable import PrettyTable
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-import json
 from reanplatform.set_header import set_header_parameter
-from prettytable import PrettyTable
 from reanplatform.utility import Utility
 
 

@@ -1,9 +1,7 @@
 """Create connection module."""
 import os
-from pprint import pprint
 import logging
 from cliff.command import Command
-from reanplatform import utility
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
