@@ -4,10 +4,10 @@ import io
 import getpass
 import logging
 import yaml
-from deploy_sdk_client.rest import ApiException
 from cliff.command import Command
+from deploy_sdk_client.rest import ApiException
 from reanplatform.constants import Constants
-from reanplatform.utilityconstants import UtilityConstants
+from reanplatform.utilityconstants import PlatformConstants
 from reanplatform.utility import Utility
 
 
@@ -25,7 +25,7 @@ class Configure(Command):
                            )
         parser.add_argument('--platform_base_url',
                             '-url',
-                            help='Platform Base URL',
+                            help='Platform Base URL(e.g https://reanplatform.com)',
                             required=True
                            )
         parser.add_argument('--password',
@@ -43,10 +43,10 @@ class Configure(Command):
             password = getpass.getpass()
 
         data = {
-            UtilityConstants.PLATFORM_REFERENCE: {
-                UtilityConstants.BASE_URL_REFERENCE: parsed_args.platform_base_url,
-                UtilityConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
-                UtilityConstants.PASSWORD_REFERENCE: Utility.encryptData(password)
+            PlatformConstants.PLATFORM_REFERENCE: {
+                PlatformConstants.BASE_URL_REFERENCE: parsed_args.platform_base_url,
+                PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
+                PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password)
             }
         }
         os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)

@@ -1,13 +1,12 @@
 """Delete connection module."""
-import os
-from pprint import pprint
 import logging
 import re
 from cliff.command import Command
 import deploy_sdk_client
-from reanplatform.set_header import set_header_parameter
 from deploy_sdk_client.rest import ApiException
+from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class DeleteConnection(Command):
@@ -20,14 +19,13 @@ class DeleteConnection(Command):
         parser = super(DeleteConnection, self).get_parser(prog_name)
         parser.add_argument('--conn_name', '-n',
                             help='Connection name. This parameter is\
-                            not required when --conn_id is specified',
+            not required when --conn_id is specified',
                             required=False
-                            )
+                           )
         parser.add_argument('--conn_id', '-id', help='Connection ID.\
-                            This parameter is not required\
-                            when --conn_name is specified',
+            This parameter is not required when --conn_name is specified',
                             required=False
-                            )
+                           )
         return parser
 
     @staticmethod
@@ -51,29 +49,33 @@ class DeleteConnection(Command):
         elif conn_name:
             DeleteConnection.delete_connection_by_name(conn_name)
 
-    def delete_connection_by_id(conn_id):
+    def delete_connection_by_id(self, conn_id):
         """delete_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
-            api_instance = set_header_parameter(conn_api_instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(conn_api_instance, base_url + deploy_url)
             api_response = api_instance.delete_vm_connection(conn_id)
             print("Connection deleted successfully :%s " % str(api_response.name))    # noqa: E501
         except ApiException as e:
             Utility.print_exception(e)
 
-    def delete_connection_by_name(conn_name):
+    def delete_connection_by_name(self, conn_name):
         """delete_connection_by_name."""
         conn_api_instance = deploy_sdk_client.ConnectionApi()
-        api_instance = set_header_parameter(conn_api_instance)
+        base_url = Utility.get_platform_base_url()
+        deploy_url = DeployConstants.DEPLOY_URL
+        api_instance = set_header_parameter(conn_api_instance, base_url + deploy_url)
         conn_id = None
         try:
             all_vms = api_instance.get_all_vm_connections()
             for vm_conn in all_vms:
-                if(vm_conn.name == conn_name):
+                if vm_conn.name == conn_name:
                     conn_id = vm_conn.id
                     break
 
-            if(conn_id is None):
+            if conn_id is None:
                 raise RuntimeError("Exception : connection does not exit", conn_name)    # noqa: E501
             DeleteConnection.delete_connection_by_id(conn_id)
 

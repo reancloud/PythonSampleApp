@@ -1,15 +1,14 @@
 """Depoly/Re-Deploy an Environment."""
 import os
-import re
 import os.path
 import logging
 import json
 import time
-import ast
 from cliff.command import Command
 import deploy_sdk_client
-from deploy.getdeploymentstatus import Status
 from deploy_sdk_client.rest import ApiException
+from deploy.getdeploymentstatus import Status
+from deploy.constants import DeployConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 
@@ -75,7 +74,9 @@ class DepolyEnv(Command):
         try:
             # Initialise instance and api_instance and response
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(instance, base_url + deploy_url)
             response = None
             body = deploy_sdk_client.DeploymentConfigurationDto(
                 environment_id=environment_id,
@@ -123,7 +124,8 @@ class DepolyEnv(Command):
 
         # Re Deploy an environment
         result = DepolyEnv.re_deploy_environment(environment_id, deployment_name,         # noqa: E501
-                                                  deployment_description, provider_name,  # noqa: E501
-                                                  region, child_input_json, depends_on_json)   # noqa: E501
+                                                 deployment_description, provider_name,  # noqa: E501
+                                                 region, child_input_json, depends_on_json
+                                                )   # noqa: E501
         if result:
             print(result)

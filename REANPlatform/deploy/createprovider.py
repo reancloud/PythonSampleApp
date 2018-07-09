@@ -1,13 +1,13 @@
 """Save provider module."""
+import os
+import json
 import logging
-from pprint import pprint
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
-import os
-import json
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class SaveProvider(Command):
@@ -26,7 +26,7 @@ class SaveProvider(Command):
                             help='Json file with applicable key-value pair \
                             for provider type. File absolute path',
                             required=True
-                            )
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -41,7 +41,9 @@ class SaveProvider(Command):
     def create_provider(prov_name, prov_type, provider_details):
         """create_provider."""
         provider_api_instance = deploy_sdk_client.ProviderApi()
-        api_instance = set_header_parameter(provider_api_instance)
+        base_url = Utility.get_platform_base_url()
+        deploy_url = DeployConstants.DEPLOY_URL
+        api_instance = set_header_parameter(provider_api_instance, base_url + deploy_url)
         try:
             file_path = provider_details
 
@@ -55,12 +57,12 @@ class SaveProvider(Command):
 
             jsondata = json.loads(filedata)
             provider = deploy_sdk_client.SaveProvider(
-                            name=prov_name,
-                            type=prov_type,
-                            json=jsondata
-                        )
+                name=prov_name,
+                type=prov_type,
+                json=jsondata
+            )
             api_response = api_instance.save_provider(provider)
-
+            # print('api_response: ' + str(api_response))
             # Get all providers for user
             list_api_response = api_instance.get_all_providers()
             for provider in list_api_response:

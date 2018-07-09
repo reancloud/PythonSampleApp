@@ -1,5 +1,4 @@
 """Get Deployment ID."""
-import os
 from pprint import pprint
 import logging
 from cliff.command import Command
@@ -7,6 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class GetDeployments(Command):
@@ -38,13 +38,15 @@ class GetDeployments(Command):
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(instance, base_url + deploy_url)
             res = api_instance.get_all_deployments_for_environment_by_id(
                 env_id
             )
             pprint(res)
         except ApiException as e:
-                Utility.print_exception(e)
+            Utility.print_exception(e)
 
     @staticmethod
     def get_deployment_by_deployment_name(env_id, deployment_name):
@@ -52,14 +54,16 @@ class GetDeployments(Command):
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(instance, base_url + deploy_url)
             res = api_instance.get_all_deployments_for_environment_by_id_0(
-                    env_id,
-                    deployment_name
-                )
+                env_id,
+                deployment_name
+            )
             pprint(res)
         except ApiException as e:
-                Utility.print_exception(e)
+            Utility.print_exception(e)
 
     def take_action(self, parsed_args):
         """take_action."""

@@ -1,13 +1,14 @@
 """List connections module."""
-import logging
-from cliff.command import Command
-import deploy_sdk_client
 import json
 import re
+import logging
+from prettytable import PrettyTable
+from cliff.command import Command
+import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
-from prettytable import PrettyTable
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class ListConnections(Command):
@@ -35,7 +36,9 @@ class ListConnections(Command):
         """list_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
-            api_instance = set_header_parameter(conn_api_instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(conn_api_instance, base_url + deploy_url)
             api_response = api_instance.get_all_vm_connections()
 
             if format == 'table':
@@ -43,20 +46,20 @@ class ListConnections(Command):
                 table.padding_width = 1
                 for connection in api_response:
                     table.add_row(
-                                [
-                                    connection.name,
-                                    connection.id,
-                                    connection.type
-                                ]
-                         )
+                        [
+                            connection.name,
+                            connection.id,
+                            connection.type
+                        ]
+                    )
                 print("Connection list \n%s" % (table))
             elif format == 'json' or format == '':
                 print(
-                        json.dumps(
-                                api_response,
-                                default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4
-                                ).replace("\"_", '"')
+                    json.dumps(
+                        api_response,
+                        default=lambda o: o.__dict__,
+                        sort_keys=True, indent=4
+                        ).replace("\"_", '"')
                     )
             else:
                 exception_msg = "Please specify correct fromate, Allowed \

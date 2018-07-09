@@ -1,15 +1,15 @@
 """Import blueprint module."""
 import os
+from os.path import basename
 import logging
 import json
 import re
-from os.path import basename
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from reanplatform.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class PrepareBlueprint(Command):
@@ -21,11 +21,11 @@ class PrepareBlueprint(Command):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
         parser.add_argument(
-                            '--file', '-f',
-                            help='Blueprint file. REAN Deploy blueprint\
-                            file path. A path can be absolute path.',
-                            required=False
-                            )
+            '--file', '-f',
+            help='Blueprint file. REAN Deploy blueprint\
+            file path. A path can be absolute path.',
+            required=False
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -49,12 +49,14 @@ class PrepareBlueprint(Command):
         """blueprint_prepare."""
         try:
             api_env_instance = deploy_sdk_client.EnvironmentApi()
-            env_instance = set_header_parameter(api_env_instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            env_instance = set_header_parameter(api_env_instance, base_url + deploy_url)
             blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)     # noqa: E501
 
             prepare_data = {}
             for one_env in blueprint_all_env.environment_imports:
-                prepare_data[one_env.import_config.name+'-'+one_env.import_config.env_version] = {  # noqa: E501
+                prepare_data[one_env.import_config.name + '-' + one_env.import_config.env_version] = {  # noqa: E501
                     'name': one_env.import_config.name,
                     'connection_id': one_env.import_config.connection_id,
                     'provider_id': one_env.import_config.provider_id,

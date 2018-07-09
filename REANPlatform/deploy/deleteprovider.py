@@ -6,6 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class DeleteProvider(Command):
@@ -17,16 +18,17 @@ class DeleteProvider(Command):
         """get_parser."""
         parser = super(DeleteProvider, self).get_parser(prog_name)
         parser.add_argument(
-                            '--id', '-id',
-                            help='Provider id. This parameter is\
-                            not required when --prov_name is specified',
-                            required=False)
+            '--id', '-id',
+            help='Provider id. This parameter is\
+            not required when --prov_name is specified',
+            required=False
+        )
         parser.add_argument(
-                            '--name', '-name',
-                            help='Provider name. This parameter is\
-                            not required when --prov_id is specified',
-                            required=False
-                        )
+            '--name', '-name',
+            help='Provider name. This parameter is\
+            not required when --prov_id is specified',
+            required=False
+        )
         return parser
 
     @staticmethod
@@ -65,9 +67,11 @@ class DeleteProvider(Command):
         """delete_provider_by_name."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(provider_api_instance, base_url + deploy_url)
             prov_id = DeleteProvider.get_id(prov_name, api_instance)
-            if(prov_id is None):
+            if prov_id is None:
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
             DeleteProvider.delete_provider_by_id(prov_id)

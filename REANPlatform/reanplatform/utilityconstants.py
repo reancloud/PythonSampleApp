@@ -1,7 +1,7 @@
 """Contains constats required for Utility."""
 
 
-class UtilityConstants(object):
+class PlatformConstants(object):
     """Contains constats required for Utility."""
 
     PLATFORM_CONFIG_FILE_NAME = 'reanplatform'

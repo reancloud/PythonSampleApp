@@ -1,12 +1,13 @@
 """List environment module."""
+import json
 import logging
+from prettytable import PrettyTable
 from cliff.command import Command
 import deploy_sdk_client
-import json
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
-from prettytable import PrettyTable
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class ListEnvironments(Command):
@@ -30,7 +31,9 @@ class ListEnvironments(Command):
         try:
             # Initialise instance and api_instance in list_environment
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(instance, base_url + deploy_url)
             # Get all environments for user
             api_response = api_instance.get_all_environments()
             if output_format == 'table':
@@ -38,22 +41,22 @@ class ListEnvironments(Command):
                 table.padding_width = 1
                 for environment in api_response:
                     table.add_row(
-                                [
-                                    environment.name,
-                                    environment.id,
-                                    environment.region,
-                                    environment.env_version
-                                ]
-                            )
+                        [
+                            environment.name,
+                            environment.id,
+                            environment.region,
+                            environment.env_version
+                        ]
+                    )
                 print("Environment list ::\n%s" % (table))
 
             elif output_format == 'json' or output_format == '':
                 print(
-                        json.dumps(
-                                api_response,
-                                default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4
-                                ).replace("\"_", '"')
+                    json.dumps(
+                        api_response,
+                        default=lambda o: o.__dict__,
+                        sort_keys=True, indent=4
+                    ).replace("\"_", '"')
                     )
 
         except ApiException as e:

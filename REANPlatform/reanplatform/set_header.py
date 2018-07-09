@@ -1,6 +1,5 @@
 """Set header and URL module."""
 from reanplatform.constants import Constants
-from reanplatform.utility import Utility
 
 def set_header_parameter(api_instance, host):
     """Set header."""

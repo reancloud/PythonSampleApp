@@ -1,13 +1,11 @@
 """Get Deployment Status By Env ID and Deployment Name."""
-import os
-import re
-from pprint import pprint
 import logging
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class Status(Command):
@@ -44,7 +42,9 @@ class Status(Command):
 
             # Initialise instance and api_instance to get deployment status
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            base_url = Utility.get_platform_base_url()
+            deploy_url = DeployConstants.DEPLOY_URL
+            api_instance = set_header_parameter(instance, base_url + deploy_url)
             if env_id:
                 api_response = api_instance.get_deploy_status_0(
                     env_id,

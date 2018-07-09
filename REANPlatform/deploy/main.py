@@ -41,5 +41,6 @@ def main(argv=sys.argv[1:]):
     except ApiException as exception:
         print(exception)
 
+
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
