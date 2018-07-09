@@ -45,16 +45,16 @@ class Status(Command):
             # Initialise instance and api_instance to get deployment status
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
-            if env_id:
-                api_response = api_instance.get_deploy_status_0(
+            if (env_id and deployment_name):
+                api_response = api_instance.get_deploy_status_by_env_id_and_deployment_name(
                     env_id,
                     deployment_name
                 )
-            elif run_id:
-                api_response = api_instance.get_deployment_status(
-                    run_id
+            elif env_id:
+                api_response = api_instance.get_deploy_status_by_env_id(
+                    env_id
                 )
-            return api_response
+            return api_response.status
         except ApiException as e:
             Utility.print_exception(e)
 
@@ -68,4 +68,4 @@ class Status(Command):
         status = Status.deployment_status(env_id, deployment_name)
 
         if status:
-            print(status)
+            print("Environment Status : %s " % (status))

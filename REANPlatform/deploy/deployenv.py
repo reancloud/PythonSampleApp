@@ -86,7 +86,7 @@ class DepolyEnv(Command):
                 input_json=child_input_json,
                 parent_deployments=depends_on_json
             )
-            response = api_instance.deploy_1(
+            response = api_instance.deploy_by_config(
                 body=body
             )
 

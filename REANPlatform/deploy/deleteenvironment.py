@@ -28,9 +28,8 @@ class DeleteEnvironment(Command):
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
             api_response = api_instance.delete_environment(env_id)
-            print(api_response)
+            print("Environment deleted successfully : %s" % env_id)
         except Exception as e:
-            print(e)
             Utility.print_exception(e)
 
     def take_action(self, parsed_args):

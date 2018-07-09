@@ -19,23 +19,23 @@ class DestroyDeployment(Command):
         """get_parser."""
         parser = super(DestroyDeployment, self).get_parser(prog_name)
         parser.add_argument(
-                            '--deployment_id', '-d_id',
-                            help='Deployment id. This parameter is\
+            '--deployment_id', '-d_id',
+            help='Deployment id. This parameter is\
                             not required when --env_id OR --deployment_name\
                             and --env_id are specified',
-                            required=False
-                            )
+            required=False
+        )
         parser.add_argument('--env_id', '-id',
                             help='Environment id. This parameter is\
                             not required when --deployment_id is specified',
                             required=False
                             )
         parser.add_argument(
-                            '--deployment_name', '-d_name',
-                            help='Deployment name. This parameter is\
+            '--deployment_name', '-d_name',
+            help='Deployment name. This parameter is\
                             not required when --deployment_id is specified',
-                            required=False
-                            )
+            required=False
+        )
         return parser
 
     @staticmethod
@@ -56,10 +56,12 @@ class DestroyDeployment(Command):
         deployment_name = parsed_args.deployment_name
         deployment_id = parsed_args.deployment_id
 
-        DestroyDeployment.validate_parameters(env_id, deployment_name, deployment_id)   # noqa: E501
+        DestroyDeployment.validate_parameters(
+            env_id, deployment_name, deployment_id)
 
         if env_id and deployment_name:
-            DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)      # noqa: E501
+            DestroyDeployment.destroy_by_envid_deploymentname(
+                env_id, deployment_name)
         elif env_id:
             DestroyDeployment.destroy_env_by_envid(env_id)
         elif deployment_id:
@@ -72,7 +74,8 @@ class DestroyDeployment(Command):
             api_instance = deploy_sdk_client.EnvironmentApi()
             env_api_instance = set_header_parameter(api_instance)
             response = env_api_instance.destroy(env_id)
-            print("Environment status %s: %s" % (response.environment.name, response.status))  # noqa: E501
+            print("Environment status for %s: %s" %
+                  (response.environment.name, response.status))
         except ApiException as e:
             Utility.print_exception(e)
 
@@ -82,8 +85,10 @@ class DestroyDeployment(Command):
         try:
             api_instance = deploy_sdk_client.EnvironmentApi()
             env_api_instance = set_header_parameter(api_instance)
-            deployment_response = env_api_instance.destroy_deployment(deployment_id)     # noqa: E501
-            print("Deployment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
+            deployment_response = env_api_instance.destroy_deployment_by_id(
+                deployment_id)
+            print("Environment status for %s: %s" % (
+                deployment_response.environment.name, deployment_response.status))
         except ApiException as e:
             Utility.print_exception(e)
 
@@ -94,7 +99,9 @@ class DestroyDeployment(Command):
             api_instance = deploy_sdk_client.EnvironmentApi()
             env_api_instance = set_header_parameter(api_instance)
             get_env_name = api_instance.get_environment(env_id)
-            deployment_response = env_api_instance.destroy_deployment_0(get_env_name.name, deployment_name)  # noqa: E501
-            print("Deployment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
+            deployment_response = env_api_instance.destroy_deployment_by_env_name_and_deployment_name(
+                get_env_name.name, deployment_name)
+            print("Environment status for %s: %s" % (
+                deployment_response.environment.name, deployment_response.status))
         except ApiException as e:
             Utility.print_exception(e)

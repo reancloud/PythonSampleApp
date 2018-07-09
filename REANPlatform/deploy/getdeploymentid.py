@@ -44,7 +44,7 @@ class GetDeployments(Command):
             )
             pprint(res)
         except ApiException as e:
-                Utility.print_exception(e)
+            Utility.print_exception(e)
 
     @staticmethod
     def get_deployment_by_deployment_name(env_id, deployment_name):
@@ -53,13 +53,13 @@ class GetDeployments(Command):
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
-            res = api_instance.get_all_deployments_for_environment_by_id_0(
-                    env_id,
-                    deployment_name
-                )
+            res = api_instance.get_all_deployments_for_environment_by_id_and_deployment_name(
+                env_id,
+                deployment_name
+            )
             pprint(res)
         except ApiException as e:
-                Utility.print_exception(e)
+            Utility.print_exception(e)
 
     def take_action(self, parsed_args):
         """take_action."""

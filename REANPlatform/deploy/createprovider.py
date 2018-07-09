@@ -55,14 +55,16 @@ class SaveProvider(Command):
 
             jsondata = json.loads(filedata)
             provider = deploy_sdk_client.SaveProvider(
-                            name=prov_name,
-                            type=prov_type,
-                            json=jsondata
-                        )
+                name=prov_name,
+                type=prov_type,
+                json=jsondata
+            )
             api_response = api_instance.save_provider(provider)
 
             # Get all providers for user
             list_api_response = api_instance.get_all_providers()
+
+            id = None
             for provider in list_api_response:
                 if provider.name == prov_name:
                     id = provider.id
