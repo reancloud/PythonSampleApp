@@ -50,7 +50,7 @@ class RuleInstall(Command):     # noqa: D203
                             required=False)
         return parser
 
-    def __validate_parameters(rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action):
+    def __validate_parameters(self, rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
             raise RuntimeError("Specify either --rule_name OR --customer_acc OR --rule_name and --customer_acc")    # noqa: E501
@@ -67,8 +67,7 @@ class RuleInstall(Command):     # noqa: D203
         domain = argparse_dict[MncConstats.CUSTOMER_EMAIL_DOMAIN]
         action = argparse_dict[MncConstats.ACTION]
         region = MncConstats.REGION
-        RuleInstall.__validate_parameters(rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action)
-
+        self.__validate_parameters(rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action)
 
         prepare_data = {}
         dependent_resource_file = os.getcwd() + '/' + 'depends_on_resource.json'

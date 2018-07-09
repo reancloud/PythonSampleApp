@@ -76,7 +76,7 @@ setup(
     #        'rule = mnc.rule:Rule',
             'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
-     #       'rule-remove = mnc.rule_remove:RuleRemove'
+            'rule-remove = mnc.rule_remove:RuleRemove'
         ],
     #    'rean.test': [
     #        'run-url-test = test.runurl:RunURLTest',
