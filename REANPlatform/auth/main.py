@@ -2,8 +2,6 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-# from authnz_sdk_client.rest import ApiException
-# from pprint import pprint
 
 
 class Auth(App):

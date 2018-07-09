@@ -1,13 +1,11 @@
 """Get Users module."""
 import logging
 import json
-# from pprint import pprint
 from cliff.command import Command
 from prettytable import PrettyTable
 from auth.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-# from reanplatform.utilityconstants import Constants
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
 
