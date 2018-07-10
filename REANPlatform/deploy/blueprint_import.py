@@ -1,15 +1,15 @@
 """Import blueprint module."""
 import os
+from os.path import basename
 import logging
 import json
 import re
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from reanplatform.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from os.path import basename
+from deploy.constants import DeployConstants
 
 
 class ImportBlueprint(Command):
@@ -21,17 +21,17 @@ class ImportBlueprint(Command):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
         parser.add_argument(
-                            '--blueprint_file', '-b_file',
-                            help='Blueprint file. REAN Deploy blueprint\
-                            file path. A path can be absolute path.',
-                            required=True
-                            )
+            '--blueprint_file', '-b_file',
+            help='Blueprint file. REAN Deploy blueprint\
+            file path. A path can be absolute path.',
+            required=True
+        )
         parser.add_argument(
-                            '--attribute_file', '-a_file',
-                            help='Blueprint attributes. REAN Deploy blueprint\
-                            attributes file path. A path can be absolute\
-                            path.', required=True
-                            )
+            '--attribute_file', '-a_file',
+            help='Blueprint attributes. REAN Deploy blueprint\
+            attributes file path. A path can be absolute\
+            path.', required=True
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -55,7 +55,7 @@ class ImportBlueprint(Command):
         """blueprint_import."""
         try:
             api_env_instance = deploy_sdk_client.EnvironmentApi()
-            env_instance = set_header_parameter(api_env_instance)
+            env_instance = set_header_parameter(api_env_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), "r") as handle:
@@ -88,5 +88,5 @@ class ImportBlueprint(Command):
             env_instance.import_blueprint(body=blueprint_all_env)
             print("Blueprint imported successfully. Environment names : ", env_names)       # noqa: E501
 
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

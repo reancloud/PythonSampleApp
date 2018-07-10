@@ -1,15 +1,15 @@
 """Import blueprint module."""
 import os
+from os.path import basename
 import logging
 import json
 import re
-from os.path import basename
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from reanplatform.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class PrepareBlueprint(Command):
@@ -21,11 +21,11 @@ class PrepareBlueprint(Command):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
         parser.add_argument(
-                            '--file', '-f',
-                            help='Blueprint file. REAN Deploy blueprint\
-                            file path. A path can be absolute path.',
-                            required=False
-                            )
+            '--file', '-f',
+            help='Blueprint file. REAN Deploy blueprint\
+            file path. A path can be absolute path.',
+            required=False
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -49,12 +49,12 @@ class PrepareBlueprint(Command):
         """blueprint_prepare."""
         try:
             api_env_instance = deploy_sdk_client.EnvironmentApi()
-            env_instance = set_header_parameter(api_env_instance)
+            env_instance = set_header_parameter(api_env_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)     # noqa: E501
 
             prepare_data = {}
             for one_env in blueprint_all_env.environment_imports:
-                prepare_data[one_env.import_config.name+'-'+one_env.import_config.env_version] = {  # noqa: E501
+                prepare_data[one_env.import_config.name + '-' + one_env.import_config.env_version] = {  # noqa: E501
                     'name': one_env.import_config.name,
                     'connection_id': one_env.import_config.connection_id,
                     'provider_id': one_env.import_config.provider_id,
@@ -68,5 +68,5 @@ class PrepareBlueprint(Command):
                 Before import a blueprint, Update the blueprint attributes\
                 in file: " + (attribute_path)
             print(re.sub(' +', ' ', msg))
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

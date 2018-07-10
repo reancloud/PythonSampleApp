@@ -1,10 +1,10 @@
 """Utility class contains all common method requried for CLI."""
 import os
-from reanplatform.utilityconstants import Constants
-import yaml
-from Crypto.Cipher import XOR
 import base64
 import json
+import yaml
+from Crypto.Cipher import XOR
+from reanplatform.utilityconstants import PlatformConstants
 
 
 class Utility(object):
@@ -14,48 +14,55 @@ class Utility(object):
     def getUserNameAndPassword():
         """Get configured username and password."""
         path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(Constants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
+            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
+            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
 
                 username = Utility.decryptData(
-                            data_loaded['deploy']['username']).decode('utf-8')
+                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
                 password = Utility.decryptData(
-                            data_loaded['deploy']['password']).decode('utf-8')
+                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
                 credentials = str(username) + ":" + str(password)
                 return credentials
 
     @staticmethod
-    def getPlatformUrl():
+    def get_platform_base_url():
         """Get configured username and password."""
         path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(Constants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
+            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
+            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
 
-                host = data_loaded['deploy']['host']
+                host = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.BASE_URL_REFERENCE]
                 return host
 
     @staticmethod
     def encryptData(val):
         """Encrypts credentials."""
-        cipher = XOR.new(Constants.REAN_SECRET_KEY)
+        cipher = XOR.new(PlatformConstants.REAN_SECRET_KEY)
         encoded = base64.b64encode(cipher.encrypt(val))
         return encoded
 
     @staticmethod
     def decryptData(encoded):
         """Decrypts credentials."""
-        cipher = XOR.new(Constants.REAN_SECRET_KEY)
+        cipher = XOR.new(PlatformConstants.REAN_SECRET_KEY)
         decoded = cipher.decrypt(base64.b64decode(encoded))
         return decoded
 
-    def print_exception(e):
+    @staticmethod
+    def print_exception(exception):
         """Print exception method."""
         print("Exception message: ")
-        err = json.loads(e.body)
+        err = json.loads(exception.body)
         print("%s %s" % (err['message'], err['status']))
+
+    @staticmethod
+    def get_url(host_url):
+        """Get full URL."""
+        base_url = Utility.get_platform_base_url()
+        return base_url + host_url
