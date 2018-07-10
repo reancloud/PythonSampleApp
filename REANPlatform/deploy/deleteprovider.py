@@ -32,12 +32,12 @@ class DeleteProvider(Command):
         return parser
 
     @staticmethod
-    def validate_parameters(id, prov_name):
+    def validate_parameters(prov_id, prov_name):
         """validate_parameters."""
         exception_msg = "Specify either --prov_id OR --prov_name"
-        if id and prov_name:
+        if prov_id and prov_name:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif id is None and prov_name is None:
+        elif prov_id is None and prov_name is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
@@ -59,8 +59,8 @@ class DeleteProvider(Command):
             api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.delete_provider(prov_id)
             print("Provider deleted successfully id", prov_id)
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def delete_provider_by_name(prov_name):
@@ -73,16 +73,16 @@ class DeleteProvider(Command):
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
             DeleteProvider.delete_provider_by_id(prov_id)
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def get_id(name, api_instance):
         """get_id."""
-        id = None
+        provider_id = None
         list_api_response = api_instance.get_all_providers()
         for provider in list_api_response:
             if provider.name == name:
-                id = provider.id
+                provider_id = provider.id
                 break
-        return id
+        return provider_id

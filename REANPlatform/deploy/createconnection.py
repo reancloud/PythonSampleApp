@@ -1,5 +1,4 @@
 """Create connection module."""
-import os
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -76,14 +75,14 @@ class SaveConnection(Command):
         )
         return parser
 
-    def get_key(self, parsed_args):
+    @staticmethod
+    def get_key(parsed_args):
         """get_key."""
         line_stripping = ''
-        if os.path.exists(parsed_args.securekeypath):
-            with open(parsed_args.securekeypath, 'r') as fin:
-                for line in fin.readlines():
-                    line_stripping = line_stripping + '\n' + line.strip('\n')
-                return line_stripping
+        with open(parsed_args.securekeypath, 'r') as fin:
+            for line in fin.readlines():
+                line_stripping = line_stripping + '\n' + line.strip('\n')
+            return line_stripping
 
     def take_action(self, parsed_args):
         """take_action."""
@@ -92,25 +91,25 @@ class SaveConnection(Command):
         body = None
         bastion_data = None
         try:
-            if parsed_args.bastionhost:
+            if(parsed_args.bastionhost and parsed_args.type == 'SSH'):
                 bastion_data = {
                     'host': parsed_args.bastionhost,
                     'password': parsed_args.bastionpassword,
-                    # 'secure_key': self.get_key(parsed_args),
+                    'secure_key': SaveConnection.get_key(parsed_args),
                     'port': parsed_args.bastionport,
                     'user': parsed_args.bastionuser
                 }
 
             if(parsed_args.type == 'SSH' and parsed_args.securekeypath):
-                body = deploy_sdk_client.VmConnection(
+                body = deploy_sdk_client.SaveVmConnection(
                     bastion_connection=bastion_data,
                     type=parsed_args.type,
                     name=parsed_args.name,
                     user=parsed_args.user,
-                    secure_key=self.get_key(parsed_args)
+                    secure_key=SaveConnection.get_key(parsed_args)
                 )
             elif((parsed_args.type == 'WinRM' and parsed_args.password) or (parsed_args.type == 'SSH' and parsed_args.password)):
-                body = deploy_sdk_client.VmConnection(
+                body = deploy_sdk_client.SaveVmConnection(
                     bastion_connection=bastion_data,
                     type=parsed_args.type,
                     name=parsed_args.name,
@@ -122,7 +121,16 @@ class SaveConnection(Command):
                          parameters and values:")
 
             api_response = api_instance.save_vm_connection(body)
-            print("Connection created successfully :%s, id: %s" % (api_response.name, api_response.id))  # noqa: E501
+            list_api_response = api_instance.get_all_vm_connections()
 
-        except ApiException as e:
-            Utility.print_exception(e)
+            connection_id = None
+            for conn in list_api_response:
+                if conn.name == body.name:
+                    connection_id = conn.id
+                    break
+
+            print("Connection created successfully :%s, id: %s" %
+                  (body.name, connection_id))
+
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

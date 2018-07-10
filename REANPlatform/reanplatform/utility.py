@@ -2,8 +2,8 @@
 import os
 import base64
 import json
-import yaml
 from Crypto.Cipher import XOR
+import yaml
 from reanplatform.utilityconstants import PlatformConstants
 
 

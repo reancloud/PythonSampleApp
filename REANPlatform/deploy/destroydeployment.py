@@ -72,8 +72,8 @@ class DestroyDeployment(Command):
             env_api_instance = set_header_parameter(api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             response = env_api_instance.destroy(env_id)
             print("Environment status %s: %s" % (response.environment.name, response.status))  # noqa: E501
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def destroy_by_deploymentid(deployment_id):
@@ -81,10 +81,10 @@ class DestroyDeployment(Command):
         try:
             api_instance = deploy_sdk_client.EnvironmentApi()
             env_api_instance = set_header_parameter(api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            deployment_response = env_api_instance.destroy_deployment(deployment_id)     # noqa: E501
-            print("Deployment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
-        except ApiException as e:
-            Utility.print_exception(e)
+            deployment_response = env_api_instance.destroy_deployment_by_id(deployment_id)     # noqa: E501
+            print("Environment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def destroy_by_envid_deploymentname(env_id, deployment_name):
@@ -93,7 +93,7 @@ class DestroyDeployment(Command):
             api_instance = deploy_sdk_client.EnvironmentApi()
             env_api_instance = set_header_parameter(api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             get_env_name = api_instance.get_environment(env_id)
-            deployment_response = env_api_instance.destroy_deployment_0(get_env_name.name, deployment_name)  # noqa: E501
-            print("Deployment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
-        except ApiException as e:
-            Utility.print_exception(e)
+            deployment_response = env_api_instance.destroy_deployment_by_env_name_and_deployment_name(get_env_name.name, deployment_name)  # noqa: E501
+            print("Environment status %s: %s" % (deployment_response.environment.name, deployment_response.status))  # noqa: E501
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

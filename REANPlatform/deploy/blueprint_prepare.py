@@ -68,5 +68,5 @@ class PrepareBlueprint(Command):
                 Before import a blueprint, Update the blueprint attributes\
                 in file: " + (attribute_path)
             print(re.sub(' +', ' ', msg))
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
