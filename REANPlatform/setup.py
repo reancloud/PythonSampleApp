@@ -1,5 +1,5 @@
 """REANPlatform setup.py"""
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 from setuptools import setup, find_packages
 
@@ -77,9 +77,9 @@ setup(
         'rean.auth': [
             'get-user = auth.get_users:GetUsers'
         ],
-       'rean.mnc': [
-    #        'configure = mnc.configure:Configure',
-    #        'rule = mnc.rule:Rule',
+        'rean.mnc': [
+            # 'configure = mnc.configure:Configure',
+            # 'rule = mnc.rule:Rule',
             'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'
