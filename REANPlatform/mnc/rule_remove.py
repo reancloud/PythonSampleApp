@@ -12,7 +12,7 @@ from deploy.destroydeployment import DestroyDeployment
 
 
 class RuleRemove(Command):      # noqa: D203
-    """Remove deployed rule."""
+    """Remove Manage Cloud deployed rule."""
 
     log = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class RuleRemove(Command):      # noqa: D203
         return parser
 
     # pylint: disable=R0201
-    def __validate_parameters(rule_name, rule_type, customer_acc):
+    def __validate_parameters(self, rule_name, rule_type, customer_acc):
         """Validate cli parameter."""
         exception_msg = "Specify either " + "--" + MncConstats.CUSTOMER_ACC + " OR " + "--" + MncConstats.RULE_NAME + \
             " OR " + "--" + MncConstats.CUSTOMER_ACC + " and " + "--" + MncConstats.RULE_NAME
@@ -49,7 +49,7 @@ class RuleRemove(Command):      # noqa: D203
             customer_acc = argparse_dict[MncConstats.CUSTOMER_ACC]
             force = argparse_dict[MncConstats.FORCE]
 
-            RuleRemove.__validate_parameters(rule_name, rule_type, customer_acc)
+            self.__validate_parameters(rule_name, rule_type, customer_acc)
 
             if force is None:
                 force = input("Are you sure? [Yes/No] :")
