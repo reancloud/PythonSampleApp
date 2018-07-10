@@ -69,7 +69,8 @@ disable=
     import-error,
     dangerous-default-value,
     too-many-boolean-expressions,
-    duplicate-code
+    duplicate-code,
+    unused-variable
 
 
 
