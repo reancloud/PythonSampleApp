@@ -4,9 +4,10 @@ import io
 import getpass
 import logging
 import yaml
-from deploy_sdk_client.rest import ApiException
 from cliff.command import Command
+from deploy_sdk_client.rest import ApiException
 from reanplatform.constants import Constants
+from reanplatform.utilityconstants import PlatformConstants
 from reanplatform.utility import Utility
 
 
@@ -21,17 +22,17 @@ class Configure(Command):
         parser.add_argument('--username', '-u',
                             help='Platform username',
                             required=True
-                            )
-        parser.add_argument('--platform_url',
+                           )
+        parser.add_argument('--platform_base_url',
                             '-url',
-                            help='Platform URL',
+                            help='Platform Base URL(e.g https://reanplatform.com)',
                             required=True
-                            )
+                           )
         parser.add_argument('--password',
                             '-p',
                             help='Platform password',
                             required=False
-                            )
+                           )
         return parser
 
     def createFile(self, parsed_args, path):
@@ -42,10 +43,10 @@ class Configure(Command):
             password = getpass.getpass()
 
         data = {
-            'deploy': {
-                'host': parsed_args.platform_url,
-                'username': Utility.encryptData(parsed_args.username),
-                'password': Utility.encryptData(password)
+            PlatformConstants.PLATFORM_REFERENCE: {
+                PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
+                PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
+                PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password)
             }
         }
         os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
@@ -65,3 +66,12 @@ class Configure(Command):
 
         except ApiException as e:
             self.log.error(e)
+
+    def __parse_base_url(self, base_url):
+        """Parse base url.
+
+        Removes extra '/' if any from url.
+        """
+        if base_url[-1] == '/':
+            return base_url[:-1]
+        return base_url

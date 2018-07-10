@@ -39,6 +39,7 @@ class RuleList(Command):        # noqa: D203.
     def take_action(self, parsed_args):
         """List Environment."""
         argparse_dict = vars(parsed_args)
+
         rule_name = argparse_dict[MncConstats.RULE_NAME]
         rule_type = argparse_dict[MncConstats.RULE_TYPE]
         customer_acc = argparse_dict[MncConstats.CUSTOMER_ACC]

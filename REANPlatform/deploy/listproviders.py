@@ -1,13 +1,13 @@
 """List provider module."""
+import json
 import logging
-from pprint import pprint
+from prettytable import PrettyTable
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-import json
 from reanplatform.set_header import set_header_parameter
-from prettytable import PrettyTable
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class ListProvider(Command):
@@ -27,38 +27,38 @@ class ListProvider(Command):
 
     def take_action(self, parsed_args):
         """take_action of ListProvider."""
-        format = parsed_args.format
-        ListProvider.list_provider(format)
+        list_provider_format = parsed_args.format
+        ListProvider.list_provider(list_provider_format)
 
     @staticmethod
-    def list_provider(format):
+    def list_provider(list_provider_format):
         """list_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance)
+            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.get_all_providers()
-            if format == 'table':
+            if list_provider_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for provider in api_response:
                     table.add_row(
-                                [
-                                    provider.name,
-                                    provider.id,
-                                    provider.type
-                                ]
-                            )
+                        [
+                            provider.name,
+                            provider.id,
+                            provider.type
+                        ]
+                    )
                 print("Provider list ::\n%s" % (table))
-            elif format == 'json' or format == '':
+            elif list_provider_format == 'json' or list_provider_format == '':
                 print(
-                        json.dumps(
-                                api_response,
-                                default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4
-                                ).replace("\"_", '"')
+                    json.dumps(
+                        api_response,
+                        default=lambda o: o.__dict__,
+                        sort_keys=True, indent=4
+                        ).replace("\"_", '"')
                     )
             else:
                 raise RuntimeError("Please specify correct fromate, Allowed \
                         values are: [json, table]")
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
