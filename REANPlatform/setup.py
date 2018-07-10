@@ -1,4 +1,4 @@
-"""REANPlatform setup.py"""
+"""REANPlatform setup.py."""
 # !/usr/bin/env python
 
 from setuptools import setup, find_packages
