@@ -3,8 +3,8 @@ import os
 import io
 import getpass
 import logging
-from cliff.command import Command
 import yaml
+from cliff.command import Command
 from deploy_sdk_client.rest import ApiException
 from reanplatform.constants import Constants
 from reanplatform.utilityconstants import PlatformConstants
