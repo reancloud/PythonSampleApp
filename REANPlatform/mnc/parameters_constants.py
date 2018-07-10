@@ -25,6 +25,7 @@ class MncConstats(object):      # noqa: D203
     ACTION_INITIAL = '-a'
 
     # parameter forrule input
+    DEPLOYING = '"DEPLOYING"'
     NOTIFIER_ROLE_NAME = 'rean_mnc_notifier_lambda_role'
     PROCESSOR_ROLE_NAME = 'rean_mnc_rule_processor_lambda_role'
     RULE_PROCESSOR_LAMBDA_NAME = 'rean_mnc_rule_processor'

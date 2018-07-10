@@ -12,6 +12,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from mnc.parameters_constants import MncConstats
+from mnc.utility import MncUtility
 from deploy.deployenv import DepolyEnv
 from deploy.getdeploymentstatus import Status
 
@@ -19,7 +20,7 @@ from deploy.getdeploymentstatus import Status
 class RuleInstall(Command):     # noqa: D203
     """Install Manage Cloud Rules."""
 
-    log = logging.getLogger(__name__)
+    # log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -113,7 +114,7 @@ class RuleInstall(Command):     # noqa: D203
             if status.status == 'DEPLOYED':
                 child_input_json = None
                 time.sleep(10)
-                provider_name = RuleInstall.provider_name_from_s3(str(RuleInstall.read_bucket_name()))
+                provider_name = RuleInstall.provider_name_from_s3(str(MncUtility.read_bucket_name()))
                 deployment_name = 'default_master_' + customer_acc
                 depends_json = DepolyEnv.read_file_as_json_object(dependent_resource_file)
                 result = DepolyEnv.re_deploy_environment(env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
@@ -130,20 +131,11 @@ class RuleInstall(Command):     # noqa: D203
         while 1:
             status = Status.deployment_status(env_id, deployment_name)  # noqa: E501
             status_dict = str(status)
-            if "DEPLOYING" in status_dict:
+            if MncConstats.DEPLOYING in status_dict:
                 time.sleep(1)
             else:
                 break
         return status
-
-    @staticmethod
-    def read_bucket_name():
-        """read_bucket_name of mnc config."""
-        with open(MncConstats.FILE_BUCKET_NAME, "r") as file_data:
-            bucket_name = file_data.read().replace('\n', '')
-            bucket_name = bucket_name.split(':')[-1]
-            bucket_name = bucket_name.strip()
-        return bucket_name
 
     @staticmethod
     def create_att_file(file_name, prepare_data):
@@ -175,22 +167,8 @@ class RuleInstall(Command):     # noqa: D203
         input_data['toEmail'] = email_to
         input_data['ccEmail'] = email_cc
         input_data['performAction'] = action
-        input_data['notifierLambdaRoleArn'] = RuleInstall.read_role_arn(MncConstats.NOTIFIER_ROLE_NAME)
-        input_data['lambdaRoleArn'] = RuleInstall.read_role_arn(MncConstats.PROCESSOR_ROLE_NAME)
-        input_data['lambdaArn'] = RuleInstall.read_lambda_arn(MncConstats.RULE_PROCESSOR_LAMBDA_NAME)
+        input_data['notifierLambdaRoleArn'] = MncUtility.read_role_arn(MncConstats.NOTIFIER_ROLE_NAME)
+        input_data['lambdaRoleArn'] = MncUtility.read_role_arn(MncConstats.PROCESSOR_ROLE_NAME)
+        input_data['lambdaArn'] = MncUtility.read_lambda_arn(MncConstats.RULE_PROCESSOR_LAMBDA_NAME)
         input_data['maximum_execution_frequency'] = MncConstats.MAXIMUM_EXECUTION_FREQUENCY
         RuleInstall.create_att_file(input_json_file_path, input_data)
-
-    @staticmethod
-    def read_role_arn(role_name):
-        """read_role_arn."""
-        client = boto3.client('iam')
-        notifier_lambda_role = client.get_role(RoleName=role_name)
-        return notifier_lambda_role['Role']['Arn']
-
-    @staticmethod
-    def read_lambda_arn(lambda_name):
-        """read_lambda_arn."""
-        client = boto3.client('lambda')
-        response = client.get_function(FunctionName=lambda_name)
-        return response['Configuration']['FunctionArn']
