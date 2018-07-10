@@ -77,11 +77,10 @@ setup(
         'rean.auth': [
             'get-user = auth.get_users:GetUsers'
         ],
-
-        'rean.mnc': [
-            #        'configure = mnc.configure:Configure',
-            #        'rule = mnc.rule:Rule',
-            #        'rule install = mnc.rule_install:RuleInstall',
+       'rean.mnc': [
+    #        'configure = mnc.configure:Configure',
+    #        'rule = mnc.rule:Rule',
+            'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'
         ],

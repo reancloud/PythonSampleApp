@@ -2,7 +2,6 @@
 import logging
 import json
 import re
-import argparse
 from collections import OrderedDict
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
@@ -32,7 +31,7 @@ class RuleList(Command):        # noqa: D203.
         return parser
 
     # pylint: disable=R0201
-    def __validate_parameters(rule_name, rule_type, customer_acc):
+    def __validate_parameters(self, rule_name, rule_type, customer_acc):
         """Validate cli parameters."""
         if rule_name is None and rule_type is None and customer_acc is None:
             raise RuntimeError("Specify either " + '--' + MncConstats.RULE_NAME + " OR " + '--' + MncConstats.CUSTOMER_ACC + " OR " + '--' + MncConstats.RULE_NAME + " and " + '--' + MncConstats.CUSTOMER_ACC)
@@ -45,7 +44,7 @@ class RuleList(Command):        # noqa: D203.
         rule_type = argparse_dict[MncConstats.RULE_TYPE]
         customer_acc = argparse_dict[MncConstats.CUSTOMER_ACC]
         rule_name_key = None
-        RuleList.__validate_parameters(rule_name, rule_type, customer_acc)
+        self.__validate_parameters(rule_name, rule_type, customer_acc)
         try:
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance)
