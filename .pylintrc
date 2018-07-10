@@ -65,7 +65,8 @@ disable=
     too-many-function-args,
     broad-except,
     no-value-for-parameter,
-    inconsistent-return-statements
+    inconsistent-return-statements,
+    import-error
 
 
 
