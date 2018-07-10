@@ -88,5 +88,5 @@ class ImportBlueprint(Command):
             env_instance.import_blueprint(body=blueprint_all_env)
             print("Blueprint imported successfully. Environment names : ", env_names)       # noqa: E501
 
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

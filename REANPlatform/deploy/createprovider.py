@@ -60,14 +60,14 @@ class SaveProvider(Command):
                 json=jsondata
             )
             api_response = api_instance.save_provider(provider)
-            # print('api_response: ' + str(api_response))
             # Get all providers for user
             list_api_response = api_instance.get_all_providers()
+            provider_id = None
             for provider in list_api_response:
                 if provider.name == prov_name:
-                    id = provider.id
+                    provider_id = provider.id
                     break
             print("Provider created successfully \
-                    Name: %s,  Id: %i" % (prov_name, id))
-        except ApiException as e:
-            Utility.print_exception(e)
+                    Name: %s,  Id: %i" % (prov_name, provider_id))
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
