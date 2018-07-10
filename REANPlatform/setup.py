@@ -36,9 +36,10 @@ setup(
     scripts=[],
 
     provides=[],
-     
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
-   
+
+    install_requires=['cliff', 'validators',
+                      'boto3', 'Crypto', 'wheel', 'pycrypto'],
+
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -49,11 +50,11 @@ setup(
             'rean-deploy = deploy.main:main',
             'rean-mnc = mnc.main:main'
         ],
-         'rean.platform': [
-             'configure = reanplatform.configure:Configure',
-             'rean-deploy = reanplatform.reanhelp:Helpdeploy',
-             'rean-test = reanplatform.reanhelp:Helptest',
-             'rean-mnc = reanplatform.reanhelp:Helpmnc'
+        'rean.platform': [
+            'configure = reanplatform.configure:Configure',
+            'rean-deploy = reanplatform.reanhelp:Helpdeploy',
+            'rean-test = reanplatform.reanhelp:Helptest',
+            'rean-mnc = reanplatform.reanhelp:Helpmnc'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
@@ -63,6 +64,7 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
+            'plan-deployment = deploy.plandeployment:PlanDeployment',
             'list-environment = deploy.listenvironments:ListEnvironments',
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
@@ -72,48 +74,48 @@ setup(
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
         'rean.mnc': [
-    #        'configure = mnc.configure:Configure',
-    #        'rule = mnc.rule:Rule',
+            #        'configure = mnc.configure:Configure',
+            #        'rule = mnc.rule:Rule',
             'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'
         ],
-    #    'rean.test': [
-    #        'run-url-test = test.runurl:RunURLTest',
-    #        'run-upa-test = test.runupa:RunUPA',
-    #        'run-security-test = test.runsecuritytest:RunSecurityTest',
-    #        'run-automation-test = test.runcrossbrowsertest:RunCrossBrowserTest',
-    #        'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
-    #        'get-job-status = test.getjobstatus:GetJobStatus',
-    #        'getproperties = test.testnowutility:GetProperties',
-    #    ],
-    #    'rean.deploy': [
-    #        'deploy-configure = deploy.configure:Configure',
-    #        'create-provider = deploy.createprovider:SaveProvider',
-    #        'delete-provider = deploy.deleteprovider:DeleteProvider',
-    #        'list-provider = deploy.listproviders:ListProvider',
-    #        'create-environment = deploy.createenvironment:CreateEnv',        
-    #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
-    #        'list-connections = deploy.listconnections:ListConnections',
-    #        'isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
-    #        'create-connection = deploy.createconnection:SaveConnection',
-    #        'delete-connection = deploy.deleteconnection:DeleteConnection',
-    #        'get-connection = deploy.getconnection:GetConnection',
-    #        'get-provider = deploy.getproviderbyname:GetProviderByName',
-    #        'update-connection = deploy.updateconnection:UpdateConnection',          
-    #        'get-aws-regions = deploy.getawsregions:GetAwsRegions',
-    #        'delete-environment = deploy.deleteenvironment:DeleteEnv',
-    #        'checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
-    #        'download-terraform-files =deploy.downloadterraformfiles:DownloadTerraformFiles',
-    #        'update-provider = deploy.updateprovider:UpdateProvider',
-    #        'import-blueprint = deploy.importblueprint:ImportBlueprint',
-    #        'import-environment = deploy.importenvironment:ImportEnvironment',
-    #        'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
-    #        'hooked = deploy.hook:Hooked',
-    #    ],
-    #    'rean.test.hooked': [
-    #        'sample-hook = deploy.hook:Hook',
-    #   ],
+        #    'rean.test': [
+        #        'run-url-test = test.runurl:RunURLTest',
+        #        'run-upa-test = test.runupa:RunUPA',
+        #        'run-security-test = test.runsecuritytest:RunSecurityTest',
+        #        'run-automation-test = test.runcrossbrowsertest:RunCrossBrowserTest',
+        #        'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
+        #        'get-job-status = test.getjobstatus:GetJobStatus',
+        #        'getproperties = test.testnowutility:GetProperties',
+        #    ],
+        #    'rean.deploy': [
+        #        'deploy-configure = deploy.configure:Configure',
+        #        'create-provider = deploy.createprovider:SaveProvider',
+        #        'delete-provider = deploy.deleteprovider:DeleteProvider',
+        #        'list-provider = deploy.listproviders:ListProvider',
+        #        'create-environment = deploy.createenvironment:CreateEnv',
+        #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
+        #        'list-connections = deploy.listconnections:ListConnections',
+        #        'isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
+        #        'create-connection = deploy.createconnection:SaveConnection',
+        #        'delete-connection = deploy.deleteconnection:DeleteConnection',
+        #        'get-connection = deploy.getconnection:GetConnection',
+        #        'get-provider = deploy.getproviderbyname:GetProviderByName',
+        #        'update-connection = deploy.updateconnection:UpdateConnection',
+        #        'get-aws-regions = deploy.getawsregions:GetAwsRegions',
+        #        'delete-environment = deploy.deleteenvironment:DeleteEnv',
+        #        'checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
+        #        'download-terraform-files =deploy.downloadterraformfiles:DownloadTerraformFiles',
+        #        'update-provider = deploy.updateprovider:UpdateProvider',
+        #        'import-blueprint = deploy.importblueprint:ImportBlueprint',
+        #        'import-environment = deploy.importenvironment:ImportEnvironment',
+        #        'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
+        #        'hooked = deploy.hook:Hooked',
+        #    ],
+        #    'rean.test.hooked': [
+        #        'sample-hook = deploy.hook:Hook',
+        #   ],
     },
 
     zip_safe=False,
