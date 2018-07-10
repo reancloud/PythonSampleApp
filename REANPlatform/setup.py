@@ -80,7 +80,7 @@ setup(
        'rean.mnc': [
     #        'configure = mnc.configure:Configure',
     #        'rule = mnc.rule:Rule',
-    #        'rule install = mnc.rule_install:RuleInstall',
+            'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'
         ],
