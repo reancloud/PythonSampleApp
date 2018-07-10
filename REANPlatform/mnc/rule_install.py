@@ -5,7 +5,6 @@ import ast
 import time
 import os
 from os.path import basename
-import boto3
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
@@ -114,7 +113,7 @@ class RuleInstall(Command):     # noqa: D203
             if status.status == 'DEPLOYED':
                 child_input_json = None
                 time.sleep(10)
-                provider_name = RuleInstall.provider_name_from_s3(str(MncUtility.read_bucket_name()))
+                provider_name = MncUtility.provider_name_from_s3(str(MncUtility.read_bucket_name()))
                 deployment_name = 'default_master_' + customer_acc
                 depends_json = DepolyEnv.read_file_as_json_object(dependent_resource_file)
                 result = DepolyEnv.re_deploy_environment(env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
@@ -128,7 +127,7 @@ class RuleInstall(Command):     # noqa: D203
     def get_status(env_id, deployment_name):
         """get_status of deployment."""
         status = None
-        while 1:
+        while True:
             status = Status.deployment_status(env_id, deployment_name)  # noqa: E501
             status_dict = str(status)
             if MncConstats.DEPLOYING in status_dict:
@@ -140,24 +139,12 @@ class RuleInstall(Command):     # noqa: D203
     @staticmethod
     def create_att_file(file_name, prepare_data):
         """create_att_file."""
-        os.chdir(os.path.dirname(file_name))
-        with open(basename(file_name), 'w') as outfile:
-            json.dump(prepare_data, outfile, indent=4, sort_keys=True)
-
-    @staticmethod
-    def provider_name_from_s3(bucket_name):
-        """Read deploy provider_name_from_s3 of master account."""
-        s3_client = boto3.client('s3')
-        response = s3_client.list_objects(Bucket=bucket_name)
-        for file in response['Contents']:
-            obj = s3_client.get_object(Bucket=bucket_name, Key=file['Key'])
-            file_s3_content = obj['Body'].read()
-
-            for file_line in file_s3_content.decode('utf-8').split("\n"):
-                if "rean_deploy_mnc_master_provider" in file_line:
-                    provider_name = file_line.split(':')[-1]
-                    provider_name = provider_name.strip()
-        return provider_name
+        try:
+            os.chdir(os.path.dirname(file_name))
+            with open(basename(file_name), 'w') as outfile:
+                json.dump(prepare_data, outfile, indent=4, sort_keys=True)
+        except ApiException as exception:
+            Utility.print_exception(exception)
 
     @staticmethod
     def updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action):
