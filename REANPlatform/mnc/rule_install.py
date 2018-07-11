@@ -14,6 +14,7 @@ from mnc.parameters_constants import MncConstats
 from mnc.utility import MncUtility
 from deploy.deployenv import DepolyEnv
 from deploy.getdeploymentstatus import Status
+from deploy.constants import DeployConstants
 
 
 class RuleInstall(Command):     # noqa: D203
@@ -79,7 +80,8 @@ class RuleInstall(Command):     # noqa: D203
 
         try:
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            # Get all environments for user
             all_env = api_instance.get_all_environments()
             env_ids = {}
 
@@ -95,6 +97,7 @@ class RuleInstall(Command):     # noqa: D203
                     depend_resources = ast.literal_eval(api_instance.get_input_json(one_env.config.env_id))
                     for depend_name in depend_resources:
                         if 'Depends_On' in depend_resources[depend_name]:
+
                             if str(depend_name) == 'mnc_rule_dependency':
                                 prepare_data[depend_name] = deployment_name
                             else:
@@ -110,7 +113,7 @@ class RuleInstall(Command):     # noqa: D203
             logging.info("Config rule status::%s", status)
 
             # Deploy child
-            if status.status == 'DEPLOYED':
+            if status == 'DEPLOYED':
                 child_input_json = None
                 time.sleep(10)
                 provider_name = MncUtility.provider_name_from_s3(str(MncUtility.read_bucket_name()))
@@ -119,7 +122,7 @@ class RuleInstall(Command):     # noqa: D203
                 result = DepolyEnv.re_deploy_environment(env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
                 if result:
                     status = self.get_status(env_ids['child'], deployment_name)
-                    logging.info("Assume rule Status ::%s", status.status)
+                    logging.info("Assume rule Status ::%s", status)
         except ApiException as exception:
             Utility.print_exception(exception)
 
