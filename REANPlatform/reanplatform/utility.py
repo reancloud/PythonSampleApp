@@ -2,34 +2,39 @@
 import os
 import base64
 import json
-import yaml
 from Crypto.Cipher import XOR
-from reanplatform.utilityconstants import PlatformConstants
+import yaml
+from reanplatform.utilityconstants import PlatformConstants, EnvironmentVariables
 
 
 class Utility(object):
     """Utility class contains all common method requried for CLI."""
 
     @staticmethod
-    def getUserNameAndPassword():
+    def get_user_name_password():
         """Get configured username and password."""
-        path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
-                    data_loaded = yaml.load(stream)
+        env_user_name, env_password = Utility.get_env_username_password()
+        print(env_user_name)
+        if env_user_name and env_password:
+            credentials = str(env_user_name) + ":" + str(env_password)
+        else:
+            path = os.path.expanduser('~')
+            if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
+                os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
+                if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                    with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+                        data_loaded = yaml.load(stream)
 
-                username = Utility.decryptData(
-                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
-                password = Utility.decryptData(
-                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
-                credentials = str(username) + ":" + str(password)
-                return credentials
+                    username = Utility.decryptData(
+                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
+                    password = Utility.decryptData(
+                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
+                    credentials = str(username) + ":" + str(password)
+        return credentials
 
     @staticmethod
     def get_platform_base_url():
-        """Get configured username and password."""
+        """Get platform base url."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
             os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
@@ -75,3 +80,13 @@ class Utility(object):
             default=lambda o: o.__dict__,
             sort_keys=True, indent=4
         ).replace("\"_", '"')
+
+    @staticmethod
+    def get_env_username_password():
+        """Get Environment variables."""
+        try:
+            user_name = os.environ[EnvironmentVariables.USER_NAME_REFERENCE]
+            password = os.environ[EnvironmentVariables.PASSWORD_REFERENCE]
+            return user_name, password
+        except KeyError:
+            return False
