@@ -9,6 +9,7 @@ from mnc.parameters_constants import MncConstats
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.destroydeployment import DestroyDeployment
+from deploy.constants import DeployConstants
 
 
 class RuleRemove(Command):      # noqa: D203
@@ -58,7 +59,7 @@ class RuleRemove(Command):      # noqa: D203
 
             if force.lower() == 'yes' or force.lower() == 'y':
                 instance = deploy_sdk_client.EnvironmentApi()
-                api_instance = set_header_parameter(instance)
+                api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
                 all_env = api_instance.get_all_environments()
                 deployment_id_to_remove = []
 
@@ -90,7 +91,7 @@ class RuleRemove(Command):      # noqa: D203
         """get_deployment_ids."""
         all_deployment = None
         deployment_id_to_remove = []
-        all_deployment = api_instance.get_all_deployments_for_environment_by_id_0(env_id)
+        all_deployment = api_instance.get_all_deployments_for_environment_by_id(env_id)
         if all_deployment:
             for single_deployment in all_deployment:
                 if customer_acc and customer_acc in single_deployment.deployment_name or rule_name and single_deployment.deployment_name:
