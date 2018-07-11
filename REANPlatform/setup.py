@@ -75,8 +75,7 @@ setup(
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
         'rean.auth': [
-            'get-users = auth.get_users:GetUsers',
-            'get-user-by-name = auth.get_user_by_name:GetUserByName'
+            'get-users = auth.get_users:GetUsers'
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
