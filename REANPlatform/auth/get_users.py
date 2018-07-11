@@ -73,7 +73,7 @@ class GetUsers(Command):
         user_list = []
         for user in api_response:
             json_response = {
-                'id' : user.id,
+                'id': user.id,
                 'name': user.name,
                 'username': user.username,
                 'email': user.email,
