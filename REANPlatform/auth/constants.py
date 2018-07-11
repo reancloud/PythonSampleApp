@@ -1,7 +1,7 @@
 """Contains constats required for commands."""
 
 
-class Constants(object):
+class AunthnzConstants(object):
     """Contains constats required for CLI."""
 
     AUTHNZ_URL = '/api'

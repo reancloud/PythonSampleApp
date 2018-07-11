@@ -3,7 +3,7 @@ import logging
 import json
 from cliff.command import Command
 from prettytable import PrettyTable
-from auth.constants import Constants
+from auth.constants import AunthnzConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 import authnz_sdk_client
@@ -31,22 +31,24 @@ class GetUsers(Command):
         try:
             # Initialise instance and api_instance in list_environment
             instance = authnz_sdk_client.UsercontrollerApi()
-            base_url = Utility.get_platform_base_url()
-            auth_url = Constants.AUTHNZ_URL
-            api_instance = set_header_parameter(instance, base_url + auth_url)
+            api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
             # Get all environments for user
             api_response = api_instance.get_all_user_using_get()
 
             if output_format == 'table':
-                table = PrettyTable(['Name', 'Id', 'Region', 'Version'])
+                table = PrettyTable(['Id', 'Name', 'UserName', 'Email', 'Verified', 'Disabled', 'Verification Date', 'Verification Id'])
                 table.padding_width = 1
                 for environment in api_response:
                     table.add_row(
                         [
-                            environment.name,
                             environment.id,
-                            environment.region,
-                            environment.env_version
+                            environment.name,
+                            environment.username,
+                            environment.email,
+                            environment.verified,
+                            environment.disabled,
+                            environment.verification_date,
+                            environment.verification_id
                         ]
                     )
                 print("Users list ::\n%s" % (table))
