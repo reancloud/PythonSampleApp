@@ -66,3 +66,12 @@ class Utility(object):
         """Get full URL."""
         base_url = Utility.get_platform_base_url()
         return base_url + host_url
+
+    @staticmethod
+    def get_parsed_json(json_object):
+        """Get parsed json."""
+        return json.dumps(
+            json_object,
+            default=lambda o: o.__dict__,
+            sort_keys=True, indent=4
+        ).replace("\"_", '"')
