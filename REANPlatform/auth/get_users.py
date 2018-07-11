@@ -1,8 +1,8 @@
 """Get Users module."""
 import logging
 import json
-from cliff.command import Command
 from prettytable import PrettyTable
+from cliff.command import Command
 from auth.constants import AunthnzConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
