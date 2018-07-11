@@ -48,8 +48,8 @@ setup(
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
             'rean-deploy = deploy.main:main',
-            'rean-mnc = mnc.main:main',
-            'rean-auth = auth.main:main'
+            'rean-auth = auth.main:main',
+            'rean-mnc = mnc.main:main'
         ],
         'rean.platform': [
             'configure = reanplatform.configure:Configure',
@@ -75,8 +75,7 @@ setup(
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
         'rean.auth': [
-            'get-users = auth.get_users:GetUsers',
-            'get-user-by-name = auth.get_user_by_name:GetUserByName'
+            'get-users = auth.get_users:GetUsers'
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
