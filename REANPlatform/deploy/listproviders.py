@@ -27,17 +27,17 @@ class ListProvider(Command):
 
     def take_action(self, parsed_args):
         """take_action of ListProvider."""
-        format = parsed_args.format
-        ListProvider.list_provider(format)
+        list_provider_format = parsed_args.format
+        ListProvider.list_provider(list_provider_format)
 
     @staticmethod
-    def list_provider(format):
+    def list_provider(list_provider_format):
         """list_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
             api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.get_all_providers()
-            if format == 'table':
+            if list_provider_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for provider in api_response:
@@ -49,7 +49,7 @@ class ListProvider(Command):
                         ]
                     )
                 print("Provider list ::\n%s" % (table))
-            elif format == 'json' or format == '':
+            elif list_provider_format == 'json' or list_provider_format == '':
                 print(
                     json.dumps(
                         api_response,
@@ -60,5 +60,5 @@ class ListProvider(Command):
             else:
                 raise RuntimeError("Please specify correct fromate, Allowed \
                         values are: [json, table]")
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

@@ -65,7 +65,12 @@ disable=
     too-many-function-args,
     broad-except,
     no-value-for-parameter,
-    inconsistent-return-statements
+    inconsistent-return-statements,
+    import-error,
+    dangerous-default-value,
+    too-many-boolean-expressions,
+    duplicate-code,
+    unused-variable
 
 
 

@@ -57,8 +57,8 @@ class ListEnvironments(Command):
                     ).replace("\"_", '"')
                     )
 
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     def take_action(self, parsed_args):
         """take_action of ListEnvironment."""

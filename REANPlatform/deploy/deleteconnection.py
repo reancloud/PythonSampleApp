@@ -49,17 +49,19 @@ class DeleteConnection(Command):
         elif conn_name:
             DeleteConnection.delete_connection_by_name(conn_name)
 
-    def delete_connection_by_id(self, conn_id):
+    @staticmethod
+    def delete_connection_by_id(conn_id):
         """delete_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
             api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.delete_vm_connection(conn_id)
-            print("Connection deleted successfully :%s " % str(api_response.name))    # noqa: E501
-        except ApiException as e:
-            Utility.print_exception(e)
+            print("Connection deleted successfully : %s" % conn_id)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
-    def delete_connection_by_name(self, conn_name):
+    @staticmethod
+    def delete_connection_by_name(conn_name):
         """delete_connection_by_name."""
         conn_api_instance = deploy_sdk_client.ConnectionApi()
         api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -75,5 +77,5 @@ class DeleteConnection(Command):
                 raise RuntimeError("Exception : connection does not exit", conn_name)    # noqa: E501
             DeleteConnection.delete_connection_by_id(conn_id)
 
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
