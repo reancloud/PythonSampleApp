@@ -39,7 +39,7 @@ class GetUserByNameOrId(Command):
 
     @staticmethod
     def get_user_by_id(user_id):
-        """Get user by name."""
+        """Get user by user id."""
         try:
             # Initialise instance and api_instance
             instance = authnz_sdk_client.UsercontrollerApi()
@@ -55,7 +55,7 @@ class GetUserByNameOrId(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        # Get user by name
+        # Get user by name or id
         if parsed_args.name:
             GetUserByNameOrId.get_user_by_name(parsed_args.name)
         elif parsed_args.id:
