@@ -24,10 +24,10 @@ class GetUserByName(Command):
     def get_user_by_name(name):
         """Get user by name."""
         try:
-            # Initialise instance and api_instance in list_environment
+            # Initialise instance and api_instance
             instance = authnz_sdk_client.UsercontrollerApi()
             api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
-            # Get all environments for user
+            # Get user details by name
             api_response = api_instance.get_by_username_using_get(name)
             json_object = AuthnzUtility.get_user_dict(api_response)
             parsed_json = Utility.get_parsed_json(json_object)
@@ -38,5 +38,5 @@ class GetUserByName(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        # List Users
+        # Get user by name
         GetUserByName.get_user_by_name(parsed_args.name)
