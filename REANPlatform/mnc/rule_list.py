@@ -9,6 +9,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
+from deploy.constants import DeployConstants
 
 
 class RuleList(Command):        # noqa: D203.
@@ -47,7 +48,7 @@ class RuleList(Command):        # noqa: D203.
         self.__validate_parameters(rule_name, rule_type, customer_acc)
         try:
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             all_env = api_instance.get_all_environments()
 
             display_data = OrderedDict()
@@ -94,7 +95,7 @@ class RuleList(Command):        # noqa: D203.
         all_deployment = None
         input_data = None
         input_all_deployment = []
-        all_deployment = api_instance.get_all_deployments_for_environment_by_id_0(env_id)
+        all_deployment = api_instance.get_all_deployments_for_environment_by_id(env_id)
 
         if all_deployment:
             for single_deployment in all_deployment:
