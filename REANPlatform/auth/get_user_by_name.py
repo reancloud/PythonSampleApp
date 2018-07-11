@@ -1,0 +1,51 @@
+"""Get Users module."""
+import logging
+from cliff.command import Command
+from reanplatform.set_header import set_header_parameter
+from reanplatform.utility import Utility
+from auth.constants import AunthnzConstants
+from auth.utility import AuthnzUtility
+import authnz_sdk_client
+from authnz_sdk_client.rest import ApiException
+
+
+
+class GetUserByName(Command):
+    """Get user by name."""
+
+    log = logging.getLogger(__name__)
+
+    def get_parser(self, prog_name):
+        """get_parser."""
+        parser = super(GetUserByName, self).get_parser(prog_name)
+        parser.add_argument('--format', '-f',
+                            help='Allowed values are: [json]',
+                            type=str, default='json',
+                            nargs='?',
+                            required=False)
+        parser.add_argument('--name', '-n', help='User name', required=True)
+        return parser
+
+    @staticmethod
+    def get_user_by_name(output_format, name):
+        """Get user by name."""
+        try:
+            # Initialise instance and api_instance in list_environment
+            instance = authnz_sdk_client.UsercontrollerApi()
+            api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            # Get all environments for user
+            api_response = api_instance.get_by_username_using_get(name)
+            json_object = AuthnzUtility.get_user_dict(api_response)
+            parsed_json = Utility.get_parsed_json(json_object)
+            print(parsed_json)
+
+        except ApiException as e:
+            Utility.print_exception(e)
+
+    def take_action(self, parsed_args):
+        """take_action."""
+        # Define parsed argument
+        output_format = parsed_args.format
+
+        # List Users
+        GetUserByName.get_user_by_name(output_format, parsed_args.name)

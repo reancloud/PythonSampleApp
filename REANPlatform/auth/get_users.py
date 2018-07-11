@@ -4,6 +4,7 @@ import json
 from prettytable import PrettyTable
 from cliff.command import Command
 from auth.constants import AunthnzConstants
+from auth.utility import AuthnzUtility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 import authnz_sdk_client
@@ -52,8 +53,9 @@ class GetUsers(Command):
                 print("Users list ::\n%s" % (table))
 
             elif output_format == 'json' or output_format == '':
-                parsed_response = GetUsers.parse_response(api_response)
-                print(parsed_response)
+                users_list = GetUsers.parse_response(api_response)
+                parsed_json = Utility.get_parsed_json(users_list)
+                print(parsed_json)
 
         except ApiException as e:
             Utility.print_exception(e)
@@ -70,21 +72,8 @@ class GetUsers(Command):
     def parse_response(api_response):
         """Parse api response."""
         json_response = {}
-        user_list = []
+        users_list = []
         for user in api_response:
-            json_response = {
-                'id': user.id,
-                'name': user.name,
-                'username': user.username,
-                'email': user.email,
-                'verified': user.verified,
-                'disabled': user.disabled
-            }
-            user_list.append(json_response)
-
-        parsed_response = json.dumps(
-            user_list,
-            default=lambda o: o.__dict__,
-            sort_keys=True, indent=4
-        ).replace("\"_", '"')
-        return parsed_response
+            json_response = AuthnzUtility.get_user_dict(user)
+            users_list.append(json_response)
+        return users_list
