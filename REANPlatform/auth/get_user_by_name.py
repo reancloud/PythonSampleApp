@@ -9,7 +9,6 @@ import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
 
 
-
 class GetUserByName(Command):
     """Get user by name."""
 
@@ -18,16 +17,11 @@ class GetUserByName(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetUserByName, self).get_parser(prog_name)
-        parser.add_argument('--format', '-f',
-                            help='Allowed values are: [json]',
-                            type=str, default='json',
-                            nargs='?',
-                            required=False)
         parser.add_argument('--name', '-n', help='User name', required=True)
         return parser
 
     @staticmethod
-    def get_user_by_name(output_format, name):
+    def get_user_by_name(name):
         """Get user by name."""
         try:
             # Initialise instance and api_instance in list_environment
@@ -44,8 +38,5 @@ class GetUserByName(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        # Define parsed argument
-        output_format = parsed_args.format
-
         # List Users
-        GetUserByName.get_user_by_name(output_format, parsed_args.name)
+        GetUserByName.get_user_by_name(parsed_args.name)

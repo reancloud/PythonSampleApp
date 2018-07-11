@@ -1,6 +1,5 @@
 """Get Users module."""
 import logging
-import json
 from prettytable import PrettyTable
 from cliff.command import Command
 from auth.constants import AunthnzConstants
