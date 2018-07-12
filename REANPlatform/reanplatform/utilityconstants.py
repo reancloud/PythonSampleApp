@@ -20,7 +20,7 @@ class PlatformConstants(object):
 
 
 class EnvironmentVariables(object):
-    """Contains constants required for Environment variables"""
+    """Contains constants required for Environment variables."""
 
     USER_NAME_REFERENCE = 'USER_NAME'
     PASSWORD_REFERENCE = 'PASSWORD'

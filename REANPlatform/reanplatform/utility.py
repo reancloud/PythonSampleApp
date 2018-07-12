@@ -2,8 +2,8 @@
 import os
 import base64
 import json
-from Crypto.Cipher import XOR
 import yaml
+from Crypto.Cipher import XOR
 from reanplatform.utilityconstants import PlatformConstants, EnvironmentVariables
 
 
@@ -11,20 +11,18 @@ class Utility(object):
     """Utility class contains all common method requried for CLI."""
 
     @staticmethod
-    def get_user_name_password():
+    def get_user_credentials():
         """Get configured username and password."""
         try:
             credentials = Utility.get_env_username_password()
-            if credentials:
-                if credentials.get('user_name') and credentials.get('password'):
-                    credentials = str(credentials.get('user_name')) + ":" + str(credentials.get('password'))
-                else:
-                    credentials = Utility.get_username_password_from_file()
+            if credentials and credentials.get('user_name') and credentials.get('password'):
+                credentials = str(credentials.get('user_name')) + ":" + str(credentials.get('password'))
             else:
                 credentials = Utility.get_username_password_from_file()
             return credentials
         except Exception as exception:
-            print('Could not get user name and password.')
+            print('Could not get username and password.')
+            return None
 
     @staticmethod
     def get_platform_base_url():
@@ -90,7 +88,6 @@ class Utility(object):
     @staticmethod
     def get_username_password_from_file():
         """Get user name and password from config file."""
-        credentials = ""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
             os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
@@ -103,4 +100,5 @@ class Utility(object):
                 password = Utility.decryptData(
                     data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
                 credentials = str(username) + ":" + str(password)
-        return credentials
+                return credentials
+        return None

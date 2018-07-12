@@ -12,7 +12,7 @@ class Constants(object):
     TEST_URL = '/api/reantest/TestNow/rest'
     MNC_URL = '/api/'
     AUTHORIZATION = "Authorization"
-    CREDENTIALS = Utility.get_user_name_password()
+    CREDENTIALS = Utility.get_user_credentials()
     PLATFORM_CONFIG_FILE_NAME = 'reanplatform'
 
     def __setattr__(self, attr, value):
