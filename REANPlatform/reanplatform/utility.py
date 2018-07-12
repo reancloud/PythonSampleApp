@@ -13,24 +13,18 @@ class Utility(object):
     @staticmethod
     def get_user_name_password():
         """Get configured username and password."""
-        env_user_name, env_password = Utility.get_env_username_password()
-        print(env_user_name)
-        if env_user_name and env_password:
-            credentials = str(env_user_name) + ":" + str(env_password)
-        else:
-            path = os.path.expanduser('~')
-            if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-                os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
-                if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                    with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
-                        data_loaded = yaml.load(stream)
-
-                    username = Utility.decryptData(
-                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
-                    password = Utility.decryptData(
-                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
-                    credentials = str(username) + ":" + str(password)
-        return credentials
+        try:
+            credentials = Utility.get_env_username_password()
+            if credentials:
+                if credentials.get('user_name') and credentials.get('password'):
+                    credentials = str(credentials.get('user_name')) + ":" + str(credentials.get('password'))
+                else:
+                    credentials = Utility.get_username_password_from_file()
+            else:
+                credentials = Utility.get_username_password_from_file()
+            return credentials
+        except Exception as exception:
+            print('Could not get user name and password.')
 
     @staticmethod
     def get_platform_base_url():
@@ -85,8 +79,28 @@ class Utility(object):
     def get_env_username_password():
         """Get Environment variables."""
         try:
-            user_name = os.environ[EnvironmentVariables.USER_NAME_REFERENCE]
-            password = os.environ[EnvironmentVariables.PASSWORD_REFERENCE]
-            return user_name, password
+            credentials = {
+                'user_name': os.environ[EnvironmentVariables.USER_NAME_REFERENCE],
+                'password': os.environ[EnvironmentVariables.PASSWORD_REFERENCE]
+            }
+            return credentials
         except KeyError:
             return False
+
+    @staticmethod
+    def get_username_password_from_file():
+        """Get user name and password from config file."""
+        credentials = ""
+        path = os.path.expanduser('~')
+        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
+            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
+            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+                    data_loaded = yaml.load(stream)
+
+                username = Utility.decryptData(
+                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
+                password = Utility.decryptData(
+                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
+                credentials = str(username) + ":" + str(password)
+        return credentials
