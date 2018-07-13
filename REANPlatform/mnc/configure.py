@@ -220,7 +220,7 @@ class Configure(Command):
                         del (blueprint_all_env.environment_imports[already_imported])
 
                     if blueprint_all_env.environment_imports:
-                        api_instance.import_blueprint(body=blueprint_all_env)from reanplatform.utility import Utility
+                        api_instance.import_blueprint(body=blueprint_all_env)
                         print("Rule imported :: ", file_name)
                     else:
                         print("Already imported", file_name)
