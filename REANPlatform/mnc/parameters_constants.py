@@ -5,6 +5,9 @@ from pathlib import Path
 class MncConstats(object):      # noqa: D203
     """Contains constats required for MNCCLI."""
 
+    #MNC_URL = '/api/reandeploy/DeployNow/rest'
+    #Utility.get_url(Constants.MNC_URL)
+
     RULE_NAME = 'rule_name'
     RULE_NAME_INITIAL = '-n'
     RULE_TYPE = 'rule_type'
@@ -32,3 +35,6 @@ class MncConstats(object):      # noqa: D203
     MAXIMUM_EXECUTION_FREQUENCY = 'TwentyFour_Hours'       # One_Hour Three_Hours Six_Hours Twelve_Hours TwentyFour_Hours
     REGION = 'us-east-1'
     FILE_BUCKET_NAME = str(Path.home()) + '/.mnc/bucket.yml'
+    CONFIGURATION_BUCKET_PATH =  str(Path.home()) + '/.mnc/'
+    LOCAL_ARTIFACTS_ZIP_PATH = '/tmp/mnc/'
+   
