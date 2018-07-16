@@ -33,12 +33,6 @@ class Configure(Command):
                             help='Platform password',
                             required=False
                            )
-        parser.add_argument('--force',
-                            '-f',
-                            help='Forcefully Update Credentials',
-                            required=False,
-                            action='store_true'
-                           )
         parser.add_argument('--auto_approve',
                             '-y',
                             help='Skip interactive approval before updating user credentials.',
@@ -51,7 +45,7 @@ class Configure(Command):
         """Create file of credentials."""
         os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
         if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME + '/' + Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-            if parsed_args.auto_approve or parsed_args.force:
+            if parsed_args.auto_approve:
                 self.__update_credentials(parsed_args)
             else:
                 user_input = input('REAN CLI is already configured. Are you sure you want to update existing credentials (y/n): ')
