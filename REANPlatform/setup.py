@@ -49,7 +49,8 @@ setup(
             'rean-platform = reanplatform.main:main',
             'rean-deploy = deploy.main:main',
             'rean-auth = auth.main:main',
-            'rean-mnc = mnc.main:main'
+            'rean-mnc = mnc.main:main',
+            'rean-test = reantest.main:main'
         ],
         'rean.platform': [
             'configure = reanplatform.configure:Configure',
@@ -78,6 +79,14 @@ setup(
             'get-all-users = auth.get_users:GetUsers',
             'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId'
         ],
+        'rean.test': [
+            'run-url-test = reantest.run_url:RunURLTest',
+            'run-upa-test = reantest.runupa:RunUPA',
+            'run-security-test = reantest.runsecuritytest:RunSecurityTest',
+            'run-automation-test = reantest.runcrossbrowsertest:RunCrossBrowserTest',
+            'run-scale-test =  reantest.runscalenowtest:RunScaleNowTest',
+            'get-job-status = reantest.get_job_status:GetJobStatus'
+        ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
             # 'rule = mnc.rule:Rule',
@@ -85,15 +94,6 @@ setup(
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'
         ],
-        #    'rean.test': [
-        #        'run-url-test = test.runurl:RunURLTest',
-        #        'run-upa-test = test.runupa:RunUPA',
-        #        'run-security-test = test.runsecuritytest:RunSecurityTest',
-        #        'run-automation-test = test.runcrossbrowsertest:RunCrossBrowserTest',
-        #        'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
-        #        'get-job-status = test.getjobstatus:GetJobStatus',
-        #        'getproperties = test.testnowutility:GetProperties',
-        #    ],
         #    'rean.deploy': [
         #        'deploy-configure = deploy.configure:Configure',
         #        'create-provider = deploy.createprovider:SaveProvider',
