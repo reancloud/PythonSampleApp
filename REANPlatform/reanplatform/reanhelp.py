@@ -36,3 +36,12 @@ class HelpAuth(Command):
         """get_parser."""
     def take_action(self, parsed_args):
         """take_action."""
+
+
+class HelpPlatform(Command):
+    """Details of rean-platform cli."""
+
+    def get_parser(self, prog_name):
+        """get_parser."""
+    def take_action(self, parsed_args):
+        """take_action."""
