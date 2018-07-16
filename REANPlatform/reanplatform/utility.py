@@ -4,7 +4,7 @@ import base64
 import json
 import yaml
 from Crypto.Cipher import XOR
-from reanplatform.utilityconstants import PlatformConstants, EnvironmentVariables
+from reanplatform.utilityconstants import PlatformConstants
 
 
 class Utility(object):
@@ -78,8 +78,8 @@ class Utility(object):
         """Get Environment variables."""
         try:
             credentials = {
-                'user_name': os.environ[EnvironmentVariables.USER_NAME_REFERENCE],
-                'password': os.environ[EnvironmentVariables.PASSWORD_REFERENCE]
+                'user_name': os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
+                'password': os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE]
             }
             return credentials
         except KeyError:
