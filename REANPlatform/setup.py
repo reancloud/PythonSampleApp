@@ -76,8 +76,8 @@ setup(
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
         'rean.auth': [
-            'get-users = auth.get_users:GetUsers',
-            'get-user-by-name = auth.get_user_by_name:GetUserByName'
+            'get-all-users = auth.get_users:GetUsers',
+            'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId'
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
