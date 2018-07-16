@@ -52,6 +52,7 @@ setup(
             'rean-mnc = mnc.main:main'
         ],
         'rean.platform': [
+            'rean-platform = reanplatform.reanhelp:HelpPlatform',
             'configure = reanplatform.configure:Configure',
             'rean-deploy = reanplatform.reanhelp:HelpDeploy',
             'rean-test = reanplatform.reanhelp:HelpTest',
