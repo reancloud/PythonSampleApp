@@ -1,3 +1,4 @@
+"""Get User Job Status."""
 import logging
 from cliff.command import Command
 
@@ -6,6 +7,7 @@ import test_sdk_client
 
 class GetJobStatus(Command):
     """Get user job status."""
+
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
@@ -32,10 +34,11 @@ class GetJobStatus(Command):
 
 
 class Error(Command):
-    "Always raises an error"
+    """Always raises an error."""
 
     log = logging.getLogger(__name__)
 
     def take_action(self, parsed_args):
+        """take_error_action."""
         self.log.info('causing error')
         raise RuntimeError('this is the expected exception')

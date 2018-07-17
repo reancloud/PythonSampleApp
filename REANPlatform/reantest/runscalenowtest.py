@@ -1,3 +1,4 @@
+"""run scale now test."""
 import logging
 from . import utility
 from cliff.command import Command
@@ -9,15 +10,13 @@ import json
 import time
 
 
-
 class RunScaleNowTest(Command):
-    """Run scale now test"""
+    """Run scale now test."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
-        """get_parser"""
-
+        """get_parser."""
         parser = super(RunScaleNowTest, self).get_parser(prog_name)
 
         # 'app_name': 'str',
@@ -73,7 +72,8 @@ class RunScaleNowTest(Command):
         parser.add_argument('--run_sequential', '-R', help='Set run sequential as true or false')
         parser.add_argument('--run_hours', '-H',
                             help='Set duration in hours for the test suite to continuously run in repetition.')
-        parser.add_argument('--parrallel_users_count', '-P', help='Set users count to put load on your application in parallel.')
+        parser.add_argument('--parrallel_users_count', '-P',
+                            help='Set users count to put load on your application in parallel.')
         parser.add_argument('--inc_load', '-IL', help='Set Incremental Load as true or false')
         parser.add_argument('--inc_with', '-IW',
                             help='Set users count to put load on your application after specified interval in parallel.')
@@ -87,20 +87,19 @@ class RunScaleNowTest(Command):
         return parser
 
     def take_action(self, parsed_args):
-        """take_action"""
-
+        """take_action."""
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
         browser_list = utility.Utility.getBrowserDTO(parsed_args)
         self.log.debug(browser_list)
 
-        error_message = utility.Utility.validateInputs(self,parsed_args)
+        error_message = utility.Utility.validateInputs(self, parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return
 
-        #order should be maintained as the constructor takes values as parameter in the same order.
+        # order should be maintained as the constructor takes values as parameter in the same order.
         body = test_sdk_client.ScaleNowTestDto(
             parsed_args.app_name,
             parsed_args.git_url,
@@ -130,32 +129,32 @@ class RunScaleNowTest(Command):
             parsed_args.inc_with,
             parsed_args.inc_interval)
 
-
         self.log.debug(body)
 
         try:
-            apiInstance = test_sdk_client.RunJobsApi()
-            job_Id = apiInstance.submit_scale_now_test_job(body)
-            self.log.debug("Response for Automation Test is------------: %s \n" % job_Id)
-            print("The Scale Test submitted successfully. Job Id is : \n", job_Id)
+            api_instance = test_sdk_client.RunJobsApi()
+            job_id = api_instance.submit_scale_now_test_job(body)
+            self.log.debug("Response for Automation Test is------------: %s \n" % job_id)
+            print("The Scale Test submitted successfully. Job Id is : \n", job_id)
 
-            if (job_Id != None and parsed_args.wait == "true"):
-                apiInstance = test_sdk_client.RunTestApi()
-                job_status = apiInstance.get_job_status(job_Id)
+            if (job_id is not None and parsed_args.wait == "true"):
+                api_instance = test_sdk_client.RunTestApi()
+                job_status = api_instance.get_job_status(job_id)
                 while ("RUNNING" in job_status):
-                    print("The Status of Job_Id:", job_Id, " is  ", job_status)
+                    print("The Status of Job_Id:", job_id, " is  ", job_status)
                     time.sleep(5)
-                print("The Status of Job_Id:", job_Id, " is  ", job_status)
+                print("The Status of Job_Id:", job_id, " is  ", job_status)
 
         except Exception as e:
-             self.log.error("Exception when calling RunScaleNowTest->submit_scale_now_test_job: %s\n" % e)
+            self.log.error("Exception when calling RunScaleNowTest->submit_scale_now_test_job: %s\n" % e)
 
 
 class Error(Command):
-    "Always raises an error"
+    """Always raises an error."""
 
     log = logging.getLogger(__name__)
 
     def take_action(self, parsed_args):
+        """take_error_action."""
         self.log.info('causing error')
         raise RuntimeError('this is the expected exception')

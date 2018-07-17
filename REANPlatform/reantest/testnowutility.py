@@ -1,6 +1,7 @@
+"""TestNow Utilities."""
 import logging
-#from . import config
-#from . import rest
+# from . import config
+# from . import rest
 from cliff.command import Command
 
 import test_sdk_client
@@ -11,30 +12,30 @@ from ast import literal_eval
 
 
 class GetProperties(Command):
-    "All actions in the TestNowUtility API"
+    """All actions in the TestNowUtility API."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
+        """get_parser."""
         parser = super(GetProperties, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
-        apiInstance = test_sdk_client.TestNowUtilityApi()
+        """take_action."""
+        api_instance = test_sdk_client.TestNowUtilityApi()
         try:
-                api_response = apiInstance.get_properties()   
-                return str(api_response)
-            
+            api_response = api_instance.get_properties()
+            return str(api_response)
+
         except ApiException as e:
-            self.log.error("Exception when calling TestNowUtilityApi->: %s \n %s\n" % parsed_args.action  % e)
-
-
+            self.log.error("Exception when calling TestNowUtilityApi->: %s \n %s\n" % parsed_args.action % e)
 
         # rest.RestClient.getSwaggerClient('testnowutility')
         # try:
         #     if parsed_args.action == "get_properties":
-        #         api_response = apiInstance.get_properties()   
-        #         # self.log.debug(api_response) 
+        #         api_response = api_instance.get_properties()
+        #         # self.log.debug(api_response)
         #         # self.app.stdout.write(api_response)
         #         # self.app.stdout.write('\n')
         #         # print json.dumps(api_response, sort_keys=True, indent=2, separators=(',', ': '))
@@ -49,15 +50,17 @@ class GetProperties(Command):
         #         # return  str(api_response)
         #     else:
         #         return "The Action is not yet implemented"
-            
+
         # except ApiException as e:
         #     self.log.error("Exception when calling TestNowUtilityApi->: %s \n %s\n" % parsed_args.action  % e)
 
+
 class Error(Command):
-    "Always raises an error"
+    """Always raises an error."""
 
     log = logging.getLogger(__name__)
 
     def take_action(self, parsed_args):
+        """take_error_action."""
         self.log.info('causing error')
         raise RuntimeError('this is the expected exception')
