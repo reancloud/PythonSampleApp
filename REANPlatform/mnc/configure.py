@@ -212,7 +212,7 @@ class Configure(Command):
 
                     # Skip already imported
                     for already_imported in reversed(to_del):
-                        del (blueprint_all_env.environment_imports[already_imported])
+                        del blueprint_all_env.environment_imports[already_imported]
 
                     if blueprint_all_env.environment_imports:
                         api_instance.import_blueprint(body=blueprint_all_env)
