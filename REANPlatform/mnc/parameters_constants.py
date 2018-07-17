@@ -23,6 +23,18 @@ class MncConstats(object):      # noqa: D203
     CUSTOMER_EMAIL_DOMAIN_INITIAL = '-domain'
     ACTION = 'action'
     ACTION_INITIAL = '-a'
+    CONFIGURATION_BUCKET = 'configuration_bucket'
+    CONFIGURATION_BUCKET_INITIAL = '-conf_bucket'
+    DEPLOY_GROUP = 'deploy_group'
+    DEPLOY_GROUP_INITIAL = '-g'
+    MASTER_PROVIDER = 'master_provider'
+    MASTER_PROVIDER_INITIAL = '-prov'
+    ARTIFACTORY_BUCKET = 'artifactory_bucket'
+    ARTIFACTORY_BUCKET_INITIAL = '-a_bucket'
+    MASTER_ACC = 'master_acc_no'
+    MASTER_ACC_INITIAL = '-acc'
+    MASTER_CONNECTION = 'master_connection'
+    MASTER_CONNECTION_INITIAL = '-conn'
 
     # parameter forrule input
     DEPLOYING = '"DEPLOYING"'

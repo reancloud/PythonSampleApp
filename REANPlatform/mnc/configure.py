@@ -41,34 +41,30 @@ class Configure(Command):
     __version = ""
 
     def get_parser(self, prog_name):
-        """get parser"""
+        """Get parser."""
         parser = super(Configure, self).get_parser(prog_name)
-        parser.add_argument('--configuration_bucket', '-conf_bucket', help='Managed Cloud CLI configuration bucket.',
+        parser.add_argument('--' + MncConstats.CONFIGURATION_BUCKET, MncConstats.CONFIGURATION_BUCKET_INITIAL, help='Managed Cloud CLI configuration bucket.',
                             required=True)
-        parser.add_argument('--deploy_group', '-d', help='REANDeploy Group for Managed Cloud',
+        parser.add_argument('--' + MncConstats.DEPLOY_GROUP, MncConstats.DEPLOY_GROUP_INITIAL, help='REANDeploy Group for Managed Cloud',
                             required=True)
-        parser.add_argument('--master_provider', '-p',
+        parser.add_argument('--' + MncConstats.MASTER_PROVIDER, MncConstats.MASTER_PROVIDER_INITIAL,
                             help='Master Account Provider for REANDeploy.', required=True)
-        parser.add_argument('--artifactory_bucket', '-a',
-                            help='Artifactory Bucket Name for Managed Cloud',
-                            required=True)
-        parser.add_argument('--master_acc_no', '-master_acc',
-                            help='Managed Cloud AWS master account number',
-                            required=True)
-        parser.add_argument('--master_connection', '-master_conn',
-                            help='Master Account Connection for REANDeploy',
-                            required=True)
+        parser.add_argument('--' + MncConstats.ARTIFACTORY_BUCKET, MncConstats.ARTIFACTORY_BUCKET_INITIAL,
+                            help='REANDeploy Group for Managed Cloud', required=True)
+        parser.add_argument('--' + MncConstats.MASTER_ACC, MncConstats.MASTER_ACC_INITIAL, help='Managed Cloud AWS master account number', required=True)
+        parser.add_argument('--' + MncConstats.MASTER_CONNECTION, MncConstats.MASTER_CONNECTION_INITIAL, help='Master Account Connection for REANDeploy', required=True)
         return parser
 
     def take_action(self, parsed_args):
-        """start taking action."""
+        """Start taking action."""
         try:
-            configuration_bucket = parsed_args.configuration_bucket
-            deploy_group = parsed_args.deploy_group
-            master_provider = parsed_args.master_provider
-            artifactory_bucket = parsed_args.artifactory_bucket
-            master_acc_no = parsed_args.master_acc_no
-            master_connection = parsed_args.master_connection
+            argparse_dict = vars(parsed_args)
+            configuration_bucket = argparse_dict[MncConstats.CONFIGURATION_BUCKET]
+            deploy_group = argparse_dict[MncConstats.DEPLOY_GROUP]
+            master_provider = argparse_dict[MncConstats.MASTER_PROVIDER]
+            artifactory_bucket = argparse_dict[MncConstats.ARTIFACTORY_BUCKET]
+            master_acc_no = argparse_dict[MncConstats.MASTER_ACC]
+            master_connection = argparse_dict[MncConstats.MASTER_CONNECTION]
 
             self.check_bucket_configuration_path()
             self.create_configuration_bucket_file(configuration_bucket)
@@ -82,7 +78,7 @@ class Configure(Command):
             Utility.print_exception(exception)
 
     def check_bucket_configuration_path(self):
-        """This method will check whether bucket configuration path present."""
+        """Check whether bucket configuration path present."""
         configuration_bucket_path, file_name = os.path.split(MncConstats.FILE_BUCKET_NAME)
         if not os.path.exists(configuration_bucket_path):
             try:
@@ -92,19 +88,18 @@ class Configure(Command):
                 return False
 
     def create_configuration_bucket_file(self, configuration_bucket):
-        """This method will create configuration file locally."""
+        """Create configuration file locally."""
         if not os.path.isfile(MncConstats.FILE_BUCKET_NAME):
             configuration_bucket_file_data = dict(configuration_bucket_name=configuration_bucket)
             try:
                 with open(MncConstats.FILE_BUCKET_NAME, 'w') as configuration_file:
                     yaml.dump(configuration_bucket_file_data, configuration_file, default_flow_style=False)
             except yaml.YAMLError as exception:
-                print("Failed to create bucket_configuration file at path", MncConstats.FILE_BUCKET_NAME)
+                logging.info("Failed to create bucket_configuration file at path %s", MncConstats.FILE_BUCKET_NAME)
                 return False
 
     def create_and_store_configuration_file_data(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
-        """This method will create and store configuration file in s3."""
-
+        """Create and store configuration file in s3."""
         path = os.path.expanduser('~')
         file_path = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
         # file_path = os.path.expanduser("~/.reanplatform/reanplatform.yaml")
@@ -112,7 +107,7 @@ class Configure(Command):
             try:
                 data = yaml.load(configuration_file)
             except yaml.YAMLError as exception:
-                print(exception)
+                Utility.print_exception(exception)
         rean_deploy_endpoint = data['platform']['base_url']
         rean_deploy_api_key = data['platform']['username'].decode('ascii') + ":" + data['platform']['password'].decode('ascii')
 
@@ -135,17 +130,17 @@ class Configure(Command):
                     break
             if is_configuration_bucket_present is False:
                 s3_resource.create_bucket(Bucket=configuration_bucket)
-                print("Created configuration bucket ", configuration_bucket)
+                logging.info("Created configuration bucket %s", configuration_bucket)
             else:
-                print("Configuration bucket already exist!")
+                logging.info("Configuration bucket already exist!")
             s3_object = s3_resource.Object(configuration_bucket, 'config_bucket.yaml')
             s3_object.put(Body=yaml.dump(configuration_file_data, default_flow_style=False))
-            print("Configuration file stored in s3 successfully!")
+            logging.info("Configuration file stored in s3 successfully!")
         except botocore.exceptions.ClientError as exception:
-            print(exception)
+            Utility.print_exception(exception)
 
     def get_blueprints_from_s3_and_unzip(self, artifactory_bucket):
-        """ This method will download blueprints zip from S3 """
+        """Download blueprints zip from S3."""
         try:
             if not os.path.exists(MncConstats.LOCAL_ARTIFACTS_ZIP_PATH):
                 os.makedirs(MncConstats.LOCAL_ARTIFACTS_ZIP_PATH)
@@ -162,7 +157,7 @@ class Configure(Command):
                     zip_ref.close()
 
         except botocore.exceptions.ClientError as exception:
-            print(exception)
+            Utility.print_exception(exception)
 
     def get_lastest_build_version(self, artifactory_bucket):
         """get_lastest_build_version."""
@@ -179,17 +174,17 @@ class Configure(Command):
         return startAfter
 
     def import_blueprints(self, master_provider, master_connection, local_artifacts_path):
-        """ This method will be used to import the blueprints """
+        """Import the blueprints."""
         deploy_api_response = None
         master_account_provider_id = ""
         master_account_connection_id = ""
         try:
             os.chdir(local_artifacts_path)
         except OSError as exception:
-            print(exception)
+            Utility.print_exception(exception)
 
         number_of_rules = len([name for name in os.listdir(local_artifacts_path) if name.endswith('.reandeploy') and os.path.isfile(os.path.join(local_artifacts_path, name))])
-        print("\nTotal Rule Count : ", number_of_rules)
+        logging.info("\nTotal Rule Count : %s", number_of_rules)
 
         master_account_provider_id = self.get_provider_id(master_provider)
         master_account_connection_id = self.get_connection_id(master_connection)
@@ -221,9 +216,9 @@ class Configure(Command):
 
                     if blueprint_all_env.environment_imports:
                         api_instance.import_blueprint(body=blueprint_all_env)
-                        print("Rule imported :: ", file_name)
+                        logging.info("Rule imported successfully : %s", file_name)
                     else:
-                        print("Already imported", file_name)
+                        logging.info("Rule already imported filename :%s", file_name)
 
                 except ApiException as exception:
                     Utility.print_exception(exception)
@@ -237,7 +232,7 @@ class Configure(Command):
         return already_exist
 
     def get_provider_id(self, master_provider):
-        """ This method will return provider-id based on provider-name """
+        """Return provider-id based on provider-name."""
         instance = deploy_sdk_client.ProviderApi()
         provider_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         providers_list = provider_api_instance.get_all_providers()
@@ -249,7 +244,7 @@ class Configure(Command):
         return provider_id
 
     def get_connection_id(self, master_connection):
-        """ This method will return connection-id based on connection-name """
+        """Return connection-id based on connection-name."""
         instance = deploy_sdk_client.ConnectionApi()
         connection_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         connection_list = connection_api_instance.get_all_vm_connections()
@@ -260,12 +255,12 @@ class Configure(Command):
         return connection_id
 
     def get_release_version(self):
-        """ This method will return the current MNC version """
+        """Return the current MNC version."""
         release_version = self.__version.replace('v', '')
         return release_version
 
     def share_blueprints(self, deploy_group):
-        """ This method will share the blueprints """
+        """Share the blueprints."""
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         api_response = api_instance.get_all_environments()
@@ -290,16 +285,16 @@ class Configure(Command):
             environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
             api_instance.share_environment(environment_id, body=environment_policy_instance)
 
-        print("Shared all the blueprints!")
+        logging.info("Shared all the blueprints!")
 
     def release_environments(self):
-        """ This method will release environments """
+        """Release environments."""
         is_released_environments = False
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         environment_list = api_instance.get_all_environments()
         version = self.get_release_version()
-        print("\nReleasing the environments with version ", version)
+        logging.info("\nReleasing the environments with version %s", version)
         for environment in environment_list:
             environment = environment.to_dict()
 
@@ -318,6 +313,6 @@ class Configure(Command):
             modified_on = int(datetime.datetime.now().strftime("%s")) * 1000
             response = api_instance.update_environment(header_env_id=environment['id'], modified_on=modified_on, body=environment_object)
             is_released_environments = True
-            print("Released environment ", environment['name'])
+            logging.info("Released environment %s", environment['name'])
         if not is_released_environments:
-            print("All environments are already released!")
+            logging.info("All environments are already released!")
