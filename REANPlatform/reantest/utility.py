@@ -9,13 +9,15 @@ class Utility():
     log = logging.getLogger(__name__)
     
     @staticmethod
-    def getUniqueSeq(seq): 
+    def getUniqueSeq(seq):
+        """get_unique_sequence"""
         # order preserving
         checked = list(set(seq))
         return checked
 
     @staticmethod
     def getBrowserDTO(params):
+        """get_browser_DTO"""
 
         log = logging.getLogger(__name__)
         log.debug(params)
@@ -36,6 +38,7 @@ class Utility():
 
     @staticmethod
     def validateInputs(self,params):
+        """validate_input"""
         # All the parameters validations goes in this function
         # log = logging.getLogger(__name__)
         # self.log.debug(params)
@@ -63,6 +66,7 @@ class Utility():
 
     @staticmethod
     def validateSecurityTestInputs(self, params):
+        """validate_security_test_inputs"""
         # All the parameters validations goes in this function
         # log = logging.getLogger(__name__)
         # self.log.debug(params)
@@ -82,6 +86,7 @@ class Utility():
 
     @staticmethod
     def validateAutomationTestInputs(self, params):
+        """validate_automation_test_input"""
         # All the parameters validations goes in this function
         # log = logging.getLogger(__name__)
         # self.log.debug(params)

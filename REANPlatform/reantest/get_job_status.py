@@ -9,6 +9,7 @@ class GetJobStatus(Command):
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
+        """get_parser."""
         parser = super(GetJobStatus, self).get_parser(prog_name)
 
         # 'jobId': 'str',
@@ -18,6 +19,7 @@ class GetJobStatus(Command):
         return parser
 
     def take_action(self, parsed_args):
+        """take_action."""
         self.log.debug(parsed_args)
 
         try:

@@ -37,6 +37,7 @@ pipeline {
                                 python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/deploy
                                 python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/reanplatform
                                 python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/auth
+                                python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/reantest
                                 python3 -m pycodestyle --ignore=E501,E124,E123 */*.py
                             '''
                             println "\u001B[32mCode adheres to PyCodeStyle\u001B[0m"

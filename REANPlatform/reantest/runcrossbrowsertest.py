@@ -11,12 +11,12 @@ import time
 
 
 class RunCrossBrowserTest(Command):
+    """Run cross browser test"""
 
     log = logging.getLogger(__name__)
 
-
-    "runcrossbrowsertest"
     def get_parser(self, prog_name):
+        """get_parser"""
         parser = super(RunCrossBrowserTest, self).get_parser(prog_name)
 
         # 'browser_list': 'BrowsersDto',
@@ -75,6 +75,7 @@ class RunCrossBrowserTest(Command):
         return parser
 
     def take_action(self, parsed_args):
+        """take_action."""
 
         self.log.debug(parsed_args)
 
@@ -82,12 +83,9 @@ class RunCrossBrowserTest(Command):
         self.log.debug(browser_list)
 
         error_message = utility.Utility.validateInputs(self,parsed_args)
-        if(error_message != "") :
+        if error_message:
             self.app.stdout.write(error_message)
             return
-
-
-        print(parsed_args.firefox)
 
         #order should be maintained as the constructor takes values as parameter in the same order.
         body = test_sdk_client.CrossBrowserTestDto(

@@ -11,12 +11,13 @@ import time
 
 
 class RunScaleNowTest(Command):
+    """Run scale now test"""
 
     log = logging.getLogger(__name__)
 
-
-    "runscalenowtest"
     def get_parser(self, prog_name):
+        """get_parser"""
+
         parser = super(RunScaleNowTest, self).get_parser(prog_name)
 
         # 'app_name': 'str',
@@ -86,6 +87,7 @@ class RunScaleNowTest(Command):
         return parser
 
     def take_action(self, parsed_args):
+        """take_action"""
 
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
@@ -94,12 +96,9 @@ class RunScaleNowTest(Command):
         self.log.debug(browser_list)
 
         error_message = utility.Utility.validateInputs(self,parsed_args)
-        if(error_message != "") :
+        if error_message:
             self.app.stdout.write(error_message)
             return
-
-
-        print(parsed_args.firefox)
 
         #order should be maintained as the constructor takes values as parameter in the same order.
         body = test_sdk_client.ScaleNowTestDto(

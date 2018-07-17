@@ -17,6 +17,7 @@ class RunUPA(Command):
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
+        """get_parser"""
         parser = super(RunUPA, self).get_parser(prog_name)
         
         # 'browser_list': 'BrowsersDto',
@@ -50,6 +51,7 @@ class RunUPA(Command):
         return parser
 
     def take_action(self, parsed_args):
+        """take_action."""
 
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
@@ -58,7 +60,7 @@ class RunUPA(Command):
         # self.log.debug(browser_list)
 
         error_message = utility.Utility.validateInputs(self,parsed_args)
-        if(error_message != "") :
+        if error_message:
             self.app.stdout.write(error_message)
             return
 

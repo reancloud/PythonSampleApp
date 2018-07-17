@@ -15,6 +15,7 @@ class RunSecurityTest(Command):
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
+        """get_parser"""
         parser = super(RunSecurityTest, self).get_parser(prog_name)
 
         # 'browser_list': 'BrowsersDto',
@@ -37,12 +38,13 @@ class RunSecurityTest(Command):
         return parser
 
     def take_action(self, parsed_args):
+        """take_action."""
 
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
         error_message = utility.Utility.validateSecurityTestInputs(self,parsed_args)
-        if(error_message != "") :
+        if error_message:
             self.app.stdout.write(error_message)
             return
 
