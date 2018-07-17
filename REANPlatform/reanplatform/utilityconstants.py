@@ -10,6 +10,8 @@ class PlatformConstants(object):
     USER_NAME_REFERENCE = 'username'
     PASSWORD_REFERENCE = 'password'
     BASE_URL_REFERENCE = 'base_url'
+    ENV_USER_NAME_REFERENCE = 'USER_NAME'
+    ENV_PASSWORD_REFERENCE = 'PASSWORD'
 
     def __setattr__(self, attr, value):
         """__setattr__."""
