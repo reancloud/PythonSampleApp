@@ -10,17 +10,16 @@ import json
 
 
 class RunSecurityTest(Command):
+    """Run security test"""
 
     log = logging.getLogger(__name__)
 
-
-    "runsecuritytest"
     def get_parser(self, prog_name):
         parser = super(RunSecurityTest, self).get_parser(prog_name)
 
         # 'browser_list': 'BrowsersDto',
         # 'test_url': 'str',
-        # 'text_to_search': 'str',
+        # 'ty-tesr
         # 'page_load_time_out': 'int',
         # 'type': 'str',
         # 'execution_strategy': 'str',
@@ -32,8 +31,8 @@ class RunSecurityTest(Command):
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
         parser.add_argument('--security_test_type', '-t', help='Set Security test type example:@app_scan/@http_headers.', required=True)
 
-        parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on.')
-        parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on.')
+        #parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on.')
+        #parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on.')
 
         return parser
 
@@ -42,20 +41,14 @@ class RunSecurityTest(Command):
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
-        browser_list = utility.Utility.getBrowserDTO(parsed_args)
-        self.log.debug(browser_list)
-
         error_message = utility.Utility.validateSecurityTestInputs(self,parsed_args)
         if(error_message != "") :
             self.app.stdout.write(error_message)
             return
 
-
-        print(parsed_args.firefox)
-
         #order should be maintained as the constructor takes values as parameter in the same order.
         body = test_sdk_client.SecurityTestDto(
-            browser_list,
+            None,
             parsed_args.url,
             "Gmail",#text_to_search
             "10",#page_load_time_out

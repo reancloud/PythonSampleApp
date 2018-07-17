@@ -7,15 +7,15 @@ from test_sdk_client.rest import ApiException
 from ast import literal_eval
 import json
 import time
+import itertools, sys
 
 
 
 class RunUPA(Command):
+    """Run UI Performance test."""
 
     log = logging.getLogger(__name__)
 
-
-    "runupatest"
     def get_parser(self, prog_name):
         parser = super(RunUPA, self).get_parser(prog_name)
         
@@ -33,11 +33,10 @@ class RunUPA(Command):
         parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.')
         parser.add_argument('--upa', '-r', help='Set true if needs UPA test to run with the Test.')
         parser.add_argument('--crawl', '-c', help='Set true if needs Crawl test to run with the Test.')
-        
-        
-        parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on..This option is not mandatory.')
-        parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on..This option is not mandatory.')
         parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
+        
+        #parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on..This option is not mandatory.')
+        #parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on..This option is not mandatory.')
         #parser.add_argument('--ie', '-I', help='Give the comma separated versions for IE to run test on.')
         #parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
 
@@ -55,20 +54,17 @@ class RunUPA(Command):
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
-        browser_list = utility.Utility.getBrowserDTO(parsed_args)
-        self.log.debug(browser_list)
+        # browser_list = utility.Utility.getBrowserDTO(parsed_args)
+        # self.log.debug(browser_list)
 
         error_message = utility.Utility.validateInputs(self,parsed_args)
         if(error_message != "") :
             self.app.stdout.write(error_message)
             return
-        
-
-        print(parsed_args.firefox)
 
         #order should be maintained as the constructor takes values as parameter in the same order.  
         body = test_sdk_client.UpaTestDto(
-            browser_list,
+            None,
             parsed_args.url,
             parsed_args.text_to_search,
             parsed_args.page_load_time_out,
@@ -88,10 +84,16 @@ class RunUPA(Command):
 
              if (job_Id != None and parsed_args.wait =="true"):
                  apiInstance = test_sdk_client.RunTestApi()
+                 spinner = itertools.cycle(['-', '/', '|', '\\'])
                  job_status = apiInstance.get_job_status(job_Id)
+                 print("The Status of Job_Id:", job_Id, " is  ", job_status)
                  while ("RUNNING" in job_status):
-                    print("The Status of Job_Id:",job_Id," is  ", job_status)
-                    time.sleep(5)
+                     for _ in range(50):
+                         sys.stdout.write(next(spinner))
+                         sys.stdout.flush()
+                         time.sleep(0.1)
+                         sys.stdout.write('\b')
+                     job_status = apiInstance.get_job_status(job_Id)
                  print("The Status of Job_Id:", job_Id, " is  ", job_status)
 
         except Exception as e:
