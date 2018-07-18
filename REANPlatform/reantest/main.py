@@ -2,8 +2,6 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-import time
-from pprint import pprint
 from reantest.constants import TestConstants
 import test_sdk_client
 from test_sdk_client.rest import ApiException
@@ -17,6 +15,7 @@ class Test(App):
 
     def __init__(self):
         """__init__."""
+        self.api_instance = None
         super(Test, self).__init__(
             description='CLI for REAN Test.',
             version='0.1',
@@ -60,8 +59,11 @@ class Test(App):
 
 def main(argv=sys.argv[1:]):
     """main."""
-    myapp = Test()
-    return myapp.run(argv)
+    try:
+        myapp = Test()
+        return myapp.run(argv)
+    except ApiException as exception:
+        print(exception)
 
 
 if __name__ == '__main__':

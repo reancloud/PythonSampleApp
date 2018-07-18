@@ -1,12 +1,8 @@
 """run_security_test."""
 import logging
-from . import utility
 from cliff.command import Command
-
 import test_sdk_client
-from test_sdk_client.rest import ApiException
-from ast import literal_eval
-import json
+from reantest.utility import Utility
 
 
 class RunSecurityTest(Command):
@@ -42,7 +38,7 @@ class RunSecurityTest(Command):
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
-        error_message = utility.Utility.validateSecurityTestInputs(self, parsed_args)
+        error_message = Utility.validateSecurityTestInputs(parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return
@@ -62,20 +58,8 @@ class RunSecurityTest(Command):
         self.log.debug(body)
 
         try:
-            api_instance = test_sdk_client.RunJobsApi()
-            api_response = api_instance.submit_security_test_job(body)
-            self.log.debug(api_response)
-            print(api_response)
-        except Exception as e:
-            self.log.error("Exception when calling RunSecurityTest->submit_security_test_job: %s\n" % e)
+            self.log.debug("Execution stared for Security Test")
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_security_test_job)
 
-
-class Error(Command):
-    """Always raises an error."""
-
-    log = logging.getLogger(__name__)
-
-    def take_action(self, parsed_args):
-        """take_error_action."""
-        self.log.info('causing error')
-        raise RuntimeError('this is the expected exception')
+        except Exception as exception:
+            self.log.error("Exception when calling RunSecurityTest->submit_security_test_job: %s\n", exception)

@@ -1,15 +1,8 @@
 """Run UPA Test."""
 import logging
-from . import utility
 from cliff.command import Command
-
 import test_sdk_client
-from test_sdk_client.rest import ApiException
-from ast import literal_eval
-import json
-import time
-import itertools
-import sys
+from reantest.utility import Utility
 
 
 class RunUPA(Command):
@@ -55,10 +48,7 @@ class RunUPA(Command):
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
-        # browser_list = utility.Utility.getBrowserDTO(parsed_args)
-        # self.log.debug(browser_list)
-
-        error_message = utility.Utility.validateInputs(self, parsed_args)
+        error_message = Utility.validateInputs(parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return
@@ -77,35 +67,8 @@ class RunUPA(Command):
         self.log.debug(body)
 
         try:
-            api_instance = test_sdk_client.RunJobsApi()
-            job_id = api_instance.submit_upa_test_job(body)
-            self.log.debug("Response for UPA Test is------------: %s \n" % job_id)
-            print("The UPA Test submitted successfully. Job Id is : ", job_id)
+            self.log.debug("Execution stared for UPA Test")
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_upa_test_job)
 
-            if (job_id is not None and parsed_args.wait == "true"):
-                api_instance = test_sdk_client.RunTestApi()
-                spinner = itertools.cycle(['-', '/', '|', '\\'])
-                job_status = api_instance.get_job_status(job_id)
-                print("The Status of Job_Id:", job_id, " is  ", job_status)
-                while ("RUNNING" in job_status):
-                    for _ in range(50):
-                        sys.stdout.write(next(spinner))
-                        sys.stdout.flush()
-                        time.sleep(0.1)
-                        sys.stdout.write('\b')
-                    job_status = api_instance.get_job_status(job_id)
-                print("The Status of Job_Id:", job_id, " is  ", job_status)
-
-        except Exception as e:
-            self.log.error("Exception when calling RunUpaTest->submit_upa_test_job: %s\n" % e)
-
-
-class Error(Command):
-    """Always raises an error."""
-
-    log = logging.getLogger(__name__)
-
-    def take_action(self, parsed_args):
-        """take_error_action."""
-        self.log.info('causing error')
-        raise RuntimeError('this is the expected exception')
+        except Exception as exception:
+            self.log.error("Exception when calling RunUpaTest->submit_upa_test_job: %s\n", exception)

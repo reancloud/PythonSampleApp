@@ -29,16 +29,5 @@ class GetJobStatus(Command):
             api_response = api_instance.get_job_status(parsed_args.job_id)
             self.log.debug(api_response)
             print(api_response)
-        except Exception as e:
-            self.log.error("Exception when calling GetJobStatus->get_job_status: %s\n" % e)
-
-
-class Error(Command):
-    """Always raises an error."""
-
-    log = logging.getLogger(__name__)
-
-    def take_action(self, parsed_args):
-        """take_error_action."""
-        self.log.info('causing error')
-        raise RuntimeError('this is the expected exception')
+        except Exception as exception:
+            self.log.error("Exception when calling GetJobStatus->get_job_status: %s\n", exception)

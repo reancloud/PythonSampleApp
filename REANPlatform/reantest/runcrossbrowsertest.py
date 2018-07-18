@@ -1,13 +1,9 @@
 """Run Cross Browser Test."""
 import logging
-from . import utility
-from cliff.command import Command
-
-import test_sdk_client
-from test_sdk_client.rest import ApiException
-from ast import literal_eval
-import json
 import time
+from cliff.command import Command
+import test_sdk_client
+from . import utility
 
 
 class RunCrossBrowserTest(Command):
@@ -90,10 +86,10 @@ class RunCrossBrowserTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
 
-        browser_list = utility.Utility.getBrowserDTO(parsed_args)
+        browser_list = utility.Utility.get_browser_dto(parsed_args)
         self.log.debug(browser_list)
 
-        error_message = utility.Utility.validateInputs(self, parsed_args)
+        error_message = utility.Utility.validateInputs(parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return
@@ -131,26 +127,15 @@ class RunCrossBrowserTest(Command):
         try:
             api_instance = test_sdk_client.RunJobsApi()
             job_id = api_instance.submit_cross_browser_test_job(body)
-            self.log.debug("Response for Automation Test is------------: %s \n" % job_id)
+            self.log.debug("Response for Automation Test is------------: %s \n", job_id)
             print("The Automation Test submitted successfully. Job Id is : ", job_id)
 
             if (job_id is not None and parsed_args.wait == "true"):
                 api_instance = test_sdk_client.RunTestApi()
                 job_status = api_instance.get_job_status(job_id)
-                while ("RUNNING" in job_status):
+                while "RUNNING" in job_status:
                     print("The Status of Job_Id:", job_id, " is  ", job_status)
                     time.sleep(5)
                 print("The Status of Job_Id:", job_id, " is  ", job_status)
-        except Exception as e:
-            self.log.error("Exception when calling RunAutomationTest->submit_cross_browser_test_job: %s\n" % e)
-
-
-class Error(Command):
-    """Always raises an error."""
-
-    log = logging.getLogger(__name__)
-
-    def take_action(self, parsed_args):
-        """take_error_action."""
-        self.log.info('causing error')
-        raise RuntimeError('this is the expected exception')
+        except Exception as exception:
+            self.log.error("Exception when calling RunAutomationTest->submit_cross_browser_test_job: %s\n", exception)
