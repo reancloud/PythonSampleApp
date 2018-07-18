@@ -47,12 +47,9 @@ class RunScaleNowTest(Command):
         parser.add_argument('--git_url', '-U', help='Set git clone url for Automation code.')
         parser.add_argument('--branch_name', '-b',
                             help='Set git repository branch name. If not specified, master branch will be considered by default.')
-        parser.add_argument('--command_to_run_test', '-c',
-                            help='Set command to run Automation Testsuite. For e.g. mvn test This option is mandatory.'
-                            )
+        parser.add_argument('--command_to_run_test', '-c', help='Set command to run Automation Testsuite. For e.g. mvn test This option is mandatory.')
         parser.add_argument('--url', '-u',
-                            help='Set url To be used in Automation test. example:http://www.google.com.', required=True
-                            )
+                            help='Set url To be used in Automation test. example:http://www.google.com.', required=True)
         parser.add_argument('--automation_code_type', '-T', help='Set automation code type as Ruby, Java, VBScript ')
         parser.add_argument('--use_code_upload', '-UC', help='Set upload code file as true or false')
         parser.add_argument('--code_file_name', '-UF', help='Set upload file name')
@@ -62,8 +59,7 @@ class RunScaleNowTest(Command):
         parser.add_argument('--report_file', '-r',
                             help='Set test execution report file, preferably in json or xml format.', required=True)
         parser.add_argument('--output_dir', '-o',
-                            help='Set test execution reports directory. For e.g. target/testng-report. Path should be relative to your automation code directory'
-                            )
+                            help='Set test execution reports directory. For e.g. target/testng-report. Path should be relative to your automation code directory')
         parser.add_argument('--delete_vm', '-d', help='Set delete vm as true or false')
         parser.add_argument('--run_sequential', '-R', help='Set run sequential as true or false')
         parser.add_argument('--run_hours', '-H',
