@@ -49,6 +49,7 @@ class Configure(Command):
             artifactory_bucket = argparse_dict[MncConstats.ARTIFACTORY_BUCKET]
             master_acc_no = argparse_dict[MncConstats.MASTER_ACC]
             master_connection = argparse_dict[MncConstats.MASTER_CONNECTION]
+            self.__validate_parameters(configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection)
 
             self.check_bucket_configuration_path()
             self.create_configuration_bucket_file(configuration_bucket)
@@ -60,6 +61,11 @@ class Configure(Command):
 
         except ApiException as exception:
             Utility.print_exception(exception)
+
+    def __validate_parameters(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
+        """Validate cli parameters."""
+        if configuration_bucket is None or deploy_group is None or master_provider is None or master_provider is None or artifactory_bucket is None or master_acc_no is None or master_connection is None:
+            raise RuntimeError("Specify all require parametes,for more help check 'rean-mnc configure --help'")    # noqa: E501
 
     def check_bucket_configuration_path(self):
         """Check whether bucket configuration path present."""
@@ -197,7 +203,7 @@ class Configure(Command):
                         del blueprint_all_env.environment_imports[already_imported]
 
                     if blueprint_all_env.environment_imports:
-                        #api_instance.import_blueprint(body=blueprint_all_env)
+                        api_instance.import_blueprint(body=blueprint_all_env)
                         logging.info("Rule imported successfully : %s", file_name)
                     else:
                         logging.info("Rule already imported filename :%s", file_name)
