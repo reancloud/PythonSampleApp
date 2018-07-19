@@ -7,7 +7,6 @@ import datetime
 import yaml
 import boto3
 import botocore
-import inflection
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
@@ -18,21 +17,6 @@ from deploy.constants import DeployConstants
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utilityconstants import PlatformConstants
-
-
-def change_keys_to_camel_case(obj):
-    """Recursively goes through the dictionary obj and change keys to Camel Case."""
-    if isinstance(obj, (str, int, float)):
-        return obj
-    if isinstance(obj, dict):
-        new = obj.__class__()
-        for k, v in obj.items():
-            new[inflection.camelize(k, False)] = change_keys_to_camel_case(v)
-    elif isinstance(obj, (list, set, tuple)):
-        new = obj.__class__(change_keys_to_camel_case(v) for v in obj)
-    else:
-        return obj
-    return new
 
 
 class Configure(Command):
@@ -84,8 +68,7 @@ class Configure(Command):
             try:
                 os.makedirs(configuration_bucket_path)
             except OSError as exception:
-                print("Failed to create directory ", configuration_bucket_path)
-                return False
+                Utility.print_exception(exception)
 
     def create_configuration_bucket_file(self, configuration_bucket):
         """Create configuration file locally."""
@@ -95,8 +78,7 @@ class Configure(Command):
                 with open(MncConstats.FILE_BUCKET_NAME, 'w') as configuration_file:
                     yaml.dump(configuration_bucket_file_data, configuration_file, default_flow_style=False)
             except yaml.YAMLError as exception:
-                logging.info("Failed to create bucket_configuration file at path %s", MncConstats.FILE_BUCKET_NAME)
-                return False
+                Utility.print_exception(exception)
 
     def create_and_store_configuration_file_data(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
         """Create and store configuration file in s3."""
@@ -215,7 +197,7 @@ class Configure(Command):
                         del blueprint_all_env.environment_imports[already_imported]
 
                     if blueprint_all_env.environment_imports:
-                        api_instance.import_blueprint(body=blueprint_all_env)
+                        #api_instance.import_blueprint(body=blueprint_all_env)
                         logging.info("Rule imported successfully : %s", file_name)
                     else:
                         logging.info("Rule already imported filename :%s", file_name)
@@ -233,26 +215,32 @@ class Configure(Command):
 
     def get_provider_id(self, master_provider):
         """Return provider-id based on provider-name."""
-        instance = deploy_sdk_client.ProviderApi()
-        provider_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-        providers_list = provider_api_instance.get_all_providers()
-        provider_id = ""
-        for provider in providers_list:
-            if provider.name == master_provider:
-                provider_id = provider.id
-                break
-        return provider_id
+        try:
+            instance = deploy_sdk_client.ProviderApi()
+            provider_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            providers_list = provider_api_instance.get_all_providers()
+            provider_id = ""
+            for provider in providers_list:
+                if provider.name == master_provider:
+                    provider_id = provider.id
+                    break
+            return provider_id
+        except ApiException as exception:
+            Utility.print_exception(exception)
 
     def get_connection_id(self, master_connection):
         """Return connection-id based on connection-name."""
-        instance = deploy_sdk_client.ConnectionApi()
-        connection_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-        connection_list = connection_api_instance.get_all_vm_connections()
-        for connection in connection_list:
-            if connection.name == master_connection:
-                connection_id = connection.id
-                break
-        return connection_id
+        try:
+            instance = deploy_sdk_client.ConnectionApi()
+            connection_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            connection_list = connection_api_instance.get_all_vm_connections()
+            for connection in connection_list:
+                if connection.name == master_connection:
+                    connection_id = connection.id
+                    break
+            return connection_id
+        except ApiException as exception:
+            Utility.print_exception(exception)
 
     def get_release_version(self):
         """Return the current MNC version."""
@@ -261,58 +249,65 @@ class Configure(Command):
 
     def share_blueprints(self, deploy_group):
         """Share the blueprints."""
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-        api_response = api_instance.get_all_environments()
-        environment_ids_list = []
-        for response in api_response:
-            if response.name == "mnc_rule_processor_lambda_permission_setup":
-                continue
-            elif response.name == "mnc_rule_processor_lambda_setup":
-                continue
-            elif response.name == "mnc_notifier_lambda":
-                continue
-            environment_ids_list.append(response.config.env_id)
-        instance = authnz_sdk_client.GroupcontrollerApi()
-        api_instance_auth = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
-        api_response = api_instance_auth.get_group_with_name_using_get(deploy_group)
-        group_id = api_response.id
+        try:
+            instance = deploy_sdk_client.EnvironmentApi()
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_response = api_instance.get_all_environments()
+            environment_ids_list = []
+            for response in api_response:
+                if response.name == "mnc_rule_processor_lambda_permission_setup":
+                    continue
+                elif response.name == "mnc_rule_processor_lambda_setup":
+                    continue
+                elif response.name == "mnc_notifier_lambda":
+                    continue
+                elif response.name.endswith('config_rule_setup') or response.name.endswith('assume_role'):
+                    environment_ids_list.append(response.config.env_id)
+            instance = authnz_sdk_client.GroupcontrollerApi()
+            api_instance_auth = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            api_response = api_instance_auth.get_group_with_name_using_get(deploy_group)
+            group_id = api_response.id
 
-        for environment_id in environment_ids_list:
-            group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
-            action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
-            share_group_permission_instance = deploy_sdk_client.ShareGroupPermission(group_dto_instance, action_list)
-            environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
-            api_instance.share_environment(environment_id, body=environment_policy_instance)
+            for environment_id in environment_ids_list:
+                group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
+                action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
+                share_group_permission_instance = deploy_sdk_client.ShareGroupPermission(group_dto_instance, action_list)
+                environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
+                api_instance.share_environment(environment_id, body=environment_policy_instance)
 
-        logging.info("Shared all the blueprints!")
+            logging.info("Shared all the blueprints!")
+        except ApiException as exception:
+            Utility.print_exception(exception)
 
     def release_environments(self):
         """Release environments."""
-        is_released_environments = False
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-        environment_list = api_instance.get_all_environments()
-        version = self.get_release_version()
-        logging.info("\nReleasing the environments with version %s", version)
-        for environment in environment_list:
-            environment = environment.to_dict()
+        try:
+            is_released_environments = False
+            instance = deploy_sdk_client.EnvironmentApi()
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            environment_list = api_instance.get_all_environments()
+            version = self.get_release_version()
+            logging.info("\nReleasing the environments with version %s", version)
+            for environment in environment_list:
+                environment = environment.to_dict()
 
-            if environment['name'] == "mnc_rule_processor_lambda_permission_setup":
-                continue
-            elif environment['name'] == "mnc_rule_processor_lambda_setup":
-                continue
-            elif environment['name'] == "mnc_notifier_lambda":
-                continue
-            elif environment['released'] is True:
-                continue
+                if environment['name'] == "mnc_rule_processor_lambda_permission_setup":
+                    continue
+                elif environment['name'] == "mnc_rule_processor_lambda_setup":
+                    continue
+                elif environment['name'] == "mnc_notifier_lambda":
+                    continue
+                elif environment['released'] is True:
+                    continue
 
-            provider = environment['provider']
-            provider_object = deploy_sdk_client.Provider(created_by=provider['created_by'], id=provider['id'], modified_by=provider['modified_by'], name=provider['name'], type=provider['type'])
-            environment_object = deploy_sdk_client.Environment(id=environment['id'], created_by=environment['created_by'], modified_by=environment['modified_by'], name=environment['name'], description=environment['description'], provider=provider_object, connection_id=environment['connection_id'], env_version=version, released=True)
-            modified_on = int(datetime.datetime.now().strftime("%s")) * 1000
-            response = api_instance.update_environment(header_env_id=environment['id'], modified_on=modified_on, body=environment_object)
-            is_released_environments = True
-            logging.info("Released environment %s", environment['name'])
-        if not is_released_environments:
-            logging.info("All environments are already released!")
+                provider = environment['provider']
+                provider_object = deploy_sdk_client.Provider(created_by=provider['created_by'], id=provider['id'], modified_by=provider['modified_by'], name=provider['name'], type=provider['type'])
+                environment_object = deploy_sdk_client.Environment(id=environment['id'], created_by=environment['created_by'], modified_by=environment['modified_by'], name=environment['name'], description=environment['description'], provider=provider_object, connection_id=environment['connection_id'], env_version=version, released=True)
+                modified_on = int(datetime.datetime.now().strftime("%s")) * 1000
+                response = api_instance.update_environment(header_env_id=environment['id'], modified_on=modified_on, body=environment_object)
+                is_released_environments = True
+                logging.info("Released environment %s", environment['name'])
+            if not is_released_environments:
+                logging.info("All environments are already released!")
+        except ApiException as exception:
+            Utility.print_exception(exception)
