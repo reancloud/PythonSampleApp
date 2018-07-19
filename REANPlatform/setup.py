@@ -1,11 +1,12 @@
-#!/usr/bin/env python
+"""REANPlatform setup.py."""
+# !/usr/bin/env python
+
+from setuptools import setup, find_packages
 
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1'
-
-from setuptools import setup, find_packages
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -29,7 +30,7 @@ setup(
                  'Programming Language :: Python :: 3.6',
                  'Intended Audience :: Developers',
                  'Environment :: Console',
-                 ],
+                ],
 
     platforms=['Any'],
 
@@ -37,8 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators',
-                      'boto3', 'Crypto', 'wheel', 'pycrypto'],
+    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
 
     namespace_packages=[],
     packages=find_packages(),
@@ -48,13 +48,17 @@ setup(
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
             'rean-deploy = deploy.main:main',
-            'rean-mnc = mnc.main:main'
+            'rean-auth = auth.main:main',
+            'rean-mnc = mnc.main:main',
+            'rean-test = reantest.main:main'
         ],
         'rean.platform': [
+            'rean-platform = reanplatform.reanhelp:HelpPlatform',
             'configure = reanplatform.configure:Configure',
-            'rean-deploy = reanplatform.reanhelp:Helpdeploy',
-            'rean-test = reanplatform.reanhelp:Helptest',
-            'rean-mnc = reanplatform.reanhelp:Helpmnc'
+            'rean-deploy = reanplatform.reanhelp:HelpDeploy',
+            'rean-test = reanplatform.reanhelp:HelpTest',
+            'rean-mnc = reanplatform.reanhelp:HelpMnc',
+            'rean-auth = reanplatform.reanhelp:HelpAuth'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
@@ -76,9 +80,21 @@ setup(
             'get-status = deploy.getdeploymentstatus:Status',
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
+        'rean.auth': [
+            'get-all-users = auth.get_users:GetUsers',
+            'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId'
+        ],
+        'rean.test': [
+            'run-url-test = reantest.run_url:RunURLTest',
+            'run-upa-test = reantest.runupa:RunUPA',
+            'run-security-test = reantest.runsecuritytest:RunSecurityTest',
+            'run-automation-test = reantest.runcrossbrowsertest:RunCrossBrowserTest',
+            'run-scale-test =  reantest.runscalenowtest:RunScaleNowTest',
+            'get-job-status = reantest.get_job_status:GetJobStatus'
+        ],
         'rean.mnc': [
-            #        'configure = mnc.configure:Configure',
-            #        'rule = mnc.rule:Rule',
+            # 'configure = mnc.configure:Configure',
+            # 'rule = mnc.rule:Rule',
             'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'

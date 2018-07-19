@@ -1,15 +1,14 @@
 """Depoly/Re-Deploy an Environment."""
 import os
-import re
 import os.path
 import logging
 import json
 import time
-import ast
 from cliff.command import Command
 import deploy_sdk_client
-from deploy.getdeploymentstatus import Status
 from deploy_sdk_client.rest import ApiException
+from deploy.getdeploymentstatus import Status
+from deploy.constants import DeployConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 
@@ -64,8 +63,8 @@ class DepolyEnv(Command):
             with open(json_file) as jsonfile:
                 json_obj = json.load(jsonfile)
             return json_obj
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def re_deploy_environment(environment_id, deployment_name,
@@ -75,7 +74,7 @@ class DepolyEnv(Command):
         try:
             # Initialise instance and api_instance and response
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             response = None
             body = deploy_sdk_client.DeploymentConfigurationDto(
                 environment_id=environment_id,
@@ -86,7 +85,7 @@ class DepolyEnv(Command):
                 input_json=child_input_json,
                 parent_deployments=depends_on_json
             )
-            response = api_instance.deploy_1(
+            response = api_instance.deploy_by_config(
                 body=body
             )
 
@@ -100,8 +99,8 @@ class DepolyEnv(Command):
                     break
 
             return response
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     def take_action(self, parsed_args):
         """take_action."""
@@ -123,7 +122,8 @@ class DepolyEnv(Command):
 
         # Re Deploy an environment
         result = DepolyEnv.re_deploy_environment(environment_id, deployment_name,         # noqa: E501
-                                                  deployment_description, provider_name,  # noqa: E501
-                                                  region, child_input_json, depends_on_json)   # noqa: E501
+                                                 deployment_description, provider_name,  # noqa: E501
+                                                 region, child_input_json, depends_on_json
+                                                )   # noqa: E501
         if result:
             print(result)

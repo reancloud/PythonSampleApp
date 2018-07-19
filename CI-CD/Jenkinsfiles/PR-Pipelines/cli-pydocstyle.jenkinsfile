@@ -33,10 +33,11 @@ pipeline {
                             sh '''
                                 #!/bin/bash
                                 set -e
-                                python3 -m pydocstyle --ignore=E501 REANPlatform/mnc
-                                python3 -m pydocstyle --ignore=E501 REANPlatform/deploy
-                                python3 -m pydocstyle --ignore=E501 REANPlatform/reanplatform
-                                python3 -m pydocstyle --ignore=E501 */*.py
+                                python3 -m pydocstyle REANPlatform/mnc
+                                python3 -m pydocstyle REANPlatform/deploy
+                                python3 -m pydocstyle REANPlatform/reanplatform
+                                python3 -m pydocstyle REANPlatform/auth
+                                python3 -m pydocstyle */*.py
                             '''
                             println "\u001B[32mCode adheres to PyCodeStyle\u001B[0m"
                         } catch (Exception e) {
