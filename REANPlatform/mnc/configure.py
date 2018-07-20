@@ -58,7 +58,7 @@ class Configure(Command):
             self.create_and_store_configuration_file_data(configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection)
             get_blueprint = self.get_blueprints_from_s3_and_unzip(artifactory_bucket)
             if get_blueprint is False:
-                raise RuntimeError("Failed to download rules from s3 bucket :%s", artifactory_bucket)
+                raise RuntimeError("Failed to download rules from s3 bucket :", artifactory_bucket)
             self.import_blueprints(master_provider, master_connection, MncConstats.LOCAL_ARTIFACTS_ZIP_PATH + 'rules')
             self.share_blueprints(deploy_group)
             self.release_environments()
@@ -124,7 +124,7 @@ class Configure(Command):
                 s3_resource.create_bucket(Bucket=configuration_bucket)
                 logging.info("Successfully configuration bucket created :%s", configuration_bucket)
             else:
-                logging.info("Configuration s3 bucket %s already exist.", configuration_bucket)
+                logging.info("Configuration s3-bucket %s already exist.", configuration_bucket)
             s3_object = s3_resource.Object(configuration_bucket, 'config_bucket.yaml')
             s3_object.put(Body=yaml.dump(configuration_file_data, default_flow_style=False))
             logging.info("Successfully configuration file stored in s3 :config_bucket.yaml.")
