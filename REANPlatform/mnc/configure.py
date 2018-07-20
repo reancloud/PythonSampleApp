@@ -4,6 +4,7 @@ import logging
 import zipfile
 import os.path
 import datetime
+import time
 import yaml
 import boto3
 import botocore
@@ -23,6 +24,7 @@ class Configure(Command):
     """Configure MNC."""
 
     __version = ""
+    boto3.set_stream_logger('botocore.vendored.requests', logging.ERROR)
 
     def get_parser(self, prog_name):
         """Get parser."""
@@ -54,7 +56,9 @@ class Configure(Command):
             self.check_bucket_configuration_path()
             self.create_configuration_bucket_file(configuration_bucket)
             self.create_and_store_configuration_file_data(configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection)
-            self.get_blueprints_from_s3_and_unzip(artifactory_bucket)
+            get_blueprint = self.get_blueprints_from_s3_and_unzip(artifactory_bucket)
+            if get_blueprint is False:
+                raise RuntimeError("Failed to download rules from s3 bucket :%s", artifactory_bucket)
             self.import_blueprints(master_provider, master_connection, MncConstats.LOCAL_ARTIFACTS_ZIP_PATH + 'rules')
             self.share_blueprints(deploy_group)
             self.release_environments()
@@ -65,7 +69,7 @@ class Configure(Command):
     def __validate_parameters(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
         """Validate cli parameters."""
         if configuration_bucket is None or deploy_group is None or master_provider is None or master_provider is None or artifactory_bucket is None or master_acc_no is None or master_connection is None:
-            raise RuntimeError("Specify all require parametes,for more help check 'rean-mnc configure --help'")    # noqa: E501
+            raise RuntimeError("Specify all require parametes for more help check 'rean-mnc configure --help'")    # noqa: E501
 
     def check_bucket_configuration_path(self):
         """Check whether bucket configuration path present."""
@@ -118,12 +122,12 @@ class Configure(Command):
                     break
             if is_configuration_bucket_present is False:
                 s3_resource.create_bucket(Bucket=configuration_bucket)
-                logging.info("Created configuration bucket %s", configuration_bucket)
+                logging.info("Successfully configuration bucket created :%s", configuration_bucket)
             else:
-                logging.info("Configuration bucket already exist!")
+                logging.info("Configuration s3 bucket %s already exist.", configuration_bucket)
             s3_object = s3_resource.Object(configuration_bucket, 'config_bucket.yaml')
             s3_object.put(Body=yaml.dump(configuration_file_data, default_flow_style=False))
-            logging.info("Configuration file stored in s3 successfully!")
+            logging.info("Successfully configuration file stored in s3 :config_bucket.yaml.")
         except botocore.exceptions.ClientError as exception:
             Utility.print_exception(exception)
 
@@ -146,6 +150,7 @@ class Configure(Command):
 
         except botocore.exceptions.ClientError as exception:
             Utility.print_exception(exception)
+            return False
 
     def get_lastest_build_version(self, artifactory_bucket):
         """get_lastest_build_version."""
@@ -172,7 +177,7 @@ class Configure(Command):
             Utility.print_exception(exception)
 
         number_of_rules = len([name for name in os.listdir(local_artifacts_path) if name.endswith('.reandeploy') and os.path.isfile(os.path.join(local_artifacts_path, name))])
-        logging.info("\nTotal Rule Count : %s", number_of_rules)
+        logging.info("\nFound %s rules in artifactory bucket.", number_of_rules)
 
         master_account_provider_id = self.get_provider_id(master_provider)
         master_account_connection_id = self.get_connection_id(master_connection)
@@ -205,11 +210,13 @@ class Configure(Command):
                     if blueprint_all_env.environment_imports:
                         api_instance.import_blueprint(body=blueprint_all_env)
                         logging.info("Rule imported successfully : %s", file_name)
+                        time.sleep(2)
                     else:
                         logging.info("Rule already imported filename :%s", file_name)
 
                 except ApiException as exception:
-                    Utility.print_exception(exception)
+                    logging.info("Failed to import rule. Please check the file :%s", file_name)
+                    # Utility.print_exception(exception)
 
     def list_of_env(self, api_instance):
         """list_of_env."""
@@ -261,29 +268,29 @@ class Configure(Command):
             api_response = api_instance.get_all_environments()
             environment_ids_list = []
             for response in api_response:
-                if response.name == "mnc_rule_processor_lambda_permission_setup":
-                    continue
-                elif response.name == "mnc_rule_processor_lambda_setup":
-                    continue
-                elif response.name == "mnc_notifier_lambda":
-                    continue
-                elif response.name.endswith('config_rule_setup') or response.name.endswith('assume_role'):
+                if response.name == "mnc_rule_processor_lambda_permission_setup" or response.name == "mnc_rule_processor_lambda_setup" or response.name == "mnc_notifier_lambda" or response.name.endswith('config_rule_setup') or response.name.endswith('assume_role'):
+                    logging.info("Environment %s sharing with group: %s", response.name, deploy_group)
                     environment_ids_list.append(response.config.env_id)
+                else:
+                    logging.info("Failed to share rule with group %s. Rule name is not valid: %s", deploy_group, response.name)
+                    continue
             instance = authnz_sdk_client.GroupcontrollerApi()
             api_instance_auth = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
             api_response = api_instance_auth.get_group_with_name_using_get(deploy_group)
             group_id = api_response.id
 
+            logging.info("Please wait.. rules are sharing with group :%s", deploy_group)
             for environment_id in environment_ids_list:
                 group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
                 action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
                 share_group_permission_instance = deploy_sdk_client.ShareGroupPermission(group_dto_instance, action_list)
                 environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
                 api_instance.share_environment(environment_id, body=environment_policy_instance)
-
-            logging.info("Shared all the blueprints!")
+                time.sleep(2)
+            logging.info("Shared all the rules with group :%s", deploy_group)
         except ApiException as exception:
-            Utility.print_exception(exception)
+            logging.info("Failed to share rules. Please retry...")
+            # Utility.print_exception(exception)
 
     def release_environments(self):
         """Release environments."""
@@ -296,24 +303,18 @@ class Configure(Command):
             logging.info("\nReleasing the environments with version %s", version)
             for environment in environment_list:
                 environment = environment.to_dict()
-
-                if environment['name'] == "mnc_rule_processor_lambda_permission_setup":
+                if environment['released'] is True:
                     continue
-                elif environment['name'] == "mnc_rule_processor_lambda_setup":
-                    continue
-                elif environment['name'] == "mnc_notifier_lambda":
-                    continue
-                elif environment['released'] is True:
-                    continue
-
                 provider = environment['provider']
                 provider_object = deploy_sdk_client.Provider(created_by=provider['created_by'], id=provider['id'], modified_by=provider['modified_by'], name=provider['name'], type=provider['type'])
                 environment_object = deploy_sdk_client.Environment(id=environment['id'], created_by=environment['created_by'], modified_by=environment['modified_by'], name=environment['name'], description=environment['description'], provider=provider_object, connection_id=environment['connection_id'], env_version=version, released=True)
                 modified_on = int(datetime.datetime.now().strftime("%s")) * 1000
                 response = api_instance.update_environment(header_env_id=environment['id'], modified_on=modified_on, body=environment_object)
+                time.sleep(2)
                 is_released_environments = True
-                logging.info("Released environment %s", environment['name'])
+                logging.info("Released environment successfully :%s", environment['name'])
             if not is_released_environments:
-                logging.info("All environments are already released!")
+                logging.info("All environments are already released.")
         except ApiException as exception:
-            Utility.print_exception(exception)
+            logging.info("Failed to release environment. Please retry..")
+            # Utility.print_exception(exception)
