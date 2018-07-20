@@ -1,9 +1,8 @@
 """Run Cross Browser Test."""
 import logging
-import time
 from cliff.command import Command
 import test_sdk_client
-from . import utility
+from reantest.utility import Utility
 
 
 class RunCrossBrowserTest(Command):
@@ -77,8 +76,9 @@ class RunCrossBrowserTest(Command):
                             help='Give the comma separated versions for Firefox to run test on..This option is not mandatory.')
 
         parser.add_argument('--ie', '-I', help='Give the comma separated versions for IE to run test on.')
-        parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
         parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
+
+        # parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
 
         return parser
 
@@ -86,10 +86,10 @@ class RunCrossBrowserTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
 
-        browser_list = utility.Utility.get_browser_dto(parsed_args)
+        browser_list = Utility.get_browser_dto(parsed_args)
         self.log.debug(browser_list)
 
-        error_message = utility.Utility.validateInputs(parsed_args)
+        error_message = Utility.validate_automation_test_inputs(parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return
@@ -125,17 +125,8 @@ class RunCrossBrowserTest(Command):
         self.log.debug(body)
 
         try:
-            api_instance = test_sdk_client.RunJobsApi()
-            job_id = api_instance.submit_cross_browser_test_job(body)
-            self.log.debug("Response for Automation Test is------------: %s \n", job_id)
-            print("The Automation Test submitted successfully. Job Id is : ", job_id)
+            self.log.debug("Execution stared for Automation Test")
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_cross_browser_test_job)
 
-            if (job_id is not None and parsed_args.wait == "true"):
-                api_instance = test_sdk_client.RunTestApi()
-                job_status = api_instance.get_job_status(job_id)
-                while "RUNNING" in job_status:
-                    print("The Status of Job_Id:", job_id, " is  ", job_status)
-                    time.sleep(5)
-                print("The Status of Job_Id:", job_id, " is  ", job_status)
         except Exception as exception:
             self.log.error("Exception when calling RunAutomationTest->submit_cross_browser_test_job: %s\n", exception)

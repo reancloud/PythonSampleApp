@@ -84,8 +84,8 @@ setup(
             'run-url-test = reantest.run_url:RunURLTest',
             'run-upa-test = reantest.run_upa:RunUPA',
             'run-security-test = reantest.run_security_test:RunSecurityTest',
-            'run-automation-test = reantest.runcrossbrowsertest:RunCrossBrowserTest',
-            'run-scale-test =  reantest.runscalenowtest:RunScaleNowTest',
+            'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
+            'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
             'get-job-status = reantest.get_job_status:GetJobStatus'
         ],
         'rean.mnc': [

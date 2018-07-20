@@ -38,7 +38,7 @@ class RunSecurityTest(Command):
         # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
-        error_message = Utility.validateSecurityTestInputs(parsed_args)
+        error_message = Utility.validate_security_test_inputs(parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return

@@ -33,7 +33,6 @@ class RunURLTest(Command):
         parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on.')
 
         parser.add_argument('--ie', '-I', help='Give the comma separated versions for IE to run test on.')
-        parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
         parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
         # parser.add_argument('--safari', '-S', help='message')
         # parser.add_argument('--ios', '-A', help='message')
@@ -49,7 +48,7 @@ class RunURLTest(Command):
         browser_list = Utility.get_browser_dto(parsed_args)
         self.log.debug(browser_list)
 
-        error_message = Utility.validateInputs(parsed_args)
+        error_message = Utility.validate_url_test_inputs(parsed_args)
         if error_message:
             self.app.stdout.write(error_message)
             return
