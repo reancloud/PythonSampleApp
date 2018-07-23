@@ -1,19 +1,18 @@
-"""Rean-Deploy main class."""
+"""Rean-Auth main class."""
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-from deploy_sdk_client.rest import ApiException
 
 
-class Deploy(App):
-    """Rean-Deploy CLI."""
+class Auth(App):
+    """Rean-Auth CLI."""
 
     def __init__(self):
         """__init__."""
-        super(Deploy, self).__init__(
-            description='CLI for REAN Deploy.',
+        super(Auth, self).__init__(
+            description='CLI for REAN Auth.',
             version='0.1',
-            command_manager=CommandManager('rean.deploy'),
+            command_manager=CommandManager('rean.auth'),
             deferred_help=True,
             )
 
@@ -35,11 +34,8 @@ class Deploy(App):
 
 def main(argv=sys.argv[1:]):
     """main."""
-    try:
-        myapp = Deploy()
-        return myapp.run(argv)
-    except ApiException as exception:
-        print(exception)
+    myapp = Auth()
+    return myapp.run(argv)
 
 
 if __name__ == '__main__':

@@ -42,4 +42,4 @@ class MncUtility:       # noqa: D203
                 if "rean_deploy_mnc_master_provider" in file_line:
                     provider_name = file_line.split(':')[-1]
                     provider_name = provider_name.strip()
-        return provider_name    
+        return provider_name
