@@ -1,11 +1,11 @@
 """Stop Deployment."""
-from pprint import pprint
 import logging
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class StopDeployment(Command):
@@ -19,8 +19,7 @@ class StopDeployment(Command):
         parser = super(StopDeployment, self).get_parser(prog_name)
         parser.add_argument('--deployment_id', '-d_id',
                             help='Deployment id.',
-                            required=True
-                            )
+                            required=True)
         return parser
 
     @staticmethod
@@ -29,11 +28,9 @@ class StopDeployment(Command):
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
-            res = api_instance.stop_deployment(
-                deployment_id
-            )
-            return res
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            stop_deployment_response = api_instance.stop_deployment(deployment_id)
+            return stop_deployment_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -44,8 +41,7 @@ class StopDeployment(Command):
 
         # Get stop deployment status
         if deployment_id:
-            stop_deployment_status = StopDeployment.stop_deployment(
-                deployment_id)
+            stop_deployment_status = StopDeployment.stop_deployment(deployment_id)
 
         if stop_deployment_status:
             print("Stop Deployment Status : %s" %

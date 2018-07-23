@@ -7,6 +7,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class ExportBlueprintEnvironment(Command):
@@ -58,7 +59,7 @@ class ExportBlueprintEnvironment(Command):
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             response = api_instance.export_blueprint_environment(env_id)
             os.chdir(os.path.dirname(blueprint_path))
             with open(basename(blueprint_path), 'w') as outfile:
