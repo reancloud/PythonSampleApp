@@ -33,7 +33,7 @@ class StopDeployment(Command):
             res = api_instance.stop_deployment(
                 deployment_id
             )
-            pprint(res)
+            return res
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -42,5 +42,11 @@ class StopDeployment(Command):
         # Define parsed_args
         deployment_id = parsed_args.deployment_id
 
+        # Get stop deployment status
         if deployment_id:
-            StopDeployment.stop_deployment(deployment_id)
+            stop_deployment_status = StopDeployment.stop_deployment(
+                deployment_id)
+
+        if stop_deployment_status:
+            print("Stop Deployment Status : %s" %
+                  (stop_deployment_status.status))
