@@ -65,6 +65,7 @@ setup(
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
             'plan-deployment = deploy.plandeployment:PlanDeployment',
+            'stop-deployment = deploy.stop_deployment:StopDeployment',
             'export-environment = deploy.exportenvironment:ExportEnvironment',
             'export-blueprint-environment = deploy.exportblueprintenvironment:ExportBlueprintEnvironment',
             'list-environment = deploy.listenvironments:ListEnvironments',
@@ -72,6 +73,8 @@ setup(
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
             'get-deployment-id = deploy.getdeploymentid:GetDeployments',
+            'get-deployment-input = deploy.get_deployment_input:GetDeploymentInput',
+            'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
             'deploy-env = deploy.deployenv:DepolyEnv'
