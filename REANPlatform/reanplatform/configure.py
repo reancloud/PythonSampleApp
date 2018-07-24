@@ -33,10 +33,57 @@ class Configure(Command):
                             help='Platform password',
                             required=False
                            )
+        parser.add_argument('--auto_approve',
+                            '-y',
+                            help='Skip interactive approval before updating user credentials.',
+                            required=False,
+                            action='store_true'
+                           )
         return parser
 
     def createFile(self, parsed_args, path):
         """Create file of credentials."""
+        os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
+        if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME + '/' + Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+            if parsed_args.auto_approve:
+                self.__update_credentials(parsed_args)
+            else:
+                user_input = input('REAN CLI is already configured. Are you sure you want to update existing credentials (y/n): ')
+                if user_input == 'y' or user_input == 'Y':
+                    self.__update_credentials(parsed_args)
+        else:
+            self.__update_credentials(parsed_args)
+
+    def take_action(self, parsed_args):
+        """take_action."""
+        try:
+            path = os.path.expanduser('~')
+            if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
+                self.createFile(parsed_args, path)
+            else:
+                os.makedirs(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
+                self.createFile(parsed_args, path)
+
+        except ApiException as exception:
+            self.log.error(exception)
+
+    def __parse_base_url(self, base_url):
+        """Parse base url.
+
+        Removes extra '/' if any from url.
+        """
+        if base_url[-1] == '/':
+            return base_url[:-1]
+        return base_url
+
+    def __update_credentials(self, parsed_args):
+        """Update credentials."""
+        data = self.__get_data(parsed_args)
+        with io.open(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml', 'w', encoding='utf8') as outputfile:  # noqa: E501
+            yaml.dump(data, outputfile, default_flow_style=False, allow_unicode=True)   # noqa: E501
+
+    def __get_data(self, parsed_args):
+        """Get file data."""
         if parsed_args.password:
             password = parsed_args.password
         else:
@@ -49,29 +96,4 @@ class Configure(Command):
                 PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password)
             }
         }
-        os.chdir(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
-        with io.open(Constants.PLATFORM_CONFIG_FILE_NAME + '.yaml', 'w', encoding='utf8') as outputfile:  # noqa: E501
-            yaml.dump(data, outputfile, default_flow_style=False, allow_unicode=True)   # noqa: E501
-
-    def take_action(self, parsed_args):
-        """take_action."""
-        try:
-            path = os.path.expanduser('~')
-            if os.path.exists(path + '/.\
-                            ' + Constants.PLATFORM_CONFIG_FILE_NAME):
-                self.createFile(parsed_args, path)
-            else:
-                os.makedirs(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME)
-                self.createFile(parsed_args, path)
-
-        except ApiException as e:
-            self.log.error(e)
-
-    def __parse_base_url(self, base_url):
-        """Parse base url.
-
-        Removes extra '/' if any from url.
-        """
-        if base_url[-1] == '/':
-            return base_url[:-1]
-        return base_url
+        return data
