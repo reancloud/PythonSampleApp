@@ -9,7 +9,7 @@ from auth.constants import AunthnzConstants
 
 
 class ChangePassword(Command):
-    """Change Password"""
+    """Change Password."""
 
     log = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class ChangePassword(Command):
 
     @staticmethod
     def change_password(parsed_args):
-        """Change Password"""
+        """Change Password."""
         try:
             # Initialise instance and api_instance in list_environment
             if parsed_args.new_password == parsed_args.confirm_password:
