@@ -1,4 +1,6 @@
 """Export Environment."""
+import os
+from os.path import basename
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -38,6 +40,13 @@ class ExportEnvironment(Command):
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             response = api_instance.export_environment(env_id)
-            print(response)
+            filename = response.name + '-' + response.env_version
+            filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
+
+            os.chdir(os.path.dirname(filepath))
+            with open(basename(filepath), 'w') as outfile:
+                outfile.write(str(response))
+            print("Export Environment file " + filename + " created successfully at " + filepath)
+
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
