@@ -21,7 +21,10 @@ from reanplatform.utilityconstants import PlatformConstants
 
 
 class Configure(Command):
-    """Configure manage cloud rules. Usage : rean-mnc configure --configuration_bucket <CONFIGURATION_BUCKET> --deploy_group <DEPLOY_GROUP> --master_provider <MASTER_PROVIDER> --artifactory_bucket <ARTIFACTORY_BUCKET> --master_acc_no <MASTER_ACC_NO> --master_connection <MASTER_CONNECTION>"""
+    """Configure manage cloud rules. 
+    Usage eg. rean-mnc configure --configuration_bucket <CONFIGURATION_BUCKET> 
+    --deploy_group <DEPLOY_GROUP> --master_provider <MASTER_PROVIDER> --artifactory_bucket
+    <ARTIFACTORY_BUCKET> --master_acc_no <MASTER_ACC_NO> --master_connection <MASTER_CONNECTION>."""
 
     __version = ""
     boto3.set_stream_logger('botocore.vendored.requests', logging.CRITICAL)
