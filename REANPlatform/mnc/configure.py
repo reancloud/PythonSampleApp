@@ -21,24 +21,24 @@ from reanplatform.utilityconstants import PlatformConstants
 
 
 class Configure(Command):
-    """Configure MNC."""
+    """Configure manage cloud rules. Usage : rean-mnc configure --configuration_bucket <CONFIGURATION_BUCKET> --deploy_group <DEPLOY_GROUP> --master_provider <MASTER_PROVIDER> --artifactory_bucket <ARTIFACTORY_BUCKET> --master_acc_no <MASTER_ACC_NO> --master_connection <MASTER_CONNECTION>"""
 
     __version = ""
-    boto3.set_stream_logger('botocore.vendored.requests', logging.ERROR)
+    boto3.set_stream_logger('botocore.vendored.requests', logging.CRITICAL)
 
     def get_parser(self, prog_name):
         """Get parser."""
         parser = super(Configure, self).get_parser(prog_name)
-        parser.add_argument('--' + MncConstats.CONFIGURATION_BUCKET, MncConstats.CONFIGURATION_BUCKET_INITIAL, help='Managed Cloud CLI configuration bucket.',
+        parser.add_argument('--' + MncConstats.CONFIGURATION_BUCKET, MncConstats.CONFIGURATION_BUCKET_INITIAL, help='Managed cloud configuration bucket. To store master account details.',
                             required=True)
-        parser.add_argument('--' + MncConstats.DEPLOY_GROUP, MncConstats.DEPLOY_GROUP_INITIAL, help='REANDeploy Group for Managed Cloud',
+        parser.add_argument('--' + MncConstats.DEPLOY_GROUP, MncConstats.DEPLOY_GROUP_INITIAL, help='REAN-Deploy group name. To share all rules in a group.',
                             required=True)
         parser.add_argument('--' + MncConstats.MASTER_PROVIDER, MncConstats.MASTER_PROVIDER_INITIAL,
-                            help='Master Account Provider for REANDeploy.', required=True)
+                            help='Master account provider name for REAN-Deploy.', required=True)
         parser.add_argument('--' + MncConstats.ARTIFACTORY_BUCKET, MncConstats.ARTIFACTORY_BUCKET_INITIAL,
-                            help='REANDeploy Group for Managed Cloud', required=True)
-        parser.add_argument('--' + MncConstats.MASTER_ACC, MncConstats.MASTER_ACC_INITIAL, help='Managed Cloud AWS master account number', required=True)
-        parser.add_argument('--' + MncConstats.MASTER_CONNECTION, MncConstats.MASTER_CONNECTION_INITIAL, help='Master Account Connection for REANDeploy', required=True)
+                            help='Artifactory bucket name. Contain all rules.', required=True)
+        parser.add_argument('--' + MncConstats.MASTER_ACC, MncConstats.MASTER_ACC_INITIAL, help='Managed cloud AWS master account number.', required=True)
+        parser.add_argument('--' + MncConstats.MASTER_CONNECTION, MncConstats.MASTER_CONNECTION_INITIAL, help='Master account connection name for REAN-Deploy.', required=True)
         return parser
 
     def take_action(self, parsed_args):
@@ -69,7 +69,7 @@ class Configure(Command):
     def __validate_parameters(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
         """Validate cli parameters."""
         if configuration_bucket is None or deploy_group is None or master_provider is None or master_provider is None or artifactory_bucket is None or master_acc_no is None or master_connection is None:
-            raise RuntimeError("Specify all require parametes for more help check 'rean-mnc configure --help'")    # noqa: E501
+            raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc configure --help'")    # noqa: E501
 
     def check_bucket_configuration_path(self):
         """Check whether bucket configuration path present."""
@@ -124,10 +124,10 @@ class Configure(Command):
                 s3_resource.create_bucket(Bucket=configuration_bucket)
                 logging.info("Successfully configuration bucket created :%s", configuration_bucket)
             else:
-                logging.info("Configuration s3-bucket %s already exist.", configuration_bucket)
+                logging.info("Configuration s3 bucket %s already exist.", configuration_bucket)
             s3_object = s3_resource.Object(configuration_bucket, 'config_bucket.yaml')
             s3_object.put(Body=yaml.dump(configuration_file_data, default_flow_style=False))
-            logging.info("Successfully configuration file stored in s3 :config_bucket.yaml.")
+            logging.info("Successfully stored configuration file in s3 :config_bucket.yaml.")
         except botocore.exceptions.ClientError as exception:
             Utility.print_exception(exception)
 
@@ -180,7 +180,9 @@ class Configure(Command):
         logging.info("\nFound %s rules in artifactory bucket.", number_of_rules)
 
         master_account_provider_id = self.get_provider_id(master_provider)
+        time.sleep(1)
         master_account_connection_id = self.get_connection_id(master_connection)
+        time.sleep(1)
 
         instance = deploy_sdk_client.EnvironmentApi()
         api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -269,7 +271,7 @@ class Configure(Command):
             environment_ids_list = []
             for response in api_response:
                 if response.name == "mnc_rule_processor_lambda_permission_setup" or response.name == "mnc_rule_processor_lambda_setup" or response.name == "mnc_notifier_lambda" or response.name.endswith('config_rule_setup') or response.name.endswith('assume_role'):
-                    logging.info("Environment %s sharing with group: %s", response.name, deploy_group)
+                    logging.info("Environment %s sharing with group :%s", response.name, deploy_group)
                     environment_ids_list.append(response.config.env_id)
                 else:
                     logging.info("Failed to share rule with group %s. Rule name is not valid: %s", deploy_group, response.name)
@@ -279,7 +281,7 @@ class Configure(Command):
             api_response = api_instance_auth.get_group_with_name_using_get(deploy_group)
             group_id = api_response.id
 
-            logging.info("Please wait.. rules are sharing with group :%s", deploy_group)
+            logging.info("Please wait! While rules are sharing with group :%s", deploy_group)
             for environment_id in environment_ids_list:
                 group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
                 action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
@@ -287,9 +289,9 @@ class Configure(Command):
                 environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
                 api_instance.share_environment(environment_id, body=environment_policy_instance)
                 time.sleep(2)
-            logging.info("Shared all the rules with group :%s", deploy_group)
+            logging.info("All the rules are shared with group :%s", deploy_group)
         except ApiException as exception:
-            logging.info("Failed to share rules. Please retry...")
+            logging.info("Failed to share rules. Please try again.")
             # Utility.print_exception(exception)
 
     def release_environments(self):
@@ -316,5 +318,5 @@ class Configure(Command):
             if not is_released_environments:
                 logging.info("All environments are already released.")
         except ApiException as exception:
-            logging.info("Failed to release environment. Please retry..")
             # Utility.print_exception(exception)
+            logging.info("Failed to release environment. Please try again.")
