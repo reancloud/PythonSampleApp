@@ -14,28 +14,13 @@ class RunSecurityTest(Command):
         """get_parser."""
         parser = super(RunSecurityTest, self).get_parser(prog_name)
 
-        # 'browser_list': 'BrowsersDto',
-        # 'test_url': 'str',
-        # 'ty-tesr
-        # 'page_load_time_out': 'int',
-        # 'type': 'str',
-        # 'execution_strategy': 'str',
-        # 'run_upa': 'str',
-        # 'run_crawl': 'str'
-        # 'securityTest': 'str'
-        # 'securityTestType': 'str'
-
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
         parser.add_argument('--security_test_type', '-t', help='Set Security test type example:@app_scan/@http_headers.', required=True)
-
-        # parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on.')
-        # parser.add_argument('--firefox', '-F', help='Give the comma separated versions for Firefox to run test on.')
 
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
-        # self.log.debug("Inside the take action for runurltest")
         self.log.debug(parsed_args)
 
         error_message = Utility.validate_security_test_inputs(parsed_args)
@@ -43,7 +28,6 @@ class RunSecurityTest(Command):
             self.app.stdout.write(error_message)
             return
 
-        # Order should be maintained as the constructor takes values as parameter in the same order.
         body = test_sdk_client.SecurityTestDto()
 
         body.test_url = parsed_args.url

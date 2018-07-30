@@ -16,7 +16,7 @@ class GetJobReport(Command):
         """get_parser."""
         parser = super(GetJobReport, self).get_parser(prog_name)
         parser.add_argument('--job_id', '-j', help='Set Job Id to get Job status example:396f4cfc2c4d46c7921532741c7ab63e.', required=True)
-        parser.add_argument('--output_dir', '-od', help='Set Output directory to store reports.')
+        parser.add_argument('--output_directory', '-o', help='Set Output directory to store reports.')
         return parser
 
     def take_action(self, parsed_args):
@@ -25,7 +25,6 @@ class GetJobReport(Command):
 
         try:
             api_instance = test_sdk_client.RunJobsApi()
-            # api_instance.api_client.select_header_accept("application/zip")
             api_response = api_instance.get_job_report(parsed_args.job_id, _preload_content=False)
 
             file_name = 'reports_' + parsed_args.job_id + '.zip'

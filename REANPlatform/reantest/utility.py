@@ -108,7 +108,7 @@ class Utility:
             message = "Please enter valid Application URL."
 
         # Validation for git url
-        elif params.git_url is None:
+        elif params.git_repository_url is None:
             message = "Please enter git_url parameters."
         elif params.app_name is None:
             message = "Please enter app_name parameters."
@@ -116,9 +116,9 @@ class Utility:
             message = "Please enter command_to_run_test parameters."
         elif params.automation_code_type is None:
             message = "Please enter automation_code_type parameters."
-        elif params.report_file is None:
+        elif params.report_file_name is None:
             message = "Please enter report_file parameters."
-        elif params.output_dir is None:
+        elif params.output_directory_path is None:
             message = "Please enter output_dir parameters."
         elif params.test_suite is None:
             message = "Please enter test_suite parameters."
