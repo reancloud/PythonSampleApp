@@ -28,12 +28,12 @@ class GetJobReport(Command):
             api_response = api_instance.get_job_report(parsed_args.job_id, _preload_content=False)
 
             file_name = 'reports_' + parsed_args.job_id + '.zip'
-            if parsed_args.output_dir is not None and Utility.validate_path(parsed_args):
+            if parsed_args.output_directory is not None and Utility.validate_path(parsed_args):
                 self.log.debug("File path Exists")
-                if parsed_args.output_dir.endswith('/'):
-                    open(parsed_args.output_dir + file_name, 'wb').write(api_response.data)
+                if parsed_args.output_directory.endswith('/'):
+                    open(parsed_args.output_directory + file_name, 'wb').write(api_response.data)
                 else:
-                    open(parsed_args.output_dir + '/' + file_name, 'wb').write(api_response.data)
+                    open(parsed_args.output_directory + '/' + file_name, 'wb').write(api_response.data)
             else:
                 print("File path not exists")
                 open(str(Path.home()) + "/" + file_name, 'wb').write(api_response.data)

@@ -132,7 +132,7 @@ class Utility:
     @staticmethod
     def validate_path(params):
         """Validate system path."""
-        return os.path.isdir(params.output_dir)
+        return os.path.isdir(params.output_directory)
 
     @staticmethod
     def wait_while_job_running(api_instance, job_id):
