@@ -26,7 +26,7 @@ class RunURLTest(Command):
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
         parser.add_argument('--text_to_search', '-t', help='Set the text to search.', required=True)
         parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.')
-        parser.add_argument('--upa', '-r', help='Set true if needs UPA test to run with the Test.')
+        parser.add_argument('--upa', '-a', help='Set true if needs UPA test to run with the Test.')
         parser.add_argument('--crawl', '-c', help='Set true if needs Crawl test to run with the Test.')
 
         parser.add_argument('--chrome', '-C', help='Give the comma separated versions for Chrome to run test on.')
@@ -54,15 +54,16 @@ class RunURLTest(Command):
             return
 
         # order should be maintained as the constructor takes values as parameter in the same order.
-        body = test_sdk_client.UrlTestDto(
-            browser_list,
-            parsed_args.url,
-            parsed_args.text_to_search,
-            parsed_args.page_load_time_out,
-            "urltest",  # type
-            "boost",  # execution_strategy
-            parsed_args.upa,
-            parsed_args.crawl)
+        body = test_sdk_client.UrlTestDto()
+
+        body.browser_list = browser_list
+        body.test_url = parsed_args.url
+        body.text_to_search = parsed_args.text_to_search
+        body.page_load_time_out = parsed_args.page_load_time_out
+        body.type = "urltest"
+        body.execution_strategy = "boost"
+        body.run_upa = parsed_args.upa
+        body.run_crawl = parsed_args.crawl
 
         try:
             self.log.debug("Execution stared for URL Test")

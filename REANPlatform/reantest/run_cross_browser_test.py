@@ -95,32 +95,30 @@ class RunCrossBrowserTest(Command):
             return
 
         # order should be maintained as the constructor takes values as parameter in the same order.
-        body = test_sdk_client.CrossBrowserTestDto(
-            parsed_args.app_name,
-            parsed_args.git_url,
-            parsed_args.git_pass,
-            "",
-            parsed_args.git_user,
-            parsed_args.branch_name,
-            parsed_args.command_to_run_test,
-            browser_list,
-            parsed_args.url,
-            "string",  # git_encrypted_pwd
-            "10",
-            "functionaltest",  # type
-            "boost",
-            parsed_args.automation_code_type,
-            parsed_args.is_presrve_if_failed,
-            "false",  # use_code_upload,
-            "test",  # code_file_name,
-            parsed_args.pre_script,
-            parsed_args.post_script,
-            parsed_args.report_file,
-            parsed_args.output_dir,
-            parsed_args.delete_vm,
-            parsed_args.run_sequential,
-            parsed_args.sample_code_type,
-            parsed_args.test_suite)
+        body = test_sdk_client.CrossBrowserTestDto()
+
+        body.app_name = parsed_args.app_name
+        body.git_url = parsed_args.git_url
+        body.git_pass = parsed_args.git_pass
+        body.git_user = parsed_args.git_user
+        body.branch_name = parsed_args.branch_name
+        body.command_to_run_test = parsed_args.command_to_run_test
+        body.browser_list = browser_list
+        body.test_url = parsed_args.url
+        body.type = "functionaltest"  # type
+        body.execution_strategy = "boost"
+        body.automation_code_type = parsed_args.automation_code_type
+        body.is_presrve_if_failed = parsed_args.is_presrve_if_failed
+        body.use_code_upload = "false"  # use_code_upload,
+        body.code_file_name = "test"  # code_file_name,
+        body.pre_script = parsed_args.pre_script
+        body.post_script = parsed_args.post_script
+        body.report_file = parsed_args.report_file
+        body.output_dir = parsed_args.output_dir
+        body.deletevm = parsed_args.delete_vm
+        body.run_sequential = parsed_args.run_sequential
+        body.sample_code_type = parsed_args.sample_code_type
+        body.test_suite = parsed_args.test_suite
 
         self.log.debug(body)
 

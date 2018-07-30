@@ -26,7 +26,7 @@ class RunUPA(Command):
         parser.add_argument('--url', '-u', help='Set upa To test example:http://www.google.com.', required=True)
         parser.add_argument('--text_to_search', '-s', help='Set the text to search.', required=True)
         parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.')
-        parser.add_argument('--upa', '-r', help='Set true if needs UPA test to run with the Test.')
+        # parser.add_argument('--upa', '-a', help='Set true if needs UPA test to run with the Test.')
         parser.add_argument('--crawl', '-c', help='Set true if needs Crawl test to run with the Test.')
         parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
 
@@ -54,15 +54,15 @@ class RunUPA(Command):
             return
 
         # order should be maintained as the constructor takes values as parameter in the same order.
-        body = test_sdk_client.UpaTestDto(
-            None,
-            parsed_args.url,
-            parsed_args.text_to_search,
-            parsed_args.page_load_time_out,
-            "upatest",  # type
-            "boost",  # execution_strategy
-            parsed_args.upa,
-            parsed_args.crawl)
+        body = test_sdk_client.UpaTestDto()
+
+        body.test_url = parsed_args.url
+        body.text_to_search = parsed_args.text_to_search
+        body.page_load_time_out = parsed_args.page_load_time_out
+        body.type = "upatest"  # type
+        body.execution_strategy = "boost"  # execution_strategy
+        body.run_upa = True
+        body.run_crawl = parsed_args.crawl
 
         self.log.debug(body)
 

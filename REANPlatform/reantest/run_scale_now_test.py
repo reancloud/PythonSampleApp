@@ -45,7 +45,6 @@ class RunScaleNowTest(Command):
         parser.add_argument('--app_name', '-a', help='Set the name for this Automation Job.', required=True)
         parser.add_argument('--git_url', '-U', help='Set git clone url for Automation code.')
         parser.add_argument('--git_pass', '-GP', help='Set git password for Automation code.')
-        parser.add_argument('--git_encrypted_pwd', '-GEP', help='Set git encrypted password for Automation code.')
         parser.add_argument('--git_user', '-GU', help='Set git username for Automation code.')
         parser.add_argument('--branch_name', '-b',
                             help='Set git repository branch name. If not specified, master branch will be considered by default.')
@@ -53,7 +52,7 @@ class RunScaleNowTest(Command):
                             help='Set command to run Automation Test suite. For e.g. mvn test This option is mandatory.')
         parser.add_argument('--url', '-u',
                             help='Set url To be used in Automation test. example:http://www.google.com.', required=True)
-        parser.add_argument('--page_load_time_out', '-TO', help='Set git username for Automation code.')
+        parser.add_argument('--page_load_time_out', '-TO', help='Set page Load time.')
         parser.add_argument('--automation_code_type', '-T', help='Set automation code type as Ruby, Java, VBScript ')
         parser.add_argument('--use_code_upload', '-UC', help='Set upload code file as true or false')
         parser.add_argument('--code_file_name', '-UF', help='Set upload file name')
@@ -89,6 +88,11 @@ class RunScaleNowTest(Command):
 
         browser_list = Utility.get_browser_dto(parsed_args)
 
+        error_message = Utility.validate_scale_test_inputs(parsed_args)
+        if error_message:
+            self.app.stdout.write(error_message)
+            return
+
         if parsed_args.firefox is not None:
             firefox = Utility.get_unique_seq(parsed_args.firefox.split(","))
             self.log.debug(firefox)
@@ -100,40 +104,36 @@ class RunScaleNowTest(Command):
 
         self.log.debug(browser_list)
 
-        error_message = Utility.validate_scale_test_inputs(parsed_args)
-        if error_message:
-            self.app.stdout.write(error_message)
-            return
-
         # order should be maintained as the constructor takes values as parameter in the same order.
-        body = test_sdk_client.ScaleNowTestDto(
-            parsed_args.app_name,
-            parsed_args.git_url,
-            parsed_args.git_pass,
-            parsed_args.git_encrypted_pwd,
-            parsed_args.git_user,
-            parsed_args.branch_name,
-            parsed_args.command_to_run_test,
-            browser_list,
-            parsed_args.url,
-            "string",
-            parsed_args.page_load_time_out,
-            "loadtest",  # type
-            "loadTest",
-            parsed_args.automation_code_type,
-            parsed_args.use_code_upload,
-            parsed_args.code_file_name,
-            parsed_args.pre_script,
-            parsed_args.post_script,
-            parsed_args.report_file,
-            parsed_args.output_dir,
-            parsed_args.delete_vm,
-            parsed_args.run_sequential,
-            parsed_args.run_hours,
-            parsed_args.parallel_users_count,
-            parsed_args.inc_load,
-            parsed_args.inc_with,
-            parsed_args.inc_interval)
+        body = test_sdk_client.ScaleNowTestDto()
+
+        body.app_name = parsed_args.app_name
+        body.git_url = parsed_args.git_url
+        body.git_pass = parsed_args.git_pass
+        body.git_encrypted_pwd = "String"
+        body.git_user = parsed_args.git_user
+        body.branch_name = parsed_args.branch_name
+        body.command_to_run_test = parsed_args.command_to_run_test
+        body.browser_list = browser_list
+        body.test_url = parsed_args.url
+        body.text_to_search = "string"
+        body.page_load_time_out = parsed_args.page_load_time_out
+        body.type = "loadtest"  # type
+        body.execution_strategy = "loadTest"
+        body.automation_code_type = parsed_args.automation_code_type
+        body.use_code_upload = parsed_args.use_code_upload
+        body.code_file_name = parsed_args.code_file_name
+        body.pre_script = parsed_args.pre_script
+        body.post_script = parsed_args.post_script
+        body.report_file = parsed_args.report_file
+        body.output_dir = parsed_args.output_dir
+        body.deletevm = parsed_args.delete_vm
+        body.run_sequential = parsed_args.run_sequential
+        body.run_hours = parsed_args.run_hours
+        body.parrallel_browsers_count = parsed_args.parallel_users_count
+        body.inc_load = parsed_args.inc_load
+        body.inc_with = parsed_args.inc_with
+        body.inc_interval = parsed_args.inc_interval
 
         self.log.debug(body)
 

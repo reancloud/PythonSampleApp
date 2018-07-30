@@ -44,17 +44,14 @@ class RunSecurityTest(Command):
             return
 
         # Order should be maintained as the constructor takes values as parameter in the same order.
-        body = test_sdk_client.SecurityTestDto(
-            None,
-            parsed_args.url,
-            "Gmail",  # text_to_search
-            "10",  # page_load_time_out
-            "securitytest",  # type
-            "security",  # executionStrategy
-            "false",  # run_upa
-            "false",  # run_crawl
-            "true",  # securityTest
-            parsed_args.security_test_type)
+        body = test_sdk_client.SecurityTestDto()
+
+        body.test_url = parsed_args.url
+        body.type = "securitytest"
+        body.security_test = True
+        body.security_test_type = parsed_args.security_test_type
+        body.execution_strategy = "security"
+
         self.log.debug(body)
 
         try:

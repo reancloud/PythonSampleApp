@@ -1,4 +1,5 @@
 """Utilities for Test CLI."""
+import os
 import logging
 import sys
 import time
@@ -127,6 +128,11 @@ class Utility:
             message = "Please Provide at least one browser to Test."
 
         return message
+
+    @staticmethod
+    def validate_path(params):
+        """Validate system path."""
+        return os.path.isdir(params.output_dir)
 
     @staticmethod
     def wait_while_job_running(api_instance, job_id):
