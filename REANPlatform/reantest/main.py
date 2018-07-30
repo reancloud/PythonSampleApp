@@ -25,7 +25,6 @@ class Test(App):
 
     def initialize_app(self, argv):
         """initialize_app."""
-
         self.LOG.debug('main.Function :: initialize_app')
 
     def prepare_to_run_command(self, cmd):
