@@ -17,7 +17,9 @@ from deploy.getdeploymentstatus import Status
 
 
 class RuleList(Command):        # noqa: D203.
-    """List Manage Cloud Rules."""
+    """List Manage Cloud Deployed Rules.
+    Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets.
+    """
 
     log = logging.getLogger(__name__)
 
@@ -25,10 +27,10 @@ class RuleList(Command):        # noqa: D203.
         """get_parser."""
         parser = super(RuleList, self).get_parser(prog_name)
         parser.add_argument('--' + MncConstats.RULE_NAME, MncConstats.RULE_NAME_INITIAL,
-                            help='Rule name',
+                            help='Managed cloud rule name',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_ACC, MncConstats.CUSTOMER_ACC_INITIAL,
-                            help='Customer account number',
+                            help='AWS customer account number',
                             required=False)
         return parser
 
