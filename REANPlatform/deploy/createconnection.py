@@ -76,10 +76,10 @@ class SaveConnection(Command):
         return parser
 
     @staticmethod
-    def get_key(parsed_args):
+    def get_key(securekeypath):
         """get_key."""
         line_stripping = ''
-        with open(parsed_args.securekeypath, 'r') as fin:
+        with open(securekeypath, 'r') as fin:
             for line in fin.readlines():
                 line_stripping = line_stripping + '\n' + line.strip('\n')
             return line_stripping
@@ -95,7 +95,7 @@ class SaveConnection(Command):
                 bastion_data = {
                     'host': parsed_args.bastionhost,
                     'password': parsed_args.bastionpassword,
-                    'secure_key': SaveConnection.get_key(parsed_args),
+                    'secureKey': SaveConnection.get_key(parsed_args.bastionsecurekeypath) if parsed_args.bastionsecurekeypath is not None else None,
                     'port': parsed_args.bastionport,
                     'user': parsed_args.bastionuser
                 }
@@ -106,7 +106,7 @@ class SaveConnection(Command):
                     type=parsed_args.type,
                     name=parsed_args.name,
                     user=parsed_args.user,
-                    secure_key=SaveConnection.get_key(parsed_args)
+                    secure_key=SaveConnection.get_key(parsed_args.securekeypath)
                 )
             elif((parsed_args.type == 'WinRM' and parsed_args.password) or (parsed_args.type == 'SSH' and parsed_args.password)):
                 body = deploy_sdk_client.SaveVmConnection(
