@@ -5,6 +5,7 @@ import re
 import time
 import ast
 from collections import OrderedDict
+from prettytable import PrettyTable
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
@@ -13,11 +14,10 @@ from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
 from deploy.constants import DeployConstants
 from deploy.getdeploymentstatus import Status
-from prettytable import PrettyTable
 
 
 class RuleList(Command):        # noqa: D203.
-    """List Manage Cloud Rules."""
+    """List Manage Cloud Rules"""
 
     log = logging.getLogger(__name__)
 
@@ -25,10 +25,10 @@ class RuleList(Command):        # noqa: D203.
         """get_parser."""
         parser = super(RuleList, self).get_parser(prog_name)
         parser.add_argument('--' + MncConstats.RULE_NAME, MncConstats.RULE_NAME_INITIAL,
-                            help='Rule name.',
+                            help='Rule name',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_ACC, MncConstats.CUSTOMER_ACC_INITIAL,
-                            help='Customer account number.',
+                            help='Customer account number',
                             required=False)
         return parser
 
