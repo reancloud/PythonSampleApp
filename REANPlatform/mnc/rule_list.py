@@ -18,6 +18,7 @@ from deploy.getdeploymentstatus import Status
 
 class RuleList(Command):        # noqa: D203.
     """List Manage Cloud Deployed Rules.
+
     Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets.
     """
 
