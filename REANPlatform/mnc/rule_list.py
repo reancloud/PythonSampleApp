@@ -17,7 +17,7 @@ from deploy.getdeploymentstatus import Status
 
 
 class RuleList(Command):        # noqa: D203.
-    """List Manage Cloud Rules"""
+    """List Manage Cloud Rules."""
 
     log = logging.getLogger(__name__)
 
