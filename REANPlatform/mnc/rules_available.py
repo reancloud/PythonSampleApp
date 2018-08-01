@@ -1,7 +1,5 @@
 """List Rules."""
 import logging
-import ast
-import json
 from prettytable import PrettyTable
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
@@ -49,6 +47,7 @@ class RuleAvailable(Command):        # noqa: D203.
             Utility.print_exception(exception)
 
     def is_rule(self, all_env, rule_name):
+        """Check if manage cloud rule or not."""
         rule = False
         if rule_name + '_assume_role' in str(all_env):
             rule = True
