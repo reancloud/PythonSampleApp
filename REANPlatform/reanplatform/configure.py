@@ -39,9 +39,9 @@ class Configure(Command):
                             required=False,
                             action='store_true'
                            )
-        parser.add_argument('--disable_verify_ssl',
-                            '-d',
-                            help='Verifying SSL certificate when calling API from https server.',
+        parser.add_argument('--ignore_ssl_verification',
+                            '-i',
+                            help='Ignore Verifying SSL certificate.',
                             required=False,
                             action='store_false'
                            )
@@ -100,7 +100,7 @@ class Configure(Command):
                 PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
                 PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
                 PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password),
-                PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.disable_verify_ssl
+                PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification
             }
         }
         return data
