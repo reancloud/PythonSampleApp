@@ -1,7 +1,7 @@
 """List Rules."""
 import logging
-from cliff.command import Command
 from prettytable import PrettyTable
+from cliff.command import Command
 from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
