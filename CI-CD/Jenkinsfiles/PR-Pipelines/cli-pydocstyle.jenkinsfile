@@ -37,6 +37,7 @@ pipeline {
                                 python3 -m pydocstyle REANPlatform/deploy
                                 python3 -m pydocstyle REANPlatform/reanplatform
                                 python3 -m pydocstyle REANPlatform/auth
+                                python3 -m pydocstyle REANPlatform/reantest
                                 python3 -m pydocstyle */*.py
                             '''
                             println "\u001B[32mCode adheres to PyCodeStyle\u001B[0m"
