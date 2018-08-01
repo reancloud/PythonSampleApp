@@ -88,7 +88,8 @@ setup(
             'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
             'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
             'get-job-status = reantest.get_job_status:GetJobStatus',
-            'get-job-report = reantest.get_job_report:GetJobReport'
+            'get-job-report = reantest.get_job_report:GetJobReport',
+            'create-provider = reantest.create_provider:CreateProvider'
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',

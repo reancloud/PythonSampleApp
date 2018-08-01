@@ -135,6 +135,14 @@ class Utility:
         return os.path.isdir(params.output_directory)
 
     @staticmethod
+    def open_file(path):
+        """Validate system path and open file."""
+        if not os.path.isfile(path):
+            raise RuntimeError('file %s does not exists' % path)
+
+        return open(path, "r")
+
+    @staticmethod
     def wait_while_job_running(api_instance, job_id):
         """Wait while job running."""
         job_status = api_instance.get_job_status(job_id)
