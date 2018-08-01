@@ -1,5 +1,7 @@
 """List Rules."""
 import logging
+import ast
+import json
 from prettytable import PrettyTable
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
@@ -22,7 +24,7 @@ class RuleAvailable(Command):        # noqa: D203.
         """get_parser."""
         parser = super(RuleAvailable, self).get_parser(prog_name)
         parser.add_argument('--' + MncConstats.OPTIONAL, MncConstats.OPTIONAL_INITIAL,
-                            help='List all the available rules',
+                            help='List all the available rules', nargs='?',
                             required=False)
         return parser
 
@@ -37,9 +39,17 @@ class RuleAvailable(Command):        # noqa: D203.
             table.align['Description'] = "l"
             for one_env in all_env:
                 if one_env.name.endswith('config_rule_setup'):
-                    table.add_row([one_env.name.replace('_config_rule_setup', ''), one_env.description])
+                    rule = self.is_rule(all_env, one_env.name.replace('_config_rule_setup', ''))
+                    if rule:
+                        table.add_row([one_env.name.replace('_config_rule_setup', ''), one_env.description])
             logging.info(table)
 
         except ApiException as exception:
             logging.info("Please try again.")
             Utility.print_exception(exception)
+
+    def is_rule(self, all_env, rule_name):
+        rule = False
+        if rule_name + '_assume_role' in str(all_env):
+            rule = True
+        return rule
