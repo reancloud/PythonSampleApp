@@ -25,19 +25,6 @@ class Utility(object):
             return None
 
     @staticmethod
-    def get_platform_base_url():
-        """Get platform base url."""
-        path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
-                    data_loaded = yaml.load(stream)
-
-                host = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.BASE_URL_REFERENCE]
-                return host
-
-    @staticmethod
     def encryptData(val):
         """Encrypts credentials."""
         cipher = XOR.new(PlatformConstants.REAN_SECRET_KEY)
@@ -61,7 +48,7 @@ class Utility(object):
     @staticmethod
     def get_url(host_url):
         """Get full URL."""
-        base_url = Utility.get_platform_base_url()
+        base_url = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
         return base_url + host_url
 
     @staticmethod
@@ -102,3 +89,16 @@ class Utility(object):
                 credentials = str(username) + ":" + str(password)
                 return credentials
         return None
+
+    @staticmethod
+    def get_config_property(prop):
+        """Get ssl verify certification status from config file."""
+        path = os.path.expanduser('~')
+        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
+            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
+            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
+                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+                    data_loaded = yaml.load(stream)
+
+                config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
+                return config_property
