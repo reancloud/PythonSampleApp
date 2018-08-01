@@ -90,7 +90,7 @@ setup(
             'get-job-status = reantest.get_job_status:GetJobStatus'
         ],
         'rean.mnc': [
-            #'configure = mnc.configure:Configure',
+            # 'configure = mnc.configure:Configure',
             'available-rules = mnc.rules_available:RuleAvailable',
             'install-rule = mnc.rule_install:RuleInstall',
             'list-rule = mnc.rule_list:RuleList',
