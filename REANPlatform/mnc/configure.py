@@ -23,9 +23,7 @@ from reanplatform.utilityconstants import PlatformConstants
 class Configure(Command):
     """Configure manage cloud rules.
 
-    Usage eg. rean-mnc configure --configuration_bucket <CONFIGURATION_BUCKET>
-    --deploy_group <DEPLOY_GROUP> --master_provider <MASTER_PROVIDER> --artifactory_bucket
-    <ARTIFACTORY_BUCKET> --master_acc_no <MASTER_ACC_NO> --master_connection <MASTER_CONNECTION>.
+    Usage : rean-mnc configure --configuration_bucket <CONFIGURATION_BUCKET> --deploy_group <DEPLOY_GROUP> --master_provider <MASTER_PROVIDER> --artifactory_bucket <ARTIFACTORY_BUCKET> --master_acc_no <MASTER_ACC_NO> --master_connection <MASTER_CONNECTION>.
     """
 
     __version = ""
@@ -34,31 +32,30 @@ class Configure(Command):
     def get_parser(self, prog_name):
         """Get parser."""
         parser = super(Configure, self).get_parser(prog_name)
-        parser.add_argument('--' + MncConstats.CONFIGURATION_BUCKET, MncConstats.CONFIGURATION_BUCKET_INITIAL, help='Managed cloud configuration bucket. To store master account details.',
+        parser.add_argument('--configuration_bucket', '-b', help='Managed cloud configuration bucket to store master account details',
                             required=True)
-        parser.add_argument('--' + MncConstats.DEPLOY_GROUP, MncConstats.DEPLOY_GROUP_INITIAL, help='REAN-Deploy group name. To share all rules in a group.',
+        parser.add_argument('--deploy_group', '-d', help='REAN-Deploy group name to share all rules in a group',
                             required=True)
-        parser.add_argument('--' + MncConstats.MASTER_PROVIDER, MncConstats.MASTER_PROVIDER_INITIAL,
-                            help='Master account provider name for REAN-Deploy.', required=True)
-        parser.add_argument('--' + MncConstats.ARTIFACTORY_BUCKET, MncConstats.ARTIFACTORY_BUCKET_INITIAL,
-                            help='Artifactory bucket name. Contain all rules.', required=True)
-        parser.add_argument('--' + MncConstats.MASTER_ACC, MncConstats.MASTER_ACC_INITIAL, help='Managed cloud AWS master account number.', required=True)
-        parser.add_argument('--' + MncConstats.MASTER_CONNECTION, MncConstats.MASTER_CONNECTION_INITIAL, help='Master account connection name for REAN-Deploy.', required=True)
+        parser.add_argument('--master_provider', '-p',
+                            help='Master account provider name for REAN-Deploy', required=True)
+        parser.add_argument('--artifactory_bucket', '-a',
+                            help='Artifactory bucket name, contain all rules', required=True)
+        parser.add_argument('--master_acc_no', '-n', help='Managed cloud AWS master account number', required=True)
+        parser.add_argument('--master_connection', '-c', help='Master account connection name for REAN-Deploy', required=True)
         return parser
 
     def take_action(self, parsed_args):
         """Start taking action."""
         try:
-            argparse_dict = vars(parsed_args)
-            configuration_bucket = argparse_dict[MncConstats.CONFIGURATION_BUCKET]
-            deploy_group = argparse_dict[MncConstats.DEPLOY_GROUP]
-            master_provider = argparse_dict[MncConstats.MASTER_PROVIDER]
-            artifactory_bucket = argparse_dict[MncConstats.ARTIFACTORY_BUCKET]
-            master_acc_no = argparse_dict[MncConstats.MASTER_ACC]
-            master_connection = argparse_dict[MncConstats.MASTER_CONNECTION]
+            configuration_bucket = parsed_args.configuration_bucket
+            deploy_group = parsed_args.deploy_group
+            master_provider = parsed_args.master_provider
+            artifactory_bucket = parsed_args.artifactory_bucket
+            master_acc_no = parsed_args.master_acc_no
+            master_connection = parsed_args.master_connection
             self.__validate_parameters(configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection)
 
-            self.check_bucket_configuration_path()
+            self.create_bucket_configuration_path()
             self.create_configuration_bucket_file(configuration_bucket)
             self.create_and_store_configuration_file_data(configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection)
             get_blueprint = self.get_blueprints_from_s3_and_unzip(artifactory_bucket)
@@ -76,8 +73,8 @@ class Configure(Command):
         if configuration_bucket is None or deploy_group is None or master_provider is None or master_provider is None or artifactory_bucket is None or master_acc_no is None or master_connection is None:
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc configure --help'")    # noqa: E501
 
-    def check_bucket_configuration_path(self):
-        """Check whether bucket configuration path present."""
+    def create_bucket_configuration_path(self):
+        """Create configuration directory."""
         configuration_bucket_path, file_name = os.path.split(MncConstats.FILE_BUCKET_NAME)
         if not os.path.exists(configuration_bucket_path):
             try:
@@ -99,7 +96,6 @@ class Configure(Command):
         """Create and store configuration file in s3."""
         path = os.path.expanduser('~')
         file_path = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
-        # file_path = os.path.expanduser("~/.reanplatform/reanplatform.yaml")
         with open(file_path, 'r') as configuration_file:
             try:
                 data = yaml.load(configuration_file)
@@ -176,6 +172,7 @@ class Configure(Command):
         deploy_api_response = None
         master_account_provider_id = ""
         master_account_connection_id = ""
+        success_count = 0
         try:
             os.chdir(local_artifacts_path)
         except OSError as exception:
@@ -194,6 +191,7 @@ class Configure(Command):
         list_of_existing_env = self.list_of_env(api_instance)
 
         for file_name in os.listdir(local_artifacts_path):
+            FAIL = False
             environment_name_list = []
             if file_name.endswith('.reandeploy'):
                 blueprint_all_env = None
@@ -204,11 +202,17 @@ class Configure(Command):
                     for one_env in blueprint_all_env.environment_imports:
                         if one_env.import_config.name in list_of_existing_env:
                             to_del.append(index)
-                        else:
+                        elif one_env.import_config.name == "mnc_rule_processor_lambda_permission_setup" or one_env.import_config.name == "mnc_rule_processor_lambda_setup" or one_env.import_config.name == "mnc_notifier_lambda" or one_env.import_config.name.endswith('config_rule_setup') or one_env.import_config.name.endswith('assume_role'):
                             blueprint_all_env.environment_imports[index].import_config.connection_id = master_account_connection_id
                             blueprint_all_env.environment_imports[index].import_config.provider_id = master_account_provider_id
                             blueprint_all_env.environment_imports[index].import_config.env_version = self.get_release_version()
+                        else:
+                            logging.info("Failed to import. Rule name is not valid. Please check file: %s", file_name)
+                            FAIL = True
+                            break
                         index = index + 1
+                    if FAIL:    # If rule name not valide skip to import
+                        continue
 
                     # Skip already imported
                     for already_imported in reversed(to_del):
@@ -221,9 +225,11 @@ class Configure(Command):
                     else:
                         logging.info("Rule already imported filename :%s", file_name)
 
+                    success_count = success_count + 1
                 except ApiException as exception:
                     logging.info("Failed to import rule. Please check the file :%s", file_name)
                     # Utility.print_exception(exception)
+        logging.info("Successfully imported rule count :%s", success_count)
 
     def list_of_env(self, api_instance):
         """list_of_env."""
@@ -323,5 +329,5 @@ class Configure(Command):
             if not is_released_environments:
                 logging.info("All environments are already released.")
         except ApiException as exception:
-            # Utility.print_exception(exception)
             logging.info("Failed to release environment. Please try again.")
+            # Utility.print_exception(exception)
