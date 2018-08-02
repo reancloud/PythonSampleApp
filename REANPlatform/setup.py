@@ -89,7 +89,8 @@ setup(
             'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
             'get-job-status = reantest.get_job_status:GetJobStatus',
             'get-job-report = reantest.get_job_report:GetJobReport',
-            'create-provider = reantest.create_provider:CreateProvider'
+            'create-provider = reantest.create_provider:CreateProvider',
+            'list-providers = reantest.list_providers:ListProvider'
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
