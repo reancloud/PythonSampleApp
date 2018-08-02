@@ -2,8 +2,8 @@
 
 import json
 import logging
-from cliff.command import Command
 from prettytable import PrettyTable
+from cliff.command import Command
 import test_sdk_client
 from test_sdk_client.rest import ApiException
 from reantest.utility import Utility
