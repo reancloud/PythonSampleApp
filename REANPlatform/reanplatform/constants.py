@@ -1,11 +1,12 @@
 """Contains constats required for commands."""
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 
 
 class Constants(object):
     """Contains constats required for CLI."""
 
-    PLATFORM_BASE_URL = Utility.get_platform_base_url()
+    PLATFORM_BASE_URL = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
     # PLATFORM_URL_WITH_HOST = Utility.get_host_url()
     AUTHNZ_URL = '/api'
     DEPLOY_URL = '/api/reandeploy/DeployNow/rest'
