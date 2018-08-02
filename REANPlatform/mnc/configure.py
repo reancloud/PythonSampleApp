@@ -23,7 +23,7 @@ from reanplatform.utilityconstants import PlatformConstants
 class Configure(Command):
     """Configure manage cloud rules.
 
-    Usage : rean-mnc configure --configuration_bucket <CONFIGURATION_BUCKET> --deploy_group <DEPLOY_GROUP> --master_provider <MASTER_PROVIDER> --artifactory_bucket <ARTIFACTORY_BUCKET> --master_acc_no <MASTER_ACC_NO> --master_connection <MASTER_CONNECTION>.
+    Usage : rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 10733937000 --master_connection connection.
     """
 
     __version = ""
