@@ -2,7 +2,6 @@
 import logging
 from prettytable import PrettyTable
 from cliff.command import Command
-from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
@@ -21,7 +20,7 @@ class RuleAvailable(Command):        # noqa: D203.
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleAvailable, self).get_parser(prog_name)
-        parser.add_argument('--' + MncConstats.OPTIONAL, MncConstats.OPTIONAL_INITIAL,
+        parser.add_argument('--all', '-a',
                             help='List all the available rules', nargs='?',
                             required=False)
         return parser

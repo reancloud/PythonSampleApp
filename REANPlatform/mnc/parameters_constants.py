@@ -23,8 +23,6 @@ class MncConstats(object):      # noqa: D203
     CUSTOMER_EMAIL_DOMAIN_INITIAL = '-domain'
     ACTION = 'action'
     ACTION_INITIAL = '-a'
-    OPTIONAL = 'all'
-    OPTIONAL_INITIAL = '-a'
 
     # parameter forrule input
     DEPLOYING = '"DEPLOYING"'
