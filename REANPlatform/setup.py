@@ -90,7 +90,8 @@ setup(
             'get-job-status = reantest.get_job_status:GetJobStatus',
             'get-job-report = reantest.get_job_report:GetJobReport',
             'create-provider = reantest.create_provider:CreateProvider',
-            'list-providers = reantest.list_providers:ListProvider'
+            'list-providers = reantest.list_providers:ListProvider',
+            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus'
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
