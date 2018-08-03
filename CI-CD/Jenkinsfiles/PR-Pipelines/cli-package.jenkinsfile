@@ -1,3 +1,21 @@
+#!/usr/bin/env groovy
+
+def setJobProperties() {
+  properties([
+    [
+      $class: 'BuildDiscarderProperty',
+      strategy: [
+        $class: 'BuildRotator',
+        daysToKeep: 5,
+        numToKeep: 10,
+        artifactsDaysToKeep: 5,
+        artifactsNumToKeep: 10
+      ]
+    ]
+  ])
+}
+
+
 pipeline {
     agent {
         node {
@@ -15,6 +33,8 @@ pipeline {
                         try {
                             sh '''
                                 #!/bin/bash
+				pwd
+				set -e
                                 python setup.py build
                                 python setup.py install
                                 echo "Running"
