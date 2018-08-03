@@ -1,10 +1,13 @@
 """Mnc Utility."""
 import boto3
+import logging
 from mnc.parameters_constants import MncConstats
 
 
 class MncUtility:       # noqa: D203
     """Manage Cloud common functionality."""
+
+    boto3.set_stream_logger('botocore.vendored.requests', logging.ERROR)
 
     @staticmethod
     def read_bucket_name():
