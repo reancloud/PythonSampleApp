@@ -16,10 +16,10 @@ from deploy.constants import DeployConstants
 from deploy.getdeploymentstatus import Status
 
 
-class RuleList(Command):        # noqa: D203.
-    """List Manage Cloud Deployed Rules.
+class RuleList(Command):        # noqa: D400
+    """List manage cloud deployed rules
 
-    Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets.
+    Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets
     """
 
     log = logging.getLogger(__name__)

@@ -20,10 +20,10 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utilityconstants import PlatformConstants
 
 
-class Configure(Command):
-    """Configure manage cloud rules.
+class Configure(Command):   # noqa: D400
+    """Configure manage cloud rules
 
-    Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 10733937000 --master_connection connection.
+    Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 10733937000 --master_connection connection
     """
 
     __version = ""
@@ -63,7 +63,7 @@ class Configure(Command):
                 raise RuntimeError("Failed to download rules from s3 bucket :", artifactory_bucket)
             self.import_blueprints(master_provider, master_connection, MncConstats.LOCAL_ARTIFACTS_ZIP_PATH + 'rules')
             self.share_blueprints(deploy_group)
-            self.release_environments()
+            # self.release_environments()   # temporary commented
 
         except ApiException as exception:
             Utility.print_exception(exception)

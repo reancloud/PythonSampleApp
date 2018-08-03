@@ -9,10 +9,10 @@ from reanplatform.set_header import set_header_parameter
 from deploy.constants import DeployConstants
 
 
-class RuleAvailable(Command):        # noqa: D203.
-    """List all the available Manage cloud rules in REAN-Deploy.
+class RuleAvailable(Command):        # noqa: D400
+    """List all the available manage cloud rules in REAN-Deploy
 
-    Example: rean-mnc rule-available.
+    Example: rean-mnc rule-available
     """
 
     log = logging.getLogger(__name__)
