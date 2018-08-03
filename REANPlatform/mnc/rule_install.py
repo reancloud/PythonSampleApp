@@ -17,7 +17,7 @@ from deploy.getdeploymentstatus import Status
 from deploy.constants import DeployConstants
 
 
-class RuleInstall(Command): # noqa: D400     
+class RuleInstall(Command):     # noqa: D400
     """Install manage cloud rule
 
     Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 107339370656 --deploy_provider mnc_client --customer_email_to mayuri.patil@reancloud.com --customer_mail_cc mayuri.patil@reancloud.com --customer_email_domain reancloud --action False
