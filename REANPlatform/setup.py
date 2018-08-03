@@ -94,7 +94,7 @@ setup(
             'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus'
         ],
         'rean.mnc': [
-            # 'configure = mnc.configure:Configure',
+            'configure = mnc.configure:Configure',
             'available-rules = mnc.rules_available:RuleAvailable',
             'install-rule = mnc.rule_install:RuleInstall',
             'list-rule = mnc.rule_list:RuleList',
