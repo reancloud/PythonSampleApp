@@ -38,8 +38,9 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto', "urllib3 >= 1.15", "six >= 1.10", "certifi", "python-dateutil"],
-
+    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto', "deploy_sdk_client", "authnz_sdk_client"],
+    dependency_links=["git+ssh://git@github.com/reancloud/deploy-sdk-client.git@rc_feature_v0.0.1#egg=deploy-sdk-client-1.0.0",
+                      "git+ssh://git@github.com/reancloud/auth-sdk-client.git@rc_v0.0.1#egg=authnz-sdk-client-1.0.6"],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -99,34 +100,7 @@ setup(
             'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
             'rule-remove = mnc.rule_remove:RuleRemove'
-        ],
-        #    'rean.deploy': [
-        #        'deploy-configure = deploy.configure:Configure',
-        #        'create-provider = deploy.createprovider:SaveProvider',
-        #        'delete-provider = deploy.deleteprovider:DeleteProvider',
-        #        'list-provider = deploy.listproviders:ListProvider',
-        #        'create-environment = deploy.createenvironment:CreateEnv',
-        #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
-        #        'list-connections = deploy.listconnections:ListConnections',
-        #        'isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
-        #        'create-connection = deploy.createconnection:SaveConnection',
-        #        'delete-connection = deploy.deleteconnection:DeleteConnection',
-        #        'get-connection = deploy.getconnection:GetConnection',
-        #        'get-provider = deploy.getproviderbyname:GetProviderByName',
-        #        'update-connection = deploy.updateconnection:UpdateConnection',
-        #        'get-aws-regions = deploy.getawsregions:GetAwsRegions',
-        #        'delete-environment = deploy.deleteenvironment:DeleteEnv',
-        #        'checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
-        #        'download-terraform-files =deploy.downloadterraformfiles:DownloadTerraformFiles',
-        #        'update-provider = deploy.updateprovider:UpdateProvider',
-        #        'import-blueprint = deploy.importblueprint:ImportBlueprint',
-        #        'import-environment = deploy.importenvironment:ImportEnvironment',
-        #        'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
-        #        'hooked = deploy.hook:Hooked',
-        #    ],
-        #    'rean.test.hooked': [
-        #        'sample-hook = deploy.hook:Hook',
-        #   ],
+        ]
     },
 
     zip_safe=False,
