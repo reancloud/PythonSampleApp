@@ -95,10 +95,10 @@ setup(
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
-            # 'rule = mnc.rule:Rule',
-            'rule-install = mnc.rule_install:RuleInstall',
-            'rule-list = mnc.rule_list:RuleList',
-            'rule-remove = mnc.rule_remove:RuleRemove'
+            'available-rules = mnc.rules_available:RuleAvailable',
+            'install-rule = mnc.rule_install:RuleInstall',
+            'list-rule = mnc.rule_list:RuleList',
+            'remove-rule = mnc.rule_remove:RuleRemove'
         ],
         #    'rean.deploy': [
         #        'deploy-configure = deploy.configure:Configure',
