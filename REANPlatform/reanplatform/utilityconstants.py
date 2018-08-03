@@ -12,6 +12,7 @@ class PlatformConstants(object):
     BASE_URL_REFERENCE = 'base_url'
     ENV_USER_NAME_REFERENCE = 'USER_NAME'
     ENV_PASSWORD_REFERENCE = 'PASSWORD'
+    VERIFY_SSL_CERTIFICATE_REFERENCE = 'verify_ssl_certificate'
 
     def __setattr__(self, attr, value):
         """__setattr__."""

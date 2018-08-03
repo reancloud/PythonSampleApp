@@ -2,8 +2,6 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-import time
-from pprint import pprint
 from reantest.constants import TestConstants
 import test_sdk_client
 from test_sdk_client.rest import ApiException
@@ -17,6 +15,7 @@ class Test(App):
 
     def __init__(self):
         """__init__."""
+        self.api_instance = None
         super(Test, self).__init__(
             description='CLI for REAN Test.',
             version='0.1',
@@ -26,14 +25,6 @@ class Test(App):
 
     def initialize_app(self, argv):
         """initialize_app."""
-        # self.api_instance = test_sdk_client.TestNowUtilityApi()
-        # create an instance of the API class
-        # api_instance = test_sdk_client.TestNowUtilityApi()
-
-        # Set a relevant user agent so we know which software is actually using ESI
-        # api_instance.api_client.set_default_header('Authorization', config.auth_header)
-        # api_instance.api_client.host = config.reantest_host # see [1]
-
         self.LOG.debug('main.Function :: initialize_app')
 
     def prepare_to_run_command(self, cmd):
@@ -42,12 +33,6 @@ class Test(App):
 
         self.api_instance = test_sdk_client.TestNowUtilityApi()
         self.api_instance = set_header_parameter(self.api_instance, Utility.get_url(TestConstants.TEST_URL))
-
-        # self.api_instance.api_client.set_default_header(
-        #         Constants.AUTHORIZATION,
-        #         Constants.CREDENTIALS
-        #     )
-        # self.api_instance.api_client.host = Constants.PLATFORM_URL  # see [1]
 
         self.LOG.debug('Initialize the api_instance in prepare_to_run_command')
 
@@ -60,8 +45,11 @@ class Test(App):
 
 def main(argv=sys.argv[1:]):
     """main."""
-    myapp = Test()
-    return myapp.run(argv)
+    try:
+        myapp = Test()
+        return myapp.run(argv)
+    except ApiException as exception:
+        print(exception)
 
 
 if __name__ == '__main__':

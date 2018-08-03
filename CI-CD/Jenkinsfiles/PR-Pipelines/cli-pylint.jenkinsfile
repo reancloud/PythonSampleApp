@@ -37,6 +37,7 @@ pipeline {
                                 python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized  REANPlatform/deploy
                                 python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized  REANPlatform/reanplatform
                                 python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized  REANPlatform/auth
+                                python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized  REANPlatform/reantest
                                 python3 -m pylint --disable=line-too-long --disable=too-many-arguments --disable=unused-argument --disable=too-many-locals --output-format=colorized  */*.py
                             '''
                             println "\u001B[32mCode adheres to PyLint\u001B[0m"

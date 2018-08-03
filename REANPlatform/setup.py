@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
+    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto', "urllib3 >= 1.15", "six >= 1.10", "certifi", "python-dateutil"],
 
     namespace_packages=[],
     packages=find_packages(),
@@ -78,15 +78,19 @@ setup(
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
-            'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId'
+            'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId',
+            'change-password = auth.change_password:ChangePassword'
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
-            'run-upa-test = reantest.runupa:RunUPA',
-            'run-security-test = reantest.runsecuritytest:RunSecurityTest',
-            'run-automation-test = reantest.runcrossbrowsertest:RunCrossBrowserTest',
-            'run-scale-test =  reantest.runscalenowtest:RunScaleNowTest',
-            'get-job-status = reantest.get_job_status:GetJobStatus'
+            'run-upa-test = reantest.run_upa:RunUPA',
+            'run-security-test = reantest.run_security_test:RunSecurityTest',
+            'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
+            'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
+            'get-job-status = reantest.get_job_status:GetJobStatus',
+            'get-job-report = reantest.get_job_report:GetJobReport',
+            'create-provider = reantest.create_provider:CreateProvider',
+            'list-providers = reantest.list_providers:ListProvider'
         ],
         'rean.mnc': [
             # 'configure = mnc.configure:Configure',
