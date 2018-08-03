@@ -90,14 +90,15 @@ setup(
             'get-job-status = reantest.get_job_status:GetJobStatus',
             'get-job-report = reantest.get_job_report:GetJobReport',
             'create-provider = reantest.create_provider:CreateProvider',
-            'list-providers = reantest.list_providers:ListProvider'
+            'list-providers = reantest.list_providers:ListProvider',
+            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
-            # 'rule = mnc.rule:Rule',
-            'rule-install = mnc.rule_install:RuleInstall',
-            'rule-list = mnc.rule_list:RuleList',
-            'rule-remove = mnc.rule_remove:RuleRemove'
+            'available-rules = mnc.rules_available:RuleAvailable',
+            'install-rule = mnc.rule_install:RuleInstall',
+            'list-rule = mnc.rule_list:RuleList',
+            'remove-rule = mnc.rule_remove:RuleRemove'
         ],
         #    'rean.deploy': [
         #        'deploy-configure = deploy.configure:Configure',
