@@ -53,7 +53,7 @@ class RuleRemove(Command):      # noqa: D203
             self.__validate_parameters(rule_name, customer_acc)
 
             if force is None:
-                force = input("Are you sure [Yes/No]? :")
+                force = input("Are you sure? [Yes/No]:")
             else:
                 logging.info("Exit")
 
