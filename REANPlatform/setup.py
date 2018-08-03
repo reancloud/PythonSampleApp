@@ -93,7 +93,7 @@ setup(
             'list-providers = reantest.list_providers:ListProvider'
         ],
         'rean.mnc': [
-            # 'configure = mnc.configure:Configure',
+            'configure = mnc.configure:Configure',
             # 'rule = mnc.rule:Rule',
             'rule-install = mnc.rule_install:RuleInstall',
             'rule-list = mnc.rule_list:RuleList',
