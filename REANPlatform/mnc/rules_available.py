@@ -12,7 +12,7 @@ from deploy.constants import DeployConstants
 class RuleAvailable(Command):        # noqa: D203.
     """List all the available Manage cloud rules in REAN-Deploy.
 
-    Example: rean-mnc rule-available --all.
+    Example: rean-mnc rule-available.
     """
 
     log = logging.getLogger(__name__)
@@ -20,9 +20,6 @@ class RuleAvailable(Command):        # noqa: D203.
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleAvailable, self).get_parser(prog_name)
-        parser.add_argument('--all', '-a',
-                            help='List all the available rules', nargs='?',
-                            required=False)
         return parser
 
     def take_action(self, parsed_args):
