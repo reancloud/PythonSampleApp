@@ -1,6 +1,6 @@
 """Mnc Utility."""
-import boto3
 import logging
+import boto3
 from mnc.parameters_constants import MncConstats
 
 
