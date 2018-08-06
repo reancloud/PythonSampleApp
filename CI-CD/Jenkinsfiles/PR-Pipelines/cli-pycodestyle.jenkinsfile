@@ -61,13 +61,16 @@ pipeline {
                         try {
                             sh '''
                                 #!/bin/bash
-                				pwd
-                				set -e
-                				echo "Package REANPlatform CLI"
-                				cd REANPlatform
-                                python3 setup.py build
-                                python3 setup.py install
-                                echo "Running"
+                				
+                                withPythonEnv('/usr/local/lib/python3.5') {
+                                    pwd
+                                    set -e
+                                    echo "Package REANPlatform CLI"
+                                    cd REANPlatform
+                                    python3 setup.py build
+                                    python3 setup.py install
+                                    echo "Running"
+                                }
                             '''
                         } catch (Exception e) {
                             println "\u001B[31m********************************************************\u001B[0m"
