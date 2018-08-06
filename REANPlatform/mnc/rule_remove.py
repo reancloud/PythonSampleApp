@@ -15,7 +15,7 @@ from deploy.constants import DeployConstants
 class RuleRemove(Command):      # noqa: D400
     """Destroy manage cloud deployed rule
 
-    Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 107339370656
+    Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 693265998683
     """
 
     log = logging.getLogger(__name__)

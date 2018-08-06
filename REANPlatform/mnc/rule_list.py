@@ -19,7 +19,7 @@ from deploy.getdeploymentstatus import Status
 class RuleList(Command):        # noqa: D400
     """List manage cloud deployed rules
 
-    Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets
+    Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets --customer_acc 693265998683
     """
 
     log = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class RuleList(Command):        # noqa: D400
                             help='Managed cloud rule name',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_ACC, MncConstats.CUSTOMER_ACC_INITIAL,
-                            help='AWS customer account number',
+                            help='Customer AWS account number',
                             required=False)
         return parser
 
