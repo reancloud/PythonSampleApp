@@ -63,7 +63,7 @@ pipeline {
                                 #!/bin/bash
                 				pwd
                 				set -e
-                				pwd
+                				echo "Package REANPlatform CLI"
                 				cd REANPlatform
                                 python3 setup.py build
                                 python3 setup.py install
