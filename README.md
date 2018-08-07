@@ -40,3 +40,10 @@ For help
  rean-deploy list-connections -f <table>/<json>
  rean-deploy list-connections  --type <TYPE> --name <NAME> --user <USER> --password <PASSWORD> --securekeypath <SECUREKEYPATH>
 ```
+## Installation
+
+Install the zip package using pip command.
+```
+ pip install https://s3.amazonaws.com/bucket_name/package.zip
+
+```
