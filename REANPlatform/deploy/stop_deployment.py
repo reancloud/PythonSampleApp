@@ -17,19 +17,23 @@ class StopDeployment(Command):
         """get_parser."""
         # Define parser
         parser = super(StopDeployment, self).get_parser(prog_name)
-        parser.add_argument('--deployment_id', '-d_id',
-                            help='Deployment id.',
+        parser.add_argument('--env_id', '-id',
+                            help='Environment id',
                             required=True)
+        parser.add_argument('--deployment_name', '-dname', default='default',
+                            help='Deployment Name. Please provide this \
+                            attribute if deployment name is not default.',
+                            required=False)
         return parser
 
     @staticmethod
-    def stop_deployment(deployment_id):
+    def stop_deployment(env_id, deployment_name):
         """Stop Deployment."""
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            stop_deployment_response = api_instance.stop_deployment(deployment_id)
+            stop_deployment_response = api_instance.stop_deployment_by_env_id_and_deployment_name(env_id, deployment_name)
             return stop_deployment_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
@@ -37,11 +41,12 @@ class StopDeployment(Command):
     def take_action(self, parsed_args):
         """take_action."""
         # Define parsed_args
-        deployment_id = parsed_args.deployment_id
+        env_id = parsed_args.env_id
+        deployment_name = parsed_args.deployment_name
 
         # Get stop deployment status
-        if deployment_id:
-            stop_deployment_status = StopDeployment.stop_deployment(deployment_id)
+        if env_id:
+            stop_deployment_status = StopDeployment.stop_deployment(env_id, deployment_name)
 
         if stop_deployment_status:
             print("Stop Deployment Status : %s" %

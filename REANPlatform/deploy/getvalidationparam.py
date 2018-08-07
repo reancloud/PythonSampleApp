@@ -18,28 +18,31 @@ class GetValidationParam(Command):
         # Define parser
         parser = super(GetValidationParam, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-id',
-                            help='Environment Id',
+                            help='Environment id',
                             required=True)
+        parser.add_argument('--deployment_name', '-dname', default='default',
+                            help='Deployment Name. Please provide this \
+                            attribute if deployment name is not default.',
+                            required=False)
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
         # Define parsed_args
         env_id = parsed_args.env_id
+        deployment_name = parsed_args.deployment_name
 
         if env_id:
-            GetValidationParam.get_validation_param(env_id)
+            GetValidationParam.get_validation_param(env_id, deployment_name)
 
     @staticmethod
-    def get_validation_param(env_id):
+    def get_validation_param(env_id, deployment_name):
         """Get Validation Param."""
         try:
             # Initialise instance and api_instance
             instance = deploy_sdk_client.EnvironmentApi()
             api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            response = api_instance.get_validation_param(
-                env_id
-            )
+            response = api_instance.get_validation_param_by_env_id_and_deployment_name(env_id, deployment_name)
             print(response)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
