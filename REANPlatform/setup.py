@@ -19,7 +19,7 @@ setup(
     description='CLI for REAN Platform',
     long_description=long_description,
     url='https://github.com/reancloud/',
-    download_url='https://github.com/reancloud/deploy_sdk_client',
+    download_url='',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
                  'Programming Language :: Python',
@@ -38,13 +38,10 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto', "deploy_sdk_client", "authnz_sdk_client"],
-    dependency_links=["git+ssh://git@github.com/reancloud/deploy-sdk-client.git@rc_feature_v0.0.1#egg=deploy-sdk-client-1.0.0",
-                      "git+ssh://git@github.com/reancloud/auth-sdk-client.git@rc_v0.0.1#egg=authnz-sdk-client-1.0.6"],
+    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
-
     entry_points={
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
@@ -103,5 +100,5 @@ setup(
         ]
     },
 
-    zip_safe=False,
+    zip_safe=True,
 )
