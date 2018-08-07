@@ -18,7 +18,7 @@ setup(
     version=VERSION,
     description='CLI for REAN Platform',
     long_description=long_description,
-    url='https://github.com/reancloud/',
+    url='',
     download_url='',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
@@ -89,14 +89,15 @@ setup(
             'get-job-report = reantest.get_job_report:GetJobReport',
             'create-provider = reantest.create_provider:CreateProvider',
             'list-providers = reantest.list_providers:ListProvider',
-            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus'
+            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
+            'run-infra-test = reantest.run_infra_test:RunInfraTest'
         ],
         'rean.mnc': [
-            # 'configure = mnc.configure:Configure',
-            # 'rule = mnc.rule:Rule',
-            'rule-install = mnc.rule_install:RuleInstall',
-            'rule-list = mnc.rule_list:RuleList',
-            'rule-remove = mnc.rule_remove:RuleRemove'
+            'configure = mnc.configure:Configure',
+            'available-rules = mnc.rules_available:RuleAvailable',
+            'install-rule = mnc.rule_install:RuleInstall',
+            'list-rule = mnc.rule_list:RuleList',
+            'remove-rule = mnc.rule_remove:RuleRemove'
         ]
     },
 
