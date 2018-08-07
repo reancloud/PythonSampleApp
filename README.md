@@ -47,6 +47,8 @@ Requirements
 ```
  pip install py-lambda-packer
 ```
+2. Upload ssh public key to github profile
+
 Follow the below steps to create CLI bundle
 1. Go to the REANPlatform directory present in reanplatform-cli
 ```
