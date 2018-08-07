@@ -3,7 +3,6 @@ import logging
 import json
 from cliff.command import Command
 import test_sdk_client
-from test_sdk_client.rest import ApiException
 from reantest.utility import Utility
 
 
@@ -104,6 +103,5 @@ class RunInfraTest(Command):
             self.log.debug("Execution stared for Infra test")
             Utility.execute_test(body, parsed_args, self.log, test_sdk_client.InfraTestApi().run)
 
-        except ApiException as api_exception:
-            err = json.loads(api_exception.body)
-            print("%s %s" % (err['message'], err['status']))
+        except Exception as exception:
+            Utility.print_exception(exception)

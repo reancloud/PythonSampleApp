@@ -39,5 +39,6 @@ class GetJobReport(Command):
                 open(str(Path.home()) + "/" + file_name, 'wb').write(api_response.data)
 
             print("Executed successfully.")
+
         except Exception as exception:
-            self.log.error("Exception when calling GetJobReports->get_job_reports: %s\n", exception)
+            Utility.print_exception(exception)

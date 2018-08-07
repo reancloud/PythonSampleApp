@@ -67,4 +67,4 @@ class CreateProvider(Command):
             self.log.debug(api_response)
 
         except Exception as exception:
-            self.log.error("Exception when calling CreateProvider->take_action: %s\n", exception)
+            Utility.print_exception(exception)

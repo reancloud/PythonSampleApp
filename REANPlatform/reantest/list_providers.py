@@ -5,7 +5,6 @@ import logging
 from prettytable import PrettyTable
 from cliff.command import Command
 import test_sdk_client
-from test_sdk_client.rest import ApiException
 from reantest.utility import Utility
 
 
@@ -71,5 +70,5 @@ class ListProvider(Command):
             else:
                 raise RuntimeError("Please specify correct format, Allowed \
                         values are: [json, table]")
-        except ApiException as api_exception:
-            Utility.print_exception(api_exception)
+        except Exception as exception:
+            Utility.print_exception(exception)
