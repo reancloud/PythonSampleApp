@@ -91,7 +91,8 @@ setup(
             'get-job-report = reantest.get_job_report:GetJobReport',
             'create-provider = reantest.create_provider:CreateProvider',
             'list-providers = reantest.list_providers:ListProvider',
-            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus'
+            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
+            'run-infra-test = reantest.run_infra_test:RunInfraTest'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
