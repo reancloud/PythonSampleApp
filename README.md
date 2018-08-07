@@ -40,33 +40,31 @@ For help
  rean-deploy list-connections -f <table>/<json>
  rean-deploy list-connections  --type <TYPE> --name <NAME> --user <USER> --password <PASSWORD> --securekeypath <SECUREKEYPATH>
 ```
-## Installation
 
-Install the zip package using pip command.
-```
- pip install https://s3.amazonaws.com/bucket_name/package.zip
-```
-
-## Package CLI
+## Create CLI artifact
 Requirements
 1. Install py-lambda-packer
 ```
  pip install py-lambda-packer
 ```
-Packaging CLI
-
-1. Change directory to REANPlatform
+Follow the below steps to create CLI bundle
+1. Go to the REANPlatform directory present in reanplatform-cli
 ```
  cd REANPlatform/
 ```
-
-2. Run following command to generate REANPlatformCLI package
+2. Run following command to generate REANPlatformCLI bundle
 ```
 py-lambda-packer --requirement requirements.txt --package . --python python3.6 --include setup.py
 ```
-
 3. Upload the artifact to s3 bucket
 
+## Installation
+Install the CLI bundle using pip command.
+```
+ pip install https://s3.amazonaws.com/bucket_name/bundle.zip
+```
+
+NOTE : Following policy needs to be attached to the bucket in order to provide access to end user
 ## Bucket Policy
 ```
 {
@@ -86,4 +84,3 @@ py-lambda-packer --requirement requirements.txt --package . --python python3.6 -
         }
     ]
 }
-```
