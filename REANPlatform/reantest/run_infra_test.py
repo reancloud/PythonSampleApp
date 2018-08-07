@@ -50,11 +50,6 @@ class RunInfraTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
         try:
-            error_message = Utility.validate_infra_test_params(parsed_args)
-            if error_message:
-                self.app.stdout.write(error_message)
-                return
-
             body = test_sdk_client.InfraTestDto(
                 app_name=parsed_args.application_name
             )
