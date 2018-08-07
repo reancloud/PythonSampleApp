@@ -50,34 +50,6 @@ pipeline {
                     }   
                 }
             }
-        }
-        stage ('Build') {
-            steps {
-                script {
-                    ansiColor('xterm') {
-                        println "\u001B[34m\u001B[1m******************\u001B[0m"
-                        println "\u001B[34m\u001B[1mPackage REANPlatform CLI\u001B[0m"
-                        println "\u001B[34m\u001B[1m******************\u001B[0m"
-                        try {
-                            sh '''  
-                                #!/bin/bash
-                                cd REANPlatform
-                                pwd
-                                set -e
-                            '''
-                            withPythonEnv('/usr/local/lib/python3.5') {                                
-                                python3 setup.py build
-                                python3 setup.py install
-                            }
-                        } catch (Exception e) {
-                            println "\u001B[31m********************************************************\u001B[0m"
-                            println "\u001B[31mFAILED: Package REANPlatform CLI failed. Please fix the issues\u001B[0m"
-                            println "\u001B[31m********************************************************\u001B[0m"
-                            sh 'exit 1'
-                        }
-                    }   
-                }
-            }
         }        
     }
     post {
