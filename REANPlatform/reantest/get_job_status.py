@@ -31,4 +31,3 @@ class GetJobStatus(Command):
             print(api_response)
         except Exception as exception:
             Utility.print_exception(exception)
-

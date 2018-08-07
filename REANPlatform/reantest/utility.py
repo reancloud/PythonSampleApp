@@ -94,7 +94,7 @@ class Utility:
         # Validation for Security test type
         elif params.security_test_type is None:
             message = "Please Provide security test type."
-        elif params.security_test_type is not '@app_scan' or params.security_test_type is not '@http_headers':
+        elif params.security_test_type != '@app_scan' or params.security_test_type != '@http_headers':
             message = "Please Provide valid security test type."
 
         return message
@@ -184,4 +184,3 @@ class Utility:
             print("Status : %s ,Message : %s" % (err['status'], err['message']))
         elif isinstance(exception, Exception):
             print(exception)
-
