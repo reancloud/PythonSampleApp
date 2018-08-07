@@ -45,5 +45,45 @@ For help
 Install the zip package using pip command.
 ```
  pip install https://s3.amazonaws.com/bucket_name/package.zip
+```
 
+## Package CLI
+Requirements
+1. Install py-lambda-packer
+```
+ pip install py-lambda-packer
+```
+Packaging CLI
+
+1. Change directory to REANPlatform
+```
+ cd REANPlatform/
+```
+
+2. Run following command to generate REANPlatformCLI package
+```
+py-lambda-packer --requirement requirements.txt --package . --python python3.6 --include setup.py
+```
+
+3. Upload the artifact to s3 bucket
+
+## Bucket Policy
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AddPerm",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::bucket_name/*",
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": ip_address
+                }
+            }
+        }
+    ]
+}
 ```
