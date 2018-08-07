@@ -299,7 +299,7 @@ class Configure(Command):   # noqa: D400
                 share_group_permission_instance = deploy_sdk_client.ShareGroupPermission(group_dto_instance, action_list)
                 environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
                 api_instance.share_environment(environment_id, body=environment_policy_instance)
-                time.sleep(2)
+                time.sleep(3)
             logging.info("All the rules are shared with group :%s", deploy_group)
         except ApiException as exception:
             logging.info("Failed to share rules. Please try again.")
