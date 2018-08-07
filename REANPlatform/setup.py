@@ -18,7 +18,7 @@ setup(
     version=VERSION,
     description='CLI for REAN Platform',
     long_description=long_description,
-    url='',
+    url='https://github.com/reancloud/',
     download_url='',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
