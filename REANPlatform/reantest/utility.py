@@ -1,11 +1,13 @@
 """Utilities for Test CLI."""
 import os
+import json
 import logging
 import sys
 import time
 import itertools
 import validators
 import test_sdk_client
+from test_sdk_client.rest import ApiException
 
 
 class Utility:
@@ -92,6 +94,8 @@ class Utility:
         # Validation for Security test type
         elif params.security_test_type is None:
             message = "Please Provide security test type."
+        elif params.security_test_type != '@app_scan' or params.security_test_type != '@http_headers':
+            message = "Please Provide valid security test type."
 
         return message
 
@@ -167,3 +171,16 @@ class Utility:
         if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
             api_instance = test_sdk_client.RunTestApi()
             Utility.wait_while_job_running(api_instance, job_id)
+
+    @staticmethod
+    def print_exception(exception):
+        """Print exception method."""
+        print("Exception message: ")
+        if isinstance(exception, ApiException):
+            if isinstance(exception.body, str):
+                err = json.loads(exception.body)
+            if isinstance(exception.body, bytes):
+                err = json.loads(exception.body.decode("utf-8"))
+            print("Status : %s ,Message : %s" % (err['status'], err['message']))
+        elif isinstance(exception, Exception):
+            print(exception)

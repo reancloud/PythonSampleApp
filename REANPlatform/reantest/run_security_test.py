@@ -22,25 +22,21 @@ class RunSecurityTest(Command):
     def take_action(self, parsed_args):
         """take_action."""
         self.log.debug(parsed_args)
-
-        error_message = Utility.validate_security_test_inputs(parsed_args)
-        if error_message:
-            self.app.stdout.write(error_message)
-            return
-
-        body = test_sdk_client.SecurityTestDto()
-
-        body.test_url = parsed_args.url
-        body.type = "securitytest"
-        body.security_test = True
-        body.security_test_type = parsed_args.security_test_type
-        body.execution_strategy = "security"
-
-        self.log.debug(body)
-
         try:
+            error_message = Utility.validate_security_test_inputs(parsed_args)
+            if error_message:
+                self.app.stdout.write(error_message)
+                return
+
+            body = test_sdk_client.SecurityTestDto()
+
+            body.test_url = parsed_args.url
+            body.type = "securitytest"
+            body.security_test = True
+            body.security_test_type = parsed_args.security_test_type
+            body.execution_strategy = "security"
+            self.log.debug(body)
             self.log.debug("Execution stared for Security Test")
             Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_security_test_job)
-
         except Exception as exception:
-            self.log.error("Exception when calling RunSecurityTest->submit_security_test_job: %s\n", exception)
+            Utility.print_exception(exception)
