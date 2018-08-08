@@ -19,11 +19,11 @@ class ExportBlueprintEnvironment(Command):
         """get_parser."""
         # Define parser
         parser = super(ExportBlueprintEnvironment, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-id',
+        parser.add_argument('--env_id', '-i',
                             help='Environment id',
                             required=True)
-        parser.add_argument('--blueprint_name', '-n',
-                            help='Specify file name for blueprint',
+        parser.add_argument('--blueprint_file_name', '-f',
+                            help='Specify filename for blueprint else filename will be environment name with its version',
                             required=False)
         return parser
 
@@ -31,24 +31,28 @@ class ExportBlueprintEnvironment(Command):
         """take_action."""
         # Define parsed_args
         env_id = parsed_args.env_id
+        blueprint_file_name = parsed_args.blueprint_file_name
 
         if env_id:
-            ExportBlueprintEnvironment.export_blueprint_environment(env_id)
+            ExportBlueprintEnvironment.export_blueprint_environment(env_id, blueprint_file_name)
 
     @staticmethod
-    def export_blueprint_environment(env_id):
+    def export_blueprint_environment(env_id, blueprint_file_name):
         """Export Blueprint Environment."""
         try:
-            # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            # Initialise api_instance
+            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
             blueprint = api_instance.export_blueprint_environment(env_id)
-            response = api_instance.export_environment(env_id)
-            blueprint_filename = response.name + '-' + response.env_version
-            blueprint_filepath = os.getcwd() + '/' + blueprint_filename + '.blueprint.reandeploy'
+            filename = blueprint_file_name
+
+            if filename is None:
+                response = api_instance.export_environment(env_id)
+                filename = response.name + '-' + response.env_version
+
+            blueprint_filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
             os.chdir(os.path.dirname(blueprint_filepath))
             with open(basename(blueprint_filepath), 'w') as outfile:
                 outfile.write(str(blueprint))
-            print("Blueprint file " + blueprint_filename + " created successfully at " + blueprint_filepath)
+            print("Blueprint file " + filename + " created successfully at " + blueprint_filepath)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

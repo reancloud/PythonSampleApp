@@ -17,12 +17,12 @@ class GetDeploymentInput(Command):
         """get_parser."""
         # Define parser
         parser = super(GetDeploymentInput, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-id',
-                            help='Environment ID.',
+        parser.add_argument('--env_id', '-i',
+                            help='Environment id',
                             required=True)
-        parser.add_argument('--deployment_name', '-dname',
+        parser.add_argument('--deployment_name', '-n',
                             default='default',
-                            help='Deployment Name.',
+                            help='Deployment name',
                             required=False)
         return parser
 
@@ -33,9 +33,8 @@ class GetDeploymentInput(Command):
             # Initialise api_response
             api_response = None
 
-            # Initialise instance and api_instance to get deployment inputjson
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            # Initialise api_instance to get deployment inputjson
+            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
             if env_id:
                 api_response = api_instance.get_deployment_input_json(env_id, deployment_name)
             return api_response

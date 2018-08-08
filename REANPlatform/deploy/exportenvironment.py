@@ -19,30 +19,36 @@ class ExportEnvironment(Command):
         """get_parser."""
         # Define parser
         parser = super(ExportEnvironment, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-id',
+        parser.add_argument('--env_id', '-i',
                             help='Environment id',
                             required=True)
+        parser.add_argument('--export_environment_filename', '-f',
+                            help='Specify filename for exporting an environment else filename will be environment name with its version',
+                            required=False)
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
         # Define parsed_args
         env_id = parsed_args.env_id
+        export_environment_filename = parsed_args.export_environment_filename
 
         if env_id:
-            ExportEnvironment.export_environment(env_id)
+            ExportEnvironment.export_environment(env_id, export_environment_filename)
 
     @staticmethod
-    def export_environment(env_id):
+    def export_environment(env_id, export_environment_filename):
         """Export Environment."""
         try:
             # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
             response = api_instance.export_environment(env_id)
-            filename = response.name + '-' + response.env_version
-            filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
+            filename = export_environment_filename
 
+            if filename is None:
+                filename = response.name + '-' + response.env_version
+
+            filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
             os.chdir(os.path.dirname(filepath))
             with open(basename(filepath), 'w') as outfile:
                 outfile.write(str(response))
