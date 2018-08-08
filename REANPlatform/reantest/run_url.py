@@ -31,28 +31,27 @@ class RunURLTest(Command):
     def take_action(self, parsed_args):
         """take_action."""
         self.log.debug(parsed_args)
-
-        browser_list = Utility.get_browser_dto(parsed_args)
-        self.log.debug(browser_list)
-
-        error_message = Utility.validate_url_test_inputs(parsed_args)
-        if error_message:
-            self.app.stdout.write(error_message)
-            return
-
-        body = test_sdk_client.UrlTestDto()
-
-        body.browser_list = browser_list
-        body.test_url = parsed_args.url
-        body.text_to_search = parsed_args.text_to_search
-        body.page_load_time_out = parsed_args.page_load_time_out
-        body.type = "urltest"
-        body.execution_strategy = "boost"
-        body.run_upa = parsed_args.upa
-        body.run_crawl = parsed_args.crawl
-
         try:
+            browser_list = Utility.get_browser_dto(parsed_args)
+            self.log.debug(browser_list)
+
+            error_message = Utility.validate_url_test_inputs(parsed_args)
+            if error_message:
+                self.app.stdout.write(error_message)
+                return
+
+            body = test_sdk_client.UrlTestDto()
+
+            body.browser_list = browser_list
+            body.test_url = parsed_args.url
+            body.text_to_search = parsed_args.text_to_search
+            body.page_load_time_out = parsed_args.page_load_time_out
+            body.type = "urltest"
+            body.execution_strategy = "boost"
+            body.run_upa = parsed_args.upa
+            body.run_crawl = parsed_args.crawl
+
             self.log.debug("Execution stared for URL Test")
             Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_url_test_job)
         except Exception as exception:
-            self.log.error("Exception when calling RunUrlTest->submit_url_test_job: %s\n", exception)
+            Utility.print_exception(exception)
