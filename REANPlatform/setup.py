@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.1'
+VERSION = '0.0.1'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -19,7 +19,7 @@ setup(
     description='CLI for REAN Platform',
     long_description=long_description,
     url='https://github.com/reancloud/',
-    download_url='https://github.com/reancloud/deploy_sdk_client',
+    download_url='',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
                  'Programming Language :: Python',
@@ -38,12 +38,10 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto', "urllib3 >= 1.15", "six >= 1.10", "certifi", "python-dateutil"],
-
+    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
-
     entry_points={
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
@@ -107,44 +105,8 @@ setup(
             'install-rule = mnc.rule_install:RuleInstall',
             'list-rule = mnc.rule_list:RuleList',
             'remove-rule = mnc.rule_remove:RuleRemove'
-        ],
-        #    'rean.test': [
-        #        'run-url-test = test.runurl:RunURLTest',
-        #        'run-upa-test = test.runupa:RunUPA',
-        #        'run-security-test = test.runsecuritytest:RunSecurityTest',
-        #        'run-automation-test = test.runcrossbrowsertest:RunCrossBrowserTest',
-        #        'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
-        #        'get-job-status = test.getjobstatus:GetJobStatus',
-        #        'getproperties = test.testnowutility:GetProperties',
-        #    ],
-        #    'rean.deploy': [
-        #        'deploy-configure = deploy.configure:Configure',
-        #        'create-provider = deploy.createprovider:SaveProvider',
-        #        'delete-provider = deploy.deleteprovider:DeleteProvider',
-        #        'list-provider = deploy.listproviders:ListProvider',
-        #        'create-environment = deploy.createenvironment:CreateEnv',
-        #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
-        #        'list-connections = deploy.listconnections:ListConnections',
-        #        'isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
-        #        'create-connection = deploy.createconnection:SaveConnection',
-        #        'delete-connection = deploy.deleteconnection:DeleteConnection',
-        #        'get-connection = deploy.getconnection:GetConnection',
-        #        'get-provider = deploy.getproviderbyname:GetProviderByName',
-        #        'update-connection = deploy.updateconnection:UpdateConnection',
-        #        'get-aws-regions = deploy.getawsregions:GetAwsRegions',
-        #        'delete-environment = deploy.deleteenvironment:DeleteEnv',
-        #        'checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
-        #        'download-terraform-files =deploy.downloadterraformfiles:DownloadTerraformFiles',
-        #        'update-provider = deploy.updateprovider:UpdateProvider',
-        #        'import-blueprint = deploy.importblueprint:ImportBlueprint',
-        #        'import-environment = deploy.importenvironment:ImportEnvironment',
-        #        'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
-        #        'hooked = deploy.hook:Hooked',
-        #    ],
-        #    'rean.test.hooked': [
-        #        'sample-hook = deploy.hook:Hook',
-        #   ],
+        ]
     },
 
-    zip_safe=False,
+    zip_safe=True,
 )
