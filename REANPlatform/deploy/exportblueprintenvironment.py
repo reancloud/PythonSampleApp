@@ -46,7 +46,7 @@ class ExportBlueprintEnvironment(Command):
             filename = blueprint_file_name
 
             if filename is None:
-                response = api_instance.export_environment(env_id)
+                response = api_instance.get_environment(env_id)
                 filename = response.name + '-' + response.env_version
 
             blueprint_filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'

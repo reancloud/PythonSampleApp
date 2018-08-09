@@ -22,7 +22,7 @@ class ExportEnvironment(Command):
         parser.add_argument('--env_id', '-i',
                             help='Environment id',
                             required=True)
-        parser.add_argument('--export_environment_filename', '-f',
+        parser.add_argument('--environment_file_name', '-f',
                             help='Specify filename for exporting an environment else filename will be environment name with its version',
                             required=False)
         return parser
@@ -31,19 +31,19 @@ class ExportEnvironment(Command):
         """take_action."""
         # Define parsed_args
         env_id = parsed_args.env_id
-        export_environment_filename = parsed_args.export_environment_filename
+        environment_file_name = parsed_args.environment_file_name
 
         if env_id:
-            ExportEnvironment.export_environment(env_id, export_environment_filename)
+            ExportEnvironment.export_environment(env_id, environment_file_name)
 
     @staticmethod
-    def export_environment(env_id, export_environment_filename):
+    def export_environment(env_id, environment_file_name):
         """Export Environment."""
         try:
             # Initialise instance and api_instance
             api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
             response = api_instance.export_environment(env_id)
-            filename = export_environment_filename
+            filename = environment_file_name
 
             if filename is None:
                 filename = response.name + '-' + response.env_version

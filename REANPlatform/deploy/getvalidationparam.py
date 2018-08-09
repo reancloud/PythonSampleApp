@@ -1,4 +1,6 @@
 """Get Validation Param."""
+import os
+from os.path import basename
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -23,6 +25,9 @@ class GetValidationParam(Command):
         parser.add_argument('--deployment_name', '-n', default='default',
                             help='Deployment name. Please provide this attribute if deployment name is not default.',
                             required=False)
+        parser.add_argument('--output', '-f',
+                            help='Specify filename for getting validation parameters',
+                            required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -30,17 +35,32 @@ class GetValidationParam(Command):
         # Define parsed_args
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
+        file_name = parsed_args.output
 
+        # Get validation param
         if env_id:
-            GetValidationParam.get_validation_param(env_id, deployment_name)
+            validation_param = GetValidationParam.get_validation_param(env_id, deployment_name)
+
+        if validation_param:
+            if file_name is not None:
+                filepath = os.getcwd() + '/' + file_name + '.json'
+                os.chdir(os.path.dirname(filepath))
+                with open(basename(filepath), 'w') as outfile:
+                    outfile.write(str(validation_param))
+                print("Output file " + file_name + " created successfully at " + filepath)
+            else:
+                print(validation_param)
 
     @staticmethod
     def get_validation_param(env_id, deployment_name):
         """Get Validation Param."""
         try:
+            # Initialise api_response
+            api_response = None
+
             # Initialise and api_instance
             api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            response = api_instance.get_validation_param_by_env_id_and_deployment_name(env_id, deployment_name)
-            print(response)
+            api_response = api_instance.get_validation_param_by_env_id_and_deployment_name(env_id, deployment_name)
+            return api_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
