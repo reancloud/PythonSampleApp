@@ -53,7 +53,7 @@ class Utility(object):
             if base_url and base_url.get('base_url'):
                 base_url = str(base_url.get('base_url'))
             else:
-                base_url = Utility.get_config_property(PlatformConstants.ENV_BASE_URL_REFERENCE)
+                base_url = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
             return base_url + host_url
         except Exception as exception:
             print('Could not get base url.')
@@ -75,7 +75,7 @@ class Utility(object):
             credentials = {
                 'user_name': os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
                 'password': os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE],
-                'base_url': os.environ[PlatformConstants.BASE_URL_REFERENCE]
+                'base_url': os.environ[PlatformConstants.ENV_BASE_URL_REFERENCE]
             }
             return credentials
         except KeyError:
