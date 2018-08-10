@@ -9,7 +9,7 @@ class PlatformConstants(object):
     PLATFORM_REFERENCE = 'platform'
     USER_NAME_REFERENCE = 'username'
     PASSWORD_REFERENCE = 'password'
-    BASE_URL_REFERENCE = 'base_url'
+    ENV_BASE_URL_REFERENCE = 'BASE_URL'
     ENV_USER_NAME_REFERENCE = 'USER_NAME'
     ENV_PASSWORD_REFERENCE = 'PASSWORD'
     VERIFY_SSL_CERTIFICATE_REFERENCE = 'verify_ssl_certificate'
