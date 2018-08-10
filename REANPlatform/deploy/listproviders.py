@@ -34,9 +34,9 @@ class ListProvider(Command):
     def list_provider(list_provider_format):
         """list_provider."""
         try:
-            provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_response = api_instance.get_all_providers()
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
+            api_response = provider_api_instance.get_all_providers()
             if list_provider_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
