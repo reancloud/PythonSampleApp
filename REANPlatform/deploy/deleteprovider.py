@@ -6,6 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class DeleteProvider(Command):
@@ -17,25 +18,26 @@ class DeleteProvider(Command):
         """get_parser."""
         parser = super(DeleteProvider, self).get_parser(prog_name)
         parser.add_argument(
-                            '--id', '-id',
-                            help='Provider id. This parameter is\
-                            not required when --prov_name is specified',
-                            required=False)
+            '--prov_id', '-id',
+            help='Provider id. This parameter is\
+            not required when --prov_name is specified',
+            required=False
+        )
         parser.add_argument(
-                            '--name', '-name',
-                            help='Provider name. This parameter is\
-                            not required when --prov_id is specified',
-                            required=False
-                        )
+            '--prov_name', '-name',
+            help='Provider name. This parameter is\
+            not required when --prov_id is specified',
+            required=False
+        )
         return parser
 
     @staticmethod
-    def validate_parameters(id, prov_name):
+    def validate_parameters(prov_id, prov_name):
         """validate_parameters."""
         exception_msg = "Specify either --prov_id OR --prov_name"
-        if id and prov_name:
+        if prov_id and prov_name:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif id is None and prov_name is None:
+        elif prov_id is None and prov_name is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
@@ -54,33 +56,33 @@ class DeleteProvider(Command):
         """delete_provider."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance)
+            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.delete_provider(prov_id)
             print("Provider deleted successfully id", prov_id)
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def delete_provider_by_name(prov_name):
         """delete_provider_by_name."""
         try:
             provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance)
+            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             prov_id = DeleteProvider.get_id(prov_name, api_instance)
-            if(prov_id is None):
+            if prov_id is None:
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
             DeleteProvider.delete_provider_by_id(prov_id)
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def get_id(name, api_instance):
         """get_id."""
-        id = None
+        provider_id = None
         list_api_response = api_instance.get_all_providers()
         for provider in list_api_response:
             if provider.name == name:
-                id = provider.id
+                provider_id = provider.id
                 break
-        return id
+        return provider_id

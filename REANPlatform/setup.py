@@ -1,11 +1,12 @@
-#!/usr/bin/env python
+"""REANPlatform setup.py."""
+# !/usr/bin/env python
+
+from setuptools import setup, find_packages
 
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.1'
-
-from setuptools import setup, find_packages
+VERSION = '0.0.1'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -18,7 +19,7 @@ setup(
     description='CLI for REAN Platform',
     long_description=long_description,
     url='https://github.com/reancloud/',
-    download_url='https://github.com/reancloud/deploy_sdk_client',
+    download_url='',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: Apache Software License',
                  'Programming Language :: Python',
@@ -29,31 +30,33 @@ setup(
                  'Programming Language :: Python :: 3.6',
                  'Intended Audience :: Developers',
                  'Environment :: Console',
-                 ],
+                ],
 
     platforms=['Any'],
 
     scripts=[],
 
     provides=[],
-     
+
     install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
-   
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
-
     entry_points={
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
             'rean-deploy = deploy.main:main',
-            'rean-mnc = mnc.main:main'
+            'rean-auth = auth.main:main',
+            'rean-mnc = mnc.main:main',
+            'rean-test = reantest.main:main'
         ],
-         'rean.platform': [
-             'configure = reanplatform.configure:Configure',
-             'rean-deploy = reanplatform.reanhelp:Helpdeploy',
-             'rean-test = reanplatform.reanhelp:Helptest',
-             'rean-mnc = reanplatform.reanhelp:Helpmnc'
+        'rean.platform': [
+            'rean-platform = reanplatform.reanhelp:HelpPlatform',
+            'configure = reanplatform.configure:Configure',
+            'rean-deploy = reanplatform.reanhelp:HelpDeploy',
+            'rean-test = reanplatform.reanhelp:HelpTest',
+            'rean-mnc = reanplatform.reanhelp:HelpMnc',
+            'rean-auth = reanplatform.reanhelp:HelpAuth'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
@@ -71,50 +74,32 @@ setup(
             'get-status = deploy.getdeploymentstatus:Status',
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
-        'rean.mnc': [
-    #        'configure = mnc.configure:Configure',
-    #        'rule = mnc.rule:Rule',
-            'rule-install = mnc.rule_install:RuleInstall',
-            'rule-list = mnc.rule_list:RuleList',
-            'rule-remove = mnc.rule_remove:RuleRemove'
+        'rean.auth': [
+            'get-all-users = auth.get_users:GetUsers',
+            'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId',
+            'change-password = auth.change_password:ChangePassword'
         ],
-    #    'rean.test': [
-    #        'run-url-test = test.runurl:RunURLTest',
-    #        'run-upa-test = test.runupa:RunUPA',
-    #        'run-security-test = test.runsecuritytest:RunSecurityTest',
-    #        'run-automation-test = test.runcrossbrowsertest:RunCrossBrowserTest',
-    #        'run-scale-test =  test.runscalenowtest:RunScaleNowTest',
-    #        'get-job-status = test.getjobstatus:GetJobStatus',
-    #        'getproperties = test.testnowutility:GetProperties',
-    #    ],
-    #    'rean.deploy': [
-    #        'deploy-configure = deploy.configure:Configure',
-    #        'create-provider = deploy.createprovider:SaveProvider',
-    #        'delete-provider = deploy.deleteprovider:DeleteProvider',
-    #        'list-provider = deploy.listproviders:ListProvider',
-    #        'create-environment = deploy.createenvironment:CreateEnv',        
-    #        'deploy-environment = deploy.deployenvironment:DepolyEnv',
-    #        'list-connections = deploy.listconnections:ListConnections',
-    #        'isconnectionexists = deploy.isconnectionexists:IsConnectionExists',
-    #        'create-connection = deploy.createconnection:SaveConnection',
-    #        'delete-connection = deploy.deleteconnection:DeleteConnection',
-    #        'get-connection = deploy.getconnection:GetConnection',
-    #        'get-provider = deploy.getproviderbyname:GetProviderByName',
-    #        'update-connection = deploy.updateconnection:UpdateConnection',          
-    #        'get-aws-regions = deploy.getawsregions:GetAwsRegions',
-    #        'delete-environment = deploy.deleteenvironment:DeleteEnv',
-    #        'checkifenvironmentexists = deploy.checkifenvironmentexists:CheckIfEnvironmentExists',
-    #        'download-terraform-files =deploy.downloadterraformfiles:DownloadTerraformFiles',
-    #        'update-provider = deploy.updateprovider:UpdateProvider',
-    #        'import-blueprint = deploy.importblueprint:ImportBlueprint',
-    #        'import-environment = deploy.importenvironment:ImportEnvironment',
-    #        'createnewenvresourceusingimport = deploy.createnewenvresourceusingimport:CreateNewEnvResourceUsingImport',
-    #        'hooked = deploy.hook:Hooked',
-    #    ],
-    #    'rean.test.hooked': [
-    #        'sample-hook = deploy.hook:Hook',
-    #   ],
+        'rean.test': [
+            'run-url-test = reantest.run_url:RunURLTest',
+            'run-upa-test = reantest.run_upa:RunUPA',
+            'run-security-test = reantest.run_security_test:RunSecurityTest',
+            'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
+            'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
+            'get-job-status = reantest.get_job_status:GetJobStatus',
+            'get-job-report = reantest.get_job_report:GetJobReport',
+            'create-provider = reantest.create_provider:CreateProvider',
+            'list-providers = reantest.list_providers:ListProvider',
+            'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
+            'run-infra-test = reantest.run_infra_test:RunInfraTest'
+        ],
+        'rean.mnc': [
+            'configure = mnc.configure:Configure',
+            'available-rules = mnc.rules_available:RuleAvailable',
+            'install-rule = mnc.rule_install:RuleInstall',
+            'list-rule = mnc.rule_list:RuleList',
+            'remove-rule = mnc.rule_remove:RuleRemove'
+        ]
     },
 
-    zip_safe=False,
+    zip_safe=True,
 )

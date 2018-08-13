@@ -1,13 +1,11 @@
 """Get Deployment Status By Env ID and Deployment Name."""
-import os
-import re
-from pprint import pprint
 import logging
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class Status(Command):
@@ -19,20 +17,15 @@ class Status(Command):
         """get_parser."""
         # Define parser
         parser = super(Status, self).get_parser(prog_name)
-
-        try:
-            parser.add_argument('--env_id', '-id',
-                                help='Environment ID. This parameter \
+        parser.add_argument('--env_id', '-id',
+                            help='Environment ID. This parameter \
                                 is not required when -run_id is specified',
-                                required=True)
-            parser.add_argument('--deployment_name', '-dname',
-                                default='default',
-                                help='Deployment Name. This parameter \
+                            required=True)
+        parser.add_argument('--deployment_name', '-dname',
+                            default='default',
+                            help='Deployment Name. This parameter \
                                 is not required when -run_id is specified',
-                                required=False)
-        except Exception as e:
-            Utility.print_exception(e)
-
+                            required=False)
         return parser
 
     @staticmethod
@@ -44,7 +37,7 @@ class Status(Command):
 
             # Initialise instance and api_instance to get deployment status
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             if (env_id and deployment_name):
                 api_response = api_instance.get_deploy_status_by_env_id_and_deployment_name(
                     env_id,
@@ -55,8 +48,10 @@ class Status(Command):
                     env_id
                 )
             return api_response.status
-        except ApiException as e:
-            Utility.print_exception(e)
+
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
+
 
     def take_action(self, parsed_args):
         """take_action."""

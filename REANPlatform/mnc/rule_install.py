@@ -14,60 +14,58 @@ from mnc.parameters_constants import MncConstats
 from mnc.utility import MncUtility
 from deploy.deployenv import DepolyEnv
 from deploy.getdeploymentstatus import Status
+from deploy.constants import DeployConstants
 
 
 class RuleInstall(Command):     # noqa: D203
-    """Install Manage Cloud Rules."""
+    """Install manage cloud rule.
 
-    # log = logging.getLogger(__name__)
+    Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 107339370656 --deploy_provider mnc_client --customer_email_to mayuri.patil@reancloud.com --customer_mail_cc mayuri.patil@reancloud.com --customer_email_domain reancloud --action False.
+    """
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleInstall, self).get_parser(prog_name)
         parser.add_argument('--' + MncConstats.RULE_NAME, MncConstats.RULE_NAME_INITIAL,
-                            help='Rule name',
-                            required=False)
-        parser.add_argument('--' + MncConstats.RULE_TYPE, MncConstats.RULE_TYPE_INITIAL,
-                            help='Rule type',
+                            help='Managed cloud rule name',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_ACC, MncConstats.CUSTOMER_ACC_INITIAL,
-                            help='Customer account number',
+                            help='Customer AWS account number',
                             required=False)
         parser.add_argument('--' + MncConstats.DEPLOY_PROVIDER, MncConstats.DEPLOY_PROVIDER_INITIAL,
-                            help='Rean deploy provider',
+                            help='Provider name of client account for REAN-Deploy',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_EMAIL_TO, MncConstats.CUSTOMER_EMAIL_TO_INITIAL,
-                            help='Customer To email',
+                            help='Customer email address To send email',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_MAIL_CC, MncConstats.CUSTOMER_MAIL_CC_INITIAL,
-                            help='Customer CC email',
+                            help='Customer CC email address',
                             required=False)
         parser.add_argument('--' + MncConstats.CUSTOMER_EMAIL_DOMAIN, MncConstats.CUSTOMER_EMAIL_DOMAIN_INITIAL,
                             help='Customer email domain',
                             required=False)
-        parser.add_argument('--' + MncConstats.ACTION, MncConstats.ACTION_INITIAL,
-                            help='Customer account number',
+        parser.add_argument('--' + MncConstats.ENABLE_ACTION, MncConstats.ENABLE_ACTION_INITIAL,
+                            help='Enable action allowed values are: [True, False]',
                             required=False)
         return parser
 
-    def __validate_parameters(self, rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action):
+    def __validate_parameters(self, rule_name, customer_acc, provider_name, email_to, email_cc, domain, action):
         """Validate cli parameters."""
-        if rule_name is None or rule_type is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
-            raise RuntimeError("Specify all require parametes,for more help check 'rean-mnc rule-install --help'")    # noqa: E501
+        if rule_name is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
+            raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc install-rule --help'")    # noqa: E501
 
     def take_action(self, parsed_args):
         """List Environment."""
         argparse_dict = vars(parsed_args)
         rule_name = argparse_dict[MncConstats.RULE_NAME]
-        rule_type = argparse_dict[MncConstats.RULE_TYPE]
         customer_acc = argparse_dict[MncConstats.CUSTOMER_ACC]
         provider_name = argparse_dict[MncConstats.DEPLOY_PROVIDER]
         email_to = argparse_dict[MncConstats.CUSTOMER_EMAIL_TO]
         email_cc = argparse_dict[MncConstats.CUSTOMER_MAIL_CC]
         domain = argparse_dict[MncConstats.CUSTOMER_EMAIL_DOMAIN]
-        action = argparse_dict[MncConstats.ACTION]
+        action = argparse_dict[MncConstats.ENABLE_ACTION]
         region = MncConstats.REGION
-        self.__validate_parameters(rule_name, rule_type, customer_acc, provider_name, email_to, email_cc, domain, action)
+        self.__validate_parameters(rule_name, customer_acc, provider_name, email_to, email_cc, domain, action)
 
         prepare_data = {}
         dependent_resource_file = os.getcwd() + '/' + 'depends_on_resource.json'
@@ -79,7 +77,8 @@ class RuleInstall(Command):     # noqa: D203
 
         try:
             instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance)
+            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            # Get all environments for user
             all_env = api_instance.get_all_environments()
             env_ids = {}
 
@@ -106,11 +105,12 @@ class RuleInstall(Command):     # noqa: D203
 
             result = DepolyEnv.re_deploy_environment(env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
 
-            status = RuleInstall.get_status(env_ids['parent'], deployment_name)
-            logging.info("Config rule status::%s", status)
+            config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
+            logging.info("Config status :%s", config_status)
 
             # Deploy child
-            if status.status == 'DEPLOYED':
+            assume_status = None
+            if config_status == 'DEPLOYED':
                 child_input_json = None
                 time.sleep(10)
                 provider_name = MncUtility.provider_name_from_s3(str(MncUtility.read_bucket_name()))
@@ -118,10 +118,15 @@ class RuleInstall(Command):     # noqa: D203
                 depends_json = DepolyEnv.read_file_as_json_object(dependent_resource_file)
                 result = DepolyEnv.re_deploy_environment(env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
                 if result:
-                    status = self.get_status(env_ids['child'], deployment_name)
-                    logging.info("Assume rule Status ::%s", status.status)
+                    assume_status = self.get_status(env_ids['child'], deployment_name)
+                    logging.info("Assume role status :%s", assume_status)
+
+            if config_status == 'DEPLOYED' and assume_status == 'DEPLOYED':
+                logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
+
         except ApiException as exception:
-            Utility.print_exception(exception)
+            # Utility.print_exception(exception)
+            logging.info("Failed to install rule. Please try again.")
 
     @staticmethod
     def get_status(env_id, deployment_name):
@@ -143,7 +148,8 @@ class RuleInstall(Command):     # noqa: D203
             os.chdir(os.path.dirname(file_name))
             with open(basename(file_name), 'w') as outfile:
                 json.dump(prepare_data, outfile, indent=4, sort_keys=True)
-        except ApiException as exception:
+        except Exception as exception:
+            logging.info("Failed to create attribute file. Please try again.")
             Utility.print_exception(exception)
 
     @staticmethod

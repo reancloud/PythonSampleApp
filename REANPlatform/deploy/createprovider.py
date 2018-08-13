@@ -1,13 +1,13 @@
 """Save provider module."""
+import os
+import json
 import logging
-from pprint import pprint
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
-import os
-import json
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class SaveProvider(Command):
@@ -26,7 +26,7 @@ class SaveProvider(Command):
                             help='Json file with applicable key-value pair \
                             for provider type. File absolute path',
                             required=True
-                            )
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -41,7 +41,7 @@ class SaveProvider(Command):
     def create_provider(prov_name, prov_type, provider_details):
         """create_provider."""
         provider_api_instance = deploy_sdk_client.ProviderApi()
-        api_instance = set_header_parameter(provider_api_instance)
+        api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
         try:
             file_path = provider_details
 
@@ -60,16 +60,16 @@ class SaveProvider(Command):
                 json=jsondata
             )
             api_response = api_instance.save_provider(provider)
-
             # Get all providers for user
             list_api_response = api_instance.get_all_providers()
 
-            id = None
+            provider_id = None
+
             for provider in list_api_response:
                 if provider.name == prov_name:
-                    id = provider.id
+                    provider_id = provider.id
                     break
             print("Provider created successfully \
-                    Name: %s,  Id: %i" % (prov_name, id))
-        except ApiException as e:
-            Utility.print_exception(e)
+                    Name: %s,  Id: %i" % (prov_name, provider_id))
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)

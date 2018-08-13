@@ -1,10 +1,13 @@
 """Mnc Utility."""
+import logging
 import boto3
 from mnc.parameters_constants import MncConstats
 
 
 class MncUtility:       # noqa: D203
     """Manage Cloud common functionality."""
+
+    boto3.set_stream_logger('botocore.vendored.requests', logging.ERROR)
 
     @staticmethod
     def read_bucket_name():
@@ -42,4 +45,4 @@ class MncUtility:       # noqa: D203
                 if "rean_deploy_mnc_master_provider" in file_line:
                     provider_name = file_line.split(':')[-1]
                     provider_name = provider_name.strip()
-        return provider_name    
+        return provider_name
