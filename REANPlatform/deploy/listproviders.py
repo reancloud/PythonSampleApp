@@ -1,5 +1,4 @@
 """List provider module."""
-import json
 import logging
 from prettytable import PrettyTable
 from cliff.command import Command
