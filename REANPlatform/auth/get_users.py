@@ -30,10 +30,11 @@ class GetUsers(Command):
         """Get users."""
         try:
             # Initialise instance and api_instance in list_user
-            instance = authnz_sdk_client.UsercontrollerApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            instance = authnz_sdk_client.UsercontrollerApi(api_client)
+
             # Get all users
-            api_response = api_instance.get_all_user_using_get()
+            api_response = instance.get_all_user_using_get()
 
             if output_format == 'table':
                 table = PrettyTable(['Id', 'Name', 'Username', 'Email', 'Verified', 'Disabled'])

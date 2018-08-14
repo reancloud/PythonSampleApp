@@ -54,9 +54,9 @@ class ImportBlueprint(Command):
     def blueprint_import(blueprint_path, attribute_path):      # noqa: E501
         """blueprint_import."""
         try:
-            api_env_instance = deploy_sdk_client.EnvironmentApi()
-            env_instance = set_header_parameter(api_env_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_env_instance = deploy_sdk_client.EnvironmentApi(api_client)
+            blueprint_all_env = api_env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), "r") as handle:
                 filedata = handle.read()
@@ -85,7 +85,7 @@ class ImportBlueprint(Command):
                                  location %s: " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path)   # noqa: E501
                             raise RuntimeError(re.sub(' +', ' ', exception_msg))  # noqa: E501
 
-            env_instance.import_blueprint(body=blueprint_all_env)
+            api_env_instance.import_blueprint(body=blueprint_all_env)
             print("Blueprint imported successfully. Environment names : ", env_names)       # noqa: E501
 
         except ApiException as api_exception:

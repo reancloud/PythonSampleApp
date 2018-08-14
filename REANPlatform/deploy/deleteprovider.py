@@ -55,9 +55,9 @@ class DeleteProvider(Command):
     def delete_provider_by_id(prov_id):
         """delete_provider."""
         try:
-            provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_response = api_instance.delete_provider(prov_id)
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
+            api_response = provider_api_instance.delete_provider(prov_id)
             print("Provider deleted successfully id", prov_id)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
@@ -66,9 +66,9 @@ class DeleteProvider(Command):
     def delete_provider_by_name(prov_name):
         """delete_provider_by_name."""
         try:
-            provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            prov_id = DeleteProvider.get_id(prov_name, api_instance)
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
+            prov_id = DeleteProvider.get_id(prov_name, provider_api_instance)
             if prov_id is None:
                 raise RuntimeError("Exception provider does not exit: ", prov_name)     # noqa: E501
 
@@ -80,7 +80,8 @@ class DeleteProvider(Command):
     def get_id(name, api_instance):
         """get_id."""
         provider_id = None
-        list_api_response = api_instance.get_all_providers()
+        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        list_api_response = api_instance.get_all_providers(api_client)
         for provider in list_api_response:
             if provider.name == name:
                 provider_id = provider.id

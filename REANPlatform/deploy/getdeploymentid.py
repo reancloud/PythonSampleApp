@@ -32,9 +32,9 @@ class GetDeployments(Command):
         """Get Deployments By Env ID."""
         try:
             # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            res = api_instance.get_all_deployments_for_environment_by_id(
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            res = instance.get_all_deployments_for_environment_by_id(
                 env_id
             )
             pprint(res)
@@ -46,9 +46,9 @@ class GetDeployments(Command):
         """Get Deployments by Env ID And Deployment Name."""
         try:
             # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            res = api_instance.get_all_deployments_for_environment_by_id_and_deployment_name(
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            res = instance.get_all_deployments_for_environment_by_id_and_deployment_name(
                 env_id,
                 deployment_name
             )

@@ -86,8 +86,8 @@ class SaveConnection(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        conn_api_instance = deploy_sdk_client.ConnectionApi()
-        api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        conn_api_instance = deploy_sdk_client.ConnectionApi(api_client)
         body = None
         bastion_data = None
         try:
@@ -120,8 +120,8 @@ class SaveConnection(Command):
                 raise RuntimeError("Please provide correct\
                          parameters and values:")
 
-            api_response = api_instance.save_vm_connection(body)
-            list_api_response = api_instance.get_all_vm_connections()
+            api_response = conn_api_instance.save_vm_connection(body)
+            list_api_response = conn_api_instance.get_all_vm_connections()
 
             connection_id = None
             for conn in list_api_response:

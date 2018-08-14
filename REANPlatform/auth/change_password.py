@@ -36,16 +36,16 @@ class ChangePassword(Command):
         try:
             # Initialise instance and api_instance in list_environment
             if parsed_args.new_password == parsed_args.confirm_password:
-                instance = authnz_sdk_client.UsercontrollerApi()
+                api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+                instance = authnz_sdk_client.UsercontrollerApi(api_client)
                 change_user_password_object = authnz_sdk_client.ChangeUserPassword(
                     id=parsed_args.user_id,
                     old_password=parsed_args.old_password,
                     new_password=parsed_args.new_password,
                     confirm_password=parsed_args.confirm_password
                 )
-                api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
 
-                api_response = api_instance.change_password_using_put(change_user_password_object)
+                api_response = instance.change_password_using_put(change_user_password_object)
                 print(api_response)
             else:
                 print('New password and confirm password does not match.')

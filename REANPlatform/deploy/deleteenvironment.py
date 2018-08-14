@@ -26,9 +26,9 @@ class DeleteEnvironment(Command):
         """Delete environment action."""
         try:
             # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_response = api_instance.delete_environment(env_id)
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            api_response = instance.delete_environment(env_id)
             print("Environment deleted successfully : %s" % env_id)
         except ApiException as exception:
             Utility.print_exception(exception)

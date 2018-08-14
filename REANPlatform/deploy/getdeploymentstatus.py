@@ -36,15 +36,15 @@ class Status(Command):
             api_response = None
 
             # Initialise instance and api_instance to get deployment status
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
             if (env_id and deployment_name):
-                api_response = api_instance.get_deploy_status_by_env_id_and_deployment_name(
+                api_response = instance.get_deploy_status_by_env_id_and_deployment_name(
                     env_id,
                     deployment_name
                 )
             elif env_id:
-                api_response = api_instance.get_deploy_status_by_env_id(
+                api_response = instance.get_deploy_status_by_env_id(
                     env_id
                 )
             return api_response.status
