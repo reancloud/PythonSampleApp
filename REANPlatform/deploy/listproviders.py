@@ -50,13 +50,9 @@ class ListProvider(Command):
                     )
                 print("Provider list ::\n%s" % (table))
             elif list_provider_format == 'json' or list_provider_format == '':
-                print(
-                    json.dumps(
-                        api_response,
-                        default=lambda o: o.__dict__,
-                        sort_keys=True, indent=4
-                        ).replace("\"_", '"')
-                    )
+                parsed_json = Utility.get_parsed_json(api_response)
+                print(parsed_json)
+
             else:
                 raise RuntimeError("Please specify correct fromate, Allowed \
                         values are: [json, table]")
