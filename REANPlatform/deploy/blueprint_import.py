@@ -20,18 +20,8 @@ class ImportBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-            '--blueprint_file', '-b_file',
-            help='Blueprint file. REAN Deploy blueprint\
-            file path. A path can be absolute path.',
-            required=True
-        )
-        parser.add_argument(
-            '--attribute_file', '-a_file',
-            help='Blueprint attributes. REAN Deploy blueprint\
-            attributes file path. A path can be absolute\
-            path.', required=True
-        )
+        parser.add_argument('--blueprint_file', '-b', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=True)
+        parser.add_argument('--attribute_file', '-a', help='Blueprint attributes. REAN Deploy blueprint attributes file path. A path can be absolute path.', required=True)
         return parser
 
     def take_action(self, parsed_args):
@@ -54,8 +44,8 @@ class ImportBlueprint(Command):
     def blueprint_import(blueprint_path, attribute_path):      # noqa: E501
         """blueprint_import."""
         try:
-            api_env_instance = deploy_sdk_client.EnvironmentApi()
-            env_instance = set_header_parameter(api_env_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            env_instance = deploy_sdk_client.EnvironmentApi(api_client)
             blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), "r") as handle:

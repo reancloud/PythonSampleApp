@@ -1,5 +1,4 @@
 """Get Deployment ID."""
-from pprint import pprint
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -10,7 +9,7 @@ from deploy.constants import DeployConstants
 
 
 class GetDeployments(Command):
-    """Get Deployments."""
+    """Get Deployment Id."""
 
     log = logging.getLogger(__name__)
 
@@ -18,45 +17,21 @@ class GetDeployments(Command):
         """get_parser."""
         # Define parser
         parser = super(GetDeployments, self).get_parser(prog_name)
-        parser.add_argument('--deployment_name', '-n',
-                            help='Deployment Name. Provide this attribute \
-                                to get specific deployment.',
-                            required=False)
-        parser.add_argument('--env_id', '-id',
-                            help='Environment Id',
-                            required=True)
+        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Provide this attribute to get specific deployment else deployment name will be default', required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         return parser
-
-    @staticmethod
-    def get_deployments_by_id(env_id):
-        """Get Deployments By Env ID."""
-        try:
-            # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            res = api_instance.get_all_deployments_for_environment_by_id(
-                env_id
-            )
-            pprint(res)
-        except ApiException as api_exception:
-            Utility.print_exception(api_exception)
 
     @staticmethod
     def get_deployment_by_id_and_name(env_id, deployment_name):
         """Get Deployments by Env ID And Deployment Name."""
         try:
-            # Initialise instance and api_instance
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            res = api_instance.get_all_deployments_for_environment_by_id_and_deployment_name(
-                env_id,
-                deployment_name
-            )
-            pprint(res)
-
+            # Initialise api_client and api_instance
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
+            api_response = api_instance.get_all_deployments_for_environment_by_id_and_deployment_name(env_id, deployment_name)
+            print("Deployment id : %s " % (api_response.id))
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
-
 
     def take_action(self, parsed_args):
         """take_action."""
@@ -64,7 +39,5 @@ class GetDeployments(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        if env_id and deployment_name:
-            GetDeployments.get_deployment_by_id_and_name(env_id, deployment_name)  # noqa: E501
-        elif env_id:
-            GetDeployments.get_deployments_by_id(env_id)
+        if env_id:
+            GetDeployments.get_deployment_by_id_and_name(env_id, deployment_name)

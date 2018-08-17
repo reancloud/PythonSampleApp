@@ -35,9 +35,9 @@ class ListConnections(Command):
     def list_connection(list_connection_format):
         """list_connection."""
         try:
-            conn_api_instance = deploy_sdk_client.ConnectionApi()
-            api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_response = api_instance.get_all_vm_connections()
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            conn_api_instance = deploy_sdk_client.ConnectionApi(api_client)
+            api_response = conn_api_instance.get_all_vm_connections()
 
             if list_connection_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])

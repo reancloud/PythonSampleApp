@@ -16,63 +16,16 @@ class SaveConnection(Command):
     def get_parser(self, prog_name):
         """Get_parser."""
         parser = super(SaveConnection, self).get_parser(prog_name)
-        parser.add_argument(
-            '--type',
-            '-t', help='Connection protocol type. \
-            Allowed values are: [SSH, WinRM]',
-            required=True
-        )
-        parser.add_argument(
-            '--name',
-            '-n',
-            help='Connection name',
-            required=True
-        )
-        parser.add_argument(
-            '--user',
-            '-u',
-            help='Username to login machine',
-            required=False
-        )
-        parser.add_argument(
-            '--password',
-            '-p',
-            help='Password to login machine',
-            required=True
-        )
-        parser.add_argument(
-            '--securekeypath',
-            '-key', help='Secure key path',
-            required=False
-        )
-
-        parser.add_argument(
-            '--bastionhost',
-            '-host', help='Bastion host',
-            required=False
-        )
-
-        parser.add_argument(
-            '--bastionuser',
-            '-b_user', help='Bastion connection user',
-            required=False
-        )
-        parser.add_argument(
-            '--bastionport',
-            '-port', help='Bastion port',
-            required=False
-        )
-        parser.add_argument(
-            '--bastionpassword',
-            '-b_pass', help='Bastion connection password',
-            required=False
-        )
-        parser.add_argument(
-            '--bastionsecurekeypath',
-            '-b_key', help='Bastion connection secure \
-            key path',
-            required=False
-        )
+        parser.add_argument('--type', '-t', help='Connection protocol type. Allowed values are: [SSH, WinRM]', required=True)
+        parser.add_argument('--name', '-n', help='Connection name', required=True)
+        parser.add_argument('--user', '-u', help='Username to login machine', required=False)
+        parser.add_argument('--password', '-p', help='Password to login machine', required=False)
+        parser.add_argument('--securekeypath', '-k', help='Secure key path', required=False)
+        parser.add_argument('--bastionhost', '-bh', help='Bastion host', required=False)
+        parser.add_argument('--bastionuser', '-bu', help='Bastion connection user', required=False)
+        parser.add_argument('--bastionport', '-b_port', help='Bastion port', required=False)
+        parser.add_argument('--bastionpassword', '-bp', help='Bastion connection password', required=False)
+        parser.add_argument('--bastionsecurekeypath', '-bk', help='Bastion connection secure key path', required=False)
         return parser
 
     @staticmethod
@@ -86,10 +39,9 @@ class SaveConnection(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-
-        conn_api_instance = deploy_sdk_client.ConnectionApi()
-        api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-        body = None
+        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        api_instance = deploy_sdk_client.ConnectionApi(api_client)
+        connection_data = None
         bastion_data = None
         try:
             if(parsed_args.bastionhost and parsed_args.type == 'SSH'):
@@ -100,9 +52,8 @@ class SaveConnection(Command):
                     'port': parsed_args.bastionport,
                     'user': parsed_args.bastionuser
                 }
-
             if(parsed_args.type == 'SSH' and parsed_args.securekeypath):
-                body = deploy_sdk_client.SaveVmConnection(
+                connection_data = deploy_sdk_client.SaveVmConnection(
                     bastion_connection=bastion_data,
                     type=parsed_args.type,
                     name=parsed_args.name,
@@ -110,7 +61,7 @@ class SaveConnection(Command):
                     secure_key=SaveConnection.get_key(parsed_args.securekeypath)
                 )
             elif((parsed_args.type == 'WinRM' and parsed_args.password) or (parsed_args.type == 'SSH' and parsed_args.password)):
-                body = deploy_sdk_client.SaveVmConnection(
+                connection_data = deploy_sdk_client.SaveVmConnection(
                     bastion_connection=bastion_data,
                     type=parsed_args.type,
                     name=parsed_args.name,
@@ -118,21 +69,11 @@ class SaveConnection(Command):
                     password=parsed_args.password
                 )
             else:
-                raise RuntimeError(
-                    "Please provide correct parameters and values:")
+                raise RuntimeError("Please provide correct parameters and values")
 
-            api_response = api_instance.save_vm_connection(body)
-
-            list_api_response = api_instance.get_all_vm_connections()
-
-            connection_id = None
-            for conn in list_api_response:
-                if conn.name == body.name:
-                    connection_id = conn.id
-                    break
-
+            api_response = api_instance.save_vm_connection(connection_data)
             print("Connection created successfully :%s, id: %s" %
-                  (body.name, connection_id))
+                  (api_response.name, api_response.id))
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

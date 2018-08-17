@@ -20,12 +20,7 @@ class PrepareBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-            '--file', '-f',
-            help='Blueprint file. REAN Deploy blueprint\
-            file path. A path can be absolute path.',
-            required=False
-        )
+        parser.add_argument('--file', '-f', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -48,8 +43,8 @@ class PrepareBlueprint(Command):
     def blueprint_prepare(blueprint_path, attribute_path):     # noqa: E501
         """blueprint_prepare."""
         try:
-            api_env_instance = deploy_sdk_client.EnvironmentApi()
-            env_instance = set_header_parameter(api_env_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            env_instance = deploy_sdk_client.EnvironmentApi(api_client)
             blueprint_all_env = env_instance.prepare_import_blueprint(file=blueprint_path)     # noqa: E501
 
             prepare_data = {}

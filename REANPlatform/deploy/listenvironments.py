@@ -29,9 +29,9 @@ class ListEnvironments(Command):
     def list_environment(output_format):
         """List Environment."""
         try:
-            # Initialise instance and api_instance in list_environment
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            # Initialise api_client and api_instance in list_environment
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             # Get all environments for user
             api_response = api_instance.get_all_environments()
             if output_format == 'table':
