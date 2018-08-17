@@ -101,7 +101,7 @@ class RunInfraTest(Command):
 
             self.log.debug(body)
             self.log.debug("Execution stared for Infra test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.InfraTestApi().run)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.InfraTestApi(Utility.set_headers()).run)
 
         except Exception as exception:
             Utility.print_exception(exception)

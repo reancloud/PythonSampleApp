@@ -93,6 +93,6 @@ class RunCrossBrowserTest(Command):
 
             self.log.debug(body)
             self.log.debug("Execution stared for Automation Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_cross_browser_test_job)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_cross_browser_test_job)
         except Exception as exception:
             Utility.print_exception(exception)
