@@ -23,7 +23,7 @@ class SaveConnection(Command):
         parser.add_argument('--securekeypath', '-k', help='Secure key path', required=False)
         parser.add_argument('--bastionhost', '-bh', help='Bastion host', required=False)
         parser.add_argument('--bastionuser', '-bu', help='Bastion connection user', required=False)
-        parser.add_argument('--bastionport', '-b_port', help='Bastion port', required=False)
+        parser.add_argument('--bastionport', '-bport', help='Bastion port', required=False)
         parser.add_argument('--bastionpassword', '-bp', help='Bastion connection password', required=False)
         parser.add_argument('--bastionsecurekeypath', '-bk', help='Bastion connection secure key path', required=False)
         return parser
