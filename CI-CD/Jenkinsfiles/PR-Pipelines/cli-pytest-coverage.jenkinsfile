@@ -33,7 +33,8 @@ pipeline {
                             sh '''
                                 #!/bin/bash
                                 
-                                echo "Work in progress"
+                            python3 -m coverage run --source=./ -m pytest -s tests/
+                            python3 -m coverage report -m
                                 
                             '''
                             println "\u001B[32mCode coverage ran sucessfully\u001B[0m"
