@@ -19,12 +19,8 @@ class ExportEnvironment(Command):
         """get_parser."""
         # Define parser
         parser = super(ExportEnvironment, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-i',
-                            help='Environment id',
-                            required=True)
-        parser.add_argument('--environment_file_name', '-f',
-                            help='Specify filename for exporting an environment else filename will be environment name with its version',
-                            required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id', required=True)
+        parser.add_argument('--environment_file_name', '-f', help='Specify filename for exporting an environment else filename will be environment name with its version', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -41,7 +37,8 @@ class ExportEnvironment(Command):
         """Export Environment."""
         try:
             # Initialise instance and api_instance
-            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             response = api_instance.export_environment(env_id)
             filename = environment_file_name
 

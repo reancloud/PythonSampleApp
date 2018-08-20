@@ -19,12 +19,8 @@ class ExportBlueprintEnvironment(Command):
         """get_parser."""
         # Define parser
         parser = super(ExportBlueprintEnvironment, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-i',
-                            help='Environment id',
-                            required=True)
-        parser.add_argument('--blueprint_file_name', '-f',
-                            help='Specify filename for blueprint else filename will be environment name with its version',
-                            required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id', required=True)
+        parser.add_argument('--blueprint_file_name', '-f', help='Specify filename for blueprint else filename will be environment name with its version', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -41,7 +37,8 @@ class ExportBlueprintEnvironment(Command):
         """Export Blueprint Environment."""
         try:
             # Initialise api_instance
-            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             blueprint = api_instance.export_blueprint_environment(env_id)
             filename = blueprint_file_name
 

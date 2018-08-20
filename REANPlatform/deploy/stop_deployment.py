@@ -17,12 +17,8 @@ class StopDeployment(Command):
         """get_parser."""
         # Define parser
         parser = super(StopDeployment, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-i',
-                            help='Environment id',
-                            required=True)
-        parser.add_argument('--deployment_name', '-n', default='default',
-                            help='Deployment name. Please provide this attribute if deployment name is not default.',
-                            required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id', required=True)
+        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Please provide this attribute if deployment name is not default.', required=False)
         return parser
 
     @staticmethod
@@ -30,7 +26,8 @@ class StopDeployment(Command):
         """Stop Deployment."""
         try:
             # Initialise api_instance
-            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             stop_deployment_response = api_instance.stop_deployment_by_env_id_and_deployment_name(env_id, deployment_name)
             return stop_deployment_response
         except ApiException as api_exception:

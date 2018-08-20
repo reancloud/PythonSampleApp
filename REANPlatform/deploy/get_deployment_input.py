@@ -19,16 +19,9 @@ class GetDeploymentInput(Command):
         """get_parser."""
         # Define parser
         parser = super(GetDeploymentInput, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-i',
-                            help='Environment id',
-                            required=True)
-        parser.add_argument('--deployment_name', '-n',
-                            default='default',
-                            help='Deployment name',
-                            required=False)
-        parser.add_argument('--output', '-f',
-                            help='Specify filename for getting deployment input',
-                            required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id', required=True)
+        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name', required=False)
+        parser.add_argument('--output', '-f', help='Specify filename for getting deployment input', required=False)
         return parser
 
     @staticmethod
@@ -39,7 +32,8 @@ class GetDeploymentInput(Command):
             api_response = None
 
             # Initialise api_instance to get deployment inputjson
-            api_instance = set_header_parameter(deploy_sdk_client.EnvironmentApi(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             if env_id:
                 api_response = api_instance.get_deployment_input_json(env_id, deployment_name)
             return api_response
