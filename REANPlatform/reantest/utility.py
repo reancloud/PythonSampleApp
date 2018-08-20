@@ -5,9 +5,9 @@ import logging
 import sys
 import time
 import itertools
-import validators
 import urllib3
 import yaml
+import validators
 
 from reanplatform.utilityconstants import PlatformConstants
 from reanplatform.set_header import set_header_parameter
