@@ -32,9 +32,10 @@ pipeline {
                         try {
                             sh '''
                                 #!/bin/bash
-                                
-                            python3 -m coverage run --source=./ -m pytest -s tests/
-                            python3 -m coverage report -m
+                                set -e
+                                cd REANPlatform/reanplatform
+                                python3 -m coverage run --source=./ -m pytest -s tests/
+                                python3 -m coverage report -m
                                 
                             '''
                             println "\u001B[32mCode coverage ran sucessfully\u001B[0m"
