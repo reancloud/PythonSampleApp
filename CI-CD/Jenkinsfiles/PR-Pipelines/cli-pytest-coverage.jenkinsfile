@@ -33,9 +33,7 @@ pipeline {
                             sh '''
                                 #!/bin/bash
                                 set -e
-                                cd REANPlatform/reanplatform
-                                pwd
-                                ls
+                                cd REANPlatform/
                                 python3 -m coverage run --source=./ -m pytest -s tests/
                                 python3 -m coverage report -m
                                 
