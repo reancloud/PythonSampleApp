@@ -1,0 +1,18 @@
+virtualenv:
+  python: python3.6
+  pip:
+    requirements:
+      - requirements.txt
+    packages:
+      - .
+
+packager:
+  target: reanplatform_cli_v0.0.2.zip
+  followlinks: true
+  includes:
+    - LICENSE
+    - static/**
+    - /*.py
+    - setup.py
+  excludes:
+    - static/**/*.tmp

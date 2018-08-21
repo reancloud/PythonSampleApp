@@ -8,6 +8,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class SaveProvider(Command):
@@ -40,8 +41,8 @@ class SaveProvider(Command):
     @staticmethod
     def create_provider(prov_name, prov_type, provider_details):
         """create_provider."""
-        provider_api_instance = deploy_sdk_client.ProviderApi()
-        api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+        api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
         try:
             file_path = provider_details
 
@@ -59,9 +60,9 @@ class SaveProvider(Command):
                 type=prov_type,
                 json=jsondata
             )
-            api_response = api_instance.save_provider(provider)
+            api_response = provider_api_instance.save_provider(provider)
             # Get all providers for user
-            list_api_response = api_instance.get_all_providers()
+            list_api_response = provider_api_instance.get_all_providers()
             provider_id = None
             for provider in list_api_response:
                 if provider.name == prov_name:

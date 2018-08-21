@@ -1,5 +1,4 @@
 """List provider module."""
-import json
 import logging
 from prettytable import PrettyTable
 from cliff.command import Command
@@ -8,6 +7,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class ListProvider(Command):
@@ -34,9 +34,9 @@ class ListProvider(Command):
     def list_provider(list_provider_format):
         """list_provider."""
         try:
-            provider_api_instance = deploy_sdk_client.ProviderApi()
-            api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_response = api_instance.get_all_providers()
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
+            api_response = provider_api_instance.get_all_providers()
             if list_provider_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
@@ -50,13 +50,9 @@ class ListProvider(Command):
                     )
                 print("Provider list ::\n%s" % (table))
             elif list_provider_format == 'json' or list_provider_format == '':
-                print(
-                    json.dumps(
-                        api_response,
-                        default=lambda o: o.__dict__,
-                        sort_keys=True, indent=4
-                        ).replace("\"_", '"')
-                    )
+                parsed_json = Utility.get_parsed_json(api_response)
+                print(parsed_json)
+
             else:
                 raise RuntimeError("Please specify correct fromate, Allowed \
                         values are: [json, table]")

@@ -57,45 +57,42 @@ class RunCrossBrowserTest(Command):
     def take_action(self, parsed_args):
         """take_action."""
         self.log.debug(parsed_args)
-
-        browser_list = Utility.get_browser_dto(parsed_args)
-        self.log.debug(browser_list)
-
-        error_message = Utility.validate_automation_test_inputs(parsed_args)
-        if error_message:
-            self.app.stdout.write(error_message)
-            return
-
-        body = test_sdk_client.CrossBrowserTestDto()
-
-        body.app_name = parsed_args.app_name
-        body.git_url = parsed_args.git_repository_url
-        body.git_pass = parsed_args.git_password
-        body.git_user = parsed_args.git_username
-        body.branch_name = parsed_args.git_branch_name
-        body.command_to_run_test = parsed_args.command_to_run_test
-        body.browser_list = browser_list
-        body.test_url = parsed_args.url
-        body.type = "functionaltest"  # type
-        body.execution_strategy = "boost"
-        body.automation_code_type = parsed_args.automation_code_type
-        body.is_presrve_if_failed = parsed_args.preserve_machine
-        body.use_code_upload = "false"  # use_code_upload,
-        body.code_file_name = "test"  # code_file_name,
-        body.pre_script = parsed_args.pre_script
-        body.post_script = parsed_args.post_script
-        body.report_file = parsed_args.report_file_name
-        body.output_dir = parsed_args.output_directory_path
-        body.deletevm = parsed_args.delete_virtual_machine
-        body.run_sequential = parsed_args.run_sequential
-        body.sample_code_type = parsed_args.sample_code_type
-        body.test_suite = parsed_args.test_suite
-
-        self.log.debug(body)
-
         try:
-            self.log.debug("Execution stared for Automation Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_cross_browser_test_job)
+            browser_list = Utility.get_browser_dto(parsed_args)
+            self.log.debug(browser_list)
 
+            error_message = Utility.validate_automation_test_inputs(parsed_args)
+            if error_message:
+                self.app.stdout.write(error_message)
+                return
+
+            body = test_sdk_client.CrossBrowserTestDto()
+
+            body.app_name = parsed_args.app_name
+            body.git_url = parsed_args.git_repository_url
+            body.git_pass = parsed_args.git_password
+            body.git_user = parsed_args.git_username
+            body.branch_name = parsed_args.git_branch_name
+            body.command_to_run_test = parsed_args.command_to_run_test
+            body.browser_list = browser_list
+            body.test_url = parsed_args.url
+            body.type = "functionaltest"  # type
+            body.execution_strategy = "boost"
+            body.automation_code_type = parsed_args.automation_code_type
+            body.is_presrve_if_failed = parsed_args.preserve_machine
+            body.use_code_upload = "false"  # use_code_upload,
+            body.code_file_name = "test"  # code_file_name,
+            body.pre_script = parsed_args.pre_script
+            body.post_script = parsed_args.post_script
+            body.report_file = parsed_args.report_file_name
+            body.output_dir = parsed_args.output_directory_path
+            body.deletevm = parsed_args.delete_virtual_machine
+            body.run_sequential = parsed_args.run_sequential
+            body.sample_code_type = parsed_args.sample_code_type
+            body.test_suite = parsed_args.test_suite
+
+            self.log.debug(body)
+            self.log.debug("Execution stared for Automation Test")
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_cross_browser_test_job)
         except Exception as exception:
-            self.log.error("Exception when calling RunAutomationTest->submit_cross_browser_test_job: %s\n", exception)
+            Utility.print_exception(exception)

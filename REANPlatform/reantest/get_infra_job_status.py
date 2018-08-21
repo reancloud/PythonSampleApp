@@ -1,6 +1,7 @@
 """Get User Job Status."""
 import logging
 from cliff.command import Command
+from reantest.utility import Utility
 
 import test_sdk_client
 
@@ -24,9 +25,9 @@ class GetInfraJobStatus(Command):
         self.log.debug(parsed_args)
 
         try:
-            api_instance = test_sdk_client.InfraTestApi()
+            api_instance = test_sdk_client.InfraTestApi(Utility.set_headers())
             api_response = api_instance.get_infra_test_job_status(parsed_args.job_id)
             self.log.debug(api_response)
             print(api_response)
         except Exception as exception:
-            self.log.error("Exception when calling GetJobStatus->get_job_status: %s\n", exception)
+            Utility.print_exception(exception)

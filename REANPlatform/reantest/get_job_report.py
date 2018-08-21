@@ -24,7 +24,7 @@ class GetJobReport(Command):
         self.log.debug(parsed_args)
 
         try:
-            api_instance = test_sdk_client.RunJobsApi()
+            api_instance = test_sdk_client.RunJobsApi(Utility.set_headers())
             api_response = api_instance.get_job_report(parsed_args.job_id, _preload_content=False)
 
             file_name = 'reports_' + parsed_args.job_id + '.zip'
@@ -39,5 +39,6 @@ class GetJobReport(Command):
                 open(str(Path.home()) + "/" + file_name, 'wb').write(api_response.data)
 
             print("Executed successfully.")
+
         except Exception as exception:
-            self.log.error("Exception when calling GetJobReports->get_job_reports: %s\n", exception)
+            Utility.print_exception(exception)

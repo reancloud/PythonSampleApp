@@ -25,27 +25,26 @@ class RunUPA(Command):
     def take_action(self, parsed_args):
         """take_action."""
         self.log.debug(parsed_args)
-
-        error_message = Utility.validate_url(parsed_args)
-        if error_message:
-            self.app.stdout.write(error_message)
-            return
-
-        body = test_sdk_client.UpaTestDto()
-
-        body.test_url = parsed_args.url
-        body.text_to_search = parsed_args.text_to_search
-        body.page_load_time_out = parsed_args.page_load_time_out
-        body.type = "upatest"  # type
-        body.execution_strategy = "boost"  # execution_strategy
-        body.run_upa = True
-        body.run_crawl = parsed_args.crawl
-
-        self.log.debug(body)
-
         try:
+            error_message = Utility.validate_url(parsed_args)
+            if error_message:
+                self.app.stdout.write(error_message)
+                return
+
+            body = test_sdk_client.UpaTestDto()
+
+            body.test_url = parsed_args.url
+            body.text_to_search = parsed_args.text_to_search
+            body.page_load_time_out = parsed_args.page_load_time_out
+            body.type = "upatest"  # type
+            body.execution_strategy = "boost"  # execution_strategy
+            body.run_upa = True
+            body.run_crawl = parsed_args.crawl
+
+            self.log.debug(body)
+
             self.log.debug("Execution stared for UPA Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_upa_test_job)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_upa_test_job)
 
         except Exception as exception:
-            self.log.error("Exception when calling RunUpaTest->submit_upa_test_job: %s\n", exception)
+            Utility.print_exception(exception)

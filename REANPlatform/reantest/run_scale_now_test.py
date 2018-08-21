@@ -56,60 +56,59 @@ class RunScaleNowTest(Command):
     def take_action(self, parsed_args):
         """take_action."""
         self.log.debug(parsed_args)
-
-        browser_list = Utility.get_browser_dto(parsed_args)
-
-        error_message = Utility.validate_scale_test_inputs(parsed_args)
-        if error_message:
-            self.app.stdout.write(error_message)
-            return
-
-        if parsed_args.firefox is not None:
-            firefox = Utility.get_unique_seq(parsed_args.firefox.split(","))
-            self.log.debug(firefox)
-            browser_list.firefox = firefox
-        if parsed_args.chrome is not None:
-            chrome = Utility.get_unique_seq(parsed_args.chrome.split(","))
-            self.log.debug(chrome)
-            browser_list.chrome = chrome
-
-        self.log.debug(browser_list)
-
-        body = test_sdk_client.ScaleNowTestDto()
-
-        body.app_name = parsed_args.app_name
-        body.git_url = parsed_args.git_repository_url
-        body.git_pass = parsed_args.git_password
-        body.git_encrypted_pwd = "String"
-        body.git_user = parsed_args.git_username
-        body.branch_name = parsed_args.git_branch_name
-        body.command_to_run_test = parsed_args.command_to_run_test
-        body.browser_list = browser_list
-        body.test_url = parsed_args.url
-        body.text_to_search = "string"
-        body.page_load_time_out = parsed_args.page_load_time_out
-        body.type = "loadtest"  # type
-        body.execution_strategy = "loadTest"
-        body.automation_code_type = parsed_args.automation_code_type
-        body.use_code_upload = parsed_args.use_code_upload
-        body.code_file_name = parsed_args.code_file_name
-        body.pre_script = parsed_args.pre_script
-        body.post_script = parsed_args.post_script
-        body.report_file = parsed_args.report_file
-        body.output_dir = parsed_args.output_directory
-        body.deletevm = parsed_args.delete_virtual_machine
-        body.run_sequential = parsed_args.run_sequential
-        body.run_hours = parsed_args.run_hours
-        body.parrallel_browsers_count = parsed_args.parallel_users_count
-        body.inc_load = parsed_args.incremental_load
-        body.inc_with = parsed_args.increment_with
-        body.inc_interval = parsed_args.increment_interval
-
-        self.log.debug(body)
-
         try:
+            browser_list = Utility.get_browser_dto(parsed_args)
+
+            error_message = Utility.validate_scale_test_inputs(parsed_args)
+            if error_message:
+                self.app.stdout.write(error_message)
+                return
+
+            if parsed_args.firefox is not None:
+                firefox = Utility.get_unique_seq(parsed_args.firefox.split(","))
+                self.log.debug(firefox)
+                browser_list.firefox = firefox
+            if parsed_args.chrome is not None:
+                chrome = Utility.get_unique_seq(parsed_args.chrome.split(","))
+                self.log.debug(chrome)
+                browser_list.chrome = chrome
+
+            self.log.debug(browser_list)
+
+            body = test_sdk_client.ScaleNowTestDto()
+
+            body.app_name = parsed_args.app_name
+            body.git_url = parsed_args.git_repository_url
+            body.git_pass = parsed_args.git_password
+            body.git_encrypted_pwd = "String"
+            body.git_user = parsed_args.git_username
+            body.branch_name = parsed_args.git_branch_name
+            body.command_to_run_test = parsed_args.command_to_run_test
+            body.browser_list = browser_list
+            body.test_url = parsed_args.url
+            body.text_to_search = "string"
+            body.page_load_time_out = parsed_args.page_load_time_out
+            body.type = "loadtest"  # type
+            body.execution_strategy = "loadTest"
+            body.automation_code_type = parsed_args.automation_code_type
+            body.use_code_upload = parsed_args.use_code_upload
+            body.code_file_name = parsed_args.code_file_name
+            body.pre_script = parsed_args.pre_script
+            body.post_script = parsed_args.post_script
+            body.report_file = parsed_args.report_file
+            body.output_dir = parsed_args.output_directory
+            body.deletevm = parsed_args.delete_virtual_machine
+            body.run_sequential = parsed_args.run_sequential
+            body.run_hours = parsed_args.run_hours
+            body.parrallel_browsers_count = parsed_args.parallel_users_count
+            body.inc_load = parsed_args.incremental_load
+            body.inc_with = parsed_args.increment_with
+            body.inc_interval = parsed_args.increment_interval
+
+            self.log.debug(body)
+
             self.log.debug("Execution stared for Automation Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_scale_now_test_job)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_scale_now_test_job)
 
         except Exception as exception:
-            self.log.error("Exception when calling RunScaleNowTest->submit_scale_now_test_job: %s\n", exception)
+            Utility.print_exception(exception)
