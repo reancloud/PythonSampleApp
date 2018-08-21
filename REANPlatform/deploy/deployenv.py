@@ -9,9 +9,9 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from deploy.getdeploymentstatus import Status
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from deploy.utility import DeployUtility
 
 
 class DepolyEnv(Command):
