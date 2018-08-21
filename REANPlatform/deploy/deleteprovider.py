@@ -7,6 +7,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class DeleteProvider(Command):
@@ -55,7 +56,7 @@ class DeleteProvider(Command):
     def delete_provider_by_id(prov_id):
         """delete_provider."""
         try:
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
             api_response = provider_api_instance.delete_provider(prov_id)
             print("Provider deleted successfully id", prov_id)
@@ -66,7 +67,7 @@ class DeleteProvider(Command):
     def delete_provider_by_name(prov_name):
         """delete_provider_by_name."""
         try:
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
             prov_id = DeleteProvider.get_id(prov_name, provider_api_instance)
             if prov_id is None:
@@ -80,7 +81,7 @@ class DeleteProvider(Command):
     def get_id(name, api_instance):
         """get_id."""
         provider_id = None
-        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
         list_api_response = api_instance.get_all_providers(api_client)
         for provider in list_api_response:
             if provider.name == name:

@@ -105,13 +105,3 @@ class Utility(object):
 
                 config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
                 return config_property
-
-    @staticmethod
-    def create_api_client():
-        """Create API client."""
-        verify_ssl = Utility.get_config_property(PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE)
-        if not verify_ssl:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        Configuration().verify_ssl = verify_ssl
-        api_client = ApiClient()
-        return api_client

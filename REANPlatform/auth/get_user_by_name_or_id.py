@@ -26,7 +26,7 @@ class GetUserByNameOrId(Command):
         """Get user by name."""
         try:
             # Initialise instance and api_instance
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
             instance = authnz_sdk_client.UsercontrollerApi(api_client)
 
             # Get user details by name
@@ -43,7 +43,7 @@ class GetUserByNameOrId(Command):
         """Get user by user id."""
         try:
             # Initialise instance and api_instance
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
             instance = authnz_sdk_client.UsercontrollerApi(api_client)
 
             # Get user details by name

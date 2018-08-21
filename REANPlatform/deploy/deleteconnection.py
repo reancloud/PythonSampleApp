@@ -7,6 +7,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class DeleteConnection(Command):
@@ -53,7 +54,7 @@ class DeleteConnection(Command):
     def delete_connection_by_id(conn_id):
         """delete_connection."""
         try:
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             conn_api_instance = deploy_sdk_client.ConnectionApi(api_client)
             api_response = conn_api_instance.delete_vm_connection(conn_id)
             print("Connection deleted successfully : %s" % conn_id)
@@ -63,7 +64,7 @@ class DeleteConnection(Command):
     @staticmethod
     def delete_connection_by_name(conn_name):
         """delete_connection_by_name."""
-        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
         conn_api_instance = deploy_sdk_client.ConnectionApi(api_client)
         conn_id = None
         try:

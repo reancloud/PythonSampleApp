@@ -7,6 +7,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class GetDeployments(Command):
@@ -32,7 +33,7 @@ class GetDeployments(Command):
         """Get Deployments By Env ID."""
         try:
             # Initialise instance and api_instance
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             instance = deploy_sdk_client.EnvironmentApi(api_client)
             res = instance.get_all_deployments_for_environment_by_id(
                 env_id
@@ -46,7 +47,7 @@ class GetDeployments(Command):
         """Get Deployments by Env ID And Deployment Name."""
         try:
             # Initialise instance and api_instance
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             instance = deploy_sdk_client.EnvironmentApi(api_client)
             res = instance.get_all_deployments_for_environment_by_id_and_deployment_name(
                 env_id,

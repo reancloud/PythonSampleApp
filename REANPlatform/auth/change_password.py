@@ -6,6 +6,7 @@ from reanplatform.utility import Utility
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
 from auth.constants import AunthnzConstants
+from auth.utility import AuthnzUtility
 
 
 class ChangePassword(Command):
@@ -36,7 +37,7 @@ class ChangePassword(Command):
         try:
             # Initialise instance and api_instance in list_environment
             if parsed_args.new_password == parsed_args.confirm_password:
-                api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+                api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
                 instance = authnz_sdk_client.UsercontrollerApi(api_client)
                 change_user_password_object = authnz_sdk_client.ChangeUserPassword(
                     id=parsed_args.user_id,
