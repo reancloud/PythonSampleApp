@@ -6,7 +6,6 @@ import sys
 import time
 import itertools
 import urllib3
-import yaml
 import validators
 
 from reanplatform.utilityconstants import PlatformConstants
