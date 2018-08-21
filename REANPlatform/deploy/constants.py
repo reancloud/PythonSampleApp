@@ -5,6 +5,8 @@ class DeployConstants(object):
     """Contains constats required for CLI."""
 
     DEPLOY_URL = '/api/reandeploy/DeployNow/rest'
+    NAME_REEFERENCE = 'name'
+    PROVIDER_DETAILS_REFERENCE = 'provider_details'
 
     def __setattr__(self, attr, value):
         """__setattr__."""

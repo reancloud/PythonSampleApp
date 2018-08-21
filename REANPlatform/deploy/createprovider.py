@@ -38,30 +38,22 @@ class SaveProvider(Command):
         SaveProvider.create_provider(prov_name, prov_type, provider_details)
 
     @staticmethod
-    def create_provider(prov_name, prov_type, provider_details):
+    def create_providers(prov_name, prov_type, provider_details):
         """create_provider."""
-        provider_api_instance = deploy_sdk_client.ProviderApi()
-        api_instance = set_header_parameter(provider_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
+
         try:
-            file_path = provider_details
+            json_data = SaveProvider.fetch_file_data(provider_details)
+            if isinstance(json_data, list):
+                print('Saving list of providers...')
+                for data in json_data:
+                    api_response = SaveProvider.create_provider(data, prov_type, provider_api_instance)
+            else:
+                api_response = SaveProvider.create_provider(json_data, prov_type, provider_api_instance)
 
-            if not os.path.isfile(file_path):
-                raise RuntimeError('Provider details file %s \
-                                does not exists' % file_path)
-
-            # Parse parameters
-            with open(file_path, "r") as handle:
-                filedata = handle.read()
-
-            jsondata = json.loads(filedata)
-            provider = deploy_sdk_client.SaveProvider(
-                name=prov_name,
-                type=prov_type,
-                json=jsondata
-            )
-            api_response = api_instance.save_provider(provider)
             # Get all providers for user
-            list_api_response = api_instance.get_all_providers()
+            list_api_response = provider_api_instance.get_all_providers()
             provider_id = None
             for provider in list_api_response:
                 if provider.name == prov_name:
@@ -71,3 +63,26 @@ class SaveProvider(Command):
                     Name: %s,  Id: %i" % (prov_name, provider_id))
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
+
+    @staticmethod
+    def create_provider(data, prov_type, api_instance):
+        """Save provider."""
+        provider = deploy_sdk_client.SaveProvider(
+            name=data.get(DeployConstants.NAME_REEFERENCE),
+            type=prov_type,
+            json=data.get(DeployConstants.PROVIDER_DETAILS_REFERENCE)
+        )
+        api_response = api_instance.save_provider(provider)
+        return api_response
+
+    @staticmethod
+    def fetch_file_data(file_path):
+        """Fetch file data."""
+        if not os.path.isfile(file_path):
+            raise RuntimeError('Provider details file %s does not exists' % file_path)
+
+        with open(file_path, "r") as handle:
+            filedata = handle.read()
+
+        jsondata = json.loads(filedata)
+        return jsondata
