@@ -54,22 +54,23 @@ confidence=
 
 disable=
     attribute-defined-outside-init,
-    import-error,
     no-member,
     invalid-name,
     no-else-return,
     too-few-public-methods,
     line-too-long,
     no-self-use,
-    unused-variable,
-    duplicate-code,
-    unused-argument,
     too-many-arguments,
     undefined-loop-variable,
     too-many-function-args,
     broad-except,
     no-value-for-parameter,
-    inconsistent-return-statements
+    inconsistent-return-statements,
+    import-error,
+    dangerous-default-value,
+    too-many-boolean-expressions,
+    duplicate-code,
+    unused-variable
 
 
 

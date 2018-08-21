@@ -1,13 +1,14 @@
 """List connections module."""
-import logging
-from cliff.command import Command
-import deploy_sdk_client
 import json
 import re
+import logging
+from prettytable import PrettyTable
+from cliff.command import Command
+import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
-from prettytable import PrettyTable
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
 
 
 class ListConnections(Command):
@@ -27,41 +28,41 @@ class ListConnections(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        format = parsed_args.format
-        ListConnections.list_connection(format)
+        list_connection_format = parsed_args.format
+        ListConnections.list_connection(list_connection_format)
 
     @staticmethod
-    def list_connection(format):
+    def list_connection(list_connection_format):
         """list_connection."""
         try:
             conn_api_instance = deploy_sdk_client.ConnectionApi()
-            api_instance = set_header_parameter(conn_api_instance)
+            api_instance = set_header_parameter(conn_api_instance, Utility.get_url(DeployConstants.DEPLOY_URL))
             api_response = api_instance.get_all_vm_connections()
 
-            if format == 'table':
+            if list_connection_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Type'])
                 table.padding_width = 1
                 for connection in api_response:
                     table.add_row(
-                                [
-                                    connection.name,
-                                    connection.id,
-                                    connection.type
-                                ]
-                         )
+                        [
+                            connection.name,
+                            connection.id,
+                            connection.type
+                        ]
+                    )
                 print("Connection list \n%s" % (table))
-            elif format == 'json' or format == '':
+            elif list_connection_format == 'json' or list_connection_format == '':
                 print(
-                        json.dumps(
-                                api_response,
-                                default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4
-                                ).replace("\"_", '"')
+                    json.dumps(
+                        api_response,
+                        default=lambda o: o.__dict__,
+                        sort_keys=True, indent=4
+                        ).replace("\"_", '"')
                     )
             else:
                 exception_msg = "Please specify correct fromate, Allowed \
                         values are: [json, table]"
                 raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
-        except ApiException as e:
-            Utility.print_exception(e)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
