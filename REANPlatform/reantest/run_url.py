@@ -51,7 +51,7 @@ class RunURLTest(Command):
             body.run_upa = parsed_args.upa
             body.run_crawl = parsed_args.crawl
 
-            self.log.debug("Execution stared for URL Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_url_test_job)
+            self.log.debug("Execution stared for URL test")
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_url_test_job)
         except Exception as exception:
             Utility.print_exception(exception)

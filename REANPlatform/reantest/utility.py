@@ -5,9 +5,19 @@ import logging
 import sys
 import time
 import itertools
+import urllib3
 import validators
+
+from reanplatform.utilityconstants import PlatformConstants
+from reanplatform.set_header import set_header_parameter
+from reanplatform.utility import Utility as PlatformUtility
+
 import test_sdk_client
+from test_sdk_client.api_client import ApiClient
+from test_sdk_client.configuration import Configuration
 from test_sdk_client.rest import ApiException
+
+from reantest.constants import TestConstants
 
 
 class Utility:
@@ -92,9 +102,7 @@ class Utility:
             message = "Please enter valid Test URL."
 
         # Validation for Security test type
-        elif params.security_test_type is None:
-            message = "Please Provide security test type."
-        elif params.security_test_type != '@app_scan' or params.security_test_type != '@http_headers':
+        elif params.security_test_type != '@app_scan' and params.security_test_type != '@http_headers':
             message = "Please Provide valid security test type."
 
         return message
@@ -169,7 +177,7 @@ class Utility:
         print("The request submitted successfully. Job Id is : ", job_id)
 
         if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
-            api_instance = test_sdk_client.RunTestApi()
+            api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
             Utility.wait_while_job_running(api_instance, job_id)
 
     @staticmethod
@@ -184,3 +192,18 @@ class Utility:
             print("Status : %s ,Message : %s" % (err['status'], err['message']))
         elif isinstance(exception, Exception):
             print(exception)
+
+    @staticmethod
+    def set_headers():
+        """Set headers."""
+        return set_header_parameter(Utility.create_api_client(), PlatformUtility.get_url(TestConstants.TEST_URL))
+
+    @staticmethod
+    def create_api_client():
+        """Create API client."""
+        verify_ssl = PlatformUtility.get_config_property(PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE)
+        if not verify_ssl:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        Configuration().verify_ssl = verify_ssl
+        api_client = ApiClient()
+        return api_client
