@@ -44,7 +44,7 @@ class RunUPA(Command):
             self.log.debug(body)
 
             self.log.debug("Execution stared for UPA Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_upa_test_job)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_upa_test_job)
 
         except Exception as exception:
             Utility.print_exception(exception)

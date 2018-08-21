@@ -6,6 +6,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class DeleteEnvironment(Command):
@@ -24,7 +25,7 @@ class DeleteEnvironment(Command):
         """Delete environment action."""
         try:
             # Initialise api_client and api_instance
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             api_response = api_instance.delete_environment(env_id)
             print("Environment deleted successfully : %s" % api_response.id)

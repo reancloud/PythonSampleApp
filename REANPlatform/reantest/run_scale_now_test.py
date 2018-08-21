@@ -108,7 +108,7 @@ class RunScaleNowTest(Command):
             self.log.debug(body)
 
             self.log.debug("Execution stared for Automation Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_scale_now_test_job)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_scale_now_test_job)
 
         except Exception as exception:
             Utility.print_exception(exception)

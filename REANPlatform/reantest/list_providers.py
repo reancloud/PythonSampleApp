@@ -32,7 +32,7 @@ class ListProvider(Command):
     def list_provider(list_provider_format):
         """list_provider."""
         try:
-            api_instance = test_sdk_client.ProviderApi()
+            api_instance = test_sdk_client.ProviderApi(Utility.set_headers())
             api_response = api_instance.get_all_providers()
             if list_provider_format == 'table':
                 table = PrettyTable(['Id', 'Name', 'Type', 'Access Key', 'Secret \

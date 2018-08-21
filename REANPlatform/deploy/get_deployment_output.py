@@ -8,6 +8,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class GetDeploymentOutput(Command):
@@ -32,7 +33,7 @@ class GetDeploymentOutput(Command):
             api_response = None
 
             # Initialise api_instance to get deployment details
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             if env_id:
                 api_response = api_instance.get_deployment_details(env_id, deployment_name)

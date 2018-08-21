@@ -7,10 +7,11 @@ import time
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from deploy.getdeploymentstatus import Status
-from deploy.constants import DeployConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
+from deploy.getdeploymentstatus import Status
 
 
 class DepolyEnv(Command):
@@ -55,8 +56,8 @@ class DepolyEnv(Command):
                            region, child_input_json, depends_on_json):
         """Deploy/Redeploy an Environment."""
         try:
-            # Initialise instance and api_instance and response
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            # Initialise instance and api_instance
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             status = None
             body = deploy_sdk_client.DeploymentConfigurationDto(

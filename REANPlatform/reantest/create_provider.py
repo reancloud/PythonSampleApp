@@ -60,8 +60,7 @@ class CreateProvider(Command):
             self.log.debug(body)
 
             self.log.debug("Execution stared for create provider")
-
-            api_instance = test_sdk_client.ProviderApi()
+            api_instance = test_sdk_client.ProviderApi(Utility.set_headers())
             api_response = api_instance.save_provider(body)
 
             self.log.debug(api_response)

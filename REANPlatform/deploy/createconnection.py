@@ -6,6 +6,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class SaveConnection(Command):
@@ -39,8 +40,8 @@ class SaveConnection(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-        api_instance = deploy_sdk_client.ConnectionApi(api_client)
+        api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        conn_api_instance = deploy_sdk_client.ConnectionApi(api_client)
         connection_data = None
         bastion_data = None
         try:

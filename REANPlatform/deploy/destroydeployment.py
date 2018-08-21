@@ -9,6 +9,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class DestroyDeployment(Command):
@@ -54,7 +55,7 @@ class DestroyDeployment(Command):
     def destroy_env_by_envid(env_id):
         """destroy_env_by_envid."""
         try:
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             env_api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             response = env_api_instance.destroy(env_id)
             deploy_status = None
@@ -77,7 +78,7 @@ class DestroyDeployment(Command):
     def destroy_by_deploymentid(deployment_id):
         """destroy_deployment_id."""
         try:
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             env_api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             deploy_status = None
             deployment_response = env_api_instance.destroy_deployment_by_id(deployment_id)
@@ -101,7 +102,7 @@ class DestroyDeployment(Command):
     def destroy_by_envid_deploymentname(env_id, deployment_name):
         """destroy_by_envid_deploymentname."""
         try:
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             env_api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             deploy_status = None
 

@@ -2,12 +2,7 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
-from reantest.constants import TestConstants
-import test_sdk_client
 from test_sdk_client.rest import ApiException
-from reanplatform.utility import Utility
-
-from reanplatform.set_header import set_header_parameter
 
 
 class Test(App):
@@ -30,9 +25,6 @@ class Test(App):
     def prepare_to_run_command(self, cmd):
         """prepare_to_run_command."""
         self.LOG.debug('prepare_to_run_command %s', cmd.__class__.__name__)
-
-        self.api_instance = test_sdk_client.TestNowUtilityApi()
-        self.api_instance = set_header_parameter(self.api_instance, Utility.get_url(TestConstants.TEST_URL))
 
         self.LOG.debug('Initialize the api_instance in prepare_to_run_command')
 
