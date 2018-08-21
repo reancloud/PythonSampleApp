@@ -25,7 +25,7 @@ class GetInfraJobStatus(Command):
         self.log.debug(parsed_args)
 
         try:
-            api_instance = test_sdk_client.InfraTestApi()
+            api_instance = test_sdk_client.InfraTestApi(Utility.set_headers())
             api_response = api_instance.get_infra_test_job_status(parsed_args.job_id)
             self.log.debug(api_response)
             print(api_response)
