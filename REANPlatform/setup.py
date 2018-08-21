@@ -74,7 +74,7 @@ setup(
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
-            'get-deployment-id = deploy.getdeploymentid:GetDeployments',
+            'get-deployment-id = deploy.getdeploymentid:GetDeploymentId',
             'get-deployment-input = deploy.get_deployment_input:GetDeploymentInput',
             'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',

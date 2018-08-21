@@ -9,7 +9,7 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class GetDeployments(Command):
+class GetDeploymentId(Command):
     """Get Deployment Id."""
 
     log = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ class GetDeployments(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser
-        parser = super(GetDeployments, self).get_parser(prog_name)
+        parser = super(GetDeploymentId, self).get_parser(prog_name)
         parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Provide this attribute to get specific deployment else deployment name will be default', required=False)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         return parser
@@ -41,4 +41,4 @@ class GetDeployments(Command):
         deployment_name = parsed_args.deployment_name
 
         if env_id:
-            GetDeployments.get_deployment_by_id_and_name(env_id, deployment_name)
+            GetDeploymentId.get_deployment_by_id_and_name(env_id, deployment_name)
