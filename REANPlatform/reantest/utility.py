@@ -200,22 +200,9 @@ class Utility:
         return set_header_parameter(Utility.create_api_client(), PlatformUtility.get_url(TestConstants.TEST_URL))
 
     @staticmethod
-    def get_config_property(prop):
-        """Get ssl verify certification status from config file."""
-        path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:  # noqa: E501
-                    data_loaded = yaml.load(stream)
-
-                config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
-                return config_property
-
-    @staticmethod
     def create_api_client():
         """Create API client."""
-        verify_ssl = Utility.get_config_property(PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE)
+        verify_ssl = PlatformUtility.get_config_property(PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE)
         if not verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         Configuration().verify_ssl = verify_ssl
