@@ -9,6 +9,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from deploy.getdeploymentstatus import Status
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 
@@ -73,8 +74,8 @@ class DepolyEnv(Command):
         """Redeploy An Environment."""
         try:
             # Initialise instance and api_instance and response
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
             response = None
             body = deploy_sdk_client.DeploymentConfigurationDto(
                 environment_id=environment_id,
@@ -85,7 +86,7 @@ class DepolyEnv(Command):
                 input_json=child_input_json,
                 parent_deployments=depends_on_json
             )
-            response = api_instance.deploy_by_config(
+            response = instance.deploy_by_config(
                 body=body
             )
 
