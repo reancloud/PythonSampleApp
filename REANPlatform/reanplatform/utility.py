@@ -3,11 +3,8 @@ import os
 import base64
 import json
 import yaml
-import urllib3
 from Crypto.Cipher import XOR
 from reanplatform.utilityconstants import PlatformConstants
-from deploy_sdk_client.api_client import ApiClient
-from deploy_sdk_client.configuration import Configuration
 
 
 class Utility(object):
