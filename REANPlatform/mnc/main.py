@@ -10,7 +10,7 @@ class MNC(App):            # noqa: D203
     def __init__(self):
         """__init__."""
         super(MNC, self).__init__(
-            description='CLI for REAN Managed Cloud.',
+            description='CLI for REAN Managed Cloud',
             version='0.1',
             command_manager=CommandManager('rean.mnc'),
             deferred_help=True,
