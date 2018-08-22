@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
