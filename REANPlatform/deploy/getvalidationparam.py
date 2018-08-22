@@ -8,6 +8,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class GetValidationParam(Command):
@@ -53,7 +54,7 @@ class GetValidationParam(Command):
             api_response = None
 
             # Initialise and api_instance
-            api_client = set_header_parameter(Utility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             api_response = api_instance.get_validation_param_by_env_id_and_deployment_name(env_id, deployment_name)
             return api_response
