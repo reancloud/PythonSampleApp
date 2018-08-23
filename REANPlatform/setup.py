@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -74,7 +74,7 @@ setup(
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
-            'get-deployment-id = deploy.getdeploymentid:GetDeployments',
+            'get-deployment-id = deploy.getdeploymentid:GetDeploymentId',
             'get-deployment-input = deploy.get_deployment_input:GetDeploymentInput',
             'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',

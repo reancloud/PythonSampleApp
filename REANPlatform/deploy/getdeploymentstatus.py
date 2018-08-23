@@ -29,13 +29,13 @@ class Status(Command):
             # Initialise api_response
             api_response = None
 
-            # Initialise instance and api_instance to get deployment status
+            # Initialise api_client and api_instance to get deployment status
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             if env_id:
-                api_response = instance.get_deploy_status_by_env_id(env_id)         
+                api_response = api_instance.get_deploy_status_by_env_id(env_id)
             elif env_id and deployment_name:
-                api_response = instance.get_deploy_status_by_env_id_and_deployment_name(env_id, deployment_name)
+                api_response = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_id, deployment_name)
             return api_response.status
 
         except ApiException as api_exception:
