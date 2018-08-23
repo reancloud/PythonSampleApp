@@ -18,15 +18,8 @@ class Status(Command):
         """get_parser."""
         # Define parser
         parser = super(Status, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-id',
-                            help='Environment ID. This parameter \
-                                is not required when -run_id is specified',
-                            required=True)
-        parser.add_argument('--deployment_name', '-dname',
-                            default='default',
-                            help='Deployment Name. This parameter \
-                                is not required when -run_id is specified',
-                            required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
+        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name.', required=False)
         return parser
 
     @staticmethod
@@ -36,19 +29,15 @@ class Status(Command):
             # Initialise api_response
             api_response = None
 
-            # Initialise instance and api_instance to get deployment status
+            # Initialise api_client and api_instance to get deployment status
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            instance = deploy_sdk_client.EnvironmentApi(api_client)
-            if (env_id and deployment_name):
-                api_response = instance.get_deploy_status_by_env_id_and_deployment_name(
-                    env_id,
-                    deployment_name
-                )
-            elif env_id:
-                api_response = instance.get_deploy_status_by_env_id(
-                    env_id
-                )
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
+            if env_id:
+                api_response = api_instance.get_deploy_status_by_env_id(env_id)
+            elif env_id and deployment_name:
+                api_response = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_id, deployment_name)
             return api_response.status
+
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
