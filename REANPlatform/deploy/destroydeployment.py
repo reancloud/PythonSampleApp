@@ -1,5 +1,4 @@
 """Destroy deployment module."""
-import json
 import re
 import logging
 import time
@@ -70,9 +69,7 @@ class DestroyDeployment(Command):
 
             print("Environment status : %s" % (deploy_status.status))
         except ApiException as api_exception:
-            err = json.loads(api_exception.body)
-            if err['status'] == 404:
-                print("Exception message : No deployment found")
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def destroy_by_deploymentid(deployment_id):
@@ -94,9 +91,7 @@ class DestroyDeployment(Command):
 
             print("Environment status : %s" % (deploy_status.status))
         except ApiException as api_exception:
-            err = json.loads(api_exception.body)
-            if err['status'] == 404:
-                print("Exception message : No deployment found")
+            Utility.print_exception(api_exception)
 
     @staticmethod
     def destroy_by_envid_deploymentname(env_id, deployment_name):
@@ -119,6 +114,4 @@ class DestroyDeployment(Command):
 
             print("Environment status : %s" % (deploy_status.status))
         except ApiException as api_exception:
-            err = json.loads(api_exception.body)
-            if err['status'] == 404:
-                print("Exception message : No deployment found")
+            Utility.print_exception(api_exception)
