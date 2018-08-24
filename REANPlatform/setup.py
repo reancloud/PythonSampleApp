@@ -37,7 +37,7 @@ setup(
     scripts=[],
 
     provides=[],
-  
+
     install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins'],
     namespace_packages=[],
     packages=find_packages(),
