@@ -37,6 +37,6 @@ class RunSecurityTest(Command):
             body.execution_strategy = "security"
             self.log.debug(body)
             self.log.debug("Execution stared for Security Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi().submit_security_test_job)
+            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_security_test_job)
         except Exception as exception:
             Utility.print_exception(exception)

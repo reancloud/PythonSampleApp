@@ -1,4 +1,4 @@
-"""Get Deployment ID."""
+"""Stop Deployment."""
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -9,28 +9,28 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class GetDeploymentId(Command):
-    """Get Deployment Id."""
+class StopDeployment(Command):
+    """Stop Deployment."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser
-        parser = super(GetDeploymentId, self).get_parser(prog_name)
-        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Provide this attribute to get specific deployment else deployment name will be default', required=False)
+        parser = super(StopDeployment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
+        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Please provide this attribute if deployment name is not default.', required=False)
         return parser
 
     @staticmethod
-    def get_deployment_by_id_and_name(env_id, deployment_name):
-        """Get Deployments by Env ID And Deployment Name."""
+    def stop_deployment(env_id, deployment_name):
+        """Stop Deployment."""
         try:
-            # Initialise api_client and api_instance
+            # Initialise api_instance
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            api_response = api_instance.get_all_deployments_for_environment_by_id_and_deployment_name(env_id, deployment_name)
-            print("Deployment id : %s " % (api_response.id))
+            stop_deployment_response = api_instance.stop_deployment_by_env_id_and_deployment_name(env_id, deployment_name)
+            return stop_deployment_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -40,5 +40,10 @@ class GetDeploymentId(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
+        # Get stop deployment status
         if env_id:
-            GetDeploymentId.get_deployment_by_id_and_name(env_id, deployment_name)
+            stop_deployment_status = StopDeployment.stop_deployment(env_id, deployment_name)
+
+        if stop_deployment_status:
+            print("Stop Deployment Status : %s" %
+                  (stop_deployment_status.status))

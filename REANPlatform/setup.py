@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.1'
+VERSION = '0.0.3'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -37,8 +37,8 @@ setup(
     scripts=[],
 
     provides=[],
-
-    install_requires=['cliff', 'validators', 'boto3', 'Crypto', 'wheel', 'pycrypto', 'python-jenkins'],
+  
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -66,11 +66,18 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
+            'plan-deployment = deploy.plandeployment:PlanDeployment',
+            'stop-deployment = deploy.stop_deployment:StopDeployment',
+            'export-environment = deploy.exportenvironment:ExportEnvironment',
+            'export-blueprint-environment = deploy.exportblueprintenvironment:ExportBlueprintEnvironment',
             'list-environment = deploy.listenvironments:ListEnvironments',
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
-            'get-deployment-id = deploy.getdeploymentid:GetDeployments',
+            'get-deployment-id = deploy.getdeploymentid:GetDeploymentId',
+            'get-deployment-input = deploy.get_deployment_input:GetDeploymentInput',
+            'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
+            'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
             'deploy-env = deploy.deployenv:DepolyEnv'
         ],
