@@ -17,7 +17,7 @@ class DeleteEnvironment(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DeleteEnvironment, self).get_parser(prog_name)
-        parser.add_argument('--id', '-i', help='Id of an environment to be deleted', required=True)
+        parser.add_argument('--env_id', '-i', help='Id of an environment to be deleted', required=True)
         return parser
 
     @staticmethod
@@ -36,7 +36,7 @@ class DeleteEnvironment(Command):
     def take_action(self, parsed_args):
         """Delete environment action."""
         # Define parsed argument
-        env_id = parsed_args.id
+        env_id = parsed_args.env_id
 
         # Delete an environment by ID
         DeleteEnvironment.delete_env(env_id)
