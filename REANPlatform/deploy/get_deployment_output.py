@@ -57,7 +57,7 @@ class GetDeploymentOutput(Command):
                 filepath = os.getcwd() + '/' + file_name + '.json'
                 os.chdir(os.path.dirname(filepath))
                 with open(basename(filepath), 'w') as outfile:
-                    outfile.write(str(deployment_output))
+                    outfile.write(Utility.get_parsed_json(deployment_output))
                 print("Deployment output file " + file_name + " created successfully at " + filepath)
             else:
-                print(deployment_output)
+                print(Utility.get_parsed_json(deployment_output))
