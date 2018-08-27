@@ -10,6 +10,7 @@ from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
+
 class CreateMultipleProviders(Command):
     """Save Multiple providers."""
 
@@ -18,8 +19,6 @@ class CreateMultipleProviders(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(CreateMultipleProviders, self).get_parser(prog_name)
-        parser.add_argument('--name', '-n', help='Provider name',
-                            required=True)
         parser.add_argument('--type', '-t', help='Provider type',
                             required=True)
         parser.add_argument('--provider_details', '-f',
@@ -31,14 +30,13 @@ class CreateMultipleProviders(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        prov_name = parsed_args.name
         prov_type = parsed_args.type
         provider_details = parsed_args.provider_details
 
-        CreateMultipleProviders.create_provider(prov_name, prov_type, provider_details)
+        CreateMultipleProviders.create_provider(prov_type, provider_details)
 
     @staticmethod
-    def create_provider(data, prov_type, file_path):
+    def create_provider(prov_type, file_path):
         """Save Multiple providers."""
         success = []
         failed = []
@@ -48,7 +46,7 @@ class CreateMultipleProviders(Command):
             for data in json_data:
                 try:
                     provider = deploy_sdk_client.SaveProvider(
-                        name=data.get(DeployConstants.NAME_REEFERENCE),
+                        name=data.get(DeployConstants.NAME_REFERENCE),
                         type=prov_type,
                         json=data.get(DeployConstants.PROVIDER_DETAILS_REFERENCE)
                     )
@@ -57,7 +55,7 @@ class CreateMultipleProviders(Command):
                     api_response = provider_api_instance.save_provider(provider)
                     success.append(api_response.name)
                 except ApiException as api_exception:
-                    failed.append(data.get(DeployConstants.NAME_REEFERENCE))
+                    failed.append(data.get(DeployConstants.NAME_REFERENCE))
         else:
             raise RuntimeError('Please provide valid json file.')
 
