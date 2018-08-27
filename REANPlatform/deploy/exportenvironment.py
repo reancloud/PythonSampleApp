@@ -49,7 +49,7 @@ class ExportEnvironment(Command):
             filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
             os.chdir(os.path.dirname(filepath))
             with open(basename(filepath), 'w') as outfile:
-                outfile.write(str(response))
+                outfile.write(Utility.get_parsed_json(response))
             print("Export Environment file " + filename + " created successfully at " + filepath)
 
         except ApiException as api_exception:
