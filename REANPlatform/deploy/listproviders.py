@@ -54,7 +54,6 @@ class ListProvider(Command):
                 print(parsed_json)
 
             else:
-                raise RuntimeError("Please specify correct fromate, Allowed \
-                        values are: [json, table]")
+                raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

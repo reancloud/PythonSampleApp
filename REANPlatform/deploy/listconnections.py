@@ -61,8 +61,7 @@ class ListConnections(Command):
                         ).replace("\"_", '"')
                     )
             else:
-                exception_msg = "Please specify correct fromate, Allowed \
-                        values are: [json, table]"
+                exception_msg = "Please specify correct format, Allowed values are: [json, table]"
                 raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
         except ApiException as api_exception:
