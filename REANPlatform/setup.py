@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -48,7 +48,8 @@ setup(
             'rean-deploy = deploy.main:main',
             'rean-auth = auth.main:main',
             'rean-mnc = mnc.main:main',
-            'rean-test = reantest.main:main'
+            'rean-test = reantest.main:main',
+            'rean-assess = assess.main:main',
         ],
         'rean.platform': [
             'rean-platform = reanplatform.reanhelp:HelpPlatform',
@@ -56,7 +57,8 @@ setup(
             'rean-deploy = reanplatform.reanhelp:HelpDeploy',
             'rean-test = reanplatform.reanhelp:HelpTest',
             'rean-mnc = reanplatform.reanhelp:HelpMnc',
-            'rean-auth = reanplatform.reanhelp:HelpAuth'
+            'rean-auth = reanplatform.reanhelp:HelpAuth',
+            'rean-assess = reanplatform.reanhelp:HelpAssess'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
@@ -105,6 +107,9 @@ setup(
             'install-rule = mnc.rule_install:RuleInstall',
             'list-rule = mnc.rule_list:RuleList',
             'remove-rule = mnc.rule_remove:RuleRemove'
+        ],
+        'rean.assess': [
+            'get-doc-report-in-zip = assess.get_doc_report_in_zip:GetDocReportInZip'
         ]
     },
 
