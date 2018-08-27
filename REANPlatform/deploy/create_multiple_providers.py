@@ -19,24 +19,21 @@ class CreateMultipleProviders(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(CreateMultipleProviders, self).get_parser(prog_name)
-        parser.add_argument('--type', '-t', help='Provider type',
-                            required=True)
         parser.add_argument('--provider_details', '-f',
-                            help='Json file with applicable key-value pair \
-                            for provider type. File absolute path',
+                            help="Json file with applicable key-value pair \
+                            for provider type. File absolute path \nExample:\n[{\n  'name': 'provider_name',\n  'type': 'provider_type',\n  'provider_details': provider_json\n}]",
                             required=True
                            )
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
-        prov_type = parsed_args.type
         provider_details = parsed_args.provider_details
 
-        CreateMultipleProviders.create_provider(prov_type, provider_details)
+        CreateMultipleProviders.create_provider(provider_details)
 
     @staticmethod
-    def create_provider(prov_type, file_path):
+    def create_provider(file_path):
         """Save Multiple providers."""
         success = []
         failed = []
@@ -47,7 +44,7 @@ class CreateMultipleProviders(Command):
                 try:
                     provider = deploy_sdk_client.SaveProvider(
                         name=data.get(DeployConstants.NAME_REFERENCE),
-                        type=prov_type,
+                        type=data.get(DeployConstants.PROVIDER_TYPE_REFERENCE),
                         json=data.get(DeployConstants.PROVIDER_DETAILS_REFERENCE)
                     )
                     api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))

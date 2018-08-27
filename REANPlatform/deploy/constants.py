@@ -7,6 +7,7 @@ class DeployConstants(object):
     DEPLOY_URL = '/api/reandeploy/DeployNow/rest'
     NAME_REFERENCE = 'name'
     PROVIDER_DETAILS_REFERENCE = 'provider_details'
+    PROVIDER_TYPE_REFERENCE = 'type'
 
     def __setattr__(self, attr, value):
         """__setattr__."""
