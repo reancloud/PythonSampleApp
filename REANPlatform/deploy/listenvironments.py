@@ -8,6 +8,7 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
 class ListEnvironments(Command):
@@ -30,10 +31,10 @@ class ListEnvironments(Command):
         """List Environment."""
         try:
             # Initialise instance and api_instance in list_environment
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
             # Get all environments for user
-            api_response = api_instance.get_all_environments()
+            api_response = instance.get_all_environments()
             if output_format == 'table':
                 table = PrettyTable(['Name', 'Id', 'Region', 'Version'])
                 table.padding_width = 1
@@ -56,7 +57,8 @@ class ListEnvironments(Command):
                         sort_keys=True, indent=4
                     ).replace("\"_", '"')
                     )
-
+            else:
+                raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 

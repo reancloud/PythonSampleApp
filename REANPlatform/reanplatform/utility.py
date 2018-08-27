@@ -3,11 +3,8 @@ import os
 import base64
 import json
 import yaml
-import urllib3
 from Crypto.Cipher import XOR
 from reanplatform.utilityconstants import PlatformConstants
-from deploy_sdk_client.api_client import ApiClient
-from deploy_sdk_client.configuration import Configuration
 
 
 class Utility(object):
@@ -17,7 +14,7 @@ class Utility(object):
     def get_user_credentials():
         """Get configured username and password."""
         try:
-            credentials = Utility.get_env_username_password()
+            credentials = Utility.get_env_username_password_and_baseurl()
             if credentials and credentials.get('user_name') and credentials.get('password'):
                 credentials = str(credentials.get('user_name')) + ":" + str(credentials.get('password'))
             else:
@@ -51,8 +48,16 @@ class Utility(object):
     @staticmethod
     def get_url(host_url):
         """Get full URL."""
-        base_url = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
-        return base_url + host_url
+        try:
+            base_url = Utility.get_env_username_password_and_baseurl()
+            if base_url and base_url.get('base_url'):
+                base_url = str(base_url.get('base_url'))
+            else:
+                base_url = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
+            return base_url + host_url
+        except Exception as exception:
+            print('Could not get base url.')
+            return None
 
     @staticmethod
     def get_parsed_json(json_object):
@@ -64,12 +69,13 @@ class Utility(object):
         ).replace("\"_", '"')
 
     @staticmethod
-    def get_env_username_password():
+    def get_env_username_password_and_baseurl():
         """Get Environment variables."""
         try:
             credentials = {
                 'user_name': os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
-                'password': os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE]
+                'password': os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE],
+                'base_url': os.environ[PlatformConstants.ENV_BASE_URL_REFERENCE]
             }
             return credentials
         except KeyError:
@@ -105,13 +111,3 @@ class Utility(object):
 
                 config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
                 return config_property
-
-    @staticmethod
-    def create_api_client():
-        """Create API client."""
-        verify_ssl = Utility.get_config_property(PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE)
-        if not verify_ssl:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        Configuration().verify_ssl = verify_ssl
-        api_client = ApiClient()
-        return api_client

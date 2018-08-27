@@ -7,46 +7,30 @@ import time
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
-from deploy.getdeploymentstatus import Status
-from deploy.constants import DeployConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
+from deploy.getdeploymentstatus import Status
 
 
 class DepolyEnv(Command):
-    """Redeploy an environment by name and version."""
+    """Deploy/Redeploy an Environment."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DepolyEnv, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-id',
-                            help='Environment id',
-                            required=True)
-        parser.add_argument('--deployment_name', '-dname', default='default',
-                            help='Deployment Name. Please provide this \
-                            attribute if deployment name is not default.',
-                            required=False)
-        parser.add_argument('--deployment_description', '-desc',
-                            help='Description of deployment',
-                            required=False)
-        parser.add_argument('--provider_name', '-pname',
-                            help='Provider Name',
-                            required=False)
-        parser.add_argument('--region', '-region',
-                            help='Region Name',
-                            required=False)
-        parser.add_argument('--input_json_file', '-input_json',
-                            help='Pass input variable json file with \
-                            full path',
-                            required=False)
-        parser.add_argument('--parent_deployment_mappings',
-                            '-parent_mapping_json',
-                            help='Map of parent deployment where key is \
-                            a name of \"Depends On\" resource and value is \
-                            a name/id of the deployment for the parent \
-                            environment. For example, {\"dependsOnName\" : \"DeploymentName\"}',  # noqa: E501
+        parser.add_argument('--env_id', '-i', help='Environment id', required=True)
+        parser.add_argument('--deployment_name', '-dn', default='default', help='Deployment Name. Please provide this attribute if deployment name is not default.', required=False)
+        parser.add_argument('--deployment_description', '-d', help='Description of deployment', required=False)
+        parser.add_argument('--provider_name', '-pn', help='Provider Name', required=False)
+        parser.add_argument('--region', '-r', help='Region Name', required=False)
+        parser.add_argument('--input_json_file', '-in', help='Pass input variable json file with full path', required=False)
+        parser.add_argument('--parent_deployment_mappings', '-j',
+                            help='Map of parent deployment where key is a name of \"Depends On\" resource and value is \
+                            a name/id of the deployment for the parent environment. For example, {\"dependsOnName\" : \"DeploymentName\"}',
                             required=False)
 
         return parser
@@ -67,15 +51,15 @@ class DepolyEnv(Command):
             Utility.print_exception(api_exception)
 
     @staticmethod
-    def re_deploy_environment(environment_id, deployment_name,
-                              deployment_description, provider_name,
-                              region, child_input_json, depends_on_json):
-        """Redeploy An Environment."""
+    def deploy_environment(environment_id, deployment_name,
+                           deployment_description, provider_name,
+                           region, child_input_json, depends_on_json):
+        """Deploy/Redeploy an Environment."""
         try:
-            # Initialise instance and api_instance and response
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            response = None
+            # Initialise instance and api_instance
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
+            status = None
             body = deploy_sdk_client.DeploymentConfigurationDto(
                 environment_id=environment_id,
                 deployment_name=deployment_name,
@@ -98,7 +82,7 @@ class DepolyEnv(Command):
                 else:
                     break
 
-            return response
+            return status
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -120,10 +104,7 @@ class DepolyEnv(Command):
         if parent_json:
             depends_on_json = DepolyEnv.read_file_as_json_object(parent_json)
 
-        # Re Deploy an environment
-        result = DepolyEnv.re_deploy_environment(environment_id, deployment_name,         # noqa: E501
-                                                 deployment_description, provider_name,  # noqa: E501
-                                                 region, child_input_json, depends_on_json
-                                                )   # noqa: E501
+        # Deploy an environment
+        result = DepolyEnv.deploy_environment(environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json)
         if result:
-            print(result)
+            print("Environment Status : %s " % (result))

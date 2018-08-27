@@ -26,10 +26,11 @@ class GetUserByNameOrId(Command):
         """Get user by name."""
         try:
             # Initialise instance and api_instance
-            instance = authnz_sdk_client.UsercontrollerApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            instance = authnz_sdk_client.UsercontrollerApi(api_client)
+
             # Get user details by name
-            api_response = api_instance.get_by_username_using_get(name)
+            api_response = instance.get_by_username_using_get(name)
             json_object = AuthnzUtility.get_user_dict(api_response)
             parsed_json = Utility.get_parsed_json(json_object)
             print(parsed_json)
@@ -42,10 +43,11 @@ class GetUserByNameOrId(Command):
         """Get user by user id."""
         try:
             # Initialise instance and api_instance
-            instance = authnz_sdk_client.UsercontrollerApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            instance = authnz_sdk_client.UsercontrollerApi(api_client)
+
             # Get user details by name
-            api_response = api_instance.get_user_using_get1(user_id)
+            api_response = instance.get_user_using_get1(user_id)
             json_object = AuthnzUtility.get_user_dict(api_response)
             parsed_json = Utility.get_parsed_json(json_object)
             print(parsed_json)
