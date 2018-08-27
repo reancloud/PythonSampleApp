@@ -57,7 +57,8 @@ class ListEnvironments(Command):
                         sort_keys=True, indent=4
                     ).replace("\"_", '"')
                     )
-
+            else:
+                raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
