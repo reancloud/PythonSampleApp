@@ -32,7 +32,10 @@ class DepolyEnv(Command):
                             help='Map of parent deployment where key is a name of \"Depends On\" resource and value is \
                             a name/id of the deployment for the parent environment. For example, {\"dependsOnName\" : \"DeploymentName\"}',
                             required=False)
-
+        parser.add_argument('--resource_connection', '-f',
+                            help="Json file with applicable resoucename-connectionname pair. File absolute path \nExample:\n\"[{\"resourceName\" : \"connectionName\"}]",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -51,21 +54,28 @@ class DepolyEnv(Command):
             Utility.print_exception(api_exception)
 
     @staticmethod
-    def deploy_environment(environment_id, deployment_name,
-                           deployment_description, provider_name,
-                           region, child_input_json, depends_on_json):
+    def deploy_environment(parsed_args):
         """Deploy/Redeploy an Environment."""
         try:
             # Initialise instance and api_instance
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             status = None
+
+            child_input_json = None
+            depends_on_json = None
+
+            if parsed_args.child_json:
+                child_input_json = DepolyEnv.read_file_as_json_object(parsed_args.child_json)
+            if parsed_args.parent_json:
+                depends_on_json = DepolyEnv.read_file_as_json_object(parsed_args.parent_json)
+
             body = deploy_sdk_client.DeploymentConfigurationDto(
-                environment_id=environment_id,
-                deployment_name=deployment_name,
-                deployment_description=deployment_description,
-                region=region,
-                provider_name=provider_name,
+                environment_id=parsed_args.environment_id,
+                deployment_name=parsed_args.deployment_name,
+                deployment_description=parsed_args.deployment_description,
+                region=parsed_args.region,
+                provider_name=parsed_args.provider_name,
                 input_json=child_input_json,
                 parent_deployments=depends_on_json
             )
@@ -75,7 +85,7 @@ class DepolyEnv(Command):
 
             # Get deployment status
             while 1:
-                status = Status.deployment_status(environment_id, deployment_name)  # noqa: E501
+                status = Status.deployment_status(parsed_args.environment_id, parsed_args.deployment_name)  # noqa: E501
                 status_dict = str(status)
                 if "DEPLOYING" in status_dict:
                     time.sleep(1)
@@ -88,23 +98,7 @@ class DepolyEnv(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        # Define parsed_args
-        environment_id = parsed_args.env_id
-        deployment_name = parsed_args.deployment_name
-        deployment_description = parsed_args.deployment_description
-        region = parsed_args.region
-        child_json = parsed_args.input_json_file
-        parent_json = parsed_args.parent_deployment_mappings
-        provider_name = parsed_args.provider_name
-        child_input_json = None
-        depends_on_json = None
-
-        if child_json:
-            child_input_json = DepolyEnv.read_file_as_json_object(child_json)
-        if parent_json:
-            depends_on_json = DepolyEnv.read_file_as_json_object(parent_json)
-
         # Deploy an environment
-        result = DepolyEnv.deploy_environment(environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json)
+        result = DepolyEnv.deploy_environment(parsed_args)
         if result:
             print("Environment Status : %s " % (result))
