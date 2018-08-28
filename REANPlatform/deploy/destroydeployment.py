@@ -18,8 +18,8 @@ class DestroyDeployment(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DestroyDeployment, self).get_parser(prog_name)
-        parser.add_argument('--env_id', '-i', help='Environment id. This parameter is not required when --deployment_id is specified', required=True)
-        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. This parameter is not required when --deployment_id is specified', required=False)
+        parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
+        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name.', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -27,8 +27,7 @@ class DestroyDeployment(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        if env_id:
-            DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)
+        DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)
 
     @staticmethod
     def destroy_by_envid_deploymentname(env_id, deployment_name):
