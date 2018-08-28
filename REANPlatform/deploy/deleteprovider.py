@@ -72,7 +72,7 @@ class DeleteProvider(Command):
         """get_id."""
         provider_id = None
         api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-        list_api_response = api_instance.get_all_providers(api_client)
+        list_api_response = api_instance.get_all_providers()
         for provider in list_api_response:
             if provider.name == name:
                 provider_id = provider.id
