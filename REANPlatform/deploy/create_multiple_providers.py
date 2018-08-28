@@ -77,4 +77,6 @@ class CreateMultipleProviders(Command):
         success_len = len(success)
         if success_len != 0:
             print('{} providers created successfully: {}'.format(success_len, success))
-        print('Failed to create {} providers: {}'.format(len(failed), failed))
+        failed_len = len(failed)
+        if failed_len != 0:
+            print('Failed to create {} providers: {}'.format(len(failed), failed))
