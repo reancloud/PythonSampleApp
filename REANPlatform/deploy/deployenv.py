@@ -77,7 +77,8 @@ class DepolyEnv(Command):
                 region=parsed_args.region,
                 provider_name=parsed_args.provider_name,
                 input_json=child_input_json,
-                parent_deployments=depends_on_json
+                parent_deployments=depends_on_json,
+                connections=DepolyEnv.read_file_as_json_object(parsed_args.resource_connection)
             )
             response = api_instance.deploy_by_config(
                 body=body
