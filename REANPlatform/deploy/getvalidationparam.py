@@ -1,6 +1,5 @@
 """Get Validation Param."""
 import os
-from os.path import basename
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -33,15 +32,12 @@ class GetValidationParam(Command):
         file_name = parsed_args.output
 
         # Get validation param
-        if env_id:
-            validation_param = GetValidationParam.get_validation_param(env_id, deployment_name)
+        validation_param = GetValidationParam.get_validation_param(env_id, deployment_name)
 
         if validation_param:
             if file_name is not None:
                 filepath = os.getcwd() + '/' + file_name + '.json'
-                os.chdir(os.path.dirname(filepath))
-                with open(basename(filepath), 'w') as outfile:
-                    outfile.write(str(validation_param))
+                Utility.create_output_file(filepath, validation_param)
                 print("Output file " + file_name + " created successfully at " + filepath)
             else:
                 print(validation_param)
@@ -56,7 +52,7 @@ class GetValidationParam(Command):
             # Initialise and api_instance
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            api_response = api_instance.get_validation_param_by_env_id_and_deployment_name(env_id, deployment_name)
+            api_response = api_instance.get_validation_param_by_env_id_and_dep_name(env_id, deployment_name)
             return api_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

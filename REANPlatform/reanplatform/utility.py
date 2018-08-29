@@ -1,9 +1,10 @@
 """Utility class contains all common method requried for CLI."""
 import os
+from os.path import basename
 import base64
 import json
-import yaml
 from Crypto.Cipher import XOR
+import yaml
 from reanplatform.utilityconstants import PlatformConstants
 
 
@@ -111,3 +112,10 @@ class Utility(object):
 
                 config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
                 return config_property
+
+    @staticmethod
+    def create_output_file(filepath, obj):
+        """Create Output file."""
+        os.chdir(os.path.dirname(filepath))
+        with open(basename(filepath), 'w') as outfile:
+            outfile.write(Utility.get_parsed_json(obj))

@@ -1,6 +1,5 @@
 """Get Deployment Details."""
 import os
-from os.path import basename
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -35,8 +34,7 @@ class GetDeploymentOutput(Command):
             # Initialise api_instance to get deployment details
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            if env_id:
-                api_response = api_instance.get_deployment_details(env_id, deployment_name)
+            api_response = api_instance.get_deployment_details(env_id, deployment_name)
             return api_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
@@ -49,15 +47,12 @@ class GetDeploymentOutput(Command):
         file_name = parsed_args.output
 
         # Get deployment details
-        deployment_output = GetDeploymentOutput.get_deployment_details(
-            env_id, deployment_name)
+        deployment_output = GetDeploymentOutput.get_deployment_details(env_id, deployment_name)
 
         if deployment_output:
             if file_name is not None:
                 filepath = os.getcwd() + '/' + file_name + '.json'
-                os.chdir(os.path.dirname(filepath))
-                with open(basename(filepath), 'w') as outfile:
-                    outfile.write(Utility.get_parsed_json(deployment_output))
+                Utility.create_output_file(filepath, deployment_output)
                 print("Deployment output file " + file_name + " created successfully at " + filepath)
             else:
                 print(Utility.get_parsed_json(deployment_output))
