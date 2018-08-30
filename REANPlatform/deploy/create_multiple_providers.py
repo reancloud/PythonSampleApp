@@ -62,7 +62,6 @@ class CreateMultipleProviders(Command):
             raise RuntimeError('Please provide valid json file.')
 
         CreateMultipleProviders.print_response(success, exists, failed)
-        return success
 
     @staticmethod
     def fetch_file_data(file_path):
