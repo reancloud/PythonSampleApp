@@ -64,21 +64,24 @@ class DepolyEnv(Command):
 
             child_input_json = None
             depends_on_json = None
+            connections = None
 
-            if parsed_args.child_json:
-                child_input_json = DepolyEnv.read_file_as_json_object(parsed_args.child_json)
-            if parsed_args.parent_json:
-                depends_on_json = DepolyEnv.read_file_as_json_object(parsed_args.parent_json)
+            if parsed_args.input_json_file:
+                child_input_json = DepolyEnv.read_file_as_json_object(parsed_args.input_json_file)
+            if parsed_args.parent_deployment_mappings:
+                depends_on_json = DepolyEnv.read_file_as_json_object(parsed_args.parent_deployment_mappings)
+            if parsed_args.resource_connection:
+                connections = DepolyEnv.read_file_as_json_object(parsed_args.resource_connection)
 
             body = deploy_sdk_client.DeploymentConfigurationDto(
-                environment_id=parsed_args.environment_id,
+                environment_id=parsed_args.env_id,
                 deployment_name=parsed_args.deployment_name,
                 deployment_description=parsed_args.deployment_description,
                 region=parsed_args.region,
                 provider_name=parsed_args.provider_name,
                 input_json=child_input_json,
                 parent_deployments=depends_on_json,
-                connections=DepolyEnv.read_file_as_json_object(parsed_args.resource_connection)
+                connections=connections
             )
             response = api_instance.deploy_by_config(
                 body=body
@@ -86,7 +89,7 @@ class DepolyEnv(Command):
 
             # Get deployment status
             while 1:
-                status = Status.deployment_status(parsed_args.environment_id, parsed_args.deployment_name)  # noqa: E501
+                status = Status.deployment_status(parsed_args.env_id, parsed_args.deployment_name)  # noqa: E501
                 status_dict = str(status)
                 if "DEPLOYING" in status_dict:
                     time.sleep(1)
