@@ -117,5 +117,5 @@ class Utility(object):
     def create_output_file(filepath, obj):
         """Create Output file."""
         os.chdir(os.path.dirname(filepath))
-        with open(basename(filepath), 'w') as outfile:
+        with open(basename(filepath), 'w+') as outfile:
             outfile.write(Utility.get_parsed_json(obj))
