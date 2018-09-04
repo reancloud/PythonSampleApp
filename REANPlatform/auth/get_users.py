@@ -6,6 +6,7 @@ from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
 
@@ -23,10 +24,11 @@ class GetUsers(Command):
                             type=str, default='json',
                             nargs='?',
                             required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     @staticmethod
-    def get_users(output_format):
+    def get_users(output_format, parsed_args):
         """Get users."""
         try:
             # Initialise instance and api_instance in list_user
@@ -50,12 +52,11 @@ class GetUsers(Command):
                             user.disabled
                         ]
                     )
-                print("Users list ::\n%s" % (table))
+                Utility.print_output("Users list \n{}".format(table), parsed_args.output, PlatformConstants.TABLE_REFERENCE)
 
             elif output_format == 'json' or output_format == '':
                 users_list = GetUsers.parse_response(api_response)
-                parsed_json = Utility.get_parsed_json(users_list)
-                print(parsed_json)
+                Utility.print_output(users_list, parsed_args.output)
 
         except ApiException as e:
             Utility.print_exception(e)

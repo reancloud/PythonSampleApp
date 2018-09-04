@@ -5,6 +5,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -20,6 +21,10 @@ class Status(Command):
         parser = super(Status, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
         parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name.', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -51,4 +56,4 @@ class Status(Command):
         status = Status.deployment_status(env_id, deployment_name)
 
         if status:
-            print("Environment Status : %s " % (status))
+            Utility.print_output("Environment Status : {} ".format(status), parsed_args.output, PlatformConstants.STR_REFERENCE)

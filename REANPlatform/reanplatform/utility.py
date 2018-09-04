@@ -87,11 +87,10 @@ class Utility(object):
         """Get user name and password from config file."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+            config_file_name = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
+            if os.path.isfile(config_file_name):
+                with open(config_file_name, 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
-
                 username = Utility.decryptData(
                     data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
                 password = Utility.decryptData(
@@ -105,17 +104,41 @@ class Utility(object):
         """Get ssl verify certification status from config file."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-            os.chdir(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME)
-            if os.path.isfile(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'):
-                with open(PlatformConstants.PLATFORM_CONFIG_FILE_NAME + ".yaml", 'r') as stream:    # noqa: E501
+            config_file_name = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
+            if os.path.isfile(config_file_name):
+                with open(config_file_name, 'r') as stream:    # noqa: E501
                     data_loaded = yaml.load(stream)
-
                 config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
                 return config_property
 
     @staticmethod
     def create_output_file(filepath, obj):
         """Create Output file."""
-        os.chdir(os.path.dirname(filepath))
         with open(basename(filepath), 'w') as outfile:
             outfile.write(Utility.get_parsed_json(obj))
+
+    @staticmethod
+    def print_output(output, output_file=None, output_format=PlatformConstants.DICT_REFERENCE):
+        """Print output in given format."""
+        try:
+            if output_file:
+                if output_format == PlatformConstants.DICT_REFERENCE:
+                    Utility.write_to_file(output_file, Utility.get_parsed_json(output))
+                elif output_format == PlatformConstants.TABLE_REFERENCE or output_format == PlatformConstants.STR_REFERENCE:
+                    Utility.write_to_file(output_file, output)
+            else:
+                if isinstance(output, (list, str)):
+                    print(Utility.get_parsed_json(output))
+                else:
+                    print(output)
+        except OSError as os_error:
+            print(os_error)
+        except Exception as exception:
+            print(exception)
+
+    @staticmethod
+    def write_to_file(output_file, content):
+        """Write content to file."""
+        with open(output_file, "w") as handle:
+            filedata = handle.write(content)
+            handle.close()

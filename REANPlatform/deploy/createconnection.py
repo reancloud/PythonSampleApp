@@ -5,6 +5,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -74,6 +75,10 @@ class SaveConnection(Command):
             key path',
             required=False
         )
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )        
         return parser
 
     @staticmethod
@@ -130,8 +135,7 @@ class SaveConnection(Command):
                     connection_id = conn.id
                     break
 
-            print("Connection created successfully :%s, id: %s" %
-                  (body.name, connection_id))
+            Utility.print_output("Connection created successfully :{}, id: {}".format(body.name, connection_id), parsed_args.output, PlatformConstants.STR_REFERENCE)
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

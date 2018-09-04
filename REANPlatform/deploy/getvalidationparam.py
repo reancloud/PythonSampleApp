@@ -6,6 +6,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -22,6 +23,10 @@ class GetValidationParam(Command):
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Please provide this attribute if deployment name is not default.', required=False)
         parser.add_argument('--output', '-f', help='Specify filename for getting validation parameters', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -38,9 +43,9 @@ class GetValidationParam(Command):
             if file_name is not None:
                 filepath = os.getcwd() + '/' + file_name + '.json'
                 Utility.create_output_file(filepath, validation_param)
-                print("Output file " + file_name + " created successfully at " + filepath)
+                Utility.print_output("Output file " + file_name + " created successfully at " + filepath, parsed_args.output, PlatformConstants.STR_REFERENCE)
             else:
-                print(validation_param)
+                Utility.print_output(validation_param, parsed_args.output, PlatformConstants.STR_REFERENCE)
 
     @staticmethod
     def get_validation_param(env_id, deployment_name):

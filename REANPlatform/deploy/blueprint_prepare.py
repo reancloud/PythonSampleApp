@@ -9,6 +9,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -27,6 +28,10 @@ class PrepareBlueprint(Command):
             file path. A path can be absolute path.',
             required=False
         )
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -36,7 +41,7 @@ class PrepareBlueprint(Command):
 
         PrepareBlueprint.validate_parameters(attribute_path)
 
-        PrepareBlueprint.blueprint_prepare(blueprint_path, attribute_path)       # noqa: E501
+        PrepareBlueprint.blueprint_prepare(blueprint_path, attribute_path, parsed_args)       # noqa: E501
 
     @staticmethod
     def validate_parameters(file_path):
@@ -46,7 +51,7 @@ class PrepareBlueprint(Command):
                 blueprint file absolute path")
 
     @staticmethod
-    def blueprint_prepare(blueprint_path, attribute_path):     # noqa: E501
+    def blueprint_prepare(blueprint_path, attribute_path, parsed_args):     # noqa: E501
         """blueprint_prepare."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -68,6 +73,6 @@ class PrepareBlueprint(Command):
             msg = "Blueprint attributes file created successfully.\
                 Before import a blueprint, Update the blueprint attributes\
                 in file: " + (attribute_path)
-            print(re.sub(' +', ' ', msg))
+            Utility.print_output(re.sub(' +', ' ', msg), parsed_args.output, PlatformConstants.STR_REFERENCE)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

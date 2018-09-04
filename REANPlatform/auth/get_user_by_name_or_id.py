@@ -19,10 +19,11 @@ class GetUserByNameOrId(Command):
         parser = super(GetUserByNameOrId, self).get_parser(prog_name)
         parser.add_argument('--name', '-n', help='User name', required=False)
         parser.add_argument('--id', '-i', help='User ID', required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     @staticmethod
-    def get_user_by_name(name):
+    def get_user_by_name(name, parsed_args):
         """Get user by name."""
         try:
             # Initialise instance and api_instance
@@ -33,13 +34,13 @@ class GetUserByNameOrId(Command):
             api_response = instance.get_by_username_using_get(name)
             json_object = AuthnzUtility.get_user_dict(api_response)
             parsed_json = Utility.get_parsed_json(json_object)
-            print(parsed_json)
+            Utility.print_output(parsed_json, parsed_args.output)
 
         except ApiException as e:
             Utility.print_exception(e)
 
     @staticmethod
-    def get_user_by_id(user_id):
+    def get_user_by_id(user_id, parsed_args):
         """Get user by user id."""
         try:
             # Initialise instance and api_instance
@@ -50,7 +51,7 @@ class GetUserByNameOrId(Command):
             api_response = instance.get_user_using_get1(user_id)
             json_object = AuthnzUtility.get_user_dict(api_response)
             parsed_json = Utility.get_parsed_json(json_object)
-            print(parsed_json)
+            Utility.print_output(parsed_json, parsed_args.output)
 
         except ApiException as e:
             Utility.print_exception(e)

@@ -9,6 +9,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 from deploy.getdeploymentstatus import Status
@@ -32,7 +33,10 @@ class DepolyEnv(Command):
                             help='Map of parent deployment where key is a name of \"Depends On\" resource and value is \
                             a name/id of the deployment for the parent environment. For example, {\"dependsOnName\" : \"DeploymentName\"}',
                             required=False)
-
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -107,4 +111,4 @@ class DepolyEnv(Command):
         # Deploy an environment
         result = DepolyEnv.deploy_environment(environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json)
         if result:
-            print("Environment Status : %s " % (result))
+            Utility.print_output("Environment Status : {} ".format(result), parsed_args.output, PlatformConstants.STR_REFERENCE)

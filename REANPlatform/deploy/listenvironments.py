@@ -9,6 +9,7 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
+from reanplatform.utilityconstants import PlatformConstants
 
 
 class ListEnvironments(Command):
@@ -24,10 +25,14 @@ class ListEnvironments(Command):
                             type=str, default='json',
                             nargs='?',
                             required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
-    def list_environment(output_format):
+    def list_environment(output_format, parsed_args):
         """List Environment."""
         try:
             # Initialise instance and api_instance in list_environment
@@ -47,16 +52,9 @@ class ListEnvironments(Command):
                             environment.env_version
                         ]
                     )
-                print("Environment list ::\n%s" % (table))
-
+                Utility.print_output("Environment list \n{}".format(table), parsed_args.output, PlatformConstants.TABLE_REFERENCE)
             elif output_format == 'json' or output_format == '':
-                print(
-                    json.dumps(
-                        api_response,
-                        default=lambda o: o.__dict__,
-                        sort_keys=True, indent=4
-                    ).replace("\"_", '"')
-                    )
+                Utility.print_output(api_response, parsed_args.output)
             else:
                 raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
@@ -68,4 +66,4 @@ class ListEnvironments(Command):
         output_format = parsed_args.format
 
         # List Environments
-        ListEnvironments.list_environment(output_format)
+        ListEnvironments.list_environment(output_format, parsed_args)

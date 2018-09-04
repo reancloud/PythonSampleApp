@@ -8,6 +8,7 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -25,15 +26,19 @@ class ListConnections(Command):
                             type=str, default='json',
                             nargs='?',
                             required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
         """take_action."""
         list_connection_format = parsed_args.format
-        ListConnections.list_connection(list_connection_format)
+        ListConnections.list_connection(list_connection_format, parsed_args)
 
     @staticmethod
-    def list_connection(list_connection_format):
+    def list_connection(list_connection_format, parsed_args):
         """list_connection."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -51,15 +56,9 @@ class ListConnections(Command):
                             connection.type
                         ]
                     )
-                print("Connection list \n%s" % (table))
+                Utility.print_output("Connection list \n{}".format(table), parsed_args.output, PlatformConstants.TABLE_REFERENCE)
             elif list_connection_format == 'json' or list_connection_format == '':
-                print(
-                    json.dumps(
-                        api_response,
-                        default=lambda o: o.__dict__,
-                        sort_keys=True, indent=4
-                        ).replace("\"_", '"')
-                    )
+                Utility.print_output(api_response, parsed_args.output)
             else:
                 exception_msg = "Please specify correct format, Allowed values are: [json, table]"
                 raise RuntimeError(re.sub(' +', ' ', exception_msg))
