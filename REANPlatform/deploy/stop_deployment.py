@@ -40,7 +40,7 @@ class StopDeployment(Command):
                 if "DEPLOYING" in status_dict:
                     stop_deployment_response = api_instance.stop_deployment_by_env_id_and_deployment_name(env_id, deployment_name)
                 elif "STOPPING" in status_dict:
-                    time.sleep(1)
+                    time.sleep(3)
                 elif ("STOPPED" in status_dict) or ("FAILED" in status_dict):
                     return stop_deployment_response
 
