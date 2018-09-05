@@ -1,5 +1,4 @@
 """List connections module."""
-import json
 import re
 import logging
 from prettytable import PrettyTable

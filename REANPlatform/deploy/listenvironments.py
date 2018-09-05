@@ -1,5 +1,4 @@
 """List environment module."""
-import json
 import logging
 from prettytable import PrettyTable
 from cliff.command import Command
@@ -7,9 +6,9 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
-from reanplatform.utilityconstants import PlatformConstants
 
 
 class ListEnvironments(Command):

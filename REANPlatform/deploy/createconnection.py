@@ -78,7 +78,7 @@ class SaveConnection(Command):
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
                             required=False
-                           )        
+                           )
         return parser
 
     @staticmethod
