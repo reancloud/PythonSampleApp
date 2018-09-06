@@ -118,7 +118,22 @@ class Utility(object):
             outfile.write(Utility.get_parsed_json(obj))
 
     @staticmethod
-    def print_output(output, output_file=None, output_format=PlatformConstants.DICT_REFERENCE):
+    def print_output_as_str(output, output_file=None):
+        """Print output as string."""
+        Utility.print_output(output, output_file, PlatformConstants.STR_REFERENCE)
+
+    @staticmethod
+    def print_output_as_dict(output, output_file=None):
+        """Print output as string."""
+        Utility.print_output(output, output_file, PlatformConstants.DICT_REFERENCE)
+
+    @staticmethod
+    def print_output_as_table(output, output_file=None):
+        """Print output as string."""
+        Utility.print_output(output, output_file, PlatformConstants.TABLE_REFERENCE)
+
+    @staticmethod
+    def print_output(output, output_file, output_format):
         """Print output in given format."""
         try:
             if output_file:
