@@ -37,7 +37,7 @@ class DepolyEnv(Command):
                             required=False
                            )
         parser.add_argument('--resource_connection', '-f',
-                            help="Json file with applicable resoucename-connectionname pair. File absolute path \nExample:\n\"[{\"resourceName\" : \"connectionName\"}]",
+                            help="Json file with applicable resouce name-connection name pair. File absolute path \nExample:\n\"[{\"resourceName\" : \"connectionName\"}]",
                             required=False
                            )
         return parser
