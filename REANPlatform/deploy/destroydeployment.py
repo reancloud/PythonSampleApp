@@ -20,6 +20,10 @@ class DestroyDeployment(Command):
         parser = super(DestroyDeployment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
         parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name.', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -27,10 +31,10 @@ class DestroyDeployment(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name)
+        DestroyDeployment.destroy_by_envid_deploymentname(env_id, deployment_name, parsed_args)
 
     @staticmethod
-    def destroy_by_envid_deploymentname(env_id, deployment_name):
+    def destroy_by_envid_deploymentname(env_id, deployment_name, parsed_args):
         """destroy_by_envid_deploymentname."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -48,6 +52,6 @@ class DestroyDeployment(Command):
                 else:
                     break
 
-            print("Environment status : %s" % (deploy_status.status))
+            Utility.print_output_as_str("Environment Status : {} ".format(deploy_status.status), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

@@ -32,6 +32,10 @@ class DepolyEnv(Command):
                             help='Map of parent deployment where key is a name of \"Depends On\" resource and value is \
                             a name/id of the deployment for the parent environment. For example, {\"dependsOnName\" : \"DeploymentName\"}',
                             required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         parser.add_argument('--resource_connection', '-f',
                             help="Json file with applicable resoucename-connectionname pair. File absolute path \nExample:\n\"[{\"resourceName\" : \"connectionName\"}]",
                             required=False
@@ -105,4 +109,4 @@ class DepolyEnv(Command):
         # Deploy an environment
         result = DepolyEnv.deploy_environment(parsed_args)
         if result:
-            print("Environment Status : %s " % (result))
+            Utility.print_output_as_str("Environment Status : {} ".format(result), parsed_args.output)

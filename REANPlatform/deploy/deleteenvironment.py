@@ -18,18 +18,21 @@ class DeleteEnvironment(Command):
         """get_parser."""
         parser = super(DeleteEnvironment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Id of an environment to be deleted', required=True)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
-    def delete_env(env_id):
+    def delete_env(env_id, parsed_args):
         """Delete environment action."""
         try:
             # Initialise api_client and api_instance
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             api_response = api_instance.delete_environment(env_id)
-            print("Environment deleted successfully : %s" % api_response.id)
-
+            Utility.print_output_as_str("Environment deleted successfully : {}".format(api_response.id), parsed_args.output)
         except ApiException as exception:
             Utility.print_exception(exception)
 

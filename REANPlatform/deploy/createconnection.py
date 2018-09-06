@@ -74,6 +74,10 @@ class SaveConnection(Command):
             key path',
             required=False
         )
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -130,8 +134,7 @@ class SaveConnection(Command):
                     connection_id = conn.id
                     break
 
-            print("Connection created successfully :%s, id: %s" %
-                  (body.name, connection_id))
+            Utility.print_output_as_str("Connection created successfully :{}, id: {}".format(body.name, connection_id), parsed_args.output)
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
