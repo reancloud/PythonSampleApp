@@ -21,6 +21,10 @@ class ExportEnvironment(Command):
         parser = super(ExportEnvironment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--environment_file_name', '-f', help='Specify filename for exporting an environment else filename will be environment name with its version', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -29,10 +33,10 @@ class ExportEnvironment(Command):
         env_id = parsed_args.env_id
         environment_file_name = parsed_args.environment_file_name
 
-        ExportEnvironment.export_environment(env_id, environment_file_name)
+        ExportEnvironment.export_environment(env_id, environment_file_name, parsed_args)
 
     @staticmethod
-    def export_environment(env_id, environment_file_name):
+    def export_environment(env_id, environment_file_name, parsed_args):
         """Export Environment."""
         try:
             # Initialise instance and api_instance
@@ -46,7 +50,6 @@ class ExportEnvironment(Command):
 
             filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
             Utility.create_output_file(filepath, response)
-            print("Export Environment file " + filename + " created successfully at " + filepath)
-
+            Utility.print_output_as_str("Export Environment file " + filename + " created successfully at " + filepath, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
