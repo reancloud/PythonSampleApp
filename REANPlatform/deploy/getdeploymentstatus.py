@@ -20,6 +20,10 @@ class Status(Command):
         parser = super(Status, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
         parser.add_argument('--deployment_name', '-n', help='Deployment name.', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -51,4 +55,4 @@ class Status(Command):
         status = Status.deployment_status(env_id, deployment_name)
 
         if status:
-            print("Environment Status : %s " % (status))
+            Utility.print_output_as_str("Environment Status : {} ".format(status), parsed_args.output)

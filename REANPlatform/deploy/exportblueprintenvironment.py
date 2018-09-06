@@ -21,6 +21,10 @@ class ExportBlueprintEnvironment(Command):
         parser = super(ExportBlueprintEnvironment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--blueprint_file_name', '-f', help='Specify filename for blueprint else filename will be environment name with its version', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -29,10 +33,10 @@ class ExportBlueprintEnvironment(Command):
         env_id = parsed_args.env_id
         blueprint_file_name = parsed_args.blueprint_file_name
 
-        ExportBlueprintEnvironment.export_blueprint_environment(env_id, blueprint_file_name)
+        ExportBlueprintEnvironment.export_blueprint_environment(env_id, blueprint_file_name, parsed_args)
 
     @staticmethod
-    def export_blueprint_environment(env_id, blueprint_file_name):
+    def export_blueprint_environment(env_id, blueprint_file_name, parsed_args):
         """Export Blueprint Environment."""
         try:
             # Initialise api_instance
@@ -47,6 +51,6 @@ class ExportBlueprintEnvironment(Command):
 
             blueprint_filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
             Utility.create_output_file(blueprint_filepath, blueprint)
-            print("Blueprint file " + filename + " created successfully at " + blueprint_filepath)
+            Utility.print_output_as_str("Blueprint file " + filename + " created successfully at " + blueprint_filepath, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
