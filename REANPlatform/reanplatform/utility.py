@@ -130,7 +130,10 @@ class Utility(object):
     @staticmethod
     def print_output_as_table(output, output_file=None):
         """Print output as string."""
-        Utility.print_output(output, output_file, PlatformConstants.TABLE_REFERENCE)
+        if output_file:
+            Utility.print_output(output, output_file, PlatformConstants.TABLE_REFERENCE)
+        else:
+            print(output)
 
     @staticmethod
     def print_output(output, output_file, output_format):
