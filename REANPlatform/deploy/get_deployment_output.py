@@ -6,7 +6,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -59,6 +58,6 @@ class GetDeploymentOutput(Command):
             if file_name is not None:
                 filepath = os.getcwd() + '/' + file_name + '.json'
                 Utility.create_output_file(filepath, deployment_output)
-                Utility.print_output("Deployment output file " + file_name + " created successfully at " + filepath, parsed_args.output, PlatformConstants.STR_REFERENCE)
+                Utility.print_output_as_str("Deployment output file " + file_name + " created successfully at " + filepath, parsed_args.output)
             else:
                 print(Utility.get_parsed_json(deployment_output))

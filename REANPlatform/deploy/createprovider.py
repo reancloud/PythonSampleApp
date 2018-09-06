@@ -7,7 +7,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -73,6 +72,6 @@ class SaveProvider(Command):
                 if provider.name == prov_name:
                     provider_id = provider.id
                     break
-            Utility.print_output("Provider created successfully Name: {},  Id: {}".format(prov_name, provider_id), parsed_args.output, PlatformConstants.STR_REFERENCE)
+            Utility.print_output_as_str("Provider created successfully Name: {},  Id: {}".format(prov_name, provider_id), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

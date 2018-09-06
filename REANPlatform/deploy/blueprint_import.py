@@ -9,7 +9,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -92,7 +91,7 @@ class ImportBlueprint(Command):
                             raise RuntimeError(re.sub(' +', ' ', exception_msg))  # noqa: E501
 
             api_env_instance.import_blueprint(body=blueprint_all_env)
-            Utility.print_output("Blueprint imported successfully. Environment names : {}".format(env_names), parsed_args.output, PlatformConstants.STR_REFERENCE)
+            Utility.print_output_as_str("Blueprint imported successfully. Environment names : {}".format(env_names), parsed_args.output)
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

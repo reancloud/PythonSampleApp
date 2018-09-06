@@ -6,7 +6,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -51,6 +50,6 @@ class ExportEnvironment(Command):
 
             filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
             Utility.create_output_file(filepath, response)
-            Utility.print_output("Export Environment file " + filename + " created successfully at " + filepath, parsed_args.output, PlatformConstants.STR_REFERENCE)
+            Utility.print_output_as_str("Export Environment file " + filename + " created successfully at " + filepath, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

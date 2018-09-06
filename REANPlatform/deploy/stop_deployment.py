@@ -6,7 +6,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 from deploy.getdeploymentstatus import Status
@@ -62,4 +61,4 @@ class StopDeployment(Command):
         stop_deployment_status = StopDeployment.stop_deployment(env_id, deployment_name)
 
         if stop_deployment_status:
-            Utility.print_output("Stop Deployment Status : {}".format(stop_deployment_status.status), parsed_args.output, PlatformConstants.STR_REFERENCE)
+            Utility.print_output_as_str("Stop Deployment Status : {}".format(stop_deployment_status.status), parsed_args.output)

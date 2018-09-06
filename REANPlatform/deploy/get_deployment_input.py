@@ -7,7 +7,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -31,7 +30,7 @@ class GetDeploymentInput(Command):
         return parser
 
     @staticmethod
-    def get_deployment_input_json(env_id, deployment_name, parsed_args):
+    def get_deployment_input_json(env_id, deployment_name):
         """Get Deployment InputJson."""
         try:
             # Initialise api_response
@@ -63,6 +62,6 @@ class GetDeploymentInput(Command):
                 os.chdir(os.path.dirname(filepath))
                 with open(basename(filepath), 'w') as outfile:
                     outfile.write(str(deployment_input))
-                Utility.print_output("Deployment input file " + file_name + " created successfully at " + filepath, parsed_args.output, PlatformConstants.STR_REFERENCE)
+                Utility.print_output_as_str("Deployment input file " + file_name + " created successfully at " + filepath, parsed_args.output)
             else:
                 print(deployment_input)

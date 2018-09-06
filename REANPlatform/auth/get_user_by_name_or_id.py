@@ -51,7 +51,7 @@ class GetUserByNameOrId(Command):
             api_response = instance.get_user_using_get1(user_id)
             json_object = AuthnzUtility.get_user_dict(api_response)
             parsed_json = Utility.get_parsed_json(json_object)
-            Utility.print_output(parsed_json, parsed_args.output)
+            Utility.print_output_as_dict(parsed_json, parsed_args.output)
 
         except ApiException as e:
             Utility.print_exception(e)

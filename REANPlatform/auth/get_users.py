@@ -6,7 +6,6 @@ from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
 
@@ -52,11 +51,11 @@ class GetUsers(Command):
                             user.disabled
                         ]
                     )
-                Utility.print_output("Users list \n{}".format(table), parsed_args.output, PlatformConstants.TABLE_REFERENCE)
+                Utility.print_output_as_table("Users list \n{}".format(table), parsed_args.output)
 
             elif output_format == 'json' or output_format == '':
                 users_list = GetUsers.parse_response(api_response)
-                Utility.print_output(users_list, parsed_args.output)
+                Utility.print_output_as_dict(users_list, parsed_args.output)
 
         except ApiException as e:
             Utility.print_exception(e)

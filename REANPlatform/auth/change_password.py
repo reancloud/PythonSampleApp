@@ -51,7 +51,7 @@ class ChangePassword(Command):
                 )
 
                 api_response = instance.change_password_using_put(change_user_password_object)
-                Utility.print_output(api_response, parsed_args.output)
+                Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 print('New password and confirm password does not match.')
 

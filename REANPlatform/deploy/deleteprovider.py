@@ -6,7 +6,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -54,7 +53,7 @@ class DeleteProvider(Command):
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
             api_response = provider_api_instance.delete_provider(prov_id)
-            Utility.print_output("Provider deleted successfully :{}, id: {}".format(api_response.name, api_response.id), parsed_args.output, PlatformConstants.STR_REFERENCE)
+            Utility.print_output_as_str("Provider deleted successfully :{}, id: {}".format(api_response.name, api_response.id), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 

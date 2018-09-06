@@ -6,7 +6,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -53,6 +52,6 @@ class DestroyDeployment(Command):
                 else:
                     break
 
-            Utility.print_output("Environment Status : {} ".format(deploy_status.status), parsed_args.output, PlatformConstants.STR_REFERENCE)
+            Utility.print_output_as_str("Environment Status : {} ".format(deploy_status.status), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

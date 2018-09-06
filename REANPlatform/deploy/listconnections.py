@@ -7,7 +7,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -55,9 +54,9 @@ class ListConnections(Command):
                             connection.type
                         ]
                     )
-                Utility.print_output("Connection list \n{}".format(table), parsed_args.output, PlatformConstants.TABLE_REFERENCE)
+                Utility.print_output_as_table("Connection list \n{}".format(table), parsed_args.output)
             elif list_connection_format == 'json' or list_connection_format == '':
-                Utility.print_output(api_response, parsed_args.output)
+                Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 exception_msg = "Please specify correct format, Allowed values are: [json, table]"
                 raise RuntimeError(re.sub(' +', ' ', exception_msg))

@@ -6,7 +6,6 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -51,9 +50,9 @@ class ListEnvironments(Command):
                             environment.env_version
                         ]
                     )
-                Utility.print_output("Environment list \n{}".format(table), parsed_args.output, PlatformConstants.TABLE_REFERENCE)
+                Utility.print_output_as_table("Environment list \n{}".format(table), parsed_args.output)
             elif output_format == 'json' or output_format == '':
-                Utility.print_output(api_response, parsed_args.output)
+                Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
