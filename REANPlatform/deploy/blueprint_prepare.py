@@ -21,16 +21,8 @@ class PrepareBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-            '--file', '-f',
-            help='Blueprint file. REAN Deploy blueprint\
-            file path. A path can be absolute path.',
-            required=False
-        )
-        parser.add_argument('--output', '-o',
-                            help="Write output to <file> instead of stdout.",
-                            required=False
-                           )
+        parser.add_argument('--file', '-f', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     def take_action(self, parsed_args):
