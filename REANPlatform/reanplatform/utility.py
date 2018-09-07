@@ -160,3 +160,30 @@ class Utility(object):
         with open(output_file, "w") as handle:
             filedata = handle.write(content)
             handle.close()
+
+    @staticmethod
+    def extract_json_data(file_path):
+        """Extract json value."""
+        raw_data = Utility.fetch_file_data(file_path)
+        json_data = json.loads(raw_data)
+        return json_data
+
+    @staticmethod
+    def extract_str_data(file_path):
+        """Extract json value."""
+        raw_data = Utility.fetch_file_data(file_path)
+        return raw_data
+
+    @staticmethod
+    def fetch_file_data(file_path):
+        """Fetch file data."""
+        if file_path.lstrip().startswith('@data:'):
+            return file_path.lstrip()[6:]
+        else:
+            if not os.path.isfile(file_path):
+                raise RuntimeError('File %s does not exists' % file_path)
+
+            with open(file_path, "r") as handle:
+                raw_data = handle.read()
+                return raw_data
+            return None
