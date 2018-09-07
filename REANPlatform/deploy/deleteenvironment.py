@@ -42,4 +42,4 @@ class DeleteEnvironment(Command):
         env_id = parsed_args.env_id
 
         # Delete an environment by ID
-        DeleteEnvironment.delete_env(env_id)
+        DeleteEnvironment.delete_env(env_id, parsed_args)

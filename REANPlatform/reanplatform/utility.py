@@ -120,7 +120,10 @@ class Utility(object):
     @staticmethod
     def print_output_as_str(output, output_file=None):
         """Print output as string."""
-        Utility.print_output(output, output_file, PlatformConstants.STR_REFERENCE)
+        if output_file:
+            Utility.print_output(output, output_file, PlatformConstants.STR_REFERENCE)
+        else:
+            print(output)
 
     @staticmethod
     def print_output_as_dict(output, output_file=None):
@@ -160,3 +163,30 @@ class Utility(object):
         with open(output_file, "w") as handle:
             filedata = handle.write(content)
             handle.close()
+
+    @staticmethod
+    def extract_json_data(file_path):
+        """Extract json value."""
+        raw_data = Utility.fetch_file_data(file_path)
+        json_data = json.loads(raw_data)
+        return json_data
+
+    @staticmethod
+    def extract_str_data(file_path):
+        """Extract json value."""
+        raw_data = Utility.fetch_file_data(file_path)
+        return raw_data
+
+    @staticmethod
+    def fetch_file_data(file_path):
+        """Fetch file data."""
+        if file_path.lstrip().startswith('@data:'):
+            return file_path.lstrip()[6:]
+        else:
+            if not os.path.isfile(file_path):
+                raise RuntimeError('File %s does not exists' % file_path)
+
+            with open(file_path, "r") as handle:
+                raw_data = handle.read()
+                return raw_data
+            return None
