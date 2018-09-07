@@ -178,7 +178,7 @@ class Utility(object):
     def fetch_file_data(file_path):
         """Fetch file data."""
         if file_path.lstrip().startswith('@data:'):
-            return file_path[6:]
+            return file_path.lstrip()[6:]
         else:
             if not os.path.isfile(file_path):
                 raise RuntimeError('File %s does not exists' % file_path)
