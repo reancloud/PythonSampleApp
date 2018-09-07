@@ -120,7 +120,10 @@ class Utility(object):
     @staticmethod
     def print_output_as_str(output, output_file=None):
         """Print output as string."""
-        Utility.print_output(output, output_file, PlatformConstants.STR_REFERENCE)
+        if output_file:
+            Utility.print_output(output, output_file, PlatformConstants.STR_REFERENCE)
+        else:
+            print(output)
 
     @staticmethod
     def print_output_as_dict(output, output_file=None):

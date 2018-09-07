@@ -27,6 +27,7 @@ class SaveConnection(Command):
         parser.add_argument('--bastionport', '-bport', help='Bastion port', required=False)
         parser.add_argument('--bastionpassword', '-bp', help='Bastion connection password', required=False)
         parser.add_argument('--bastionsecurekeypath', '-bk', help='Bastion connection secure key path', required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     @staticmethod
@@ -74,7 +75,7 @@ class SaveConnection(Command):
                 raise RuntimeError("Please provide correct parameters and values")
 
             api_response = conn_api_instance.save_vm_connection(connection_data)
-            print("Connection created successfully :%s, id: %s" % (api_response.name, api_response.id))
+            Utility.print_output_as_str("Connection created successfully :{}, id: {}".format(api_response.name, api_response.id), parsed_args.output)
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

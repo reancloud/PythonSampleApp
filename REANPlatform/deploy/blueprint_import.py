@@ -21,22 +21,9 @@ class ImportBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-            '--blueprint_file', '-b_file',
-            help='Blueprint file. REAN Deploy blueprint\
-            file path. A path can be absolute path.',
-            required=True
-        )
-        parser.add_argument(
-            '--attribute_file', '-a_file',
-            help='Blueprint attributes. REAN Deploy blueprint\
-            attributes file path. A path can be absolute\
-            path.', required=True
-        )
-        parser.add_argument('--output', '-o',
-                            help="Write output to <file> instead of stdout.",
-                            required=False
-                           )
+        parser.add_argument('--blueprint_file', '-b', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=True)
+        parser.add_argument('--attribute_file', '-a', help='Blueprint attributes. REAN Deploy blueprint attributes file path. A path can be absolute path.', required=True)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     def take_action(self, parsed_args):

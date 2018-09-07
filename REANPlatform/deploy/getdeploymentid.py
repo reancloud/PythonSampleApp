@@ -34,7 +34,7 @@ class GetDeploymentId(Command):
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             api_response = api_instance.get_all_deployments_for_environment_by_id_and_deployment_name(env_id, deployment_name)
-            Utility.print_output_as_str("Deployment id : {} ".format(api_response.id), parsed_args)
+            Utility.print_output_as_str("Deployment id : {} ".format(api_response.id), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -44,5 +44,4 @@ class GetDeploymentId(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        if env_id:
-            GetDeploymentId.get_deployment_by_id_and_name(env_id, deployment_name, parsed_args)
+        GetDeploymentId.get_deployment_by_id_and_name(env_id, deployment_name, parsed_args)
