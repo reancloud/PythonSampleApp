@@ -1,5 +1,4 @@
 """Save provider module."""
-import os
 import json
 import logging
 from cliff.command import Command
