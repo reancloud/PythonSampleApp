@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
