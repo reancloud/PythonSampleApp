@@ -20,7 +20,7 @@ class CreateMultipleProviders(Command):
         """get_parser."""
         parser = super(CreateMultipleProviders, self).get_parser(prog_name)
         parser.add_argument('--provider_details', '-f',
-                            help="An array of Provider in JSON format. Sample value for this attribute is:\n[{\n  'name': 'provider_name',\n  'type': 'provider_type',\n  'provider_details': provider_json\n}]",
+                            help="An array of Provider in JSON format. Sample value for this attribute is:\n[{\n  \"name\": \"provider_name\",\n  \"type\": \"provider_type\",\n  \"provider_details\": provider_json\n}]",
                             required=True
                            )
         return parser
@@ -37,7 +37,7 @@ class CreateMultipleProviders(Command):
         success = []
         failed = []
         exists = []
-        json_data = CreateMultipleProviders.fetch_file_data(file_path)
+        json_data = Utility.extract_json_data(file_path)
 
         if isinstance(json_data, list):
             print('Saving list of providers...')
@@ -62,18 +62,6 @@ class CreateMultipleProviders(Command):
             raise RuntimeError('Please provide valid json file.')
 
         CreateMultipleProviders.print_response(success, exists, failed)
-
-    @staticmethod
-    def fetch_file_data(file_path):
-        """Fetch file data."""
-        if not os.path.isfile(file_path):
-            raise RuntimeError('Provider details file %s does not exists' % file_path)
-
-        with open(file_path, "r") as handle:
-            filedata = handle.read()
-
-        jsondata = json.loads(filedata)
-        return jsondata
 
     @staticmethod
     def print_response(success, exists, failed):
