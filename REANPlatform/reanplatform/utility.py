@@ -2,7 +2,9 @@
 import os
 from os.path import basename
 import base64
+from base64 import b64decode
 import json
+import boto3
 from Crypto.Cipher import XOR
 import yaml
 from reanplatform.utilityconstants import PlatformConstants
@@ -17,7 +19,11 @@ class Utility(object):
         try:
             credentials = Utility.get_env_username_password_and_baseurl()
             if credentials and credentials.get('user_name') and credentials.get('password'):
-                credentials = str(credentials.get('user_name')) + ":" + str(credentials.get('password'))
+                password = str(credentials.get('password'))
+                if "AWS_LAMBDA_FUNCTION_NAME" in os.environ:
+                    password = boto3.client('kms').decrypt(CiphertextBlob=b64decode(password))['Plaintext'].decode('utf-8')
+
+                credentials = str(credentials.get('user_name')) + ":" + str(password)
             else:
                 credentials = Utility.get_username_password_from_file()
             return credentials
