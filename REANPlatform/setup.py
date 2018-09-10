@@ -98,7 +98,8 @@ setup(
             'create-provider = reantest.create_provider:CreateProvider',
             'list-providers = reantest.list_providers:ListProvider',
             'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
-            'run-infra-test = reantest.run_infra_test:RunInfraTest'
+            'run-infra-test = reantest.run_infra_test:RunInfraTest',
+            'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
