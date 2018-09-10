@@ -1,7 +1,7 @@
 """Run Infratest AWSSpec."""
-from cliff.command import Command
 import logging
 import json
+from cliff.command import Command
 from reantest.utility import Utility
 import test_sdk_client
 
