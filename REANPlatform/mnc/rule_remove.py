@@ -58,8 +58,7 @@ class RuleRemove(Command):      # noqa: D400
                 logging.info("Exit")
 
             if force.lower() == 'yes' or force.lower() == 'y':
-                instance = deploy_sdk_client.EnvironmentApi()
-                api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+                api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
                 all_env = api_instance.get_all_environments()
                 deployment_id_to_remove = []
 

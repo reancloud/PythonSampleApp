@@ -50,8 +50,7 @@ class RuleList(Command):        # noqa: D400
         rule_name_key = None
         self.__validate_parameters(rule_name, customer_acc)
         try:
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             all_env = api_instance.get_all_environments()
             logging.info("Please wait!")
             display_data = OrderedDict()

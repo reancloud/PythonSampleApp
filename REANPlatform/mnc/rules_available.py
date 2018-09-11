@@ -25,8 +25,7 @@ class RuleAvailable(Command):        # noqa: D400
     def take_action(self, parsed_args):
         """List Available Rules."""
         try:
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             all_env = api_instance.get_all_environments()
             table = PrettyTable(['Rule Name', 'Description'])
             table.align['Rule Name'] = "l"

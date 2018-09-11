@@ -76,8 +76,7 @@ class RuleInstall(Command):     # noqa: D400
         deployment_description = 'test'
 
         try:
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             # Get all environments for user
             all_env = api_instance.get_all_environments()
             env_ids = {}
