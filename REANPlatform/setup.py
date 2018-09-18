@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -80,7 +80,8 @@ setup(
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
             'get-environment = deploy.getenvironment:GetEnvironment',
-            'deploy-env = deploy.deployenv:DepolyEnv'
+            'deploy-env = deploy.deployenv:DepolyEnv',
+            'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
