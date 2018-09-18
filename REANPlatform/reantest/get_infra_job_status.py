@@ -7,7 +7,7 @@ import test_sdk_client
 
 
 class GetInfraJobStatus(Command):
-    """Get user job status."""
+    """Get infra job status."""
 
     log = logging.getLogger(__name__)
 

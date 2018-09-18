@@ -1,5 +1,4 @@
 """Get Deployment Details."""
-import os
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -21,7 +20,10 @@ class GetDeploymentOutput(Command):
         parser = super(GetDeploymentOutput, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name', required=False)
-        parser.add_argument('--output', '-f', help='Specify filename for getting deployment output', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -44,15 +46,12 @@ class GetDeploymentOutput(Command):
         # Define parsed arguments
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
-        file_name = parsed_args.output
 
         # Get deployment details
         deployment_output = GetDeploymentOutput.get_deployment_details(env_id, deployment_name)
 
         if deployment_output:
-            if file_name is not None:
-                filepath = os.getcwd() + '/' + file_name + '.json'
-                Utility.create_output_file(filepath, deployment_output)
-                print("Deployment output file " + file_name + " created successfully at " + filepath)
+            if parsed_args.output is not None:
+                Utility.print_output_as_dict(deployment_output, parsed_args.output)
             else:
                 print(Utility.get_parsed_json(deployment_output))

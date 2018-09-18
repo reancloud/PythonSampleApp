@@ -4,6 +4,7 @@ import json
 from cliff.command import Command
 import test_sdk_client
 from reantest.utility import Utility
+from reanplatform.utility import Utility as PlatformUtility
 
 
 class CreateProvider(Command):
@@ -26,6 +27,7 @@ class CreateProvider(Command):
         parser.add_argument('--use_public_ip', '-p', help='Set true to use public ip, Default value is false', default=False)
         parser.add_argument('--default_provider', '-d', help='Set true to set default provider, Default value is false', default=False)
         parser.add_argument('--private_key', '-pk', help='Private Key to connect to instance', required=True)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -64,6 +66,9 @@ class CreateProvider(Command):
             api_response = api_instance.save_provider(body)
 
             self.log.debug(api_response)
+
+            PlatformUtility.print_output_as_str("Provider created \
+            successfully. {}".format(api_response.id), parsed_args.output)
 
         except Exception as exception:
             Utility.print_exception(exception)

@@ -1,5 +1,4 @@
 """Get Validation Param."""
-import os
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -21,7 +20,10 @@ class GetValidationParam(Command):
         parser = super(GetValidationParam, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Please provide this attribute if deployment name is not default.', required=False)
-        parser.add_argument('--output', '-f', help='Specify filename for getting validation parameters', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -29,18 +31,15 @@ class GetValidationParam(Command):
         # Define parsed_args
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
-        file_name = parsed_args.output
 
         # Get validation param
         validation_param = GetValidationParam.get_validation_param(env_id, deployment_name)
 
         if validation_param:
-            if file_name is not None:
-                filepath = os.getcwd() + '/' + file_name + '.json'
-                Utility.create_output_file(filepath, validation_param)
-                print("Output file " + file_name + " created successfully at " + filepath)
+            if parsed_args.output is not None:
+                Utility.print_output_as_dict(validation_param, parsed_args.output)
             else:
-                print(validation_param)
+                print(Utility.get_parsed_json(validation_param))
 
     @staticmethod
     def get_validation_param(env_id, deployment_name):

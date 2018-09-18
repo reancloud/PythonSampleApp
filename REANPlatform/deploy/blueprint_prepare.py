@@ -21,12 +21,8 @@ class PrepareBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-            '--file', '-f',
-            help='Blueprint file. REAN Deploy blueprint\
-            file path. A path can be absolute path.',
-            required=False
-        )
+        parser.add_argument('--file', '-f', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -36,7 +32,7 @@ class PrepareBlueprint(Command):
 
         PrepareBlueprint.validate_parameters(attribute_path)
 
-        PrepareBlueprint.blueprint_prepare(blueprint_path, attribute_path)       # noqa: E501
+        PrepareBlueprint.blueprint_prepare(blueprint_path, attribute_path, parsed_args)       # noqa: E501
 
     @staticmethod
     def validate_parameters(file_path):
@@ -46,7 +42,7 @@ class PrepareBlueprint(Command):
                 blueprint file absolute path")
 
     @staticmethod
-    def blueprint_prepare(blueprint_path, attribute_path):     # noqa: E501
+    def blueprint_prepare(blueprint_path, attribute_path, parsed_args):     # noqa: E501
         """blueprint_prepare."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -68,6 +64,6 @@ class PrepareBlueprint(Command):
             msg = "Blueprint attributes file created successfully.\
                 Before import a blueprint, Update the blueprint attributes\
                 in file: " + (attribute_path)
-            print(re.sub(' +', ' ', msg))
+            Utility.print_output_as_str(re.sub(' +', ' ', msg), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
