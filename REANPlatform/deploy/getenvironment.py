@@ -20,7 +20,7 @@ class GetEnvironment(Command):
         parser = super(GetEnvironment, self).get_parser(prog_name)
         parser.add_argument('--env_name', '-n', help='Environment name', required=True)
         parser.add_argument('--env_version', '-ev', help='Environment version.', required=False)
-        parser.add_argument('--output', '-f', help='Specify the output filepath to save environment JSON. If not specified JSON will be printed on the console', required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     @staticmethod
@@ -54,7 +54,6 @@ class GetEnvironment(Command):
         # Define parsed argument
         name = parsed_args.env_name
         version = parsed_args.env_version
-        filepath = parsed_args.output
         # Initialise env_response
         env_response = None
         # Get Environment
@@ -64,11 +63,7 @@ class GetEnvironment(Command):
             env_response = GetEnvironment.get_environment_by_env_name(name)
 
         if env_response:
-            if filepath is not None:
-                if os.path.exists(os.path.dirname(os.path.abspath(filepath))) and os.path.isabs(filepath):
-                    Utility.create_output_file(filepath, env_response)
-                    print("Environment output file created successfully at " + filepath)
-                else:
-                    raise RuntimeError("Not a valid path")
+            if parsed_args.output is not None:
+                Utility.print_output_as_dict(env_response, parsed_args.output)
             else:
                 print(Utility.get_parsed_json(env_response))
