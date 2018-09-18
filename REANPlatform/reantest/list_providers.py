@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 from cliff.command import Command
 import test_sdk_client
 from reantest.utility import Utility
+from reanplatform.utility import Utility as PlatformUtility
 
 
 class ListProvider(Command):
@@ -21,15 +22,16 @@ class ListProvider(Command):
                             type=str, default='json',
                             nargs='?',
                             required=False)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     def take_action(self, parsed_args):
         """take_action of ListProvider."""
         list_provider_format = parsed_args.format
-        ListProvider.list_provider(list_provider_format)
+        ListProvider.list_provider(list_provider_format, parsed_args)
 
     @staticmethod
-    def list_provider(list_provider_format):
+    def list_provider(list_provider_format, parsed_args):
         """list_provider."""
         try:
             api_instance = test_sdk_client.ProviderApi(Utility.set_headers())
@@ -58,14 +60,14 @@ class ListProvider(Command):
                             provider.use_public_ip
                         ]
                     )
-                print("Provider list ::\n%s" % table)
+                PlatformUtility.print_output_as_str("{}".format(table), parsed_args.output)
             elif list_provider_format == 'json' or list_provider_format == '':
-                print(
+                PlatformUtility.print_output_as_str(
                     json.dumps(
                         api_response,
                         default=lambda o: o.__dict__,
                         sort_keys=True, indent=4
-                        ).replace("\"_", '"')
+                        ).replace("\"_", '"'), parsed_args.output
                     )
             else:
                 raise RuntimeError("Please specify correct format, Allowed \

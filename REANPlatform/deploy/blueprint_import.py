@@ -21,18 +21,9 @@ class ImportBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
-        parser.add_argument(
-            '--blueprint_file', '-b_file',
-            help='Blueprint file. REAN Deploy blueprint\
-            file path. A path can be absolute path.',
-            required=True
-        )
-        parser.add_argument(
-            '--attribute_file', '-a_file',
-            help='Blueprint attributes. REAN Deploy blueprint\
-            attributes file path. A path can be absolute\
-            path.', required=True
-        )
+        parser.add_argument('--blueprint_file', '-b', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=True)
+        parser.add_argument('--attribute_file', '-a', help='Blueprint attributes. REAN Deploy blueprint attributes file path. A path can be absolute path.', required=True)
+        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -42,7 +33,7 @@ class ImportBlueprint(Command):
 
         ImportBlueprint.validate_parameters(blueprint_path, attribute_path)
 
-        ImportBlueprint.blueprint_import(blueprint_path, attribute_path)    # noqa: E501
+        ImportBlueprint.blueprint_import(blueprint_path, attribute_path, parsed_args)    # noqa: E501
 
     @staticmethod
     def validate_parameters(blueprint_path, attribute_path):
@@ -52,7 +43,7 @@ class ImportBlueprint(Command):
                 blueprint file and attributes file absolute path")
 
     @staticmethod
-    def blueprint_import(blueprint_path, attribute_path):      # noqa: E501
+    def blueprint_import(blueprint_path, attribute_path, parsed_args):      # noqa: E501
         """blueprint_import."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -87,7 +78,7 @@ class ImportBlueprint(Command):
                             raise RuntimeError(re.sub(' +', ' ', exception_msg))  # noqa: E501
 
             api_env_instance.import_blueprint(body=blueprint_all_env)
-            print("Blueprint imported successfully. Environment names : ", env_names)       # noqa: E501
+            Utility.print_output_as_str("Blueprint imported successfully. Environment names : {}".format(env_names), parsed_args.output)
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

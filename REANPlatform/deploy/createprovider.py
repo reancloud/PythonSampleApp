@@ -28,6 +28,10 @@ class SaveProvider(Command):
                             for provider type. File absolute path',
                             required=True
                            )
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -36,10 +40,10 @@ class SaveProvider(Command):
         prov_type = parsed_args.type
         provider_details = parsed_args.provider_details
 
-        SaveProvider.create_provider(prov_name, prov_type, provider_details)
+        SaveProvider.create_provider(prov_name, prov_type, provider_details, parsed_args)
 
     @staticmethod
-    def create_provider(prov_name, prov_type, provider_details):
+    def create_provider(prov_name, prov_type, provider_details, parsed_args):
         """create_provider."""
         api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
         provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
@@ -68,7 +72,6 @@ class SaveProvider(Command):
                 if provider.name == prov_name:
                     provider_id = provider.id
                     break
-            print("Provider created successfully \
-                    Name: %s,  Id: %i" % (prov_name, provider_id))
+            Utility.print_output_as_str("Provider created successfully Name: {},  Id: {}".format(prov_name, provider_id), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

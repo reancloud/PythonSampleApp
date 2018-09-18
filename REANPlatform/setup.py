@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -99,7 +99,8 @@ setup(
             'create-provider = reantest.create_provider:CreateProvider',
             'list-providers = reantest.list_providers:ListProvider',
             'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
-            'run-infra-test = reantest.run_infra_test:RunInfraTest'
+            'run-infra-test = reantest.run_infra_test:RunInfraTest',
+            'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
