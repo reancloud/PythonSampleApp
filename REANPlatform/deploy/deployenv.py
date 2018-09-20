@@ -40,6 +40,10 @@ class DepolyEnv(Command):
                             help="Json file with applicable resouce name-connection name pair. File absolute path \nExample:\n\"[{\"resourceName\" : \"connectionName\"}]",
                             required=False
                            )
+        parser.add_argument('--chef_environment', '-ce',
+                            help="Chef Environment Name(Only when REAN Deploy is configured for Chefserver)",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -85,7 +89,8 @@ class DepolyEnv(Command):
                 provider_name=parsed_args.provider_name,
                 input_json=child_input_json,
                 parent_deployments=depends_on_json,
-                connections=connections
+                connections=connections,
+                chef_environment=parsed_args.chef_environment
             )
             response = api_instance.deploy_by_config(
                 body=body
