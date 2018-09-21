@@ -102,7 +102,7 @@ class Utility:
             message = "Please enter valid Test URL."
 
         # Validation for Security test type
-        elif params.security_test_type != '@app_scan' and params.security_test_type != '@http_headers':
+        elif params.security_test_type != '@app_scan' and params.security_test_type != '@http_headers' and params.security_test_type != '@app_scan,@http_headers' and params.security_test_type != '@http_headers,@app_scan':
             message = "Please Provide valid security test type."
 
         return message
