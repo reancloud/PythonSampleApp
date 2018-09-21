@@ -15,7 +15,7 @@ class RunSecurityTest(Command):
         parser = super(RunSecurityTest, self).get_parser(prog_name)
 
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
-        parser.add_argument('--security_test_type', '-t', help='Set Security test type example:@app_scan/@http_headers.', required=True)
+        parser.add_argument('--security_test_type', '-t', help='Set Security test type example:@app_scan/@http_headers/@app_scan,@http_headers.', required=True)
 
         return parser
 
