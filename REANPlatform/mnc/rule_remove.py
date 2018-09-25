@@ -10,7 +10,7 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.destroydeployment import DestroyDeployment
 from deploy.constants import DeployConstants
-
+from deploy.utility import DeployUtility
 
 class RuleRemove(Command):      # noqa: D400
     """Destroy manage cloud deployed rule
@@ -58,8 +58,9 @@ class RuleRemove(Command):      # noqa: D400
                 logging.info("Exit")
 
             if force.lower() == 'yes' or force.lower() == 'y':
-                api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-                all_env = api_instance.get_all_environments()
+                api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+		instance = deploy_sdk_client.EnvironmentApi(api_client)
+                all_env = instance.get_all_environments()
                 deployment_id_to_remove = []
 
                 for one_env in all_env:

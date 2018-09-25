@@ -7,26 +7,25 @@ from deploy_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
-
-class RuleAvailable(Command):        # noqa: D400
-    """List all the available manage cloud rules in REAN-Deploy
-
+class RuleAvailable(Command):
+    # noqa: D400
+    """
+    List all the available manage cloud rules in REAN-Deploy
     Example: rean-mnc available-rules
     """
-
     log = logging.getLogger(__name__)
-
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleAvailable, self).get_parser(prog_name)
         return parser
-
     def take_action(self, parsed_args):
         """List Available Rules."""
         try:
-            api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            all_env = api_instance.get_all_environments()
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            all_env = instance.get_all_environments()
             table = PrettyTable(['Rule Name', 'Description'])
             table.align['Rule Name'] = "l"
             table.align['Description'] = "l"
@@ -34,7 +33,7 @@ class RuleAvailable(Command):        # noqa: D400
                 if one_env.name.endswith('config_rule_setup'):
                     rule = self.is_rule(all_env, one_env.name.replace('_config_rule_setup', ''))
                     if rule:
-                        table.add_row([one_env.name.replace('_config_rule_setup', ''), one_env.description])
+                        table.add_row([one_env.name.replace('_config_rule_setup',''),one_env.description])
             logging.info(table)
 
         except ApiException as exception:

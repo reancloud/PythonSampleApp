@@ -9,12 +9,13 @@ from prettytable import PrettyTable
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
+from deploy_sdk_client.api_client import ApiClient
 from deploy_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
 from deploy.constants import DeployConstants
 from deploy.getdeploymentstatus import Status
-
+from deploy.utility import DeployUtility
 
 class RuleList(Command):        # noqa: D400
     """List manage cloud deployed rules
@@ -50,19 +51,21 @@ class RuleList(Command):        # noqa: D400
         rule_name_key = None
         self.__validate_parameters(rule_name, customer_acc)
         try:
-            api_instance = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            all_env = api_instance.get_all_environments()
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            # Get all environments for user
+            api_response = instance.get_all_environments()
             logging.info("Please wait!")
             display_data = OrderedDict()
             table = None
             table_only_acc = PrettyTable(['Customer Account Number', 'Rule Name', 'Status'])
             table_only_name = PrettyTable(['Rule Name', 'Customer Account Number', 'Status'])
             add_acc = True
-            for one_env in all_env:
+            for one_env in api_response:
                 input_json = None
                 if rule_name and customer_acc:
                     if one_env.name.startswith(rule_name):
-                        input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name=None)
+                        input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, instance, rule_name=None)
                         if input_json:
                             del input_json['status']
                             display_data['Customer-Account'] = customer_acc
@@ -70,7 +73,7 @@ class RuleList(Command):        # noqa: D400
                             display_data['Rule-type'] = None
                             display_data['Input-Parameters'] = input_json
                 elif customer_acc:
-                    input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)
+                    input_json = RuleList.get_input_json(one_env.config.env_id, customer_acc, instance, rule_name)
                     if input_json:
                         rule_name_add = one_env.name.replace('_config_rule_setup', '')
                         customer_acc = customer_acc if add_acc else ''
@@ -79,7 +82,7 @@ class RuleList(Command):        # noqa: D400
                         table = table_only_acc
                 elif rule_name:
                     if one_env.name.startswith(rule_name):
-                        input_all_deployment = RuleList.get_input_json(one_env.config.env_id, customer_acc, api_instance, rule_name)
+                        input_all_deployment = RuleList.get_input_json(one_env.config.env_id, customer_acc, instance, rule_name)
                         if input_all_deployment:
                             add_acc = True
                             for input_json in input_all_deployment:
@@ -103,17 +106,17 @@ class RuleList(Command):        # noqa: D400
             Utility.print_exception(exception)
 
     @staticmethod
-    def get_input_json(env_id, customer_acc, api_instance, rule_name):
+    def get_input_json(env_id, customer_acc, instance, rule_name):
         """get_input_json."""
         all_deployment = None
         input_data = None
         input_all_deployment = []
-        all_deployment = api_instance.get_all_deployments_for_environment_by_id(env_id)
+        all_deployment = instance.get_all_deployments_for_environment_by_id(env_id)
         time.sleep(2)
         if all_deployment:
             for single_deployment in all_deployment:
                 if customer_acc and customer_acc in single_deployment.deployment_name or rule_name:
-                    input_data = api_instance.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)
+                    input_data = api_client.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)
                     input_data = ast.literal_eval(str(input_data))
                     status = Status.deployment_status(env_id, single_deployment.deployment_name)
                     time.sleep(2)
@@ -131,3 +134,4 @@ class RuleList(Command):        # noqa: D400
                             input_all_deployment = input_data
                             input_data['status'] = status
         return input_all_deployment
+

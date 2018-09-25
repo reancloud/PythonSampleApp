@@ -1,4 +1,4 @@
-# pylint: disable=C0301
+#pylint: disable=C0301
 """MNC Configure module."""
 import logging
 import zipfile
@@ -18,11 +18,11 @@ from deploy.constants import DeployConstants
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utilityconstants import PlatformConstants
-
+from deploy.utility import DeployUtility
+from auth.utility import AuthnzUtility
 
 class Configure(Command):   # noqa: D400
     """Configure manage cloud rules
-
     Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 107339370656 --master_connection connection
     """
 
@@ -166,7 +166,6 @@ class Configure(Command):   # noqa: D400
             self.__version = folder_list[0]
             startAfter = "PROD/" + folder_list[0] + "/"
         return startAfter
-
     def import_blueprints(self, master_provider, master_connection, local_artifacts_path):
         """Import the blueprints."""
         deploy_api_response = None
@@ -186,9 +185,9 @@ class Configure(Command):   # noqa: D400
         master_account_connection_id = self.get_connection_id(master_connection)
         time.sleep(1)
 
-        instance = deploy_sdk_client.EnvironmentApi()
-        api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-        list_of_existing_env = self.list_of_env(api_instance)
+        api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        instance = deploy_sdk_client.EnvironmentApi(api_client)
+        list_of_existing_env = self.list_of_env(api_client)
 
         for file_name in os.listdir(local_artifacts_path):
             FAIL = False
@@ -196,7 +195,7 @@ class Configure(Command):   # noqa: D400
             if file_name.endswith('.reandeploy'):
                 blueprint_all_env = None
                 try:
-                    blueprint_all_env = api_instance.prepare_import_blueprint(file=local_artifacts_path + '/' + file_name)
+                    blueprint_all_env = instance.prepare_import_blueprint(file=local_artifacts_path + '/' + file_name)
                     index = 0
                     to_del = []
                     for one_env in blueprint_all_env.environment_imports:
@@ -219,7 +218,7 @@ class Configure(Command):   # noqa: D400
                         del blueprint_all_env.environment_imports[already_imported]
 
                     if blueprint_all_env.environment_imports:
-                        api_instance.import_blueprint(body=blueprint_all_env)
+                        instance.import_blueprint(body=blueprint_all_env)
                         logging.info("Rule imported successfully : %s", file_name)
                         time.sleep(2)
                     else:
@@ -230,11 +229,12 @@ class Configure(Command):   # noqa: D400
                     logging.info("Failed to import rule. Please check the file :%s", file_name)
                     # Utility.print_exception(exception)
         logging.info("Successfully imported rule count :%s", success_count)
-
-    def list_of_env(self, api_instance):
+    def list_of_env(self, api_client):
         """list_of_env."""
         already_exist = []
-        all_env = api_instance.get_all_environments()
+        api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+        instance = deploy_sdk_client.EnvironmentApi(api_client)
+        all_env = instance.get_all_environments()
         for one_env in all_env:
             already_exist.append(one_env.name)
         return already_exist
@@ -242,11 +242,11 @@ class Configure(Command):   # noqa: D400
     def get_provider_id(self, master_provider):
         """Return provider-id based on provider-name."""
         try:
-            instance = deploy_sdk_client.ProviderApi()
-            provider_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            providers_list = provider_api_instance.get_all_providers()
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            provider_api_instance = deploy_sdk_client.ProviderApi(api_client)
+            api_response = provider_api_instance.get_all_providers()
             provider_id = ""
-            for provider in providers_list:
+            for provider in api_response:
                 if provider.name == master_provider:
                     provider_id = provider.id
                     break
@@ -257,10 +257,10 @@ class Configure(Command):   # noqa: D400
     def get_connection_id(self, master_connection):
         """Return connection-id based on connection-name."""
         try:
-            instance = deploy_sdk_client.ConnectionApi()
-            connection_api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            connection_list = connection_api_instance.get_all_vm_connections()
-            for connection in connection_list:
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            conn_api_instance = deploy_sdk_client.ConnectionApi(api_client)
+            api_response = conn_api_instance.get_all_vm_connections()
+            for connection in api_response:
                 if connection.name == master_connection:
                     connection_id = connection.id
                     break
@@ -276,9 +276,9 @@ class Configure(Command):   # noqa: D400
     def share_blueprints(self, deploy_group):
         """Share the blueprints."""
         try:
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_response = api_instance.get_all_environments()
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            api_response = instance.get_all_environments()
             environment_ids_list = []
             for response in api_response:
                 if response.name == "mnc_rule_processor_lambda_permission_setup" or response.name == "mnc_rule_processor_lambda_setup" or response.name == "mnc_notifier_lambda" or response.name.endswith('config_rule_setup') or response.name.endswith('assume_role'):
@@ -287,9 +287,10 @@ class Configure(Command):   # noqa: D400
                 else:
                     logging.info("Failed to share rule with group %s. Rule name is not valid: %s", deploy_group, response.name)
                     continue
-            instance = authnz_sdk_client.GroupcontrollerApi()
-            api_instance_auth = set_header_parameter(instance, Utility.get_url(AunthnzConstants.AUTHNZ_URL))
-            api_response = api_instance_auth.get_group_with_name_using_get(deploy_group)
+
+            api_authnz_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
+            instance = authnz_sdk_client.GroupcontrollerApi(api_client)
+            api_response = instance.get_group_with_name_using_get(deploy_group)
             group_id = api_response.id
 
             logging.info("Please wait! While rules are sharing with group :%s", deploy_group)
@@ -298,7 +299,7 @@ class Configure(Command):   # noqa: D400
                 action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
                 share_group_permission_instance = deploy_sdk_client.ShareGroupPermission(group_dto_instance, action_list)
                 environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
-                api_instance.share_environment(environment_id, body=environment_policy_instance)
+                api_client.share_environment(environment_id, body=environment_policy_instance)
                 time.sleep(3)
             logging.info("All the rules are shared with group :%s", deploy_group)
         except ApiException as exception:
@@ -309,9 +310,10 @@ class Configure(Command):   # noqa: D400
         """Release environments."""
         try:
             is_released_environments = False
-            instance = deploy_sdk_client.EnvironmentApi()
-            api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
-            environment_list = api_instance.get_all_environments()
+
+            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+            instance = deploy_sdk_client.EnvironmentApi(api_client)
+            environment_list = api_client.get_all_environments()
             version = self.get_release_version()
             logging.info("\nReleasing the environments with version %s", version)
             for environment in environment_list:
@@ -331,3 +333,4 @@ class Configure(Command):   # noqa: D400
         except ApiException as exception:
             logging.info("Failed to release environment. Please try again.")
             # Utility.print_exception(exception)
+
