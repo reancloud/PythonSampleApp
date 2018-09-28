@@ -9,15 +9,15 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class PlanEnvironment(Command):
-    """Plan Environment."""
+class PlanDeployment(Command):
+    """Plan Deployment."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser
-        parser = super(PlanEnvironment, self).get_parser(prog_name)
+        parser = super(PlanDeployment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--deployment_name', '-n', help='Deployment name.', required=False)
         parser.add_argument('--output', '-o',
@@ -34,9 +34,9 @@ class PlanEnvironment(Command):
         plan_response = None
 
         if env_id and deployment_name:
-            plan_response = PlanEnvironment.plan_deployment(env_id, deployment_name)
+            plan_response = PlanDeployment.plan_deployment(env_id, deployment_name)
         else:
-            plan_response = PlanEnvironment.plan(env_id)
+            plan_response = PlanDeployment.plan(env_id)
 
         if plan_response:
             if parsed_args.output is not None:

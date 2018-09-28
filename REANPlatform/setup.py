@@ -66,7 +66,7 @@ setup(
             'create-connection = deploy.createconnection:SaveConnection',
             'delete-connection = deploy.deleteconnection:DeleteConnection',
             'destroy-deployment = deploy.destroydeployment:DestroyDeployment',
-            'plan-environment = deploy.planenvironment:PlanEnvironment',
+            'plan-deployment = deploy.plandeployment:PlanDeployment',
             'stop-deployment = deploy.stop_deployment:StopDeployment',
             'export-environment = deploy.exportenvironment:ExportEnvironment',
             'export-blueprint-environment = deploy.exportblueprintenvironment:ExportBlueprintEnvironment',
