@@ -53,10 +53,11 @@ class PrepareBlueprint(Command):
             for one_env in blueprint_all_env.environment_imports:
                 prepare_data[one_env.import_config.name + '-' + one_env.import_config.env_version] = {  # noqa: E501
                     'name': one_env.import_config.name,
+                    'env_version': one_env.import_config.env_version,
+                    'description': one_env.import_config.description,
                     'connection_id': one_env.import_config.connection_id,
                     'provider_id': one_env.import_config.provider_id,
-                    'env_version': one_env.import_config.env_version,
-                    'description': one_env.import_config.description
+                    'region': one_env.import_config.region
                     }
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), 'w') as outfile:
