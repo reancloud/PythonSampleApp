@@ -19,8 +19,6 @@ class RunURLTest(Command):
         """get_parser."""
         parser = super(RunURLTest, self).get_parser(prog_name)
 
-        parser.usage
-
         parser.formatter_class = ArgumentDefaultsHelpFormatter
 
         parser.add_argument('url', help='Set url To test example:http://www.google.com')
