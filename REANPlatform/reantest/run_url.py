@@ -1,9 +1,9 @@
 """run url test module."""
 import logging
+from argparse import ArgumentDefaultsHelpFormatter
 from cliff.command import Command
 import test_sdk_client
 from reantest.utility import Utility
-from argparse import ArgumentDefaultsHelpFormatter
 
 
 class RunURLTest(Command):
