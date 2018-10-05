@@ -32,13 +32,14 @@ class GetJobReport(Command):
                 self.log.debug("File path Exists")
                 if parsed_args.output_directory.endswith('/'):
                     open(parsed_args.output_directory + file_name, 'wb').write(api_response.data)
+                    print("Reports downloaded successfully at " + parsed_args.output_directory + file_name)
                 else:
                     open(parsed_args.output_directory + '/' + file_name, 'wb').write(api_response.data)
+                    print("Reports downloaded successfully at " + parsed_args.output_directory + '/' + file_name)
             else:
-                print("File path not exists")
+                self.log.debug("File path not exists")
                 open(str(Path.home()) + "/" + file_name, 'wb').write(api_response.data)
-
-            print("Executed successfully.")
+                print("Reports downloaded successfully at " + str(Path.home()) + "/" + file_name)
 
         except Exception as exception:
             Utility.print_exception(exception)
