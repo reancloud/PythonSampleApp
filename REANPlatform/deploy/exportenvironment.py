@@ -26,10 +26,10 @@ class ExportEnvironment(Command):
         return parser
 
     @staticmethod
-    def validate_parameters(env_id, env_name, env_version):
+    def validate_parameters(env_id, env_name):
         """validate_parameters."""
         exception_msg = "Specify either --env_id OR --env_name"
-        if env_id is None and (env_name is None and env_version is None):
+        if env_id is None and env_name is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
@@ -41,7 +41,7 @@ class ExportEnvironment(Command):
             env_version = parsed_args.env_version
             output = parsed_args.output
             # validate env_id and env_name
-            ExportEnvironment.validate_parameters(env_id, env_name, env_version)
+            ExportEnvironment.validate_parameters(env_id, env_name)
             # Initialise instance and api_instance
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
