@@ -79,6 +79,7 @@ setup(
             'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
+            'get-environment = deploy.getenvironment:GetEnvironment',
             'deploy-env = deploy.deployenv:DepolyEnv',
             'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders'
         ],
