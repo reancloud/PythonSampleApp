@@ -19,7 +19,7 @@ class DestroyDeployment(Command):
         """get_parser."""
         parser = super(DestroyDeployment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
-        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name.', required=False)
+        parser.add_argument('--deployment_name', '-dn', default='default', help='Deployment name.', required=False)
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
                             required=False
