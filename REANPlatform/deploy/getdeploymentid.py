@@ -18,7 +18,7 @@ class GetDeploymentId(Command):
         """get_parser."""
         # Define parser
         parser = super(GetDeploymentId, self).get_parser(prog_name)
-        parser.add_argument('--deployment_name', '-n', default='default', help='Deployment name. Provide this attribute to get specific deployment else deployment name will be default', required=False)
+        parser.add_argument('--deployment_name', '-dn', default='default', help='Deployment name. Provide this attribute to get specific deployment else deployment name will be default', required=False)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
