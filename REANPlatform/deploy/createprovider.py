@@ -51,8 +51,7 @@ class SaveProvider(Command):
             file_path = provider_details
 
             if not os.path.isfile(file_path):
-                raise RuntimeError('Provider details file %s \
-                                does not exists' % file_path)
+                raise RuntimeError('Provider details file %s does not exists' % file_path)
 
             # Parse parameters
             with open(file_path, "r") as handle:
