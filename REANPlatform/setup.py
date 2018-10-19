@@ -80,6 +80,7 @@ setup(
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
             'get-environment = deploy.getenvironment:GetEnvironment',
+            'get-terraform-code = deploy.getterraformcode:GetTerraformCode',
             'deploy-env = deploy.deployenv:DepolyEnv',
             'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders'
         ],
