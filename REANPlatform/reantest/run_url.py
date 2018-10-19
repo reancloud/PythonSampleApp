@@ -1,6 +1,6 @@
 """run url test module."""
 import logging
-from argparse import ArgumentDefaultsHelpFormatter
+# from argparse import ArgumentDefaultsHelpFormatter
 from cliff.command import Command
 import test_sdk_client
 from reantest.utility import Utility
@@ -12,17 +12,17 @@ class RunURLTest(Command):
     log = logging.getLogger(__name__)
 
     _description = 'Run URL test'
-    _epilog = 'Example : \n\t rean-test run-url-test http://www.google.com GMail -c 64'
+    _epilog = 'Example : \n\t rean-test run-url-test -u http://www.google.com -t GMail -c 64'
     # EPILog will get print after commands
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RunURLTest, self).get_parser(prog_name)
 
-        parser.formatter_class = ArgumentDefaultsHelpFormatter
+        # parser.formatter_class = ArgumentDefaultsHelpFormatter
 
-        parser.add_argument('url', help='Set url To test example:http://www.google.com')
-        parser.add_argument('text_to_search', type=str, help='Set the text to search')
+        parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com', required=True)
+        parser.add_argument('--text_to_search', '-t', type=str, help='Set the text to search', required=True)
 
         parser.add_argument('--page_load_time_out', '-p', type=int, help='Set the Page load timeout time in secs', default=10)
         parser.add_argument('--upa', '-a', help='Set true if needs UPA test to run with the Test')
