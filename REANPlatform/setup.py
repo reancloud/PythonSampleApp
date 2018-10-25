@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi', 'python-jenkins', 'setuptools>=40.4.1'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -79,6 +79,7 @@ setup(
             'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
+            'get-environment = deploy.getenvironment:GetEnvironment',
             'deploy-env = deploy.deployenv:DepolyEnv',
             'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders'
         ],
@@ -99,7 +100,10 @@ setup(
             'list-providers = reantest.list_providers:ListProvider',
             'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
             'run-infra-test = reantest.run_infra_test:RunInfraTest',
-            'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec'
+            'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec',
+            'update-tags = reantest.config_update_tags:ConfigUpdateTags',
+            'update-property = reantest.config_update_property:ConfigUpdateProperty',
+            'list-config-properties = reantest.get_all_config_properties:ConfigListProperties'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',

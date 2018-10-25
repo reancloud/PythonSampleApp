@@ -43,12 +43,12 @@ class ImportBlueprint(Command):
                 blueprint file and attributes file absolute path")
 
     @staticmethod
-    def blueprint_import(blueprint_path, attribute_path, parsed_args):      # noqa: E501
+    def blueprint_import(blueprint_path, attribute_path, parsed_args):
         """blueprint_import."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_env_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            blueprint_all_env = api_env_instance.prepare_import_blueprint(file=blueprint_path)   # noqa: E501
+            blueprint_all_env = api_env_instance.prepare_import_blueprint(file=blueprint_path)
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), "r") as handle:
                 filedata = handle.read()
@@ -59,23 +59,25 @@ class ImportBlueprint(Command):
 
             # Read data from blueprint
             for one_env in blueprint_all_env.environment_imports:
-                key = one_env.import_config.name + '-' + one_env.import_config.env_version   # noqa: E501
+                key = one_env.import_config.name + '-' + one_env.import_config.env_version
 
                 # Data load from prepar blueprint attribute file
                 for blueprint_attribute_key in jsondata:
                     if blueprint_attribute_key == key:
-                        if (jsondata[blueprint_attribute_key]['connection_id'] and jsondata[blueprint_attribute_key]['provider_id']):     # noqa: E501
-                            blueprint_all_env.environment_imports[index].import_config.connection_id = jsondata[blueprint_attribute_key]['connection_id']    # noqa: E501
-                            blueprint_all_env.environment_imports[index].import_config.provider_id = jsondata[blueprint_attribute_key]['provider_id']   # noqa: E501
-                            blueprint_all_env.environment_imports[index].import_config.name = jsondata[blueprint_attribute_key]['name']    # noqa: E501
-                            blueprint_all_env.environment_imports[index].import_config.description = jsondata[blueprint_attribute_key]['description']     # noqa: E501
-                            env_names.append(blueprint_all_env.environment_imports[index].import_config.name)           # noqa: E501
+                        if (jsondata[blueprint_attribute_key]['connection_id'] and jsondata[blueprint_attribute_key]['provider_id']):
+                            blueprint_all_env.environment_imports[index].import_config.connection_id = jsondata[blueprint_attribute_key]['connection_id']
+                            blueprint_all_env.environment_imports[index].import_config.provider_id = jsondata[blueprint_attribute_key]['provider_id']
+                            blueprint_all_env.environment_imports[index].import_config.name = jsondata[blueprint_attribute_key]['name']
+                            blueprint_all_env.environment_imports[index].import_config.description = jsondata[blueprint_attribute_key]['description']
+                            blueprint_all_env.environment_imports[index].import_config.env_version = jsondata[blueprint_attribute_key]['env_version']
+                            blueprint_all_env.environment_imports[index].import_config.region = jsondata[blueprint_attribute_key]['region']
+                            env_names.append(blueprint_all_env.environment_imports[index].import_config.name)
                             index = index + 1
                         else:
                             exception_msg = "Connection_id and provider_id are\
                                 missing to %s environment in the file\
-                                 location %s: " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path)   # noqa: E501
-                            raise RuntimeError(re.sub(' +', ' ', exception_msg))  # noqa: E501
+                                 location %s: " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path)
+                            raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
             api_env_instance.import_blueprint(body=blueprint_all_env)
             Utility.print_output_as_str("Blueprint imported successfully. Environment names : {}".format(env_names), parsed_args.output)

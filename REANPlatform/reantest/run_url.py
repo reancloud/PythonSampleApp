@@ -1,5 +1,6 @@
 """run url test module."""
 import logging
+# from argparse import ArgumentDefaultsHelpFormatter
 from cliff.command import Command
 import test_sdk_client
 from reantest.utility import Utility
@@ -10,21 +11,26 @@ class RunURLTest(Command):
 
     log = logging.getLogger(__name__)
 
+    _description = 'Run URL test'
+    _epilog = 'Example : \n\t rean-test run-url-test -u http://www.google.com -t GMail -c 64'
+    # EPILog will get print after commands
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RunURLTest, self).get_parser(prog_name)
 
-        parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
-        parser.add_argument('--text_to_search', '-t', help='Set the text to search.', required=True)
-        parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.')
-        parser.add_argument('--upa', '-a', help='Set true if needs UPA test to run with the Test.')
-        parser.add_argument('--crawl', '-cr', help='Set true if needs Crawl test to run with the Test.')
+        # parser.formatter_class = ArgumentDefaultsHelpFormatter
 
-        parser.add_argument('--chrome', '-c', help='Give the comma separated versions for Chrome to run test on.')
-        parser.add_argument('--firefox', '-f', help='Give the comma separated versions for Firefox to run test on.')
+        parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com', required=True)
+        parser.add_argument('--text_to_search', '-t', type=str, help='Set the text to search', required=True)
 
-        parser.add_argument('--ie', '-i', help='Give the comma separated versions for IE to run test on.')
-        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
+        parser.add_argument('--page_load_time_out', '-p', type=int, help='Set the Page load timeout time in secs', default=10)
+        parser.add_argument('--upa', '-a', help='Set true if needs UPA test to run with the Test')
+        parser.add_argument('--crawl', '-cr', help='Set true if needs Crawl test to run with the Test')
+        parser.add_argument('--chrome', '-c', help='Give the comma separated versions for Chrome to run test on')
+        parser.add_argument('--firefox', '-f', help='Give the comma separated versions for Firefox to run test on')
+        parser.add_argument('--ie', '-i', help='Give the comma separated versions for IE to run test on')
+        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish')
 
         return parser
 
