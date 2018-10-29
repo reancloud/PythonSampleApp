@@ -166,6 +166,7 @@ class Configure(Command):   # noqa: D400
             self.__version = folder_list[0]
             startAfter = "PROD/" + folder_list[0] + "/"
         return startAfter
+
     def import_blueprints(self, master_provider, master_connection, local_artifacts_path):
         """Import the blueprints."""
         deploy_api_response = None
@@ -186,7 +187,8 @@ class Configure(Command):   # noqa: D400
         time.sleep(1)
 
         api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-        instance = deploy_sdk_client.EnvironmentApi(api_client)
+        api_instance = deploy_sdk_client.EnvironmentApi(api_client)
+
         list_of_existing_env = self.list_of_env(api_client)
 
         for file_name in os.listdir(local_artifacts_path):
@@ -195,18 +197,22 @@ class Configure(Command):   # noqa: D400
             if file_name.endswith('.reandeploy'):
                 blueprint_all_env = None
                 try:
-                    blueprint_all_env = instance.prepare_import_blueprint(file=local_artifacts_path + '/' + file_name)
+                    logging.info("Importing from file %s",file_name)
+                    #get the list of all the parent blue prints
+                    blueprint_all_env = api_instance.prepare_import_blueprint(file=local_artifacts_path + '/' + file_name)
                     index = 0
                     to_del = []
                     for one_env in blueprint_all_env.environment_imports:
                         if one_env.import_config.name in list_of_existing_env:
                             to_del.append(index)
+                            logging.info("#####Rule already imported successfully ")
+                            continue
                         elif one_env.import_config.name == "mnc_rule_processor_lambda_permission_setup" or one_env.import_config.name == "mnc_rule_processor_lambda_setup" or one_env.import_config.name == "mnc_notifier_lambda" or one_env.import_config.name.endswith('config_rule_setup') or one_env.import_config.name.endswith('assume_role'):
                             blueprint_all_env.environment_imports[index].import_config.connection_id = master_account_connection_id
                             blueprint_all_env.environment_imports[index].import_config.provider_id = master_account_provider_id
                             blueprint_all_env.environment_imports[index].import_config.env_version = self.get_release_version()
                         else:
-                            logging.info("Failed to import. Rule name is not valid. Please check file: %s", file_name)
+                            #logging.info("Failed to import. Rule name is not valid. Please check file: %s", file_name)
                             FAIL = True
                             break
                         index = index + 1
@@ -216,9 +222,9 @@ class Configure(Command):   # noqa: D400
                     # Skip already imported
                     for already_imported in reversed(to_del):
                         del blueprint_all_env.environment_imports[already_imported]
-
+                
                     if blueprint_all_env.environment_imports:
-                        instance.import_blueprint(body=blueprint_all_env)
+                        api_instance.import_blueprint(body=blueprint_all_env)
                         logging.info("Rule imported successfully : %s", file_name)
                         time.sleep(2)
                     else:
@@ -324,7 +330,8 @@ class Configure(Command):   # noqa: D400
                 provider_object = deploy_sdk_client.Provider(created_by=provider['created_by'], id=provider['id'], modified_by=provider['modified_by'], name=provider['name'], type=provider['type'])
                 environment_object = deploy_sdk_client.Environment(id=environment['id'], created_by=environment['created_by'], modified_by=environment['modified_by'], name=environment['name'], description=environment['description'], provider=provider_object, connection_id=environment['connection_id'], env_version=version, released=True)
                 modified_on = int(datetime.datetime.now().strftime("%s")) * 1000
-                response = api_instance.update_environment(header_env_id=environment['id'], modified_on=modified_on, body=environment_object)
+                instance = deploy_sdk_client.EnvironmentApi(api_client)
+                response = instance.update_environment(header_env_id=environment['id'], modified_on=modified_on, body=environment_object)
                 time.sleep(2)
                 is_released_environments = True
                 logging.info("Released environment successfully :%s", environment['name'])
@@ -333,4 +340,3 @@ class Configure(Command):   # noqa: D400
         except ApiException as exception:
             logging.info("Failed to release environment. Please try again.")
             # Utility.print_exception(exception)
-

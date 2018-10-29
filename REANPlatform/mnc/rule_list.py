@@ -116,6 +116,7 @@ class RuleList(Command):        # noqa: D400
         if all_deployment:
             for single_deployment in all_deployment:
                 if customer_acc and customer_acc in single_deployment.deployment_name or rule_name:
+                    api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
                     input_data = api_client.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)
                     input_data = ast.literal_eval(str(input_data))
                     status = Status.deployment_status(env_id, single_deployment.deployment_name)
@@ -134,4 +135,3 @@ class RuleList(Command):        # noqa: D400
                             input_all_deployment = input_data
                             input_data['status'] = status
         return input_all_deployment
-

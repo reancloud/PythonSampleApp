@@ -55,7 +55,7 @@ class RuleInstall(Command):     # noqa: D400
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc install-rule --help'")    # noqa: E501
 
 
-    def re_deploy_environment(environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json):
+    def re_deploy_environment(self, environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json):
         """Redeploy An Environment."""
         try:
             # Initialise instance and api_instance and response
@@ -76,10 +76,11 @@ class RuleInstall(Command):     # noqa: D400
             )
 
             # Get deployment status
-            while 1:
+            status = Status.deployment_status(environment_id, deployment_name)
+            while status is not None:
                 status = Status.deployment_status(environment_id, deployment_name)  # noqa: E501
                 status_dict = str(status)
-                if "DEPLOYING" in status_dict:
+                if MncConstats.DEPLOYING in status_dict:
                     time.sleep(1)
                 else:
                     break
@@ -121,10 +122,8 @@ class RuleInstall(Command):     # noqa: D400
                 if (one_env.name.startswith(rule_name) and one_env.name.endswith('config_rule_setup')):
                     env_ids['parent'] = one_env.config.env_id
                     input_from_env = instance.get_input_json(one_env.config.env_id)
-                    #print("Input", input_from_env)
                     RuleInstall.updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action)
                     parent_input_json = DepolyEnv.read_file_as_json_object(input_json_file_path)
-
                 elif (one_env.name.startswith(rule_name) and one_env.name.endswith('assume_role')):
                     env_ids['child'] = one_env.config.env_id
                     depend_resources = ast.literal_eval(instance.get_input_json(one_env.config.env_id))
@@ -134,11 +133,11 @@ class RuleInstall(Command):     # noqa: D400
                                 prepare_data[depend_name] = deployment_name
                             else:
                                 prepare_data[depend_name] = 'default'
-
+                    
             # Create File of Depends_On resource
             if prepare_data:
                 RuleInstall.create_att_file(dependent_resource_file, prepare_data)
-            result = RuleInstall.re_deploy_environment(env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
+            result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
 
             config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
             logging.info("Config status :%s", config_status)
@@ -151,7 +150,7 @@ class RuleInstall(Command):     # noqa: D400
                 provider_name = MncUtility.provider_name_from_s3(str(MncUtility.read_bucket_name()))
                 deployment_name = 'default_master_' + customer_acc
                 depends_json = DepolyEnv.read_file_as_json_object(dependent_resource_file)
-                result = RuleInstall.re_deploy_environment(env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
+                result = RuleInstall.re_deploy_environment(self, env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
                 if result:
                     assume_status = self.get_status(env_ids['child'], deployment_name)
                     logging.info("Assume role status :%s", assume_status)
@@ -200,4 +199,3 @@ class RuleInstall(Command):     # noqa: D400
         input_data['lambdaArn'] = MncUtility.read_lambda_arn(MncConstats.RULE_PROCESSOR_LAMBDA_NAME)
         input_data['maximum_execution_frequency'] = MncConstats.MAXIMUM_EXECUTION_FREQUENCY
         RuleInstall.create_att_file(input_json_file_path, input_data)
-
