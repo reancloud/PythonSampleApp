@@ -3,7 +3,6 @@ from reanplatform.constants import Constants
 from reanplatform.utility import Utility
 from reanplatform.utilityconstants import PlatformConstants
 
-
 def set_header_parameter(api_client, host):
     """Set header."""
     api_client.set_default_header(
