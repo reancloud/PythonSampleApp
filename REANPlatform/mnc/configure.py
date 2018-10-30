@@ -205,14 +205,14 @@ class Configure(Command):   # noqa: D400
                     for one_env in blueprint_all_env.environment_imports:
                         if one_env.import_config.name in list_of_existing_env:
                             to_del.append(index)
-                            logging.info("#####Rule already imported successfully ")
+                            logging.info("Rule already imported successfully")
                             continue
                         elif one_env.import_config.name == "mnc_rule_processor_lambda_permission_setup" or one_env.import_config.name == "mnc_rule_processor_lambda_setup" or one_env.import_config.name == "mnc_notifier_lambda" or one_env.import_config.name.endswith('config_rule_setup') or one_env.import_config.name.endswith('assume_role'):
                             blueprint_all_env.environment_imports[index].import_config.connection_id = master_account_connection_id
                             blueprint_all_env.environment_imports[index].import_config.provider_id = master_account_provider_id
                             blueprint_all_env.environment_imports[index].import_config.env_version = self.get_release_version()
                         else:
-                            #logging.info("Failed to import. Rule name is not valid. Please check file: %s", file_name)
+                            logging.info("Failed to import. Rule name is not valid. Please check file: %s", file_name)
                             FAIL = True
                             break
                         index = index + 1
