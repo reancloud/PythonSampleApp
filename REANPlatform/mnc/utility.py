@@ -19,10 +19,10 @@ class MncUtility:       # noqa: D203
         return bucket_name
 
     @staticmethod
-    def read_role_arn(role_name):
+    def read_role_arn(rean_mnc_notifier_lambda_role):
         """read_role_arn."""
         client = boto3.client('iam')
-        notifier_lambda_role = client.get_role(RoleName=role_name)
+        notifier_lambda_role = client.get_role(RoleName=rean_mnc_notifier_lambda_role)
         return notifier_lambda_role['Role']['Arn']
 
     @staticmethod

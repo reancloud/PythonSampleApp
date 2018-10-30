@@ -135,4 +135,3 @@ class RuleList(Command):        # noqa: D400
                             input_all_deployment = input_data
                             input_data['status'] = status
         return input_all_deployment
-

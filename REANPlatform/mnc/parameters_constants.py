@@ -26,7 +26,7 @@ class MncConstats(object):      # noqa: D203
 
     # parameter forrule input
     DEPLOYING = '"DEPLOYING"'
-    NOTIFIER_ROLE_NAME = 'rean_mnc_notifier_lambda_role'
+    NOTIFIER_ROLE_NAME = 'rean_mnc_notifier_lambda_role' 
     PROCESSOR_ROLE_NAME = 'rean_mnc_rule_processor_lambda_role'
     RULE_PROCESSOR_LAMBDA_NAME = 'rean_mnc_rule_processor'
     MAXIMUM_EXECUTION_FREQUENCY = 'TwentyFour_Hours'       # One_Hour Three_Hours Six_Hours Twelve_Hours TwentyFour_Hours
