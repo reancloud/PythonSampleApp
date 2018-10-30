@@ -62,7 +62,7 @@ class RuleRemove(Command):      # noqa: D400
                 api_instance = deploy_sdk_client.EnvironmentApi(api_client)
                 all_env = api_instance.get_all_environments()
                 deployment_id_to_remove = []
-
+    
                 for one_env in all_env:
                     deployment_id = None
                     time.sleep(1)
@@ -81,7 +81,7 @@ class RuleRemove(Command):      # noqa: D400
                 if deployment_id_to_remove:
 
                     for deployment_id in deployment_id_to_remove:
-                        DestroyDeployment.destroy_by_deploymentid(deployment_id)
+                        api_instance.destroy_deployment_by_id(deployment_id)
                         time.sleep(20)
 
                     if rule_name and customer_acc:
