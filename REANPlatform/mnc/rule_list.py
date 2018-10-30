@@ -16,6 +16,7 @@ from reanplatform.set_header import set_header_parameter
 from deploy.constants import DeployConstants
 from deploy.getdeploymentstatus import Status
 from deploy.utility import DeployUtility
+from deploy.get_deployment_input import GetDeploymentInput
 
 class RuleList(Command):        # noqa: D400
     """List manage cloud deployed rules
@@ -116,8 +117,7 @@ class RuleList(Command):        # noqa: D400
         if all_deployment:
             for single_deployment in all_deployment:
                 if customer_acc and customer_acc in single_deployment.deployment_name or rule_name:
-                    api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-                    input_data = api_client.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)
+                    input_data = GetDeploymentInput.get_deployment_input_json(env_id=env_id, deployment_name=single_deployment.deployment_name)
                     input_data = ast.literal_eval(str(input_data))
                     status = Status.deployment_status(env_id, single_deployment.deployment_name)
                     time.sleep(2)
