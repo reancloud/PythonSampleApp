@@ -17,12 +17,10 @@ from deploy.getdeploymentstatus import Status
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
-class RuleInstall(Command):     # noqa: D400
-    """Install manage cloud rule
 
-    Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 693265998683 --deploy_provider mnc_client --customer_email_to mayuri.patil@reancloud.com --customer_mail_cc akshay.deshpande@reancloud.com --customer_email_domain reancloud --action False
-    """
-
+class RuleInstall(Command):     # noqa: D203, D204
+    """Install manage cloud rule. Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 693265998683 --deploy_provider mnc_client --customer_email_to mayuri.patil@reancloud.com --customer_mail_cc akshay.deshpande@reancloud.com --customer_email_domain reancloud --action False."""
+    # noqa: C0303
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleInstall, self).get_parser(prog_name)
@@ -53,7 +51,6 @@ class RuleInstall(Command):     # noqa: D400
         """Validate cli parameters."""
         if rule_name is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc install-rule --help'")    # noqa: E501
-
 
     def re_deploy_environment(self, environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json):
         """Redeploy An Environment."""
@@ -88,7 +85,6 @@ class RuleInstall(Command):     # noqa: D400
             return response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
-
 
     def take_action(self, parsed_args):
         """List Environment."""
@@ -133,7 +129,6 @@ class RuleInstall(Command):     # noqa: D400
                                 prepare_data[depend_name] = deployment_name
                             else:
                                 prepare_data[depend_name] = 'default'
-                    
             # Create File of Depends_On resource
             if prepare_data:
                 RuleInstall.create_att_file(dependent_resource_file, prepare_data)

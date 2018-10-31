@@ -9,7 +9,6 @@ from prettytable import PrettyTable
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
-from deploy_sdk_client.api_client import ApiClient
 from deploy_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
@@ -18,12 +17,10 @@ from deploy.getdeploymentstatus import Status
 from deploy.utility import DeployUtility
 from deploy.get_deployment_input import GetDeploymentInput
 
-class RuleList(Command):        # noqa: D400
-    """List manage cloud deployed rules
 
-    Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets --customer_acc 693265998683
-    """
-
+class RuleList(Command):    # noqa: D203, D204
+    """List manage cloud deployed rules. Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets --customer_acc 693265998683."""
+    # noqa: C0303
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):

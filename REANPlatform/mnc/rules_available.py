@@ -9,17 +9,17 @@ from reanplatform.set_header import set_header_parameter
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
-class RuleAvailable(Command):
-    # noqa: D400
-    """
-    List all the available manage cloud rules in REAN-Deploy
-    Example: rean-mnc available-rules
-    """
+
+class RuleAvailable(Command):   # noqa: D203, D204
+    """List all the available manage cloud rules in REAN-Deploy. Example: rean-mnc available-rules."""
+    # noqa: C0303
     log = logging.getLogger(__name__)
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RuleAvailable, self).get_parser(prog_name)
         return parser
+
     def take_action(self, parsed_args):
         """List Available Rules."""
         try:
@@ -33,7 +33,7 @@ class RuleAvailable(Command):
                 if one_env.name.endswith('config_rule_setup'):
                     rule = self.is_rule(all_env, one_env.name.replace('_config_rule_setup', ''))
                     if rule:
-                        table.add_row([one_env.name.replace('_config_rule_setup',''),one_env.description])
+                        table.add_row([one_env.name.replace('_config_rule_setup', ''), one_env.description])
             logging.info(table)
 
         except ApiException as exception:
