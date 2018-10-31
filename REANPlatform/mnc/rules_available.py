@@ -34,7 +34,7 @@ class RuleAvailable(Command):   # noqa: D203, D204
                     rule = self.is_rule(all_env, one_env.name.replace('_config_rule_setup', ''))
                     if rule:
                         table.add_row([one_env.name.replace('_config_rule_setup', ''), one_env.description])
-                        logging.info(table)
+            logging.info(table)
 
         except ApiException as exception:
             logging.info("Please try again.")
