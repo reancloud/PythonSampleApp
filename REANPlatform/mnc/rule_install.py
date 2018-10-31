@@ -17,6 +17,7 @@ from deploy.getdeploymentstatus import Status
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
+
 class RuleInstall(Command):     # noqa: D400
     """Install manage cloud rule
 
@@ -54,7 +55,6 @@ class RuleInstall(Command):     # noqa: D400
         if rule_name is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc install-rule --help'")    # noqa: E501
 
-
     def re_deploy_environment(self, environment_id, deployment_name, deployment_description, provider_name, region, child_input_json, depends_on_json):
         """Redeploy An Environment."""
         try:
@@ -88,7 +88,6 @@ class RuleInstall(Command):     # noqa: D400
             return response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
-
 
     def take_action(self, parsed_args):
         """List Environment."""
@@ -133,7 +132,6 @@ class RuleInstall(Command):     # noqa: D400
                                 prepare_data[depend_name] = deployment_name
                             else:
                                 prepare_data[depend_name] = 'default'
-                    
             # Create File of Depends_On resource
             if prepare_data:
                 RuleInstall.create_att_file(dependent_resource_file, prepare_data)

@@ -1,4 +1,4 @@
-#pylint: disable=C0301
+# pylint: disable=C0301
 """MNC Configure module."""
 import logging
 import zipfile
@@ -6,24 +6,25 @@ import os.path
 import datetime
 import time
 import yaml
-import boto3
 import botocore
+import boto3
 from cliff.command import Command
 from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 import authnz_sdk_client
 from auth.constants import AunthnzConstants
-from deploy.constants import DeployConstants
+from auth.utility import AuthnzUtility
 from reanplatform.utility import Utility
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utilityconstants import PlatformConstants
 from deploy.utility import DeployUtility
-from auth.utility import AuthnzUtility
+from deploy.constants import DeployConstants
 
-class Configure(Command):   # noqa: D400
+
+class Configure(Command):
     """Configure manage cloud rules
-    Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 107339370656 --master_connection connection
+    Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 107339370656 --master_connection connection.
     """
 
     __version = ""
@@ -75,7 +76,7 @@ class Configure(Command):   # noqa: D400
 
     def create_bucket_configuration_path(self):
         """Create configuration directory."""
-        configuration_bucket_path, file_name = os.path.split(MncConstats.FILE_BUCKET_NAME)
+        configuration_bucket_path = os.path.split(MncConstats.FILE_BUCKET_NAME)
         if not os.path.exists(configuration_bucket_path):
             try:
                 os.makedirs(configuration_bucket_path)
@@ -197,8 +198,8 @@ class Configure(Command):   # noqa: D400
             if file_name.endswith('.reandeploy'):
                 blueprint_all_env = None
                 try:
-                    logging.info("Importing from file %s",file_name)
-                    #get the list of all the parent blue prints
+                    logging.info("Importing from file %s", file_name)
+                    # get the list of all the parent blue prints
                     blueprint_all_env = api_instance.prepare_import_blueprint(file=local_artifacts_path + '/' + file_name)
                     index = 0
                     to_del = []
@@ -222,7 +223,6 @@ class Configure(Command):   # noqa: D400
                     # Skip already imported
                     for already_imported in reversed(to_del):
                         del blueprint_all_env.environment_imports[already_imported]
-                
                     if blueprint_all_env.environment_imports:
                         api_instance.import_blueprint(body=blueprint_all_env)
                         logging.info("Rule imported successfully : %s", file_name)
@@ -235,6 +235,7 @@ class Configure(Command):   # noqa: D400
                     logging.info("Failed to import rule. Please check the file :%s", file_name)
                     # Utility.print_exception(exception)
         logging.info("Successfully imported rule count :%s", success_count)
+
     def list_of_env(self, api_client):
         """list_of_env."""
         already_exist = []
@@ -339,4 +340,4 @@ class Configure(Command):   # noqa: D400
                 logging.info("All environments are already released.")
         except ApiException as exception:
             logging.info("Failed to release environment. Please try again.")
-            # Utility.print_exception(exception)
+            Utility.print_exception(exception)

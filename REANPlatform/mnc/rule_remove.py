@@ -8,9 +8,9 @@ from deploy_sdk_client.rest import ApiException
 from mnc.parameters_constants import MncConstats
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from deploy.destroydeployment import DestroyDeployment
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
+
 
 class RuleRemove(Command):      # noqa: D400
     """Destroy manage cloud deployed rule
@@ -62,7 +62,6 @@ class RuleRemove(Command):      # noqa: D400
                 api_instance = deploy_sdk_client.EnvironmentApi(api_client)
                 all_env = api_instance.get_all_environments()
                 deployment_id_to_remove = []
-    
                 for one_env in all_env:
                     deployment_id = None
                     time.sleep(1)
