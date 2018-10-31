@@ -5,7 +5,8 @@ import base64
 from base64 import b64decode
 import json
 import boto3
-from Crypto.Cipher import XOR
+from Crypto import Random
+from Crypto.Cipher import AES
 import yaml
 from reanplatform.utilityconstants import PlatformConstants
 
@@ -34,15 +35,19 @@ class Utility(object):
     @staticmethod
     def encryptData(val):
         """Encrypts credentials."""
-        cipher = XOR.new(PlatformConstants.REAN_SECRET_KEY)
-        encoded = base64.b64encode(cipher.encrypt(val))
+        raw = val.encode('utf-8')
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(PlatformConstants.REAN_SECRET_KEY.encode('utf-8'), AES.MODE_CFB, iv)
+        encoded = base64.b64encode(iv + cipher.encrypt(raw))
         return encoded
 
     @staticmethod
     def decryptData(encoded):
         """Decrypts credentials."""
-        cipher = XOR.new(PlatformConstants.REAN_SECRET_KEY)
-        decoded = cipher.decrypt(base64.b64decode(encoded))
+        enc = base64.b64decode(encoded)
+        iv = enc[:16]
+        cipher = AES.new(PlatformConstants.REAN_SECRET_KEY.encode('utf-8'), AES.MODE_CFB, iv)
+        decoded = cipher.decrypt(enc[16:])
         return decoded
 
     @staticmethod
