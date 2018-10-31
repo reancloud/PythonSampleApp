@@ -23,9 +23,7 @@ from deploy.constants import DeployConstants
 
 
 class Configure(Command):
-    """Configure manage cloud rules
-    Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 107339370656 --master_connection connection.
-    """
+    """Configure manage cloud rules. Example: rean-mnc configure --configuration_bucket mnc-cli-config --deploy_group cli-testing --master_provider mnc_master --artifactory_bucket mnc-rule-bucket --master_acc_no 107339370656 --master_connection connection."""
 
     __version = ""
     boto3.set_stream_logger('botocore.vendored.requests', logging.CRITICAL)

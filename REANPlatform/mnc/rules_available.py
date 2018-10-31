@@ -11,11 +11,7 @@ from deploy.utility import DeployUtility
 
 
 class RuleAvailable(Command):
-    # noqa: D400
-    """
-    List all the available manage cloud rules in REAN-Deploy
-    Example: rean-mnc available-rules
-    """
+    """List all the available manage cloud rules in REAN-Deploy. Example: rean-mnc available-rules."""
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
