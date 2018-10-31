@@ -10,7 +10,7 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class RuleAvailable(Command):
+class RuleAvailable(Command):   # noqa: D203, D204
     """List all the available manage cloud rules in REAN-Deploy. Example: rean-mnc available-rules."""
     # noqa: C0303
     log = logging.getLogger(__name__)
