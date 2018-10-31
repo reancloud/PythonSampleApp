@@ -74,7 +74,7 @@ class Configure(Command):   # noqa: D203
 
     def create_bucket_configuration_path(self):
         """Create configuration directory."""
-        configuration_bucket_path = os.path.split(MncConstats.FILE_BUCKET_NAME)
+        configuration_bucket_path, file_path = os.path.split(MncConstats.FILE_BUCKET_NAME)
         if not os.path.exists(configuration_bucket_path):
             try:
                 os.makedirs(configuration_bucket_path)
