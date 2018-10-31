@@ -20,6 +20,7 @@ from deploy.get_deployment_input import GetDeploymentInput
 
 class RuleList(Command):
     """List manage cloud deployed rules. Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets --customer_acc 693265998683."""
+    # noqa: C0303
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):

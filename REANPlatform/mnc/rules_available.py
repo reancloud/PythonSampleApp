@@ -12,6 +12,7 @@ from deploy.utility import DeployUtility
 
 class RuleAvailable(Command):
     """List all the available manage cloud rules in REAN-Deploy. Example: rean-mnc available-rules."""
+    # noqa: C0303
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
