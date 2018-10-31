@@ -18,7 +18,7 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class RuleInstall(Command): # noqa: D203, D204
+class RuleInstall(Command):     # noqa: D203, D204
     """Install manage cloud rule. Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 693265998683 --deploy_provider mnc_client --customer_email_to mayuri.patil@reancloud.com --customer_mail_cc akshay.deshpande@reancloud.com --customer_email_domain reancloud --action False."""
     # noqa: C0303
     def get_parser(self, prog_name):
