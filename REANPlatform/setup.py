@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycryptodome', 'certifi', 'python-jenkins', 'setuptools>=40.4.1', 'auth_sdk_client', 'deploy_sdk_client', 'test_sdk_client'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycryptodome', 'certifi', 'python-jenkins', 'setuptools>=40.4.1'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
