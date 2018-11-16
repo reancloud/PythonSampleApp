@@ -44,7 +44,7 @@ virtualenv -p python3.5 env
 git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/reancloud/reanplatform-cli
 cd reanplatform-cli/REANPlatform/
 python setup.py sdist upload -r local
-cp dist/REANPlatform-$(python setup.py --version).tar.gz $ZIP_PATH
+cp dist/reanplatform-cli-$(python setup.py --version).tar.gz $ZIP_PATH
 
 cd $CWD
 

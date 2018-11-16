@@ -3,7 +3,7 @@
 
 from setuptools import setup, find_packages
 
-PROJECT = 'REANPlatform'
+PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 VERSION = '0.0.7'
