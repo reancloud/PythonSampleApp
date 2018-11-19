@@ -36,7 +36,7 @@ fi
 mkdir $CWD/packages
 ZIP_PATH=$CWD/packages/
 
-virtualenv -p python3.5 env
+virtualenv -p python3.7 env
 . env/bin/activate
 
 # Generate tarball for REANPLatform CLI
