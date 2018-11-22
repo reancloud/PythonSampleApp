@@ -8,16 +8,13 @@ from deploy_sdk_client.rest import ApiException
 from mnc.parameters_constants import MncConstats
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from deploy.destroydeployment import DestroyDeployment
 from deploy.constants import DeployConstants
+from deploy.utility import DeployUtility
 
 
-class RuleRemove(Command):      # noqa: D400
-    """Destroy manage cloud deployed rule
-
-    Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 693265998683
-    """
-
+class RuleRemove(Command):  # noqa: D203, D204
+    """Destroy manage cloud deployed rule. Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 693265998683."""
+    # noqa: C0303
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
@@ -58,11 +55,10 @@ class RuleRemove(Command):      # noqa: D400
                 logging.info("Exit")
 
             if force.lower() == 'yes' or force.lower() == 'y':
-                instance = deploy_sdk_client.EnvironmentApi()
-                api_instance = set_header_parameter(instance, Utility.get_url(DeployConstants.DEPLOY_URL))
+                api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
+                api_instance = deploy_sdk_client.EnvironmentApi(api_client)
                 all_env = api_instance.get_all_environments()
                 deployment_id_to_remove = []
-
                 for one_env in all_env:
                     deployment_id = None
                     time.sleep(1)
@@ -81,7 +77,7 @@ class RuleRemove(Command):      # noqa: D400
                 if deployment_id_to_remove:
 
                     for deployment_id in deployment_id_to_remove:
-                        DestroyDeployment.destroy_by_deploymentid(deployment_id)
+                        api_instance.destroy_deployment_by_id(deployment_id)
                         time.sleep(20)
 
                     if rule_name and customer_acc:
