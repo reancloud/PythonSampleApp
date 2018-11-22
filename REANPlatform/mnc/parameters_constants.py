@@ -2,7 +2,7 @@
 from pathlib import Path
 
 
-class MncConstats(object):      # noqa: D203
+class MncConstats():      # noqa: D203
     """Contains constats required for MNCCLI."""
 
     RULE_NAME = 'rule_name'
