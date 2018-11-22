@@ -1,10 +1,10 @@
 """Utility class contains all common method requried for CLI."""
-import requests
 import os
 from os.path import basename
 import base64
 from base64 import b64decode
 import json
+import requests
 import boto3
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -30,8 +30,7 @@ class Utility(object):
                 credentials = Utility.get_username_password_from_file()
             return credentials
         except Exception as exception:
-            print('Could not get username and password.')
-            return None
+            Utility.print_exception(exception)
 
     @staticmethod
     def encryptData(val):
@@ -69,8 +68,7 @@ class Utility(object):
                 base_url = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
             return base_url + host_url
         except Exception as exception:
-            print('Could not get base url.')
-            return None
+            Utility.print_exception(exception)
 
     @staticmethod
     def get_parsed_json(json_object):
@@ -122,6 +120,7 @@ class Utility(object):
                     data_loaded = yaml.load(stream)
                 config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
                 return config_property
+        return None
 
     @staticmethod
     def create_output_file(filepath, obj):
@@ -167,13 +166,13 @@ class Utility(object):
         except OSError as os_error:
             print(os_error)
         except Exception as exception:
-            print(exception)
+            Utility.print_exception(exception)
 
     @staticmethod
     def write_to_file(output_file, content):
         """Write content to file."""
         with open(output_file, "w") as handle:
-            filedata = handle.write(content)
+            handle.write(content)
             handle.close()
 
     @staticmethod
@@ -201,14 +200,10 @@ class Utility(object):
             with open(file_path, "r") as handle:
                 raw_data = handle.read()
                 return raw_data
-            return None
 
     @staticmethod
     def get_zip_stream(curl_url):
         """Get zip stream."""
-        headers = {
-                'accept': 'application/gzip',
-                'Authorization': Utility.get_user_credentials()
-            }
+        headers = {'accept': 'application/gzip', 'Authorization': Utility.get_user_credentials()}
         response = requests.get(curl_url, headers=headers)
         return response
