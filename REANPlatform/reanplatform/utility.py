@@ -1,4 +1,5 @@
 """Utility class contains all common method requried for CLI."""
+import requests
 import os
 from os.path import basename
 import base64
@@ -196,3 +197,13 @@ class Utility(object):
                 raw_data = handle.read()
                 return raw_data
             return None
+
+    @staticmethod
+    def get_zip_stream(curl_url):
+        """Get zip stream."""
+        headers = {
+                'accept': 'application/gzip',
+                'Authorization': Utility.get_user_credentials()
+            }
+        response = requests.get(curl_url, headers=headers)
+        return response
