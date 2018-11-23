@@ -1,6 +1,5 @@
 """Get Terraform Files."""
 import os
-from pathlib import Path
 import logging
 from cliff.command import Command
 from deploy_sdk_client.rest import ApiException
@@ -32,14 +31,17 @@ class GetTerraformCode(Command):
             curl_url = Constants.PLATFORM_BASE_URL + Constants.DEPLOY_URL + path
             api_response = Utility.get_zip_stream(curl_url)
             file_name = 'tf_files-' + env_id + '.tar.gz'
-            if output_directory is not None and os.path.isdir(output_directory):
-                if parsed_args.output_directory.endswith('/'):
-                    output_directory = output_directory + file_name
+            if output_directory is not None:
+                if os.path.isdir(output_directory):
+                    if parsed_args.output_directory.endswith('/'):
+                        output_directory = output_directory + file_name
+                    else:
+                        output_directory = output_directory + '/' + file_name
                 else:
-                    output_directory = output_directory + '/' + file_name
-                Utility.write_to_file(output_directory, api_response.content)
-                print("Terraform Files downloaded successfully at " + output_directory)
+                    raise RuntimeError("Invalid path! Please provide a valid path")
             else:
-                print("in Else")            
+                output_directory = os.path.abspath(file_name)
+            open(output_directory, 'wb').write(api_response.content)
+            print("Terraform Files downloaded successfully at " + output_directory)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
