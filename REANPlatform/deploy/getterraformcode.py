@@ -26,20 +26,20 @@ class GetTerraformCode(Command):
         """take_action."""
         # Define parsed_args
         env_id = parsed_args.env_id
+        output_directory = parsed_args.output_directory
         try:
             path = '/env/download/terraform/' + env_id
             curl_url = Constants.PLATFORM_BASE_URL + Constants.DEPLOY_URL + path
             api_response = Utility.get_zip_stream(curl_url)
             file_name = 'tf_files-' + env_id + '.tar.gz'
-            if parsed_args.output_directory is not None and os.path.isdir(parsed_args.output_directory):
+            if output_directory is not None and os.path.isdir(output_directory):
                 if parsed_args.output_directory.endswith('/'):
-                    open(parsed_args.output_directory + file_name, 'wb').write(api_response.content)
-                    print("Terraform Files downloaded successfully at " + parsed_args.output_directory + file_name)
+                    output_directory = output_directory + file_name
                 else:
-                    open(parsed_args.output_directory + '/' + file_name, 'wb').write(api_response.content)
-                    print("Terraform Files downloaded successfully at " + parsed_args.output_directory + '/' + file_name)
+                    output_directory = output_directory + '/' + file_name
+                Utility.write_to_file(output_directory, api_response.content)
+                print("Terraform Files downloaded successfully at " + output_directory)
             else:
-                open(str(Path.home()) + "/" + file_name, 'wb').write(api_response.content)
-                print("Terraform Files downloaded successfully at " + str(Path.home()) + "/" + file_name)
+                print("in Else")            
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
