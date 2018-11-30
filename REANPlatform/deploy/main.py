@@ -2,6 +2,7 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
+from cliff.interactive import InteractiveApp
 from deploy_sdk_client.rest import ApiException
 
 
@@ -14,6 +15,7 @@ class Deploy(App):
             description='CLI for REAN Deploy.',
             version='0.1',
             command_manager=CommandManager('rean.deploy'),
+            interactive_app_factory=InteractiveApp(App, CommandManager('rean.deploy'), stdin=None, stdout=None),
             deferred_help=True,
             )
 
