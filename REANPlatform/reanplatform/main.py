@@ -2,6 +2,7 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
+from cliff.interactive import InteractiveApp
 
 
 class ReanPlatform(App):
@@ -13,6 +14,7 @@ class ReanPlatform(App):
             description='CLI for REAN Platform.',
             version='0.1',
             command_manager=CommandManager('rean.platform'),
+            interactive_app_factory=InteractiveApp(App, CommandManager('rean.platform'), stdin=None, stdout=None),
             deferred_help=True,
             )
 
