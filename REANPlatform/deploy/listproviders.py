@@ -23,15 +23,19 @@ class ListProvider(Command):
                             type=str, default='json',
                             nargs='?',
                             required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
         """take_action of ListProvider."""
         list_provider_format = parsed_args.format
-        ListProvider.list_provider(list_provider_format)
+        ListProvider.list_provider(list_provider_format, parsed_args)
 
     @staticmethod
-    def list_provider(list_provider_format):
+    def list_provider(list_provider_format, parsed_args):
         """list_provider."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
@@ -48,13 +52,10 @@ class ListProvider(Command):
                             provider.type
                         ]
                     )
-                print("Provider list ::\n%s" % (table))
+                Utility.print_output_as_table("Provider list \n{}".format(table), parsed_args.output)
             elif list_provider_format == 'json' or list_provider_format == '':
-                parsed_json = Utility.get_parsed_json(api_response)
-                print(parsed_json)
-
+                Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
-                raise RuntimeError("Please specify correct fromate, Allowed \
-                        values are: [json, table]")
+                raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

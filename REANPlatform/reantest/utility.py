@@ -102,7 +102,7 @@ class Utility:
             message = "Please enter valid Test URL."
 
         # Validation for Security test type
-        elif params.security_test_type != '@app_scan' and params.security_test_type != '@http_headers':
+        elif params.security_test_type != '@app_scan' and params.security_test_type != '@http_headers' and params.security_test_type != '@app_scan,@http_headers' and params.security_test_type != '@http_headers,@app_scan':
             message = "Please Provide valid security test type."
 
         return message
@@ -174,7 +174,7 @@ class Utility:
         """Execute Test."""
         job_id = method_to_execute(body)
         log.debug("Response is------------: %s ", job_id)
-        print("The request submitted successfully. Job Id is : ", job_id)
+        print("The request Job/test submitted successfully. Job Id is : ", job_id)
 
         if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
             api_instance = test_sdk_client.RunTestApi(Utility.set_headers())

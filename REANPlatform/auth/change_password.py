@@ -29,6 +29,10 @@ class ChangePassword(Command):
         parser.add_argument('--confirm_password', '-cp',
                             help='Confirm Password',
                             required=True)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     @staticmethod
@@ -47,7 +51,7 @@ class ChangePassword(Command):
                 )
 
                 api_response = instance.change_password_using_put(change_user_password_object)
-                print(api_response)
+                Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 print('New password and confirm password does not match.')
 

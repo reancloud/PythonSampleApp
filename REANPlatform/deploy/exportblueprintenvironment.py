@@ -1,6 +1,5 @@
 """Export Blueprint Environment."""
 import os
-from os.path import basename
 import logging
 from cliff.command import Command
 import deploy_sdk_client
@@ -30,8 +29,7 @@ class ExportBlueprintEnvironment(Command):
         env_id = parsed_args.env_id
         blueprint_file_name = parsed_args.blueprint_file_name
 
-        if env_id:
-            ExportBlueprintEnvironment.export_blueprint_environment(env_id, blueprint_file_name)
+        ExportBlueprintEnvironment.export_blueprint_environment(env_id, blueprint_file_name)
 
     @staticmethod
     def export_blueprint_environment(env_id, blueprint_file_name):
@@ -48,9 +46,7 @@ class ExportBlueprintEnvironment(Command):
                 filename = response.name + '-' + response.env_version
 
             blueprint_filepath = os.getcwd() + '/' + filename + '.blueprint.reandeploy'
-            os.chdir(os.path.dirname(blueprint_filepath))
-            with open(basename(blueprint_filepath), 'w') as outfile:
-                outfile.write(str(blueprint))
+            Utility.create_output_file(blueprint_filepath, blueprint)
             print("Blueprint file " + filename + " created successfully at " + blueprint_filepath)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

@@ -7,7 +7,7 @@ from reantest.utility import Utility
 
 
 class RunInfraTest(Command):
-    """Run UI Performance test."""
+    """Run InfraTest."""
 
     log = logging.getLogger(__name__)
 

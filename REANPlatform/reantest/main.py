@@ -2,6 +2,7 @@
 import sys
 from cliff.app import App
 from cliff.commandmanager import CommandManager
+from cliff.interactive import InteractiveApp
 from test_sdk_client.rest import ApiException
 
 
@@ -15,6 +16,7 @@ class Test(App):
             description='CLI for REAN Test.',
             version='0.1',
             command_manager=CommandManager('rean.test'),
+            interactive_app_factory=InteractiveApp(App, CommandManager('rean.test'), stdin=None, stdout=None),
             deferred_help=True,
         )
 

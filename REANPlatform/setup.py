@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = '0.0.3'
+VERSION = '0.0.7'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -38,7 +38,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycrypto', 'certifi'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycryptodome', 'certifi', 'python-jenkins', 'setuptools>=40.4.1'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -74,12 +74,15 @@ setup(
             'delete-environment = deploy.deleteenvironment:DeleteEnvironment',
             'prepare-blueprint = deploy.blueprint_prepare:PrepareBlueprint',
             'import-blueprint = deploy.blueprint_import:ImportBlueprint',
-            'get-deployment-id = deploy.getdeploymentid:GetDeployments',
+            'get-deployment-id = deploy.getdeploymentid:GetDeploymentId',
             'get-deployment-input = deploy.get_deployment_input:GetDeploymentInput',
             'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
-            'deploy-env = deploy.deployenv:DepolyEnv'
+            'get-environment = deploy.getenvironment:GetEnvironment',
+            'get-terraform-code = deploy.getterraformcode:GetTerraformCode',
+            'deploy-env = deploy.deployenv:DepolyEnv',
+            'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
@@ -97,7 +100,11 @@ setup(
             'create-provider = reantest.create_provider:CreateProvider',
             'list-providers = reantest.list_providers:ListProvider',
             'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
-            'run-infra-test = reantest.run_infra_test:RunInfraTest'
+            'run-infra-test = reantest.run_infra_test:RunInfraTest',
+            'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec',
+            'update-tags = reantest.config_update_tags:ConfigUpdateTags',
+            'update-property = reantest.config_update_property:ConfigUpdateProperty',
+            'list-config-properties = reantest.get_all_config_properties:ConfigListProperties'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
