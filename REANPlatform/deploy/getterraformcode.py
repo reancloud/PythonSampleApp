@@ -8,7 +8,7 @@ from reanplatform.utility import Utility
 
 
 class GetTerraformCode(Command):
-    """Get Terraform Files."""
+    """Get Terraform Code."""
 
     log = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class GetTerraformCode(Command):
         parser = super(GetTerraformCode, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--output_directory', '-o',
-                            help='Set Output directory to store terraform files.')
+                            help='Set Output directory to store terraform code else it will get downloaded at current working directory.')
         return parser
 
     def take_action(self, parsed_args):
@@ -42,6 +42,6 @@ class GetTerraformCode(Command):
             else:
                 output_directory = os.path.abspath(file_name)
             open(output_directory, 'wb').write(api_response.content)
-            print("Terraform Files downloaded successfully at " + output_directory)
+            print("Terraform Code downloaded successfully at " + output_directory)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
