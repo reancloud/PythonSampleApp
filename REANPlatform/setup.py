@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 PROJECT = 'REANPlatform'
 
 # Change docs/sphinx/conf.py too!
-VERSION = 'rc_v0.29'
+VERSION = '0.0.9'
 
 try:
     long_description = open('README.rst', 'rt').read()
