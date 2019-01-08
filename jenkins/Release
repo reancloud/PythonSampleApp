@@ -1,0 +1,8 @@
+@Library('reanplatform') _
+
+node {
+  currentBuild.displayName = "#${currentBuild.id} (on ${params.branch})"
+  pythonPipelines.release(
+    application: "reanplatform-cli"
+  )
+}
