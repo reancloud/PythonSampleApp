@@ -3,6 +3,7 @@
 node {
   currentBuild.displayName = "#${currentBuild.id} (on ${params.branch})"
   pythonPipelines.release(
-    application: "reanplatform-cli"
+    application: 'reanplatform-cli',
+    publishers: ['artifactory'],
   )
 }
