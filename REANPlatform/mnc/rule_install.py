@@ -49,6 +49,7 @@ class RuleInstall(Command):     # noqa: D203, D204
 
     def __validate_parameters(self, rule_name, customer_acc, provider_name, email_to, email_cc, domain, action):
         """Validate cli parameters."""
+        logging.info("Validating parameters")
         if rule_name is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc install-rule --help'")    # noqa: E501
 
@@ -115,43 +116,17 @@ class RuleInstall(Command):     # noqa: D203, D204
             env_ids = {}
 
             for one_env in all_env:
-                if (one_env.name.startswith(rule_name) and one_env.name.endswith('config_rule_setup')):
+                if (one_env.name.startswith(rule_name) and one_env.name.endswith('rules_setup')):
                     env_ids['parent'] = one_env.config.env_id
                     input_from_env = instance.get_input_json(one_env.config.env_id)
                     RuleInstall.updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action)
                     parent_input_json = DepolyEnv.read_file_as_json_object(input_json_file_path)
-                elif (one_env.name.startswith(rule_name) and one_env.name.endswith('assume_role')):
-                    env_ids['child'] = one_env.config.env_id
-                    depend_resources = ast.literal_eval(instance.get_input_json(one_env.config.env_id))
-                    for depend_name in depend_resources:
-                        if 'Depends_On' in depend_resources[depend_name]:
-                            if str(depend_name) == 'mnc_rule_dependency':
-                                prepare_data[depend_name] = deployment_name
-                            else:
-                                prepare_data[depend_name] = 'default'
+                    RuleInstall.create_att_file(dependent_resource_file, prepare_data)
+                    result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
+                
             # Create File of Depends_On resource
-            if prepare_data:
-                RuleInstall.create_att_file(dependent_resource_file, prepare_data)
-            result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
-
             config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
-            logging.info("Config status :%s", config_status)
-
-            # Deploy child
-            assume_status = None
-            if config_status == 'DEPLOYED':
-                child_input_json = None
-                time.sleep(10)
-                provider_name = MncUtility.provider_name_from_s3(str(MncUtility.read_bucket_name()))
-                deployment_name = 'default_master_' + customer_acc
-                depends_json = DepolyEnv.read_file_as_json_object(dependent_resource_file)
-                result = RuleInstall.re_deploy_environment(self, env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
-                if result:
-                    assume_status = self.get_status(env_ids['child'], deployment_name)
-                    logging.info("Assume role status :%s", assume_status)
-
-            if config_status == 'DEPLOYED' and assume_status == 'DEPLOYED':
-                logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
+            logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
 
         except ApiException as exception:
             # Utility.print_exception(exception)
@@ -179,13 +154,13 @@ class RuleInstall(Command):     # noqa: D203, D204
                 json.dump(prepare_data, outfile, indent=4, sort_keys=True)
         except Exception as exception:
             logging.info("Failed to create attribute file. Please try again.")
-            Utility.print_exception(exception)
+            #Utility.print_exception(exception)
 
     @staticmethod
     def updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action):
         """Create updated_input_file."""
         data = ast.literal_eval(input_from_env)
-        input_data = data['Input Variables']['input_variables']
+        input_data = data['input_variables']['input_variables']
         input_data['toEmail'] = email_to
         input_data['ccEmail'] = email_cc
         input_data['performAction'] = action
