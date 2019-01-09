@@ -101,7 +101,7 @@
     "ec2ExpiryTagPeriodicLimitExpirationDate": "",
     "ec2ExpiryTagPeriodicMaximumExecutionFrequency": "TwentyFour_Hours",
     "ec2ExpiryTagPeriodicPerformAction": "False",
-    "ec2ExposedInstanceInvokingEnable": 1,
+    "ec2ExposedInstanceInvokingEnable": 0,
     "ec2ExposedInstanceInvokingForbiddenPorts": "",
     "ec2ExposedInstanceInvokingPerformAction": "False",
     "ec2NoshutdowTagPeriodicEnable": 0,
