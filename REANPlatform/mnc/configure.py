@@ -9,10 +9,10 @@ import yaml
 import botocore
 import boto3
 from cliff.command import Command
-from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 import authnz_sdk_client
+from mnc.parameters_constants import MncConstats
 from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 from reanplatform.utility import Utility

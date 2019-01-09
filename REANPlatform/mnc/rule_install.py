@@ -123,7 +123,6 @@ class RuleInstall(Command):     # noqa: D203, D204
                     parent_input_json = DepolyEnv.read_file_as_json_object(input_json_file_path)
                     RuleInstall.create_att_file(dependent_resource_file, prepare_data)
                     result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
-                
             # Create File of Depends_On resource
             config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
             logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
@@ -154,7 +153,7 @@ class RuleInstall(Command):     # noqa: D203, D204
                 json.dump(prepare_data, outfile, indent=4, sort_keys=True)
         except Exception as exception:
             logging.info("Failed to create attribute file. Please try again.")
-            #Utility.print_exception(exception)
+            # Utility.print_exception(exception)
 
     @staticmethod
     def updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action):
