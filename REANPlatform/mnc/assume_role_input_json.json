@@ -1,0 +1,7 @@
+{
+    "customerAccountNumber": "324224971769",
+    "customerAccountReadRoleArn": "arn:aws:iam::324224971769:role/mnc_read_role",
+    "customerAccountWriteRoleArn": "arn:aws:iam::324224971769:role/mnc_write_role",
+    "notifierLambdaRoleId": "upgrade9_rean_mnc_notifier_lambda_role",
+    "processorLambdaRoleId": "upgrade9_rean_mnc_rule_processor_lambda_role"
+}

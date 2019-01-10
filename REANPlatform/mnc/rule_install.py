@@ -72,7 +72,6 @@ class RuleInstall(Command):     # noqa: D203, D204
             response = instance.deploy_by_config(
                 body=body
             )
-
             # Get deployment status
             status = Status.deployment_status(environment_id, deployment_name)
             while status is not None:
@@ -101,6 +100,7 @@ class RuleInstall(Command):     # noqa: D203, D204
         self.__validate_parameters(rule_name, customer_acc, provider_name, email_to, email_cc, domain, action)
 
         prepare_data = {}
+        assume_role_input_json_path = os.getcwd() + '/' + 'assume_role_input_json.json'
         dependent_resource_file = os.getcwd() + '/' + 'depends_on_resource.json'
         input_json_file_path = os.getcwd() + '/' + 'input_json.json'
         depends_on_json = None
@@ -123,9 +123,23 @@ class RuleInstall(Command):     # noqa: D203, D204
                     parent_input_json = DepolyEnv.read_file_as_json_object(input_json_file_path)
                     RuleInstall.create_att_file(dependent_resource_file, prepare_data)
                     result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
-            # Create File of Depends_On resource
-            config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
-            logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
+                    # Create File of Depends_On resource
+                    config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
+                    time.sleep(10)
+                    logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
+
+            for one_env in all_env:
+                if (one_env.name.startswith("21.0-mnc_") and one_env.name.endswith('assume_role_policies')):
+                    env_ids['parent'] = one_env.config.env_id
+                    input_from_env = instance.get_input_json(one_env.config.env_id)
+                    RuleInstall.updated_input_file_dependent(assume_role_input_json_path, input_from_env)
+                    assume_input_json = DepolyEnv.read_file_as_json_object(assume_role_input_json_path)
+                    deployment_name = 'default_master_' + customer_acc
+                    RuleInstall.create_att_file(dependent_resource_file, prepare_data)
+                    result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
+                    # Create File of Depends_On resource
+                    config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
+                    logging.info("Rule %s is deployed for account: %s", "21.0-mnc_assume_role_policies", customer_acc)
 
         except ApiException as exception:
             # Utility.print_exception(exception)
@@ -167,4 +181,14 @@ class RuleInstall(Command):     # noqa: D203, D204
         input_data['lambdaRoleArn'] = MncUtility.read_role_arn(MncConstats.PROCESSOR_ROLE_NAME)
         input_data['lambdaArn'] = MncUtility.read_lambda_arn(MncConstats.RULE_PROCESSOR_LAMBDA_NAME)
         input_data['maximum_execution_frequency'] = MncConstats.MAXIMUM_EXECUTION_FREQUENCY
+        RuleInstall.create_att_file(input_json_file_path, input_data)
+    
+    @staticmethod
+    def updated_input_file_dependent(input_json_file_path, input_from_env):
+        """Create updated_input_file."""
+        data = ast.literal_eval(input_from_env)
+        input_data = data['Input Variables']['input_variables']
+        input_data['customerAccountNumber'] = MncConstats.CUSTOMER_ACCOUNT_NUMBER
+        input_data['customerAccountReadRoleArn'] = MncConstats.CUSTOMER_ACCOUNT_READ_ROLE_ARN
+        input_data['customerAccountWriteRoleArn'] = MncConstats.CUSTOMER_ACCOUNT_WRITE_ROLE_ARN
         RuleInstall.create_att_file(input_json_file_path, input_data)

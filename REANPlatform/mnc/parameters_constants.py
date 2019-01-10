@@ -26,11 +26,14 @@ class MncConstats():      # noqa: D203
 
     # parameter forrule input
     DEPLOYING = '"DEPLOYING"'
-    NOTIFIER_ROLE_NAME = 'rean_mnc_notifier_lambda_role'
-    PROCESSOR_ROLE_NAME = 'rean_mnc_rule_processor_lambda_role'
-    RULE_PROCESSOR_LAMBDA_NAME = 'rean_mnc_rule_processor'
+    NOTIFIER_ROLE_NAME = 'release9_rean_mnc_notifier_lambda_role'
+    PROCESSOR_ROLE_NAME = 'release9_rean_mnc_rule_processor_lambda_role'
+    RULE_PROCESSOR_LAMBDA_NAME = 'release9_rean_mnc_rule_processor'
     MAXIMUM_EXECUTION_FREQUENCY = 'TwentyFour_Hours'       # One_Hour Three_Hours Six_Hours Twelve_Hours TwentyFour_Hours
-    REGION = 'us-east-1'
-    FILE_BUCKET_NAME = str(Path.home()) + '/.mnc/bucket.yml'
+    REGION = 'eu-west-1'
+    FILE_BUCKET_NAME = str(Path.home()) + '/.mnc/config_bucket.yaml'
     CONFIGURATION_BUCKET_PATH = str(Path.home()) + '/.mnc/'
     LOCAL_ARTIFACTS_ZIP_PATH = '/tmp/mnc/'
+    CUSTOMER_ACCOUNT_READ_ROLE_ARN = "arn:aws:iam::324224971769:role/mnc_read_role"
+    CUSTOMER_ACCOUNT_WRITE_ROLE_ARN = "arn:aws:iam::324224971769:role/mnc_write_role"
+    CUSTOMER_ACCOUNT_NUMBER = "324224971769"
