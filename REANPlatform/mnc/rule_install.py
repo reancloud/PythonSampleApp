@@ -182,7 +182,7 @@ class RuleInstall(Command):     # noqa: D203, D204
         input_data['lambdaArn'] = MncUtility.read_lambda_arn(MncConstats.RULE_PROCESSOR_LAMBDA_NAME)
         input_data['maximum_execution_frequency'] = MncConstats.MAXIMUM_EXECUTION_FREQUENCY
         RuleInstall.create_att_file(input_json_file_path, input_data)
-    
+
     @staticmethod
     def updated_input_file_dependent(input_json_file_path, input_from_env):
         """Create updated_input_file."""
