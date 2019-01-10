@@ -136,7 +136,7 @@ class RuleInstall(Command):     # noqa: D203, D204
                     assume_input_json = DepolyEnv.read_file_as_json_object(assume_role_input_json_path)
                     deployment_name = 'default_master_' + customer_acc
                     RuleInstall.create_att_file(dependent_resource_file, prepare_data)
-                    result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
+                    result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, assume_input_json, depends_on_json)
                     # Create File of Depends_On resource
                     config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
                     logging.info("Rule %s is deployed for account: %s", "21.0-mnc_assume_role_policies", customer_acc)
