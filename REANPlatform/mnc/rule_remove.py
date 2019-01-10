@@ -13,7 +13,7 @@ from deploy.utility import DeployUtility
 
 
 class RuleRemove(Command):  # noqa: D203, D204
-    """Destroy manage cloud deployed rule. Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 693265998683."""
+    """Destroy manage cloud deployed rule. Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 120987654321."""
     # noqa: C0303
     log = logging.getLogger(__name__)
 
