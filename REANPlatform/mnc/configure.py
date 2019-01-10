@@ -9,10 +9,10 @@ import yaml
 import botocore
 import boto3
 from cliff.command import Command
-from mnc.parameters_constants import MncConstats
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 import authnz_sdk_client
+from mnc.parameters_constants import MncConstats
 from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 from reanplatform.utility import Utility
@@ -69,6 +69,7 @@ class Configure(Command):   # noqa: D203
 
     def __validate_parameters(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
         """Validate cli parameters."""
+        logging.info("Validating parameters")
         if configuration_bucket is None or deploy_group is None or master_provider is None or master_provider is None or artifactory_bucket is None or master_acc_no is None or master_connection is None:
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc configure --help'")    # noqa: E501
 
@@ -83,6 +84,7 @@ class Configure(Command):   # noqa: D203
 
     def create_configuration_bucket_file(self, configuration_bucket):
         """Create configuration file locally."""
+        logging.info("Creating configuration bucket file: %s", configuration_bucket)
         if not os.path.isfile(MncConstats.FILE_BUCKET_NAME):
             configuration_bucket_file_data = dict(configuration_bucket_name=configuration_bucket)
             try:
@@ -93,6 +95,7 @@ class Configure(Command):   # noqa: D203
 
     def create_and_store_configuration_file_data(self, configuration_bucket, deploy_group, master_provider, artifactory_bucket, master_acc_no, master_connection):
         """Create and store configuration file in s3."""
+        logging.info("Create and store configuration file data")
         path = os.path.expanduser('~')
         file_path = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
         with open(file_path, 'r') as configuration_file:
@@ -133,6 +136,7 @@ class Configure(Command):   # noqa: D203
 
     def get_blueprints_from_s3_and_unzip(self, artifactory_bucket):
         """Download blueprints zip from S3."""
+        logging.info("Get blueprints zip from S3")
         try:
             if not os.path.exists(MncConstats.LOCAL_ARTIFACTS_ZIP_PATH):
                 os.makedirs(MncConstats.LOCAL_ARTIFACTS_ZIP_PATH)
@@ -206,7 +210,7 @@ class Configure(Command):   # noqa: D203
                             to_del.append(index)
                             logging.info("Rule already imported successfully")
                             continue
-                        elif one_env.import_config.name == "mnc_rule_processor_lambda_permission_setup" or one_env.import_config.name == "mnc_rule_processor_lambda_setup" or one_env.import_config.name == "mnc_notifier_lambda" or one_env.import_config.name.endswith('config_rule_setup') or one_env.import_config.name.endswith('assume_role'):
+                        elif one_env.import_config.name == "22.0-mnc_config_rules_processor_setup" or one_env.import_config.name == "3.0-mnc_rule_processor_setup" or one_env.import_config.name == "2.0-mnc_notifier_processor_setup" or one_env.import_config.name == "20.0-mnc_read_write_roles_setup" or one_env.import_config.name == "21.0-mnc_assume_role_policies" or one_env.import_config.name == "22.1-mnc_config_rules_setup":
                             blueprint_all_env.environment_imports[index].import_config.connection_id = master_account_connection_id
                             blueprint_all_env.environment_imports[index].import_config.provider_id = master_account_provider_id
                             blueprint_all_env.environment_imports[index].import_config.env_version = self.get_release_version()
@@ -286,7 +290,7 @@ class Configure(Command):   # noqa: D203
             api_response = instance.get_all_environments()
             environment_ids_list = []
             for response in api_response:
-                if response.name == "mnc_rule_processor_lambda_permission_setup" or response.name == "mnc_rule_processor_lambda_setup" or response.name == "mnc_notifier_lambda" or response.name.endswith('config_rule_setup') or response.name.endswith('assume_role'):
+                if response.name == "22.0-mnc_config_rules_processor_setup" or response.name == "3.0-mnc_rule_processor_setup" or response.name == "2.0-mnc_notifier_processor_setup" or response.name == "20.0-mnc_read_write_roles_setup" or response.name == "21.0-mnc_assume_role_policies" or response.name == "22.1-mnc_config_rules_setup":
                     logging.info("Environment %s sharing with group :%s", response.name, deploy_group)
                     environment_ids_list.append(response.config.env_id)
                 else:
