@@ -19,7 +19,7 @@ from deploy.get_deployment_input import GetDeploymentInput
 
 
 class RuleList(Command):    # noqa: D203, D204
-    """List manage cloud deployed rules. Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets --customer_acc 693265998683."""
+    """List manage cloud deployed rules. Example: rean-mnc rule-list --rule_name mnc_check_s3_exposed_buckets --customer_acc 120987654321."""
     # noqa: C0303
     log = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ class RuleList(Command):    # noqa: D203, D204
     # pylint: disable=R0201
     def __validate_parameters(self, rule_name, customer_acc):
         """Validate cli parameters."""
+        logging.info("Validating parameters")
         if rule_name is None and customer_acc is None:
             raise RuntimeError("Specify either " + '--' + MncConstats.RULE_NAME + " OR " + '--' + MncConstats.CUSTOMER_ACC + " OR " + '--' + MncConstats.RULE_NAME + " and " + '--' + MncConstats.CUSTOMER_ACC)
 

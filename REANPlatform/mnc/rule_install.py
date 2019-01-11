@@ -19,7 +19,7 @@ from deploy.utility import DeployUtility
 
 
 class RuleInstall(Command):     # noqa: D203, D204
-    """Install manage cloud rule. Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 693265998683 --deploy_provider mnc_client --customer_email_to mayuri.patil@reancloud.com --customer_mail_cc akshay.deshpande@reancloud.com --customer_email_domain reancloud --action False."""
+    """Install manage cloud rule. Example: rean-mnc install-rule --rule_name mnc_ec2_termination_protection --customer_acc 120987654321 --deploy_provider mnc_client --customer_email_to customer1@abc.com --customer_mail_cc customer2@abc.com --customer_email_domain reancloud --action False."""
     # noqa: C0303
     def get_parser(self, prog_name):
         """get_parser."""
@@ -49,6 +49,7 @@ class RuleInstall(Command):     # noqa: D203, D204
 
     def __validate_parameters(self, rule_name, customer_acc, provider_name, email_to, email_cc, domain, action):
         """Validate cli parameters."""
+        logging.info("Validating parameters")
         if rule_name is None or customer_acc is None or provider_name is None or email_to is None or domain is None or action is None:
             raise RuntimeError("Specify all require parametes, for more help check 'rean-mnc install-rule --help'")    # noqa: E501
 
@@ -71,7 +72,6 @@ class RuleInstall(Command):     # noqa: D203, D204
             response = instance.deploy_by_config(
                 body=body
             )
-
             # Get deployment status
             status = Status.deployment_status(environment_id, deployment_name)
             while status is not None:
@@ -100,6 +100,7 @@ class RuleInstall(Command):     # noqa: D203, D204
         self.__validate_parameters(rule_name, customer_acc, provider_name, email_to, email_cc, domain, action)
 
         prepare_data = {}
+        assume_role_input_json_path = os.getcwd() + '/' + 'assume_role_input_json.json'
         dependent_resource_file = os.getcwd() + '/' + 'depends_on_resource.json'
         input_json_file_path = os.getcwd() + '/' + 'input_json.json'
         depends_on_json = None
@@ -115,43 +116,30 @@ class RuleInstall(Command):     # noqa: D203, D204
             env_ids = {}
 
             for one_env in all_env:
-                if (one_env.name.startswith(rule_name) and one_env.name.endswith('config_rule_setup')):
+                if (one_env.name.startswith(rule_name) and one_env.name.endswith('rules_setup')):
                     env_ids['parent'] = one_env.config.env_id
                     input_from_env = instance.get_input_json(one_env.config.env_id)
                     RuleInstall.updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action)
                     parent_input_json = DepolyEnv.read_file_as_json_object(input_json_file_path)
-                elif (one_env.name.startswith(rule_name) and one_env.name.endswith('assume_role')):
-                    env_ids['child'] = one_env.config.env_id
-                    depend_resources = ast.literal_eval(instance.get_input_json(one_env.config.env_id))
-                    for depend_name in depend_resources:
-                        if 'Depends_On' in depend_resources[depend_name]:
-                            if str(depend_name) == 'mnc_rule_dependency':
-                                prepare_data[depend_name] = deployment_name
-                            else:
-                                prepare_data[depend_name] = 'default'
-            # Create File of Depends_On resource
-            if prepare_data:
-                RuleInstall.create_att_file(dependent_resource_file, prepare_data)
-            result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
+                    RuleInstall.create_att_file(dependent_resource_file, prepare_data)
+                    result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, parent_input_json, depends_on_json)
+                    # Create File of Depends_On resource
+                    config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
+                    time.sleep(10)
+                    logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
 
-            config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
-            logging.info("Config status :%s", config_status)
-
-            # Deploy child
-            assume_status = None
-            if config_status == 'DEPLOYED':
-                child_input_json = None
-                time.sleep(10)
-                provider_name = MncUtility.provider_name_from_s3(str(MncUtility.read_bucket_name()))
-                deployment_name = 'default_master_' + customer_acc
-                depends_json = DepolyEnv.read_file_as_json_object(dependent_resource_file)
-                result = RuleInstall.re_deploy_environment(self, env_ids['child'], deployment_name, deployment_description, provider_name, region, child_input_json, depends_json)
-                if result:
-                    assume_status = self.get_status(env_ids['child'], deployment_name)
-                    logging.info("Assume role status :%s", assume_status)
-
-            if config_status == 'DEPLOYED' and assume_status == 'DEPLOYED':
-                logging.info("Rule %s is deployed for account: %s", rule_name, customer_acc)
+            for one_env in all_env:
+                if (one_env.name.startswith("21.0-mnc_") and one_env.name.endswith('assume_role_policies')):
+                    env_ids['parent'] = one_env.config.env_id
+                    input_from_env = instance.get_input_json(one_env.config.env_id)
+                    RuleInstall.updated_input_file_dependent(assume_role_input_json_path, input_from_env)
+                    assume_input_json = DepolyEnv.read_file_as_json_object(assume_role_input_json_path)
+                    deployment_name = 'default_master_' + customer_acc
+                    RuleInstall.create_att_file(dependent_resource_file, prepare_data)
+                    result = RuleInstall.re_deploy_environment(self, env_ids['parent'], deployment_name, deployment_description, provider_name, region, assume_input_json, depends_on_json)
+                    # Create File of Depends_On resource
+                    config_status = RuleInstall.get_status(env_ids['parent'], deployment_name)
+                    logging.info("Rule %s is deployed for account: %s", "21.0-mnc_assume_role_policies", customer_acc)
 
         except ApiException as exception:
             # Utility.print_exception(exception)
@@ -179,13 +167,13 @@ class RuleInstall(Command):     # noqa: D203, D204
                 json.dump(prepare_data, outfile, indent=4, sort_keys=True)
         except Exception as exception:
             logging.info("Failed to create attribute file. Please try again.")
-            Utility.print_exception(exception)
+            # Utility.print_exception(exception)
 
     @staticmethod
     def updated_input_file(input_json_file_path, input_from_env, email_to, email_cc, action):
         """Create updated_input_file."""
         data = ast.literal_eval(input_from_env)
-        input_data = data['Input Variables']['input_variables']
+        input_data = data['input_variables']['input_variables']
         input_data['toEmail'] = email_to
         input_data['ccEmail'] = email_cc
         input_data['performAction'] = action
@@ -193,4 +181,14 @@ class RuleInstall(Command):     # noqa: D203, D204
         input_data['lambdaRoleArn'] = MncUtility.read_role_arn(MncConstats.PROCESSOR_ROLE_NAME)
         input_data['lambdaArn'] = MncUtility.read_lambda_arn(MncConstats.RULE_PROCESSOR_LAMBDA_NAME)
         input_data['maximum_execution_frequency'] = MncConstats.MAXIMUM_EXECUTION_FREQUENCY
+        RuleInstall.create_att_file(input_json_file_path, input_data)
+
+    @staticmethod
+    def updated_input_file_dependent(input_json_file_path, input_from_env):
+        """Create updated_input_file."""
+        data = ast.literal_eval(input_from_env)
+        input_data = data['Input Variables']['input_variables']
+        input_data['customerAccountNumber'] = MncConstats.CUSTOMER_ACCOUNT_NUMBER
+        input_data['customerAccountReadRoleArn'] = MncConstats.CUSTOMER_ACCOUNT_READ_ROLE_ARN
+        input_data['customerAccountWriteRoleArn'] = MncConstats.CUSTOMER_ACCOUNT_WRITE_ROLE_ARN
         RuleInstall.create_att_file(input_json_file_path, input_data)

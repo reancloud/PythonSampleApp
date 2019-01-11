@@ -7,7 +7,7 @@ virtualenv:
       - .
 
 packager:
-  target: reanplatform_cli_v0.0.8.zip
+  target: reanplatform_cli_v0.0.9.zip
   followlinks: true
   includes:
     - LICENSE

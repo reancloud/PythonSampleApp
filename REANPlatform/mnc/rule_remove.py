@@ -13,7 +13,7 @@ from deploy.utility import DeployUtility
 
 
 class RuleRemove(Command):  # noqa: D203, D204
-    """Destroy manage cloud deployed rule. Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 693265998683."""
+    """Destroy manage cloud deployed rule. Example: rean-mnc remove-rule --rule_name mnc_check_ec2_unused_eip_value --customer_acc 120987654321."""
     # noqa: C0303
     log = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ class RuleRemove(Command):  # noqa: D203, D204
     # pylint: disable=R0201
     def __validate_parameters(self, rule_name, customer_acc):
         """Validate cli parameter."""
+        logging.info("Validating parameters")
         exception_msg = "Specify either " + "--" + MncConstats.CUSTOMER_ACC + " OR " + "--" + MncConstats.RULE_NAME + \
             " OR " + "--" + MncConstats.CUSTOMER_ACC + " and " + "--" + MncConstats.RULE_NAME
         if rule_name is None and customer_acc is None:
@@ -65,12 +66,14 @@ class RuleRemove(Command):  # noqa: D203, D204
                     if rule_name and customer_acc:
                         if one_env.name.startswith(rule_name):
                             deployment_id = RuleRemove.get_deployment_ids(one_env.config.env_id, customer_acc, None, api_instance, one_env.name)
+                            logging.info("Deployment_id is : %s", deployment_id)
                     elif customer_acc:
                         deployment_id = RuleRemove.get_deployment_ids(one_env.config.env_id, customer_acc, None, api_instance, one_env.name)
+                        logging.info("Deployment_id is : %s", deployment_id)
                     elif rule_name:
                         if one_env.name.startswith(rule_name):
                             deployment_id = RuleRemove.get_deployment_ids(one_env.config.env_id, customer_acc, rule_name, api_instance, one_env.name)
-
+                            logging.info("Deployment_id is : %s", deployment_id)
                     if deployment_id:
                         deployment_id_to_remove = deployment_id_to_remove + deployment_id
 
