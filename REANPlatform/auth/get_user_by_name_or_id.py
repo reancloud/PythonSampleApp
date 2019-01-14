@@ -2,12 +2,11 @@
 import re
 import logging
 from cliff.command import Command
+import authnz_sdk_client
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
-import authnz_sdk_client
-from authnz_sdk_client.rest import ApiException
 
 
 class GetUserByNameOrId(Command):
@@ -24,12 +23,12 @@ class GetUserByNameOrId(Command):
         return parser
 
     @staticmethod
-    def validate_parameters(id, name):
+    def validate_parameters(parsed_args):
         """validate_parameters."""
         exception_msg = "Specify either --id OR --name"
-        if id and name:
+        if parsed_args.id and parsed_args.name:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif id is None and name is None:
+        elif parsed_args.id is None and parsed_args.name is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
@@ -38,7 +37,7 @@ class GetUserByNameOrId(Command):
         api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
         instance = authnz_sdk_client.UsercontrollerApi(api_client)
         # validate id and name
-        GetUserByNameOrId.validate_parameters(parsed_args.id, parsed_args.name)     
+        GetUserByNameOrId.validate_parameters(parsed_args)
         # Get user by name or id
         api_response = None
         if parsed_args.name:
