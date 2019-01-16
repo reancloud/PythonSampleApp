@@ -84,7 +84,7 @@ class RunCrossBrowserTest(Command):
             if parsed_args.use_code_upload == 'true':
                 self.log.debug("Uploading code file ...")
                 body.code_file_name = Utility.upload_code(parsed_args.code_file_name, parsed_args.app_name)
-                self.log.debug("Code object Name : %s " % body.code_file_name)
+                self.log.debug("Code object Name : %s ", body.code_file_name)
                 body.use_code_upload = parsed_args.use_code_upload
             else:
                 body.git_url = parsed_args.git_repository_url

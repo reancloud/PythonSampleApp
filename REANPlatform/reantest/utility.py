@@ -5,19 +5,19 @@ import logging
 import sys
 import time
 import itertools
+import uuid
 import urllib3
 import validators
-import uuid
 import requests
-
-from reanplatform.utilityconstants import PlatformConstants
-from reanplatform.set_header import set_header_parameter
-from reanplatform.utility import Utility as PlatformUtility
 
 import test_sdk_client
 from test_sdk_client.api_client import ApiClient
 from test_sdk_client.configuration import Configuration
 from test_sdk_client.rest import ApiException
+
+from reanplatform.set_header import set_header_parameter
+from reanplatform.utility import Utility as PlatformUtility
+from reanplatform.utilityconstants import PlatformConstants
 
 from reantest.constants import TestConstants
 
@@ -226,7 +226,6 @@ class Utility:
     @staticmethod
     def upload_code(file_path, app_name):
         """Servlet API call to upload automation code manually."""
-
         # This module will call REANTest upload servlet.
         # This servlet upload code file to s3 bucket of provider and that s3 object name will get used for test.
 
@@ -241,14 +240,14 @@ class Utility:
         if file_extension != ".zip":
             raise RuntimeError('Invalid file type %s, test only support zip file upload' % file_path)
 
-        file = {'file': open(file_path,'rb')}
+        file = {'file': open(file_path, 'rb')}
 
         credentials = PlatformUtility.get_user_credentials()
         HEADERS = {'Authorization': credentials}
         params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
 
-        responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'), headers=HEADERS, files=file,
-                      data=params)
+        responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'),
+                                 headers=HEADERS, files=file, data=params)
 
         if responce.status_code is not 200:
             raise RuntimeError('Failed to upload file, %s' % file_path)
