@@ -22,6 +22,9 @@ class RunInfraTest(Command):
         parser.add_argument('--password', '-p', help='Password of machine to be tested using serverspec or inspec')
         parser.add_argument('--key', '-k', help='Key for machine to be tested using serverspec or inspec')
 
+        parser.add_argument('--use_code_upload', '-cu',
+                            help='Set upload code file as true to upload test file. Default=false', default="false")
+        parser.add_argument('--code_file_name', '-cf', help='Set upload file name', default="test")
         parser.add_argument('--git_repository_url', '-gr', help='Set Git URL')
         parser.add_argument('--git_password', '-gp', help='Set git password')
         parser.add_argument('--git_user', '-gu', help='Set git username')
@@ -49,6 +52,14 @@ class RunInfraTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
         try:
+
+            if parsed_args.use_code_upload == 'true':
+                if parsed_args.code_file_name == "test":
+                    raise RuntimeError("Please provide valid file path to upload code.")
+            else:
+                if parsed_args.git_repository_url is None:
+                    raise RuntimeError("Please provide valid git credentials")
+
             body = test_sdk_client.InfraTestDto(
                 app_name=parsed_args.application_name
             )
@@ -88,10 +99,15 @@ class RunInfraTest(Command):
 
                 body.provider = aws_provider
 
-            body.git_url = parsed_args.git_repository_url
-            body.git_user = parsed_args.git_user
-            body.git_pass = parsed_args.git_password
-            body.branch_name = parsed_args.git_branch
+            if parsed_args.use_code_upload == 'true':
+                self.log.debug("Uploading code file ...")
+                body.code_file_name = Utility.upload_code(parsed_args.code_file_name, parsed_args.application_name)
+                self.log.debug("Code object Name : %s " % body.code_file_name)
+            else:
+                body.git_url = parsed_args.git_repository_url
+                body.git_user = parsed_args.git_user
+                body.git_pass = parsed_args.git_password
+                body.branch_name = parsed_args.git_branch
 
             body.pre_script = parsed_args.pre_script
             body.command_to_run_test = parsed_args.command_to_run_test
@@ -104,4 +120,5 @@ class RunInfraTest(Command):
             Utility.execute_test(body, parsed_args, self.log, test_sdk_client.InfraTestApi(Utility.set_headers()).run)
 
         except Exception as exception:
+            self.log.error(exception)
             Utility.print_exception(exception)

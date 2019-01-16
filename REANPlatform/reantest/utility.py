@@ -7,6 +7,8 @@ import time
 import itertools
 import urllib3
 import validators
+import uuid
+import requests
 
 from reanplatform.utilityconstants import PlatformConstants
 from reanplatform.set_header import set_header_parameter
@@ -79,6 +81,14 @@ class Utility:
         # Validation for Browser list
         if params.chrome is None and params.firefox is None:
             message = "Please Provide at least one browser to Test."
+
+        if params.use_code_upload == 'true':
+            if params.code_file_name == "test":
+                message = "Please provide valid file path to upload code."
+        else:
+            if params.git_repository_url is None:
+                message = "Please provide valid git credentials"
+
         return message
 
     @staticmethod
@@ -118,10 +128,6 @@ class Utility:
         # Validation for Test URL
         if not validators.url(params.url):
             message = "Please enter valid Application URL."
-
-        # Validation for git url
-        elif params.git_repository_url is None:
-            message = "Please enter git_url parameters."
         elif params.app_name is None:
             message = "Please enter app_name parameters."
         elif params.command_to_run_test is None:
@@ -138,6 +144,13 @@ class Utility:
         # Validation for Browser list
         elif params.chrome is None and params.firefox is None and params.ie is None:
             message = "Please Provide at least one browser to Test."
+
+        if params.use_code_upload == 'true':
+            if params.code_file_name == "test":
+                message = "Please provide valid file path to upload code."
+        else:
+            if params.git_repository_url is None:
+                message = "Please provide valid git credentials"
 
         return message
 
@@ -184,7 +197,9 @@ class Utility:
     def print_exception(exception):
         """Print exception method."""
         print("Exception message: ")
-        if isinstance(exception, ApiException):
+        if isinstance(exception, RuntimeError):
+            print(exception)
+        elif isinstance(exception, ApiException):
             if isinstance(exception.body, str):
                 err = json.loads(exception.body)
             if isinstance(exception.body, bytes):
@@ -207,3 +222,35 @@ class Utility:
         Configuration().verify_ssl = verify_ssl
         api_client = ApiClient()
         return api_client
+
+    @staticmethod
+    def upload_code(file_path, app_name):
+        """Servlet API call to upload automation code manually."""
+
+        # This module will call REANTest upload servlet.
+        # This servlet upload code file to s3 bucket of provider and that s3 object name will get used for test.
+
+        file_name = 'code-' + app_name + '-' + uuid.uuid4().hex
+
+        if not os.path.isfile(file_path):
+            raise RuntimeError('file %s does not exists' % file_path)
+
+        file_extension = os.path.splitext(file_path)[1].lower()
+
+        # REANTest only support zip file to upload
+        if file_extension != ".zip":
+            raise RuntimeError('Invalid file type %s, test only support zip file upload' % file_path)
+
+        file = {'file': open(file_path,'rb')}
+
+        credentials = PlatformUtility.get_user_credentials()
+        HEADERS = {'Authorization': credentials}
+        params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
+
+        responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'), headers=HEADERS, files=file,
+                      data=params)
+
+        if responce.status_code is not 200:
+            raise RuntimeError('Failed to upload file, %s' % file_path)
+
+        return file_name
