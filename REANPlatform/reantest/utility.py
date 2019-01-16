@@ -249,7 +249,7 @@ class Utility:
         responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'),
                                  headers=HEADERS, files=file, data=params)
 
-        if responce.status_code is not 200:
+        if responce.status_code != 200:
             raise RuntimeError('Failed to upload file, %s' % file_path)
 
         return file_name
