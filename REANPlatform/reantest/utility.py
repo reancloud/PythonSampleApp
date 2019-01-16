@@ -7,8 +7,8 @@ import time
 import itertools
 import uuid
 import urllib3
-import validators
 import requests
+import validators
 
 import test_sdk_client
 from test_sdk_client.api_client import ApiClient
