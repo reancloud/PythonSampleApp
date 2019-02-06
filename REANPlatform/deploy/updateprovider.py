@@ -57,6 +57,6 @@ class UpdateProvider(Command):
                 json=jsondata
             )
             api_response = provider_api_instance.update_provider(provider)
-            Utility.print_output_as_str("Provider created successfully Name: {},  Id: {}".format(parsed_args.name, parsed_args.id), parsed_args.output)
+            Utility.print_output_as_str("Provider updated successfully Name: {},  Id: {}".format(parsed_args.name, parsed_args.id), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
