@@ -62,6 +62,7 @@ setup(
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
             'create-provider = deploy.createprovider:SaveProvider',
+            'update-provider = deploy.updateprovider:UpdateProvider',
             'delete-provider = deploy.deleteprovider:DeleteProvider',
             'list-connection = deploy.listconnections:ListConnections',
             'create-connection = deploy.createconnection:SaveConnection',
