@@ -7,7 +7,7 @@ PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 
-VERSION = '0.1.1'
+VERSION = '0.1.0'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -39,7 +39,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycryptodome', 'certifi', 'python-jenkins', 'setuptools>=40.4.1', 'authnz-sdk-client>=2.10.0', 'deploy-sdk-client>=2.10.0', 'test_sdk_client>=2.10.0'],
+    install_requires=['cliff', 'validators', 'boto3', 'wheel', 'pycryptodome', 'certifi', 'python-jenkins', 'setuptools>=40.4.1', 'authnz_sdk_client>=2.10.0', 'deploy_sdk_client>=2.10.0', 'test_sdk_client>=2.10.0'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
