@@ -1,0 +1,8 @@
+@Library('reanplatform') _
+
+node {
+    pythonPipelines.releaseFinish(
+        name: 'reanplatform-cli',
+        setup_py_path: 'REANPlatform'
+    )
+}
