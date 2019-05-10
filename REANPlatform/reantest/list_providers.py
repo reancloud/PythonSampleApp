@@ -36,7 +36,7 @@ class ListProvider(Command):
         try:
             api_instance = test_sdk_client.ProviderApi(Utility.set_headers())
             api_response = api_instance.get_all_providers()
-            if len(api_response) == 0:
+            if not api_response:
                 print("Provider list is empty.")
             else:
                 if list_provider_format == 'table':
