@@ -8,9 +8,9 @@ import requests
 import boto3
 from Crypto import Random
 from Crypto.Cipher import AES
+import urllib3
 import yaml
 from reanplatform.utilityconstants import PlatformConstants
-import urllib3
 
 
 class Utility(object):
