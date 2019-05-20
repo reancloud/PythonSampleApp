@@ -10,6 +10,7 @@ from Crypto import Random
 from Crypto.Cipher import AES
 import yaml
 from reanplatform.utilityconstants import PlatformConstants
+import urllib3
 
 
 class Utility(object):
@@ -204,6 +205,10 @@ class Utility(object):
     @staticmethod
     def get_zip_stream(curl_url):
         """Get zip stream."""
-        headers = {'accept': 'application/gzip', 'Authorization': Utility.get_user_credentials()}
-        response = requests.get(curl_url, headers=headers)
+        headers = {'Authorization': Utility.get_user_credentials()}
+        verify_ssl = Utility.get_config_property(PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE)
+        if not verify_ssl:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+        response = requests.get(curl_url, headers=headers, verify=verify_ssl)
         return response
