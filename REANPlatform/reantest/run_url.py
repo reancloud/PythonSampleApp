@@ -20,12 +20,12 @@ class RunURLTest(Command):
         parser = super(RunURLTest, self).get_parser(prog_name)
 
         # parser.formatter_class = ArgumentDefaultsHelpFormatter
-
+        parser.add_argument('--app_name', '-a', help='Set the name for this Automation Job.', required=True)
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com', required=True)
         parser.add_argument('--text_to_search', '-t', type=str, help='Set the text to search', required=True)
 
-        parser.add_argument('--page_load_time_out', '-p', type=int, help='Set the Page load timeout time in secs', default=10)
-        parser.add_argument('--upa', '-a', help='Set true if needs UPA test to run with the Test')
+        parser.add_argument('--page_load_time_out', '-p', type=int, help='Set the Page load timeout time in secs', required=True)
+        parser.add_argument('--upa', '-up', help='Set true if needs UPA test to run with the Test')
         parser.add_argument('--crawl', '-cr', help='Set true if needs Crawl test to run with the Test')
         parser.add_argument('--chrome', '-c', help='Give the comma separated versions for Chrome to run test on')
         parser.add_argument('--firefox', '-f', help='Give the comma separated versions for Firefox to run test on')
@@ -48,6 +48,7 @@ class RunURLTest(Command):
 
             body = test_sdk_client.UrlTestDto()
 
+            body.app_name = parsed_args.app_name
             body.browser_list = browser_list
             body.test_url = parsed_args.url
             body.text_to_search = parsed_args.text_to_search
