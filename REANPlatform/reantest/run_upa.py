@@ -14,9 +14,10 @@ class RunUPA(Command):
         """get_parser."""
         parser = super(RunUPA, self).get_parser(prog_name)
 
+        parser.add_argument('--app_name', '-a', help='Set the name for this Automation Job.', required=True)
         parser.add_argument('--url', '-u', help='Set upa To test example:http://www.google.com.', required=True)
         parser.add_argument('--text_to_search', '-s', help='Set the text to search.', required=True)
-        parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.')
+        parser.add_argument('--page_load_time_out', '-p', help='Set the Page load timeout time in secs.', required=True)
         parser.add_argument('--crawl', '-c', help='Set true if needs Crawl test to run with the Test.')
         parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
 
@@ -33,6 +34,7 @@ class RunUPA(Command):
 
             body = test_sdk_client.UpaTestDto()
 
+            body.app_name = parsed_args.app_name
             body.test_url = parsed_args.url
             body.text_to_search = parsed_args.text_to_search
             body.page_load_time_out = parsed_args.page_load_time_out
