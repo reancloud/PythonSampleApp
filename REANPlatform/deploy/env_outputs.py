@@ -105,4 +105,4 @@ class EnvOutputs(Command):
                     print(Utility.get_parsed_json(other_attributes))
 
         else:
-            Utility.print_exception("Unable to find deployment for env "+ env_id + " with deployment name " + deployment_name)
+            Utility.print_exception("Unable to find deployment for env " + env_id + " with deployment name " + deployment_name)
