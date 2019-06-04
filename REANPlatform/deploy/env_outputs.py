@@ -82,7 +82,6 @@ class EnvOutputs(Command):
         find_deployment = filter(lambda x: x.deployment_name == deployment_name, deployments)
         env_deployment = next(find_deployment)
 
-
         if env_deployment:
             env_deployment_id = env_deployment.id
 
