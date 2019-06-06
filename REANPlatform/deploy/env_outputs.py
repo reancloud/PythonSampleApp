@@ -9,15 +9,15 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class EnvOutputs(Command):
-    """Get Deployment Details."""
+class GetEnvOutputs(Command):
+    """Get Output vars with values in JSON format for an environment."""
 
     log = logging.getLogger(__name__)
 
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser
-        parser = super(EnvOutputs, self).get_parser(prog_name)
+        parser = super(GetEnvOutputs, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
         parser.add_argument('--deployment_name', '-dn', default='default', help='Deployment name', required=False)
         parser.add_argument('--output', '-o',
@@ -28,7 +28,7 @@ class EnvOutputs(Command):
 
     @staticmethod
     def get_deployments(env_id):
-        """Get Deployment Details."""
+        """Get Deployments for an environment."""
         try:
             # Initialise api_response
             api_response = None
@@ -43,7 +43,7 @@ class EnvOutputs(Command):
 
     @staticmethod
     def get_resources(env_id):
-        """Get Deployment Details."""
+        """Get All Resources for an environment."""
         try:
             # Initialise api_response
             api_response = None
@@ -58,7 +58,7 @@ class EnvOutputs(Command):
 
     @staticmethod
     def get_resource_status(env_deployment_id):
-        """Get Deployment Details."""
+        """Get All deployed resources status for an environment."""
         try:
             # Initialise api_response
             api_response = None
@@ -78,7 +78,7 @@ class EnvOutputs(Command):
         deployment_name = parsed_args.deployment_name
 
         # Get deployment EnvOutputs
-        deployments = EnvOutputs.get_deployments(env_id)
+        deployments = GetEnvOutputs.get_deployments(env_id)
         find_deployment = filter(lambda x: x.deployment_name == deployment_name, deployments)
         env_deployment = next(find_deployment)
 
@@ -86,16 +86,17 @@ class EnvOutputs(Command):
             env_deployment_id = env_deployment.id
 
             if env_deployment.status != 'DEPLOYED':
+                print(f'To get outputs for the environment with deployment name {deployment_name} must be deployed first!!')
                 exit(1)
 
             # Get the existing resources for this environment.
-            resources = EnvOutputs.get_resources(env_id)
+            resources = GetEnvOutputs.get_resources(env_id)
 
             output_resource = next(filter(lambda x: x.resource_name == 'output', resources))
 
             # If the environment is deployed, then we can collect outputs.
             if output_resource:
-                resource_status = EnvOutputs.get_resource_status(env_deployment_id)
+                resource_status = GetEnvOutputs.get_resource_status(env_deployment_id)
                 output_status = resource_status[str(output_resource.id)][0]
                 other_attributes = output_status.other_attributes
 
