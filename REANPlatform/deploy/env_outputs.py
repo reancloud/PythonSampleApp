@@ -1,4 +1,4 @@
-"""Get Deployment Details."""
+"""Get Environment Deployment Outputs vars JSON."""
 import logging
 from cliff.command import Command
 import deploy_sdk_client
