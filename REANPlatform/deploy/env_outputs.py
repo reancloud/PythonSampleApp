@@ -27,8 +27,8 @@ class GetEnvOutputs(Command):
         return parser
 
     @staticmethod
-    def get_deployments(env_id):
-        """Get Deployments for an environment."""
+    def get_deployment_details(env_id, deployment_name):
+        """Get Deployment Details."""
         try:
             # Initialise api_response
             api_response = None
@@ -36,7 +36,7 @@ class GetEnvOutputs(Command):
             # Initialise api_instance to get deployment details
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            api_response = api_instance.get_all_deployments_for_environment_by_id(env_id)
+            api_response = api_instance.get_deployment_details(env_id, deployment_name)
             return api_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
@@ -77,16 +77,12 @@ class GetEnvOutputs(Command):
         env_id = parsed_args.env_id
         deployment_name = parsed_args.deployment_name
 
-        # Get deployment EnvOutputs
-        deployments = GetEnvOutputs.get_deployments(env_id)
-        find_deployment = filter(lambda x: x.deployment_name == deployment_name, deployments)
-        env_deployment = next(find_deployment)
-
+        env_deployment = GetEnvOutputs.get_deployment_details(env_id, deployment_name)
         if env_deployment:
             env_deployment_id = env_deployment.id
 
             if env_deployment.status != 'DEPLOYED':
-                print("To get outputs for the environment with deployment name %s must be deployed first!!", deployment_name)
+                print("To get outputs for the environment with deployment name %s must be deployed successfully!!" % deployment_name)
                 exit(1)
 
             # Get the existing resources for this environment.
@@ -106,4 +102,5 @@ class GetEnvOutputs(Command):
                     print(Utility.get_parsed_json(other_attributes))
 
         else:
-            Utility.print_exception("Unable to find deployment for env " + env_id + " with deployment name " + deployment_name)
+            print("Unable to find deployment for env %s  with deployment name %s" % (env_id, deployment_name))
+            exit(1)

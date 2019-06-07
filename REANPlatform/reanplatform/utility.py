@@ -101,7 +101,7 @@ class Utility(object):
             config_file_name = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
             if os.path.isfile(config_file_name):
                 with open(config_file_name, 'r') as stream:    # noqa: E501
-                    data_loaded = yaml.load(stream, Loader=yaml.FullLoader)
+                    data_loaded = yaml.load(stream)
                 username = Utility.decryptData(
                     data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
                 password = Utility.decryptData(
@@ -118,7 +118,7 @@ class Utility(object):
             config_file_name = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
             if os.path.isfile(config_file_name):
                 with open(config_file_name, 'r') as stream:    # noqa: E501
-                    data_loaded = yaml.load(stream, Loader=yaml.FullLoader)
+                    data_loaded = yaml.load(stream)
                 config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
                 return config_property
         return None
