@@ -86,7 +86,7 @@ class GetEnvOutputs(Command):
             env_deployment_id = env_deployment.id
 
             if env_deployment.status != 'DEPLOYED':
-                print(f'To get outputs for the environment with deployment name {deployment_name} must be deployed first!!')
+                print("To get outputs for the environment with deployment name %s must be deployed first!!", deployment_name)
                 exit(1)
 
             # Get the existing resources for this environment.
