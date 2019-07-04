@@ -4,7 +4,6 @@ import json
 from cliff.command import Command
 import test_sdk_client
 from reantest.utility import Utility
-from reanplatform.utility import Utility as PlatformUtility
 
 
 class CreateProvider(Command):
