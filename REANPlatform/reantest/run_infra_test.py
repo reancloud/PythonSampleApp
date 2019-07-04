@@ -52,19 +52,17 @@ class RunInfraTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
         try:
-
             if parsed_args.use_code_upload == 'true':
                 if parsed_args.code_file_name == "test":
                     raise RuntimeError("Please provide valid file path to upload code.")
             else:
                 if parsed_args.git_repository_url is None:
                     raise RuntimeError("Please provide valid git credentials")
-
             body = test_sdk_client.InfraTestDto(
-                app_name=parsed_args.application_name
+                app_name=parsed_args.application_name,
+                re_run_from=""
             )
             body.infra_spec_type = parsed_args.spec_type
-
             if parsed_args.spec_type == "serverspec" or parsed_args.spec_type == "inspec":
                 body.infra_test_ips = parsed_args.ip_adders
                 body.infra_test_user = parsed_args.user
@@ -114,6 +112,7 @@ class RunInfraTest(Command):
             body.post_script = parsed_args.post_script
             body.report_file = parsed_args.report_file_name
             body.output_dir = parsed_args.output_directory_path
+            body.re_run_from = ""
 
             self.log.debug(body)
             self.log.debug("Execution stared for Infra test")
