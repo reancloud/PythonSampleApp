@@ -1,7 +1,7 @@
 """Get Users module."""
 import logging
-from cliff.command import Command
 from prettytable import PrettyTable
+from cliff.command import Command
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
 from reanplatform.utility import Utility
