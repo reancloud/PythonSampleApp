@@ -160,15 +160,12 @@ class Utility:
     def print_exception(exception):
         """Print exception method."""
         print("Exception message: ")
-        if isinstance(exception, RuntimeError):
-            print(exception)
-        elif isinstance(exception, ApiException):
+        if isinstance(exception, ApiException):
             if isinstance(exception.body, str):
-                err = json.loads(exception.body)
-            if isinstance(exception.body, bytes):
-                err = json.loads(exception.body.decode("utf-8"))
-            print("Status : %s ,Message : %s" % (err['status'], err['message']))
-        elif isinstance(exception, Exception):
+                print(exception.body)
+            elif isinstance(exception.body, bytes):
+                print(exception.body.decode("utf-8"))
+        else:
             print(exception)
 
     @staticmethod

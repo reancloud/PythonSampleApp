@@ -4,9 +4,7 @@ from prettytable import PrettyTable
 from cliff.command import Command
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
-from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 
 
@@ -31,10 +29,9 @@ class GetUsers(Command):
         """Get users."""
         try:
             # Initialise instance and api_instance in list_user
-            api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
-            instance = authnz_sdk_client.UsercontrollerApi(api_client)
+            api_instance = authnz_sdk_client.DefaultApi(AuthnzUtility.set_headers())
+            api_response = api_instance.get_all_user()
             # Get all users
-            api_response = instance.get_all_user_using_get()
             if output_format == 'table':
                 table = PrettyTable(['Id', 'Name', 'Username', 'Email', 'Verified', 'Disabled'])
                 table.padding_width = 1
