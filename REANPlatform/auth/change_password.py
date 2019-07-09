@@ -1,11 +1,9 @@
 """Change Password module."""
 import logging
 from cliff.command import Command
-from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 import authnz_sdk_client
 from authnz_sdk_client.rest import ApiException
-from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 
 

@@ -3,9 +3,7 @@ import re
 import logging
 from cliff.command import Command
 import authnz_sdk_client
-from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
-from auth.constants import AunthnzConstants
 from auth.utility import AuthnzUtility
 
 
@@ -41,7 +39,6 @@ class GetUserByNameOrId(Command):
         # validate id and name
         GetUserByNameOrId.validate_parameters(parsed_args)
         # Get user by name or id
-        api_response = None
         if parsed_args.name:
             api_response = api_instance.get_by_username(parsed_args.name)
         else:
