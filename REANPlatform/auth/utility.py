@@ -9,7 +9,6 @@ from authnz_sdk_client.api_client import ApiClient
 from authnz_sdk_client.configuration import Configuration
 
 
-
 class AuthnzUtility(object):
     """Utility class contains all common method requried for Authnz CLI."""
 

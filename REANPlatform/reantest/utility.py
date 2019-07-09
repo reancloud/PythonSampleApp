@@ -1,6 +1,5 @@
 """Utilities for Test CLI."""
 import os
-import json
 import logging
 import sys
 import time

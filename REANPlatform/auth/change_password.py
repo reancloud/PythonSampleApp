@@ -36,15 +36,15 @@ class ChangePassword(Command):
         """Change Password."""
         try:
             # Initialise instance and api_instance in list_environment
-            api_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
-            instance = authnz_sdk_client.UsercontrollerApi(api_client)
+            api_instance = authnz_sdk_client.DefaultApi(AuthnzUtility.set_headers())
+
             change_user_password_object = authnz_sdk_client.ChangeUserPassword(
                 id=parsed_args.user_id,
                 old_password=parsed_args.old_password,
                 new_password=parsed_args.new_password,
                 confirm_password=parsed_args.confirm_password
             )
-            api_response = instance.change_password_using_put(change_user_password_object)
+            api_response = api_instance.change_password(body=change_user_password_object)
             if api_response is True:
                 print('Password changed successfully.')
         except ApiException as e:
