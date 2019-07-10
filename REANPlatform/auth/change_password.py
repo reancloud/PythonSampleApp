@@ -34,7 +34,7 @@ class ChangePassword(Command):
         """Change Password."""
         try:
             # Initialise instance and api_instance in list_environment
-            api_instance = authnz_sdk_client.DefaultApi(AuthnzUtility.set_headers())
+            api_instance = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
 
             change_user_password_object = authnz_sdk_client.ChangeUserPassword(
                 id=parsed_args.user_id,

@@ -29,7 +29,7 @@ class GetUsers(Command):
         """Get users."""
         try:
             # Initialise instance and api_instance in list_user
-            api_instance = authnz_sdk_client.DefaultApi(AuthnzUtility.set_headers())
+            api_instance = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
             api_response = api_instance.get_all_user()
             # Get all users
             if output_format == 'table':

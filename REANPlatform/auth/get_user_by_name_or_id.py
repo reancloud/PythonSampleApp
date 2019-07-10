@@ -34,7 +34,7 @@ class GetUserByNameOrId(Command):
     def take_action(self, parsed_args):
         """take_action."""
         # Initialise instance and api_instance
-        api_instance = authnz_sdk_client.DefaultApi(AuthnzUtility.set_headers())
+        api_instance = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
 
         # validate id and name
         GetUserByNameOrId.validate_parameters(parsed_args)
