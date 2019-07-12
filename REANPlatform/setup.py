@@ -90,7 +90,8 @@ setup(
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
             'get-user = auth.get_user_by_name_or_id:GetUserByNameOrId',
-            'change-password = auth.change_password:ChangePassword'
+            'change-password = auth.change_password:ChangePassword',
+            'create-user = auth.create_user:CreateUser'
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
