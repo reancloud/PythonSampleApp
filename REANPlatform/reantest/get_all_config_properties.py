@@ -2,8 +2,8 @@
 
 import json
 import logging
-from prettytable import PrettyTable
 from cliff.command import Command
+from prettytable import PrettyTable
 import test_sdk_client
 from reantest.utility import Utility
 from reanplatform.utility import Utility as PlatformUtility
