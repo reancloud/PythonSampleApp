@@ -34,9 +34,9 @@ class RunScaleNowTest(Command):
                             help='Set shell script to be executed before test suite runs. '
                                  'Example mvn clean install to build your automation code.')
         parser.add_argument('--post_script', '-po', help='Set shell script to be executed after test suite runs.')
-        parser.add_argument('--report_file', '-rf',
+        parser.add_argument('--report_file_name', '-rf',
                             help='Set test execution report file, preferably in json or xml format.', required=True)
-        parser.add_argument('--output_directory', '-od',
+        parser.add_argument('--output_directory_path', '-od',
                             help='Set test execution reports directory. '
                                  'Example target/testng-report. Path should be relative to your automation code directory')
         parser.add_argument('--delete_virtual_machine', '-d', help='Set delete vm as true or false')
