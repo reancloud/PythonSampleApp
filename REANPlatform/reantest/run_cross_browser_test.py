@@ -20,9 +20,6 @@ class RunCrossBrowserTest(Command):
                             required=True)
         parser.add_argument('--url', '-u',
                             help='Set url To be used in Automation test. Example:http://www.google.com.')
-        parser.add_argument('--use_code_upload', '-cu',
-                            help='Set upload code file as true to upload test file. Default=false',
-                            default="false")
         parser.add_argument('--code_file_name', '-cf',
                             help='Set upload file name',
                             default="test")
@@ -34,14 +31,14 @@ class RunCrossBrowserTest(Command):
                             help='Set user password in case of private git repository')
         parser.add_argument('--git_branch_name', '-gb',
                             help='Set git repository branch name. '
-                                 'If not specified, master branch will be considered by default.')
+                                 'If not specified, master branch will be considered by default.',
+                            default='master')
         parser.add_argument('--command_to_run_test', '-rc',
                             help='Set command to run Automation Testsuite. For e.g. mvn test ')
         parser.add_argument('--automation_code_type', '-at',
                             help='Set automation code type as Ruby, Java, VBScript ')
         parser.add_argument('--preserve_machine', '-p',
                             help='Set true for preserve machine if test fails.')
-
         parser.add_argument('--pre_script', '-pr',
                             help='Set shell script to be executed before test suite runs.'
                                  'For e.g. mvn clean install to build your automation code.')
@@ -84,10 +81,7 @@ class RunCrossBrowserTest(Command):
             browser_list = Utility.get_browser_dto(parsed_args)
             self.log.debug(browser_list)
 
-            error_message = RunCrossBrowserTest.validate_inputs(parsed_args)
-            if error_message:
-                self.app.stdout.write(error_message)
-                return
+            RunCrossBrowserTest.validate_inputs(parsed_args)
 
             body = test_sdk_client.CrossBrowserTestDto()
             body.app_name = parsed_args.app_name
@@ -107,16 +101,17 @@ class RunCrossBrowserTest(Command):
             else:
                 body.test_url = parsed_args.url
 
-                if parsed_args.use_code_upload == 'true':
+                if parsed_args.code_file_name != 'test':
                     self.log.debug("Uploading code file ...")
                     body.code_file_name = Utility.upload_code(parsed_args.code_file_name, parsed_args.app_name)
                     self.log.debug("Code object Name : %s ", body.code_file_name)
-                    body.use_code_upload = parsed_args.use_code_upload
+                    body.use_code_upload = True
                 else:
                     body.git_url = parsed_args.git_repository_url
                     body.git_pass = parsed_args.git_password
                     body.git_user = parsed_args.git_username
                     body.branch_name = parsed_args.git_branch_name
+                    body.use_code_upload = False
 
                 body.command_to_run_test = parsed_args.command_to_run_test
                 body.pre_script = parsed_args.pre_script
@@ -165,14 +160,15 @@ class RunCrossBrowserTest(Command):
             elif params.chrome is None and params.firefox is None and params.ie is None:
                 message = "Please Provide at least one browser to Test."
 
-            if params.use_code_upload == 'true':
-                if params.code_file_name == "test":
-                    message = "Please provide valid file path to upload code."
-            else:
+            if params.code_file_name == 'test': # Upload Code = false
                 if params.git_repository_url is None:
                     message = "Please provide valid git credentials"
+            else:
+                if params.git_repository_url is not None:
+                    message = "Upload file name and Git repository url parameters can not be used together"
 
-        return message
+            if message:
+                raise RuntimeError(message)
 
     @staticmethod
     def set_sample_parameters(sample_code_type, body):

@@ -16,14 +16,13 @@ class RunInfraTest(Command):
         parser = super(RunInfraTest, self).get_parser(prog_name)
 
         parser.add_argument('--application_name', '-a', help='Set the name for this Infra test Job', required=True)
-        parser.add_argument('--ip_adders', '-i', help='IP of machine to be tested using serverspec or inspec')
+        parser.add_argument('--ip_address', '-i', help='IP of machine to be tested using serverspec or inspec',
+                            required=True)
         parser.add_argument('--spec_type', '-s', help='Set spec type serverspec/awspec/inspec', required=True)
-        parser.add_argument('--user', '-u', help='User of machine to be tested using serverspec or inspec')
+        parser.add_argument('--user', '-u', help='User of machine to be tested using serverspec or inspec',
+                            required=True)
         parser.add_argument('--password', '-p', help='Password of machine to be tested using serverspec or inspec')
         parser.add_argument('--key', '-k', help='Key for machine to be tested using serverspec or inspec')
-
-        parser.add_argument('--use_code_upload', '-cu',
-                            help='Set upload code file as true to upload test file. Default=false', default="false")
         parser.add_argument('--code_file_name', '-cf', help='Set upload file name', default="test")
         parser.add_argument('--git_repository_url', '-gr', help='Set Git URL')
         parser.add_argument('--git_password', '-gp', help='Set git password')
@@ -40,9 +39,8 @@ class RunInfraTest(Command):
                             help='Set test execution reports directory. For e.g. target/testng-report. Path should be \
                             relative to your automation code directory.', required=True)
 
-        parser.add_argument('--credentials_type', '-t', help='Set credentials credential type. \
-                            For e.g. basic_credentials, instance_profile, default value is \
-                            basic_credentials', default='basic_credentials')
+        parser.add_argument('--credentials_type', '-t', help='Set credentials credential type',
+                            choices=['basic_credentials', 'instance_profile'], default='basic_credentials')
         parser.add_argument('--provider_json', '-f', help='Provide file aws provider json file path')
         parser.add_argument('--assume_role', '-ar', help='set assume role true/false, default value is false', default='false')
 
@@ -52,12 +50,7 @@ class RunInfraTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
         try:
-            if parsed_args.use_code_upload == 'true':
-                if parsed_args.code_file_name == "test":
-                    raise RuntimeError("Please provide valid file path to upload code.")
-            else:
-                if parsed_args.git_repository_url is None:
-                    raise RuntimeError("Please provide valid git credentials")
+            RunInfraTest.validate_parameter(parsed_args)
             body = test_sdk_client.InfraTestDto(
                 app_name=parsed_args.application_name,
                 re_run_from=""
@@ -97,7 +90,7 @@ class RunInfraTest(Command):
 
                 body.provider = aws_provider
 
-            if parsed_args.use_code_upload == 'true':
+            if parsed_args.code_file_name != 'test':
                 self.log.debug("Uploading code file ...")
                 body.code_file_name = Utility.upload_code(parsed_args.code_file_name, parsed_args.application_name)
                 self.log.debug("Code object Name : %s ", body.code_file_name)
@@ -119,5 +112,22 @@ class RunInfraTest(Command):
             Utility.execute_test(body, parsed_args, self.log, test_sdk_client.InfraTestApi(Utility.set_headers()).run)
 
         except Exception as exception:
-            self.log.error(exception)
+            # self.log.error(exception)
             Utility.print_exception(exception)
+
+    @staticmethod
+    def validate_parameter(parsed_args):
+        error_message = ""
+
+        if parsed_args.password is None and parsed_args.key is None:
+            error_message = "Password or key required"
+
+        if parsed_args.code_file_name == 'test':  # Upload Code = false
+            if parsed_args.git_repository_url is None:
+                error_message = "Please provide valid git credentials"
+        else:
+            if parsed_args.git_repository_url is not None:
+                error_message = "Upload file name and Git repository url parameters can not be used together"
+
+        if error_message:
+            raise RuntimeError(error_message)
