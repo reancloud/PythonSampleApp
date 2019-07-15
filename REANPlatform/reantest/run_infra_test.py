@@ -117,6 +117,7 @@ class RunInfraTest(Command):
 
     @staticmethod
     def validate_parameter(parsed_args):
+        """Validate parameters."""
         error_message = ""
 
         if parsed_args.password is None and parsed_args.key is None:

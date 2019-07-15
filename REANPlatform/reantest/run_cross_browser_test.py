@@ -160,7 +160,7 @@ class RunCrossBrowserTest(Command):
             elif params.chrome is None and params.firefox is None and params.ie is None:
                 message = "Please Provide at least one browser to Test."
 
-            if params.code_file_name == 'test': # Upload Code = false
+            if params.code_file_name == 'test':  # Upload Code = false
                 if params.git_repository_url is None:
                     message = "Please provide valid git credentials"
             else:
