@@ -68,29 +68,6 @@ class Utility:
         return message
 
     @staticmethod
-    def validate_scale_test_inputs(params):
-        """Validate url and browsers input."""
-        # All the parameters validations goes in this function
-
-        message = ""
-        # # Validation for Test URL
-        # if not validators.url(params.url):
-        #     message = "Please enter valid Test URL."
-
-        # Validation for Browser list
-        if params.chrome is None and params.firefox is None:
-            message = "Please Provide at least one browser to Test."
-
-        if params.use_code_upload == 'true':
-            if params.code_file_name == "test":
-                message = "Please provide valid file path to upload code."
-        else:
-            if params.git_repository_url is None:
-                message = "Please provide valid git credentials"
-
-        return message
-
-    @staticmethod
     def validate_url(params):
         """Validate URL."""
         message = ""
