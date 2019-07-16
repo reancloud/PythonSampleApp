@@ -12,7 +12,7 @@ class CreateGroup(Command):
 
     log = logging.getLogger(__name__)
 
-    _description = 'Create Group and add user in it'
+    _description = 'Create Group'
     _epilog = 'Example : \n\t rean-auth create-group -p "policy1 policy2 policy3" -d clidescription -u "user1 user2 user3" -n groupName'
     # EPILog will get print after commands
 
@@ -34,28 +34,34 @@ class CreateGroup(Command):
             policy_dto_list = []
             api_instance_policy = authnz_sdk_client.PolicyControllerApi(AuthnzUtility.set_headers())
             for policy in list_of_policy:
-                policyDto = api_instance_policy.get_policy(policy)
+                try:
+                    policyDto = api_instance_policy.get_policy(policy)
+                except ValueError:
+                    raise RuntimeError("Invalid policy name :{}".format(policy))
                 policy_dto_list.append(policyDto)
+
+            list_of_user = parsed_args.user.split()
+            baseuser_dto_list = []
+            for user in list_of_user:
+                api_instance_user = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
+                baseUserDto = api_instance_user.get_by_username(user)
+                if baseUserDto.id is None:
+                    raise RuntimeError("Invalid username :{}".format(user))
+                baseuser_dto_list.append(baseUserDto)
 
             groupdto = authnz_sdk_client.GroupDto(name=parsed_args.name, description=parsed_args.description,
                                                   policies=policy_dto_list, group_level_sharing=False)
             api_instance_group = authnz_sdk_client.GroupControllerApi(AuthnzUtility.set_headers())
             api_response_group = api_instance_group.save_group(body=groupdto)
             print(api_response_group)
-            Utility.print_output_as_str("Group saved successfully :{}, id: {}"
+            Utility.print_output_as_str("Group saved successfully : {}, id: {}"
                                         .format(api_response_group.name, api_response_group.id), parsed_args.output)
             groupId = api_response_group.id
-
-            list_of_user = parsed_args.user.split()
-            for user in list_of_user:
-                api_instance_user = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
-                baseUserDto = api_instance_user.get_by_username(user)
-                userId = baseUserDto.id
-                addUserToGroupDto = authnz_sdk_client.AddUserToGroup(user_id=userId, group_id=groupId)
+            for userId in baseuser_dto_list:
+                addUserToGroupDto = authnz_sdk_client.AddUserToGroup(user_id=userId.id, group_id=groupId)
                 api_instance_group.add_user_to_group(body=addUserToGroupDto)
-                Utility.print_output_as_str("user :{} added to group :{}"
-                                            .format(baseUserDto.name, parsed_args.name), parsed_args.output)
+                Utility.print_output_as_str("user: {} added to group: {}"
+                                            .format(userId.name, parsed_args.name), parsed_args.output)
 
         except ApiException as api_exception:
-            print(api_exception)
             Utility.print_exception(api_exception)
