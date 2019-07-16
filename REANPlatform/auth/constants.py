@@ -4,7 +4,7 @@
 class AunthnzConstants(object):
     """Contains constats required for CLI."""
 
-    AUTHNZ_URL = '/api'
+    AUTHNZ_URL = '/api/'
 
     def __setattr__(self, attr, value):
         """__setattr__."""
