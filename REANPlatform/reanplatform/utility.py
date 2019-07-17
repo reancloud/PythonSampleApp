@@ -22,12 +22,14 @@ class Utility(object):
         try:
             credentials = Utility.get_env_username_password_and_baseurl()
             if credentials and credentials.get('user_name') and credentials.get('password'):
+                print("Using credentials from Environment variable")
                 password = str(credentials.get('password'))
                 if "AWS_LAMBDA_FUNCTION_NAME" in os.environ:
                     password = boto3.client('kms').decrypt(CiphertextBlob=b64decode(password))['Plaintext'].decode('utf-8')
 
                 credentials = str(credentials.get('user_name')) + ":" + str(password)
             else:
+                print("Using credentials from configuration file")
                 credentials = Utility.get_username_password_from_file()
             return credentials
         except Exception as exception:
