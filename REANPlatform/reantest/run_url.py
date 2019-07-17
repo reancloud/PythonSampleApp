@@ -2,6 +2,7 @@
 import logging
 # from argparse import ArgumentDefaultsHelpFormatter
 from cliff.command import Command
+import validators
 import test_sdk_client
 from reantest.utility import Utility
 
@@ -12,7 +13,7 @@ class RunURLTest(Command):
     log = logging.getLogger(__name__)
 
     _description = 'Run URL test'
-    _epilog = 'Example : \n\t rean-test run-url-test -u http://www.google.com -t GMail -c 64'
+    _epilog = 'Example : \n\t rean-test run-url-test -u http://www.google.com -t GMail -c 64 -w true'
     # EPILog will get print after commands
 
     def get_parser(self, prog_name):
@@ -41,24 +42,44 @@ class RunURLTest(Command):
             browser_list = Utility.get_browser_dto(parsed_args)
             self.log.debug(browser_list)
 
-            error_message = Utility.validate_url_test_inputs(parsed_args)
-            if error_message:
-                self.app.stdout.write(error_message)
-                return
+            RunURLTest.validate_url_test_inputs(parsed_args)
 
-            body = test_sdk_client.UrlTestDto()
+            url_test_dto_new = test_sdk_client.UrlTestDtoNew()
 
-            body.app_name = parsed_args.app_name
-            body.browser_list = browser_list
-            body.test_url = parsed_args.url
-            body.text_to_search = parsed_args.text_to_search
-            body.page_load_time_out = parsed_args.page_load_time_out
-            body.type = "urltest"
-            body.execution_strategy = "boost"
-            body.run_upa = parsed_args.upa
-            body.run_crawl = parsed_args.crawl
+            url_test_dto_new.name = parsed_args.app_name
+            url_test_dto_new.browsers = browser_list
+            url_test_dto_new.test_url = parsed_args.url
+            url_test_dto_new.text_to_search = parsed_args.text_to_search
+            url_test_dto_new.page_load_time_out = parsed_args.page_load_time_out
+            url_test_dto_new.type = "urltest"
+            url_test_dto_new.run_upa = False
+            url_test_dto_new.run_crawl = parsed_args.crawl
 
             self.log.debug("Execution stared for URL test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_url_test_job)
+
+            response_url_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_url_test(url_test_dto_new)
+            job_id = response_url_test_dto_new.id
+
+            self.log.debug("Response is------------: %s ", job_id)
+            print("The request URL test submitted successfully. Job Id is : ", job_id)
+
+            if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
+                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
+                Utility.wait_while_job_running(api_instance, job_id)
+
         except Exception as exception:
+            self.log.debug(exception)
             Utility.print_exception(exception)
+
+    @staticmethod
+    def validate_url_test_inputs(params):
+        """Validate url and browsers input."""
+        # All the parameters validations goes in this function
+
+        # Validation for Test URL
+        if not validators.url(params.url):
+            raise RuntimeError("Please enter valid Test URL.")
+
+        # Validation for Browser list
+        if params.chrome is None and params.firefox is None and params.ie is None:
+            raise RuntimeError("Please Provide at least one browser to Test.")
