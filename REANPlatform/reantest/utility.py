@@ -53,21 +53,6 @@ class Utility:
         return browser_list
 
     @staticmethod
-    def validate_url_test_inputs(params):
-        """Validate url and browsers input."""
-        # All the parameters validations goes in this function
-
-        message = ""
-        # Validation for Test URL
-        if not validators.url(params.url):
-            message = "Please enter valid Test URL."
-
-        # Validation for Browser list
-        if params.chrome is None and params.firefox is None and params.ie is None:
-            message = "Please Provide at least one browser to Test."
-        return message
-
-    @staticmethod
     def validate_url(params):
         """Validate URL."""
         message = ""
@@ -125,6 +110,7 @@ class Utility:
     def execute_test(body, parsed_args, log, method_to_execute):
         """Execute Test."""
         job_id = method_to_execute(body)
+
         log.debug("Response is------------: %s ", job_id)
         print("The request Job/test submitted successfully. Job Id is : ", job_id)
 
