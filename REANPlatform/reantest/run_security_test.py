@@ -14,8 +14,10 @@ class RunSecurityTest(Command):
         """get_parser."""
         parser = super(RunSecurityTest, self).get_parser(prog_name)
 
+        parser.add_argument('--name', '-n', help='Set the name for this Job.', required=True)
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
-        parser.add_argument('--security_test_type', '-t', help='Set Security test type example:@app_scan/@http_headers/@app_scan,@http_headers.', required=True)
+        parser.add_argument('--security_packs', '-p', choices=['AppScan', 'HttpHeader', 'all'],
+                            help='Set Security packs', required=True)
 
         return parser
 
@@ -23,20 +25,37 @@ class RunSecurityTest(Command):
         """take_action."""
         self.log.debug(parsed_args)
         try:
-            error_message = Utility.validate_security_test_inputs(parsed_args)
-            if error_message:
-                self.app.stdout.write(error_message)
-                return
+            # add validation
 
-            body = test_sdk_client.SecurityTestDto()
+            security_packs_list = []
+            if parsed_args.security_packs == 'AppScan':
+                security_packs_list.append('AppScan')
+            elif parsed_args.security_packs == 'HttpHeader':
+                security_packs_list.append('HttpHeader')
+            elif parsed_args.security_packs == 'all':
+                security_packs_list.append('AppScan')
+                security_packs_list.append('HttpHeader')
 
-            body.test_url = parsed_args.url
-            body.type = "securitytest"
-            body.security_test = True
-            body.security_test_type = parsed_args.security_test_type
-            body.execution_strategy = "security"
-            self.log.debug(body)
+            print(security_packs_list)
+
+            security_test_dto_new = test_sdk_client.SecurityTestDtoNew()
+
+            security_test_dto_new.test_url = parsed_args.url
+            security_test_dto_new.name = True
+            security_test_dto_new.security_pack = security_packs_list
+            self.log.debug(security_test_dto_new)
             self.log.debug("Execution stared for Security Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_security_test_job)
+
+            response_security_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_security_test(security_test_dto_new)
+
+            job_id = response_security_test_dto_new.id
+
+            self.log.debug("Response is------------: %s ", job_id)
+            print("The request URL test submitted successfully. Job Id is : ", job_id)
+
+            if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
+                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
+                Utility.wait_while_job_running(api_instance, job_id)
+
         except Exception as exception:
             Utility.print_exception(exception)
