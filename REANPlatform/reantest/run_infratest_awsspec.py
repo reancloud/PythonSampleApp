@@ -10,6 +10,9 @@ class RunInfraTestAwsSpec(Command):
     """Run Infratest AWSSpec."""
 
     log = logging.getLogger(__name__)
+    _description = 'Run Infra AWSSpec test'
+    _epilog = 'Example : \n\t rean-test run-infra-awsspec --name <name> -i <Absolute path to input.json> ' \
+              '-o <Absolute path to output.json> -pf <Absolute path to provider.json>'
 
     def get_parser(self, prog_name):
         """get_parser."""
