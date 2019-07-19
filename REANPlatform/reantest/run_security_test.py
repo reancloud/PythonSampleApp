@@ -9,6 +9,8 @@ class RunSecurityTest(Command):
     """Run security test."""
 
     log = logging.getLogger(__name__)
+    _description = 'Run Security test'
+    _epilog = 'Example : rean-test run-security-test -n <name> -u <url> -p AppScan'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -16,7 +18,7 @@ class RunSecurityTest(Command):
 
         parser.add_argument('--name', '-n', help='Set the name for this Job.', required=True)
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
-        parser.add_argument('--security_packs', '-p', choices=['AppScan', 'HttpHeader', 'all'],
+        parser.add_argument('--security_packs', '-p', choices=['AppScan', 'HttpHeader', 'All'],
                             help='Set Security packs', required=True)
 
         return parser
@@ -32,16 +34,14 @@ class RunSecurityTest(Command):
                 security_packs_list.append('AppScan')
             elif parsed_args.security_packs == 'HttpHeader':
                 security_packs_list.append('HttpHeader')
-            elif parsed_args.security_packs == 'all':
+            elif parsed_args.security_packs == 'All':
                 security_packs_list.append('AppScan')
                 security_packs_list.append('HttpHeader')
-
-            print(security_packs_list)
 
             security_test_dto_new = test_sdk_client.SecurityTestDtoNew()
 
             security_test_dto_new.test_url = parsed_args.url
-            security_test_dto_new.name = True
+            security_test_dto_new.name = parsed_args.name
             security_test_dto_new.security_pack = security_packs_list
             self.log.debug(security_test_dto_new)
             self.log.debug("Execution stared for Security Test")
