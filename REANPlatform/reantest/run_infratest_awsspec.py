@@ -15,10 +15,11 @@ class RunInfraTestAwsSpec(Command):
         """get_parser."""
         parser = super(RunInfraTestAwsSpec, self).get_parser(prog_name)
 
-        parser.add_argument('-application_name', '-a', help='Set the name for this Infra test Job', required=True)
-        parser.add_argument('-provider', '-pf', help='Provide file aws provider json file path', required=True)
-        parser.add_argument('-input', '-i', help='Input json file', required=True)
-        parser.add_argument('-output', '-o', help='Output json file', required=True)
+        parser.add_argument('--name', '-n', help='Set the name for this Infra test Job', required=True)
+        parser.add_argument('--provider_file_path', '-pf', help='Provide file aws provider json file path',
+                            required=True)
+        parser.add_argument('--input', '-i', help='Input json file', required=True)
+        parser.add_argument('--output', '-o', help='Output json file', required=True)
         return parser
 
     def take_action(self, parsed_args):
@@ -28,9 +29,9 @@ class RunInfraTestAwsSpec(Command):
             self.log.debug(parsed_args)
 
             body = test_sdk_client.AwspecParam()
-            body.name = parsed_args.application_name
+            body.name = parsed_args.name
             aws_provider = test_sdk_client.AwsProvider()
-            with Utility.open_file(parsed_args.provider) as handle:
+            with Utility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
@@ -66,7 +67,10 @@ class RunInfraTestAwsSpec(Command):
 
             self.log.debug(body)
             self.log.debug("Execution stared for RunInfraTestAwsSpec")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.InfraTestApi(Utility.set_headers()).execute_infra_awspec)
+
+            job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_awspec(body)
+            self.log.debug("Response is------------: %s ", job_id)
+            print("The request Infra awsspec test submitted successfully. Job Id is : ", job_id)
 
         except Exception as exception:
             Utility.print_exception(exception)
