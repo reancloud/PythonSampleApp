@@ -9,25 +9,43 @@ class RunScaleNowTest(Command):
     """Run scale now test."""
 
     log = logging.getLogger(__name__)
+    _description = 'Run Scale test'
+    _epilog = 'Example : rean-test run-scale-test --name <name> --url <URL> --parallel_users_count <int value>' \
+              ' --hours_to_run <int value> --incremental_load False --upload_code_file_name <code absolute path> ' \
+              '--command_to_run_test <command to run test> --pre_script <Pre script>' \
+              '--post_script <Post script>' \
+              ' --report_file_name features_report.json --output_directory_path report --chrome 64'
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(RunScaleNowTest, self).get_parser(prog_name)
 
-        parser.add_argument('--app_name', '-a', help='Set the name for this Automation Job.', required=True)
-        parser.add_argument('--code_file_name', '-cf', help='Set upload file name', default="test")
-        parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
-        parser.add_argument('--git_password', '-gp', help='Set git password for Automation code.')
-        parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
-        parser.add_argument('--git_branch_name', '-gb',
-                            help='Set git repository branch name. '
-                                 'If not specified, master branch will be considered by default.')
-        parser.add_argument('--command_to_run_test', '-rc',
-                            help='Set command to run Automation Test suite. For e.g. mvn test This option is mandatory.')
+        # Basic Parameters
+        parser.add_argument('--name', '-n', help='Set the name for this Automation Job.', required=True)
         parser.add_argument('--url', '-u',
                             help='Set url To be used in Automation test. example:http://www.google.com.', required=True)
-        parser.add_argument('--page_load_time_out', '-to', help='Set page Load time.')
-        parser.add_argument('--automation_code_type', '-t', help='Set automation code type as Ruby, Java, VBScript ')
+        parser.add_argument('--parallel_users_count', '-pc',
+                            help='Set users count to put load on your application in parallel.', required=True)
+        parser.add_argument('--browser_per_instance', '-bi', help='Set browsers count per instance. default: 3',
+                            type=int, default=3)
+        parser.add_argument('--hours_to_run', '-hr', help='Set maximum hours to run test', type=int, required=True)
+        parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', choices=['True', 'False'],
+                            default=False)
+
+        # CodeBase Parameters
+        parser.add_argument('--upload_code_file_name', '-cf', help='Set upload file name', default="test")
+
+        parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
+        parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
+        parser.add_argument('--git_password', '-gp', help='Set git password for Automation code.')
+        parser.add_argument('--git_branch', '-gb',
+                            help='Set git repository branch name. '
+                                 'If not specified, master branch will be considered by default.', default='master')
+
+        # Execution Parameters
+        parser.add_argument('--command_to_run_test', '-rc',
+                            help='Set command to run Automation Test suite. For e.g. mvn test This option is mandatory.',
+                            required=True)
         parser.add_argument('--pre_script', '-pr',
                             help='Set shell script to be executed before test suite runs. '
                                  'Example mvn clean install to build your automation code.')
@@ -37,21 +55,14 @@ class RunScaleNowTest(Command):
         parser.add_argument('--output_directory_path', '-od',
                             help='Set test execution reports directory. '
                                  'Example target/testing-report. Path should be relative to your '
-                                 'automation code directory')
-        parser.add_argument('--delete_virtual_machine', '-d', help='Set delete vm as true or false')
-        parser.add_argument('--run_sequential', '-rs', help='Set run sequential as true or false')
-        parser.add_argument('--run_hours', '-rh',
-                            help='Set duration in hours for the test suite to continuously run in repetition.')
-        parser.add_argument('--parallel_users_count', '-pc',
-                            help='Set users count to put load on your application in parallel.')
-        parser.add_argument('--incremental_load', '-il', help='Set Incremental Load as true or false')
-        parser.add_argument('--increment_with', '-iw',
-                            help='Set users count to put load on your application after specified interval in parallel.')
-        parser.add_argument('--increment_interval', '-ii', help='Set increment interval as integer value')
+                                 'automation code directory', required=True)
+
+        # Browsers
         parser.add_argument('--chrome', '-c',
                             help='Give the comma separated versions for Chrome to run test on.')
         parser.add_argument('--firefox', '-f',
                             help='Give the comma separated versions for Firefox to run test on.')
+
         parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish.')
 
         return parser
@@ -73,50 +84,56 @@ class RunScaleNowTest(Command):
                 browser_list.chrome = chrome
 
             self.log.debug(browser_list)
-            body = test_sdk_client.ScaleNowTestDto()
 
-            body.app_name = parsed_args.app_name
-            body.browser_list = browser_list
-            body.test_url = parsed_args.url
-            body.text_to_search = "string"
+            scale_test_dto = test_sdk_client.ScaleTestDto()
 
-            if parsed_args.code_file_name != 'test':
+            scale_test_dto.name = parsed_args.name
+            scale_test_dto.browsers = browser_list
+            scale_test_dto.test_url = parsed_args.url
+            scale_test_dto.parallel_user_count = parsed_args.parallel_users_count
+            scale_test_dto.browser_per_instance = parsed_args.browser_per_instance
+            scale_test_dto.hours_to_run = parsed_args.hours_to_run
+            scale_test_dto.type = "loadtest"  # type
+
+            if parsed_args.upload_code_file_name != 'test':
+                scale_test_dto.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
-                body.code_file_name = Utility.upload_code(parsed_args.code_file_name, parsed_args.app_name)
-                self.log.debug("Code object Name : %s ", body.code_file_name)
-                body.use_code_upload = True
+                scale_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_name,
+                                                                           parsed_args.name)
+                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
             else:
-                body.git_url = parsed_args.git_repository_url
-                body.git_pass = parsed_args.git_password
-                body.git_encrypted_pwd = "String"
-                body.git_user = parsed_args.git_username
-                body.branch_name = parsed_args.git_branch_name
-                body.use_code_upload = False
+                scale_test_dto.codebase_type = 'GIT'
+                git_config_dto = test_sdk_client.GitConfigDto()
 
-            body.page_load_time_out = parsed_args.page_load_time_out
-            body.command_to_run_test = parsed_args.command_to_run_test
+                git_config_dto.url = parsed_args.git_repository_url
+                git_config_dto.passsword = parsed_args.git_password
+                git_config_dto.user = parsed_args.git_username
+                git_config_dto.branch = parsed_args.git_branch
+                scale_test_dto.git_config = git_config_dto
 
-            body.type = "loadtest"  # type
-            body.execution_strategy = "loadTest"
-            body.automation_code_type = parsed_args.automation_code_type
+            execution_details_dto = test_sdk_client.ExecutionDetailsDto()
+            execution_details_dto.run_command = parsed_args.command_to_run_test
+            execution_details_dto.pre_script = parsed_args.pre_script
+            execution_details_dto.post_script = parsed_args.post_script
+            execution_details_dto.report_file = parsed_args.report_file_name
+            execution_details_dto.output_dir = parsed_args.output_directory_path
+            scale_test_dto.execution_details = execution_details_dto
 
-            body.pre_script = parsed_args.pre_script
-            body.post_script = parsed_args.post_script
-            body.report_file = parsed_args.report_file_name
-            body.output_dir = parsed_args.output_directory_path
-
-            body.deletevm = parsed_args.delete_virtual_machine
-            body.run_sequential = parsed_args.run_sequential
-            body.run_hours = parsed_args.run_hours
-            body.parrallel_browsers_count = parsed_args.parallel_users_count
-
-            body.inc_load = parsed_args.incremental_load
-            body.inc_with = parsed_args.increment_with
-            body.inc_interval = parsed_args.increment_interval
-
-            self.log.debug(body)
+            self.log.debug(scale_test_dto)
             self.log.debug("Execution stared for Automation Test")
-            Utility.execute_test(body, parsed_args, self.log, test_sdk_client.RunJobsApi(Utility.set_headers()).submit_scale_now_test_job)
+
+            response_scale_test_dto = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_scale_test(scale_test_dto)
+
+            job_id = ""
+            if response_scale_test_dto.id:
+                job_id = response_scale_test_dto.id
+
+            self.log.debug("Response is------------: %s ", job_id)
+            print("The request scale test submitted successfully. Job Id is : ", job_id)
+
+            if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
+                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
+                Utility.wait_while_job_running(api_instance, job_id)
 
         except Exception as exception:
             self.log.error(exception)
@@ -136,7 +153,7 @@ class RunScaleNowTest(Command):
         if params.chrome is None and params.firefox is None:
             message = "Please Provide at least one browser to Test."
 
-        if params.code_file_name == 'test':  # Upload Code = false
+        if params.upload_code_file_name == 'test':  # Upload Code = false
             if params.git_repository_url is None:
                 message = "Please provide valid git credentials"
         else:
