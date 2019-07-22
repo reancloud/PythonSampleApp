@@ -120,7 +120,7 @@ class RunScaleNowTest(Command):
             scale_test_dto.execution_details = execution_details_dto
 
             self.log.debug(scale_test_dto)
-            self.log.debug("Execution stared for Automation Test")
+            self.log.debug("Execution stared for Scale Test")
 
             response_scale_test_dto = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_scale_test(scale_test_dto)
 
