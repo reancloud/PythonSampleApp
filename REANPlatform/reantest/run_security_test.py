@@ -47,14 +47,12 @@ class RunSecurityTest(Command):
             self.log.debug("Execution stared for Security Test")
 
             response_security_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_security_test(security_test_dto_new)
-            
             job_id = ''
             if response_security_test_dto_new.id:
                 job_id = response_security_test_dto_new.id
 
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Security test submitted successfully. Job Id is : ", job_id)
-
 
             if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
                 api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
