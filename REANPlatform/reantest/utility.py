@@ -61,24 +61,6 @@ class Utility:
         return message
 
     @staticmethod
-    def validate_security_test_inputs(params):
-        """validate_security_test_inputs."""
-        # All the parameters validations goes in this function
-        # log = logging.getLogger(__name__)
-        # self.log.debug(params)
-        message = ""
-
-        # Validation for Test URL
-        if not validators.url(params.url):
-            message = "Please enter valid Test URL."
-
-        # Validation for Security test type
-        elif params.security_test_type != '@app_scan' and params.security_test_type != '@http_headers' and params.security_test_type != '@app_scan,@http_headers' and params.security_test_type != '@http_headers,@app_scan':
-            message = "Please Provide valid security test type."
-
-        return message
-
-    @staticmethod
     def validate_path(params):
         """Validate system path."""
         return os.path.isdir(params.output_directory)
@@ -123,7 +105,9 @@ class Utility:
         """Print exception method."""
         print("Exception message: ")
         if isinstance(exception, ApiException):
-            if isinstance(exception.body, str):
+            if not exception.body:  # Added for authnz exception
+                print(exception)
+            elif isinstance(exception.body, str):
                 print(exception.body)
             elif isinstance(exception.body, bytes):
                 print(exception.body.decode("utf-8"))

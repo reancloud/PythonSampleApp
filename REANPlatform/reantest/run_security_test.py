@@ -47,7 +47,6 @@ class RunSecurityTest(Command):
             self.log.debug("Execution stared for Security Test")
 
             response_security_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_security_test(security_test_dto_new)
-
             job_id = ''
             if response_security_test_dto_new.id:
                 job_id = response_security_test_dto_new.id
