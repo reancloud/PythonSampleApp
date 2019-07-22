@@ -135,12 +135,10 @@ class RunCrossBrowserTest(Command):
 
             self.log.debug(functional_test_dto)
             self.log.debug("Execution stared for Cross Browser Test")
-            print("1")
             type(functional_test_dto)
 
             response_functional_test_dto = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_functional_test(
                 functional_test_dto)
-            print("2")
 
             job_id = ""
             if response_functional_test_dto.id:
@@ -202,7 +200,7 @@ class RunCrossBrowserTest(Command):
                     message = "Upload file name and Git repository url parameters can not be used together"
 
         if message:
-                raise RuntimeError(message)
+            raise RuntimeError(message)
 
     @staticmethod
     def set_sample_parameters(sample_code_type, body):
