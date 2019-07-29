@@ -27,7 +27,7 @@ class GetTerraformCode(Command):
         env_id = parsed_args.env_id
         output_directory = parsed_args.output_directory
         try:
-            path = '/env/download/terraform/' + env_id
+            path = '/env/download/hcl/' + env_id
             curl_url = Constants.PLATFORM_BASE_URL + Constants.DEPLOY_URL + path
             api_response = Utility.get_zip_stream(curl_url)
             file_name = 'tf_files-' + env_id + '.tar.gz'
