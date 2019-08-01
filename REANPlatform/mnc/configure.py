@@ -7,6 +7,7 @@ import datetime
 import time
 import yaml
 import botocore
+from botocore.exceptions import ClientError
 import boto3
 from cliff.command import Command
 import deploy_sdk_client
@@ -298,22 +299,22 @@ class Configure(Command):   # noqa: D203
                     continue
 
             api_authnz_client = set_header_parameter(AuthnzUtility.create_api_client(), Utility.get_url(AunthnzConstants.AUTHNZ_URL))
-            instance = authnz_sdk_client.GroupcontrollerApi(api_client)
-            api_response = instance.get_group_with_name_using_get(deploy_group)
+            instance = authnz_sdk_client.GroupControllerApi(api_client)
+            api_response = instance.get_group_with_name_with_http_info(deploy_group)
             group_id = api_response.id
 
             logging.info("Please wait! While rules are sharing with group :%s", deploy_group)
             for environment_id in environment_ids_list:
                 group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
                 action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
-                share_group_permission_instance = deploy_sdk_client.ShareGroupPermission(group_dto_instance, action_list)
-                environment_policy_instance = deploy_sdk_client.EnvironmentPolicy(environment_id, [share_group_permission_instance])
+                share_group_permission_instance = deploy_sdk_client.ShareApi.get_shared_resource_policy(group_dto_instance, action_list)
+                environment_policy_instance = deploy_sdk_client.Environment.attribute_map(environment_id, [share_group_permission_instance])
                 api_client.share_environment(environment_id, body=environment_policy_instance)
                 time.sleep(3)
             logging.info("All the rules are shared with group :%s", deploy_group)
         except ApiException as exception:
             logging.info("Failed to share rules. Please try again.")
-            # Utility.print_exception(exception)
+            Utility.print_exception(exception)
 
     def release_environments(self):
         """Release environments."""
