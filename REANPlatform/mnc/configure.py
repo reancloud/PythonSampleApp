@@ -132,7 +132,7 @@ class Configure(Command):   # noqa: D203
             s3_object = s3_resource.Object(configuration_bucket, 'config_bucket.yaml')
             s3_object.put(Body=yaml.dump(configuration_file_data, default_flow_style=False))
             logging.info("Successfully stored configuration file in s3 :config_bucket.yaml.")
-        except botocore.exceptions.ClientError as exception:
+        except ClientError as exception:
             Utility.print_exception(exception)
 
     def get_blueprints_from_s3_and_unzip(self, artifactory_bucket):
@@ -153,7 +153,7 @@ class Configure(Command):   # noqa: D203
                     zip_ref.extractall(MncConstats.LOCAL_ARTIFACTS_ZIP_PATH)
                     zip_ref.close()
 
-        except botocore.exceptions.ClientError as exception:
+        except ClientError as exception:
             Utility.print_exception(exception)
             return False
 
