@@ -6,7 +6,6 @@ import os.path
 import datetime
 import time
 import yaml
-import botocore
 from botocore.exceptions import ClientError
 import boto3
 from cliff.command import Command
