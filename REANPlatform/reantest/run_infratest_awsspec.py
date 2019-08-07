@@ -30,7 +30,7 @@ class RunInfraTestAwsSpec(Command):
         try:
 
             self.log.debug(parsed_args)
-
+            print("abcd")
             body = test_sdk_client.AwspecParam()
             body.name = parsed_args.name
             aws_provider = test_sdk_client.AwsProvider()
@@ -38,22 +38,23 @@ class RunInfraTestAwsSpec(Command):
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
-
-            aws_provider.access_key = provider_json['access_key']
-            aws_provider.secret_key = provider_json['secret_key']
+            print(provider_json)
             aws_provider.region = provider_json['region']
+            if provider_json.get('access_key') is not None:
+                aws_provider.access_key = provider_json['access_key']
+                aws_provider.secret_key = provider_json['secret_key']
 
             if provider_json.get('iam_instance_profile') is not None:
                 instance_profile = test_sdk_client.InstanceProfile
-                instance_profile.name = provider_json.iam_instance_profile['name']
-                instance_profile.arn = provider_json.iam_instance_profile['arn']
+                instance_profile.name = provider_json['iam_instance_profile']['name']
+                instance_profile.arn = provider_json['iam_instance_profile']['arn']
                 aws_provider.iam_instance_profile = instance_profile
 
             if provider_json.get('assume_role') is not None:
                 assume_role = test_sdk_client.AssumeRole
-                assume_role.role_arn = provider_json.assume_role['role_arn']
-                assume_role.session_name = provider_json.assume_role['session_name']
-                assume_role.external_id = provider_json.assume_role['external_id']
+                assume_role.role_arn = provider_json['assume_role']['role_arn']
+                assume_role.session_name = provider_json['assume_role']['session_name']
+                assume_role.external_id = provider_json['assume_role']['external_id']
                 aws_provider.assume_role = assume_role
 
             body.provider = aws_provider

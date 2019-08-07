@@ -94,21 +94,21 @@ class RunInfraTest(Command):
                     filedata = handle.read()
 
                 provider_details_json = json.loads(filedata)
-                aws_provider.access_key = provider_details_json['access_key']
-                aws_provider.secret_key = provider_details_json['secret_key']
                 aws_provider.region = provider_details_json['region']
+                if parsed_args.credentials_type == 'basic_credentials':
+                    aws_provider.access_key = provider_details_json['access_key']
+                    aws_provider.secret_key = provider_details_json['secret_key']
 
                 if parsed_args.credentials_type == 'instance_profile':
                     instance_profile = test_sdk_client.InstanceProfile
-                    instance_profile.name = provider_details_json.iam_instance_profile['name']
-                    instance_profile.arn = provider_details_json.iam_instance_profile['arn']
+                    instance_profile.name = provider_details_json['iam_instance_profile']['name']
+                    instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
                     aws_provider.iam_instance_profile = instance_profile
-
                 if parsed_args.assume_role == 'true':
                     assume_role = test_sdk_client.AssumeRole
-                    assume_role.role_arn = provider_details_json.assume_role['role_arn']
-                    assume_role.session_name = provider_details_json.assume_role['session_name']
-                    assume_role.external_id = provider_details_json.assume_role['external_id']
+                    assume_role.role_arn = provider_details_json['assume_role']['role_arn']
+                    assume_role.session_name = provider_details_json['assume_role']['session_name']
+                    assume_role.external_id = provider_details_json['assume_role']['external_id']
                     aws_provider.assume_role = assume_role
 
                 infra_test_dto_new.provider = aws_provider
@@ -140,7 +140,6 @@ class RunInfraTest(Command):
 
             self.log.debug(infra_test_dto_new)
             self.log.debug("Execution stared for Infra test")
-
             response_infra_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_infra_test(
                 infra_test_dto_new)
 
