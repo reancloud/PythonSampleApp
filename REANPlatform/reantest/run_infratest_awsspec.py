@@ -30,7 +30,6 @@ class RunInfraTestAwsSpec(Command):
         try:
 
             self.log.debug(parsed_args)
-            print("abcd")
             body = test_sdk_client.AwspecParam()
             body.name = parsed_args.name
             aws_provider = test_sdk_client.AwsProvider()
@@ -38,7 +37,6 @@ class RunInfraTestAwsSpec(Command):
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
-            print(provider_json)
             aws_provider.region = provider_json['region']
             if provider_json.get('access_key') is not None:
                 aws_provider.access_key = provider_json['access_key']
