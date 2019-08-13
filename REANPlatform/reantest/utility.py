@@ -40,14 +40,18 @@ class Utility:
         log.debug(params)
         browser_list = test_sdk_client.BrowsersDto()
 
-        if params.firefox is not None:
+        if hasattr(params, 'firefox') and params.firefox is not None:
             firefox = Utility.get_unique_seq(params.firefox.split(","))
             log.debug(firefox)
             browser_list.firefox = firefox
-        if params.chrome is not None:
+        if hasattr(params, 'chrome') and params.chrome is not None:
             chrome = Utility.get_unique_seq(params.chrome.split(","))
             log.debug(chrome)
             browser_list.chrome = chrome
+        if hasattr(params, 'ie') and params.ie is not None:
+            ie = Utility.get_unique_seq(params.ie.split(","))
+            log.debug(ie)
+            browser_list.ie = ie
 
         # log.debug(browser_list)
         return browser_list

@@ -148,7 +148,7 @@ class RunCrossBrowserTest(Command):
                 Utility.wait_while_job_running(api_instance, job_id)
 
         except Exception as exception:
-            self.log.error(exception)
+            # self.log.error(exception)
             Utility.print_exception(exception)
 
     @staticmethod
