@@ -148,7 +148,7 @@ class RunInfraTest(Command):
                 job_id = response_infra_test_dto_new.id
 
             self.log.debug("Response is------------: %s ", job_id)
-            print("The request scale test submitted successfully. Job Id is : ", job_id)
+            print("Infra test job submitted successfully. Job Id is : ", job_id)
 
         except Exception as exception:
             # self.log.error(exception)
