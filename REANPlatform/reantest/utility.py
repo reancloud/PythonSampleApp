@@ -156,8 +156,9 @@ class Utility:
         HEADERS = {'Authorization': credentials}
         params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
 
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'),
-                                 headers=HEADERS, files=file, data=params)
+                                 headers=HEADERS, files=file, data=params, verify=False)
 
         if responce.status_code != 200:
             raise RuntimeError('Failed to upload file, %s' % file_path)
