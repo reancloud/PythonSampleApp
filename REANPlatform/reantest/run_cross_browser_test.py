@@ -39,7 +39,7 @@ class RunCrossBrowserTest(Command):
 
         # CodeBase Parameters
 
-        parser.add_argument('--upload_code_file_name', '-cf', help='Set upload file name', default="test")
+        parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
         parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
@@ -105,12 +105,12 @@ class RunCrossBrowserTest(Command):
             else:
                 functional_test_dto.test_url = parsed_args.url
 
-                if parsed_args.upload_code_file_name != 'test':
+                if parsed_args.upload_code_file_path != 'test':
                     functional_test_dto.codebase_type = 'UPLOAD_CODE'
                     self.log.debug("Uploading code file ...")
-                    functional_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_name,
+                    functional_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                                     parsed_args.name)
-                    self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
+                    self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
                 else:
                     functional_test_dto.codebase_type = 'GIT'
 
@@ -183,7 +183,7 @@ class RunCrossBrowserTest(Command):
             elif params.chrome is None and params.firefox is None and params.ie is None:
                 message = "Please Provide at least one browser to Test."
 
-            if params.upload_code_file_name == 'test':  # Upload Code = false
+            if params.upload_code_file_path == 'test':  # Upload Code = false
                 if params.git_repository_url is None:
                     message = "Please provide valid git credentials"
             else:
