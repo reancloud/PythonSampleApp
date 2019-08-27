@@ -26,8 +26,7 @@ class RunCrossBrowserTest(Command):
                             help='Set the name for this Automation Job.',
                             required=True)
         parser.add_argument('--test_suite', '-ts',
-                            choices=['Selenium', 'UFT', 'TestComplete'],
-                            help='Set test suite')
+                            help='Set test suite. This parameter is required only for sample test')
         parser.add_argument('--url', '-u',
                             help='Set url To be used in Automation test. Example:http://www.google.com.')
         parser.add_argument('--preserve_machine', '-p',
@@ -35,12 +34,12 @@ class RunCrossBrowserTest(Command):
                             help='Set true for preserve machine if test fails. default: False',
                             default=False)
         parser.add_argument('--automation_code_language', '-al',
-                            choices=['Ruby', 'Java', 'VBScript'],
-                            help='Set automation code type')
+                            choices=['Ruby', 'Java', 'VBScript', 'Python'],
+                            help='Set automation code language', required=False)
 
         # CodeBase Parameters
 
-        parser.add_argument('--upload_code_file_name', '-cf', help='Set upload file name', default="test")
+        parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
         parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
@@ -97,7 +96,6 @@ class RunCrossBrowserTest(Command):
             functional_test_dto = test_sdk_client.FunctionalTestDto()
             functional_test_dto.name = parsed_args.name
             functional_test_dto.browsers = browser_list
-            functional_test_dto.test_suite = parsed_args.test_suite
             functional_test_dto.type = "functionaltest"  # type
             functional_test_dto.preserve_machine = parsed_args.preserve_machine
 
@@ -106,15 +104,13 @@ class RunCrossBrowserTest(Command):
                 RunCrossBrowserTest.set_sample_parameters(parsed_args.sample_code_type, functional_test_dto)
             else:
                 functional_test_dto.test_url = parsed_args.url
-                if parsed_args.test_suite == 'Selenium':
-                    functional_test_dto.automation_language = parsed_args.automation_code_language
 
-                if parsed_args.upload_code_file_name != 'test':
+                if parsed_args.upload_code_file_path != 'test':
                     functional_test_dto.codebase_type = 'UPLOAD_CODE'
                     self.log.debug("Uploading code file ...")
-                    functional_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_name,
+                    functional_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                                     parsed_args.name)
-                    self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
+                    self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
                 else:
                     functional_test_dto.codebase_type = 'GIT'
 
@@ -152,7 +148,7 @@ class RunCrossBrowserTest(Command):
                 Utility.wait_while_job_running(api_instance, job_id)
 
         except Exception as exception:
-            self.log.error(exception)
+            # self.log.error(exception)
             Utility.print_exception(exception)
 
     @staticmethod
@@ -182,17 +178,12 @@ class RunCrossBrowserTest(Command):
                 message = "Please enter output_dir parameters."
             elif params.test_suite is None:
                 message = "Please enter test_suite parameters."
-            elif params.test_suite == 'Selenium':
-                if not params.automation_code_language:
-                    message = "automation_code_language parameter is mandatory with Seleniun test suit."
-                elif params.automation_code_language != 'Ruby' and params.automation_code_language != 'Java':
-                    message = "Ruby and Java are supported options for selenium test suit."
 
             # Validation for Browser list
             elif params.chrome is None and params.firefox is None and params.ie is None:
                 message = "Please Provide at least one browser to Test."
 
-            if params.upload_code_file_name == 'test':  # Upload Code = false
+            if params.upload_code_file_path == 'test':  # Upload Code = false
                 if params.git_repository_url is None:
                     message = "Please provide valid git credentials"
             else:
@@ -207,7 +198,9 @@ class RunCrossBrowserTest(Command):
         """Set body parameters for sample code."""
         if sample_code_type == "Ruby":
             body.test_url = "https://34.199.118.11/"
+
             body.automation_language = 'Ruby'
+            body.test_suite = "Selenium"
 
             git_config_dto = test_sdk_client.GitConfigDto()
             git_config_dto.url = "https://github.com/reancloud/testnowrubyexample.git"
@@ -222,7 +215,9 @@ class RunCrossBrowserTest(Command):
 
         elif sample_code_type == "Java":
             body.test_url = "https://34.199.118.11/"
+
             body.automation_language = 'Java'
+            body.test_suite = "Selenium"
 
             git_config_dto = test_sdk_client.GitConfigDto()
             git_config_dto.url = "https://github.com/reancloud/testnowjavaexample.git"
@@ -238,6 +233,8 @@ class RunCrossBrowserTest(Command):
         elif sample_code_type == "UFT":
             body.test_url = "https://34.199.118.11/"
 
+            body.test_suite = "UFT"
+
             git_config_dto = test_sdk_client.GitConfigDto()
             git_config_dto.url = "https://github.com/tahirstamboli/UFTMagentoTest"
             git_config_dto.branch = "master"
@@ -251,6 +248,8 @@ class RunCrossBrowserTest(Command):
 
         elif sample_code_type == "TestComplete":
             body.test_url = "http://34.199.118.11/"
+
+            body.test_suite = "TestComplete"
 
             git_config_dto = test_sdk_client.GitConfigDto()
             git_config_dto.url = "https://github.com/rajashriDalavi/TestCompleteMagentoTest"

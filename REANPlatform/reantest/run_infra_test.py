@@ -30,7 +30,7 @@ class RunInfraTest(Command):
         parser.add_argument('--key', '-k', help='Path to Key for machine to be tested using serverspec or inspec')
 
         # Codebase Parameters
-        parser.add_argument('--upload_code_file_name', '-cf', help='Set upload file name', default="test")
+        parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
         parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
@@ -94,31 +94,31 @@ class RunInfraTest(Command):
                     filedata = handle.read()
 
                 provider_details_json = json.loads(filedata)
-                aws_provider.access_key = provider_details_json['access_key']
-                aws_provider.secret_key = provider_details_json['secret_key']
                 aws_provider.region = provider_details_json['region']
+                if parsed_args.credentials_type == 'basic_credentials':
+                    aws_provider.access_key = provider_details_json['access_key']
+                    aws_provider.secret_key = provider_details_json['secret_key']
 
                 if parsed_args.credentials_type == 'instance_profile':
                     instance_profile = test_sdk_client.InstanceProfile
-                    instance_profile.name = provider_details_json.iam_instance_profile['name']
-                    instance_profile.arn = provider_details_json.iam_instance_profile['arn']
+                    instance_profile.name = provider_details_json['iam_instance_profile']['name']
+                    instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
                     aws_provider.iam_instance_profile = instance_profile
-
                 if parsed_args.assume_role == 'true':
                     assume_role = test_sdk_client.AssumeRole
-                    assume_role.role_arn = provider_details_json.assume_role['role_arn']
-                    assume_role.session_name = provider_details_json.assume_role['session_name']
-                    assume_role.external_id = provider_details_json.assume_role['external_id']
+                    assume_role.role_arn = provider_details_json['assume_role']['role_arn']
+                    assume_role.session_name = provider_details_json['assume_role']['session_name']
+                    assume_role.external_id = provider_details_json['assume_role']['external_id']
                     aws_provider.assume_role = assume_role
 
                 infra_test_dto_new.provider = aws_provider
 
-            if parsed_args.upload_code_file_name != 'test':
+            if parsed_args.upload_code_file_path != 'test':
                 infra_test_dto_new.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
-                infra_test_dto_new.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_name,
+                infra_test_dto_new.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                                parsed_args.name)
-                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
+                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
             else:
                 infra_test_dto_new.codebase_type = 'GIT'
 
@@ -140,7 +140,6 @@ class RunInfraTest(Command):
 
             self.log.debug(infra_test_dto_new)
             self.log.debug("Execution stared for Infra test")
-
             response_infra_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_infra_test(
                 infra_test_dto_new)
 
@@ -149,7 +148,7 @@ class RunInfraTest(Command):
                 job_id = response_infra_test_dto_new.id
 
             self.log.debug("Response is------------: %s ", job_id)
-            print("The request scale test submitted successfully. Job Id is : ", job_id)
+            print("Infra test job submitted successfully. Job Id is : ", job_id)
 
         except Exception as exception:
             # self.log.error(exception)
@@ -164,7 +163,7 @@ class RunInfraTest(Command):
             if parsed_args.password is None and parsed_args.key is None:
                 error_message = "Password or key required"
 
-        if parsed_args.upload_code_file_name == 'test':  # Upload Code = false
+        if parsed_args.upload_code_file_path == 'test':  # Upload Code = false
             if parsed_args.git_repository_url is None:
                 error_message = "Please provide valid git credentials"
         else:

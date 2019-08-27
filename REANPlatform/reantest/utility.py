@@ -40,14 +40,18 @@ class Utility:
         log.debug(params)
         browser_list = test_sdk_client.BrowsersDto()
 
-        if params.firefox is not None:
+        if hasattr(params, 'firefox') and params.firefox is not None:
             firefox = Utility.get_unique_seq(params.firefox.split(","))
             log.debug(firefox)
             browser_list.firefox = firefox
-        if params.chrome is not None:
+        if hasattr(params, 'chrome') and params.chrome is not None:
             chrome = Utility.get_unique_seq(params.chrome.split(","))
             log.debug(chrome)
             browser_list.chrome = chrome
+        if hasattr(params, 'ie') and params.ie is not None:
+            ie = Utility.get_unique_seq(params.ie.split(","))
+            log.debug(ie)
+            browser_list.ie = ie
 
         # log.debug(browser_list)
         return browser_list
@@ -152,8 +156,9 @@ class Utility:
         HEADERS = {'Authorization': credentials}
         params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
 
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'),
-                                 headers=HEADERS, files=file, data=params)
+                                 headers=HEADERS, files=file, data=params, verify=False)
 
         if responce.status_code != 200:
             raise RuntimeError('Failed to upload file, %s' % file_path)
