@@ -11,7 +11,7 @@ class RunScaleNowTest(Command):
     log = logging.getLogger(__name__)
     _description = 'Run Scale test'
     _epilog = 'Example : rean-test run-scale-test --name <name> --url <URL> --parallel_users_count <int value>' \
-              ' --hours_to_run <int value> --incremental_load False --upload_code_file_name <code absolute path> ' \
+              ' --hours_to_run <int value> --incremental_load False --upload_code_file_path <code absolute path> ' \
               '--command_to_run_test <command to run test> --pre_script <Pre script>' \
               '--post_script <Post script>' \
               ' --report_file_name features_report.json --output_directory_path report --chrome 64'
@@ -33,7 +33,7 @@ class RunScaleNowTest(Command):
                             default=False)
 
         # CodeBase Parameters
-        parser.add_argument('--upload_code_file_name', '-cf', help='Set upload file name', default="test")
+        parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
         parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
@@ -95,12 +95,12 @@ class RunScaleNowTest(Command):
             scale_test_dto.hours_to_run = parsed_args.hours_to_run
             scale_test_dto.type = "loadtest"  # type
 
-            if parsed_args.upload_code_file_name != 'test':
+            if parsed_args.upload_code_file_path != 'test':
                 scale_test_dto.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
-                scale_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_name,
+                scale_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                            parsed_args.name)
-                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
+                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
             else:
                 scale_test_dto.codebase_type = 'GIT'
                 git_config_dto = test_sdk_client.GitConfigDto()
@@ -153,7 +153,7 @@ class RunScaleNowTest(Command):
         if params.chrome is None and params.firefox is None:
             message = "Please Provide at least one browser to Test."
 
-        if params.upload_code_file_name == 'test':  # Upload Code = false
+        if params.upload_code_file_path == 'test':  # Upload Code = false
             if params.git_repository_url is None:
                 message = "Please provide valid git credentials"
         else:

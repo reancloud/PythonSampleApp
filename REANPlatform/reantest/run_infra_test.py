@@ -30,7 +30,7 @@ class RunInfraTest(Command):
         parser.add_argument('--key', '-k', help='Path to Key for machine to be tested using serverspec or inspec')
 
         # Codebase Parameters
-        parser.add_argument('--upload_code_file_name', '-cf', help='Set upload file name', default="test")
+        parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
         parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
@@ -113,12 +113,12 @@ class RunInfraTest(Command):
 
                 infra_test_dto_new.provider = aws_provider
 
-            if parsed_args.upload_code_file_name != 'test':
+            if parsed_args.upload_code_file_path != 'test':
                 infra_test_dto_new.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
-                infra_test_dto_new.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_name,
+                infra_test_dto_new.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                                parsed_args.name)
-                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
+                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
             else:
                 infra_test_dto_new.codebase_type = 'GIT'
 
@@ -163,7 +163,7 @@ class RunInfraTest(Command):
             if parsed_args.password is None and parsed_args.key is None:
                 error_message = "Password or key required"
 
-        if parsed_args.upload_code_file_name == 'test':  # Upload Code = false
+        if parsed_args.upload_code_file_path == 'test':  # Upload Code = false
             if parsed_args.git_repository_url is None:
                 error_message = "Please provide valid git credentials"
         else:
