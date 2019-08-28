@@ -5,9 +5,9 @@ import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
-from reanplatform.utilityconstants import PlatformConstants
 
 
 class GetDeploymentLogs(Command):
@@ -53,4 +53,4 @@ class GetDeploymentLogs(Command):
             if output is not None:
                 Utility.print_output(deployment_logs, output, PlatformConstants.STR_REFERENCE)
             else:
-                Utility.print_output_as_str(deployment_logs) 
+                Utility.print_output_as_str(deployment_logs)
