@@ -44,6 +44,7 @@ class DepolyEnv(Command):
                             help="Chef Environment Name(Only when REAN Deploy is configured for Chefserver)",
                             required=False
                            )
+        parser.add_argument('--email_to_notify', '-e', help='Email to receive notification about deployment status', required=False)
         return parser
 
     @staticmethod
@@ -90,7 +91,8 @@ class DepolyEnv(Command):
                 input_json=child_input_json,
                 parent_deployments=depends_on_json,
                 connections=connections,
-                chef_environment=parsed_args.chef_environment
+                chef_environment=parsed_args.chef_environment,
+                email_to_notify=parsed_args.email_to_notify
             )
             response = api_instance.deploy_by_config(
                 body=body
