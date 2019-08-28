@@ -22,8 +22,7 @@ class GetDeploymentLogs(Command):
         parser.add_argument('--deployment_id', '-di', help='Deployment id.', required=True)
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
-                            required=False
-                           )
+                            required=False)
         return parser
 
     @staticmethod
@@ -33,7 +32,7 @@ class GetDeploymentLogs(Command):
             # Initialise api_response
             api_response = None
 
-            # Initialise api_client and api_instance to get deployment status
+            # Initialise api_client and api_instance to get deployment logs
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             api_response = api_instance.get_deploy_resource_log(deployment_id, '-1')
