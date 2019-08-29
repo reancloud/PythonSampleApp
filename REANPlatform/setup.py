@@ -79,6 +79,7 @@ setup(
             'get-deployment-id = deploy.getdeploymentid:GetDeploymentId',
             'get-env-outputs = deploy.env_outputs:GetEnvOutputs',
             'get-deployment-input = deploy.get_deployment_input:GetDeploymentInput',
+            'get-deployment-logs = deploy.get_deployment_logs:GetDeploymentLogs',
             'get-deployment-output = deploy.get_deployment_output:GetDeploymentOutput',
             'get-validation-param = deploy.getvalidationparam:GetValidationParam',
             'get-status = deploy.getdeploymentstatus:Status',
