@@ -53,6 +53,7 @@ class RunInfraTest(Command):
                             help='Set test execution reports directory. '
                                  'Example target/testing-report. Path should be relative to your '
                                  'automation code directory', required=True)
+        parser.add_argument('--upload_input_file_path', '-if', help='Set input file path', default="")
 
         parser.add_argument('--credentials_type', '-t', help='Set credentials credential type',
                             choices=['basic_credentials', 'instance_profile'], default='basic_credentials')
@@ -113,12 +114,19 @@ class RunInfraTest(Command):
 
                 infra_test_dto_new.provider = aws_provider
 
+                if parsed_args.upload_input_file_path != "":
+                    infra_test_dto_new.awspec_actual_input_file = parsed_args.upload_input_file_path
+                    self.log.debug("Uploading input file ...")
+                    infra_test_dto_new.infra_param_file_name = Utility.upload_code(parsed_args.upload_input_file_path,
+                                                                                   parsed_args.name)
+                    self.log.debug("input file object Name : %s ", parsed_args.upload_code_file_path)
+
             if parsed_args.upload_code_file_path != 'test':
                 infra_test_dto_new.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
                 infra_test_dto_new.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                                parsed_args.name)
-                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
+                self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_name)
             else:
                 infra_test_dto_new.codebase_type = 'GIT'
 
