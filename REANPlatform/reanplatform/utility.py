@@ -212,3 +212,13 @@ class Utility(object):
 
         response = requests.get(curl_url, headers=headers, verify=verify_ssl)
         return response
+
+    @staticmethod
+    def get_serialized_json(content):
+        """get_serialized_json."""
+        return json.loads(content.decode('utf-8'))
+
+    @staticmethod
+    def get_parsed_serialized_json(content):
+        """parse_serialized_json."""
+        return json.dumps(Utility.get_serialized_json(content), indent=4, sort_keys=True)

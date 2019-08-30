@@ -4,8 +4,10 @@ import logging
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
+from reanplatform.constants import Constants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
+from reanplatform.utilityconstants import PlatformConstants
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
@@ -46,22 +48,33 @@ class ExportEnvironment(Command):
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
             response = None
+            path = None
             if env_id:
                 if env_name or env_version:
                     raise RuntimeError("Environment name or version not required when id is specified")
                 else:
-                    response = api_instance.export_environment(env_id)
+                    path = '/env/export/' + env_id
+                    response = ExportEnvironment.get_api_response(path)
             else:
                 if env_name is None:
                     raise RuntimeError("Environment name is required")
                 elif env_version is None:
-                    response = api_instance.export_environment_by_name(env_name)
+                    path = '/env/export/envName/' + env_name
+                    response = ExportEnvironment.get_api_response(path)
                 else:
-                    response = api_instance.export_environment_by_name_and_version(env_name, env_version)
+                    path = '/env/export/' + env_name + '/' + env_version
+                    response = ExportEnvironment.get_api_response(path)
             if response:
                 if output is not None:
-                    Utility.print_output_as_dict(response, output)
+                    output = output + '.blueprint.reandeploy'
+                    Utility.print_output(Utility.get_parsed_serialized_json(response.content), output, PlatformConstants.STR_REFERENCE)
                 else:
-                    print(Utility.get_parsed_json(response))
+                    print(Utility.get_parsed_serialized_json(response.content))
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
+
+    @staticmethod
+    def get_api_response(path):
+        """get_api_response."""
+        curl_url = Constants.PLATFORM_BASE_URL + Constants.DEPLOY_URL + path
+        return Utility.get_zip_stream(curl_url)
