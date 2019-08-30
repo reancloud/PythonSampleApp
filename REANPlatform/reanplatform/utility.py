@@ -226,7 +226,7 @@ class Utility(object):
     @staticmethod
     def validate_api_response(response):
         """validate_api_response."""
-        err_codes = [500,403,404]
+        err_codes = [500, 403, 404]
         for code in err_codes:
             if code == response.status_code:
                 serialized_json = Utility.get_serialized_json(response.content)
