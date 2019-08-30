@@ -222,3 +222,12 @@ class Utility(object):
     def get_parsed_serialized_json(content):
         """parse_serialized_json."""
         return json.dumps(Utility.get_serialized_json(content), indent=4, sort_keys=True)
+
+    @staticmethod
+    def validate_api_response(response):
+        """validate_api_response."""
+        err_codes = [500,403,404]
+        for code in err_codes:
+            if code == response.status_code:
+                serialized_json = Utility.get_serialized_json(response.content)
+                raise RuntimeError(serialized_json["message"])

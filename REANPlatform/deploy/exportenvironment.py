@@ -2,14 +2,9 @@
 import re
 import logging
 from cliff.command import Command
-import deploy_sdk_client
-from deploy_sdk_client.rest import ApiException
 from reanplatform.constants import Constants
-from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from reanplatform.utilityconstants import PlatformConstants
-from deploy.constants import DeployConstants
-from deploy.utility import DeployUtility
 
 
 class ExportEnvironment(Command):
@@ -36,42 +31,37 @@ class ExportEnvironment(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        try:
-            # Define parsed_args
-            env_id = parsed_args.env_id
-            env_name = parsed_args.env_name
-            env_version = parsed_args.env_version
-            output = parsed_args.output
-            # validate env_id and env_name
-            ExportEnvironment.validate_parameters(env_id, env_name)
-            # Initialise instance and api_instance
-            api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            response = None
-            path = None
-            if env_id:
-                if env_name or env_version:
-                    raise RuntimeError("Environment name or version not required when id is specified")
-                else:
-                    path = '/env/export/' + env_id
-                    response = ExportEnvironment.get_api_response(path)
+        # Define parsed_args
+        env_id = parsed_args.env_id
+        env_name = parsed_args.env_name
+        env_version = parsed_args.env_version
+        output = parsed_args.output
+        # validate env_id and env_name
+        ExportEnvironment.validate_parameters(env_id, env_name)
+        response = None
+        path = None
+        if env_id:
+            if env_name or env_version:
+                raise RuntimeError("Environment name or version not required when id is specified")
             else:
-                if env_name is None:
-                    raise RuntimeError("Environment name is required")
-                elif env_version is None:
-                    path = '/env/export/envName/' + env_name
-                    response = ExportEnvironment.get_api_response(path)
-                else:
-                    path = '/env/export/' + env_name + '/' + env_version
-                    response = ExportEnvironment.get_api_response(path)
-            if response:
-                if output is not None:
-                    output = output + '.blueprint.reandeploy'
-                    Utility.print_output(Utility.get_parsed_serialized_json(response.content), output, PlatformConstants.STR_REFERENCE)
-                else:
-                    print(Utility.get_parsed_serialized_json(response.content))
-        except ApiException as api_exception:
-            Utility.print_exception(api_exception)
+                path = '/env/export/' + env_id
+                response = ExportEnvironment.get_api_response(path)
+        else:
+            if env_name is None:
+                raise RuntimeError("Environment name is required")
+            elif env_version is None:
+                path = '/env/export/envName/' + env_name
+                response = ExportEnvironment.get_api_response(path)
+            else:
+                path = '/env/export/' + env_name + '/' + env_version
+                response = ExportEnvironment.get_api_response(path)
+        if response is not None:
+            Utility.validate_api_response(response)
+            if output is not None:
+                output = output + '.blueprint.reandeploy'
+                Utility.print_output(Utility.get_parsed_serialized_json(response.content), output, PlatformConstants.STR_REFERENCE)
+            else:
+                print(Utility.get_parsed_serialized_json(response.content))
 
     @staticmethod
     def get_api_response(path):
