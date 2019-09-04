@@ -56,7 +56,7 @@ class ExportEnvironment(Command):
                 path = '/env/export/' + env_name + '/' + env_version
                 response = ExportEnvironment.get_api_response(path)
         if response is not None:
-            Utility.validate_api_response(response)
+            Utility.handleInvalidResponse(response, 200)
             if output is not None:
                 output = output + '.blueprint.reandeploy'
                 Utility.print_output(Utility.get_parsed_serialized_json(response.content), output, PlatformConstants.STR_REFERENCE)

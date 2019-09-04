@@ -224,10 +224,8 @@ class Utility(object):
         return json.dumps(Utility.get_serialized_json(content), indent=4, sort_keys=True)
 
     @staticmethod
-    def validate_api_response(response):
+    def handleInvalidResponse(response, expectedStatus):
         """validate_api_response."""
-        err_codes = [500, 403, 404]
-        for code in err_codes:
-            if code == response.status_code:
-                serialized_json = Utility.get_serialized_json(response.content)
-                raise RuntimeError(serialized_json["message"])
+        if response.status_code is not expectedStatus:
+            serialized_json = Utility.get_serialized_json(response.content)
+            raise RuntimeError(serialized_json["message"])
