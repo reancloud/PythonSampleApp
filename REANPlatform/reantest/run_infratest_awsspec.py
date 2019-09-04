@@ -62,7 +62,7 @@ class RunInfraTestAwsSpec(Command):
 
             body.input = json.loads(input_data)
 
-            with Utility.open_file(parsed_args.input) as handle:
+            with Utility.open_file(parsed_args.output) as handle:
                 output_data = handle.read()
 
             body.output = json.loads(output_data)
