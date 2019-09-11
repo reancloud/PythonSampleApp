@@ -11,7 +11,7 @@ class MNC(App):            # noqa: D203
         """__init__."""
         super(MNC, self).__init__(
             description='CLI for REAN Managed Cloud',
-            version='2.16.0',
+            version='2.17.0',
             command_manager=CommandManager('rean.mnc'),
             deferred_help=True,
         )
