@@ -86,7 +86,8 @@ setup(
             'get-environment = deploy.getenvironment:GetEnvironment',
             'get-terraform-code = deploy.getterraformcode:GetTerraformCode',
             'deploy-env = deploy.deployenv:DepolyEnv',
-            'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders'
+            'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders',
+            'share-entity = deploy.share_entity:ShareEntity',
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
