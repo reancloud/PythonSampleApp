@@ -88,6 +88,7 @@ setup(
             'deploy-env = deploy.deployenv:DepolyEnv',
             'create-multiple-providers = deploy.create_multiple_providers:CreateMultipleProviders',
             'share-entity = deploy.share_entity:ShareEntity',
+            'get-resource-actions = deploy.get_resource_actions:GetResourceActions'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
