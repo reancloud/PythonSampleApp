@@ -43,6 +43,7 @@ setup(
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
+    autoprogram_cliff_application='rean-platform',
     entry_points={
         'console_scripts': [
             'rean-platform = reanplatform.main:main',
