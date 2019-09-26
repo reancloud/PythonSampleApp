@@ -1,4 +1,4 @@
-"""Share Entity."""
+"""CLI to share entity with specified Group."""
 import logging
 from cliff.command import Command
 import authnz_sdk_client
@@ -13,7 +13,7 @@ from deploy.get_resource_actions import GetResourceActions
 
 
 class ShareEntity(Command):
-    """Share Entity."""
+    """CLI to share entity with specified Group."""
 
     log = logging.getLogger(__name__)
 
