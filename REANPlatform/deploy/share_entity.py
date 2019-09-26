@@ -9,7 +9,7 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
-from deploy.get_resource_actions import GetResourceActions
+from deploy.get_entity_actions import GetEntityActions
 
 
 class ShareEntity(Command):
@@ -104,6 +104,6 @@ class ShareEntity(Command):
     @staticmethod
     def validate_action_by_resource(entity_type, action):
         """validate_action_by_resource."""
-        actual_actions = GetResourceActions.get_resource_actions(entity_type)
+        actual_actions = GetEntityActions.get_entity_actions(entity_type)
         if action not in actual_actions:
             raise RuntimeError("Invalid action " + action + " for resource " + entity_type)
