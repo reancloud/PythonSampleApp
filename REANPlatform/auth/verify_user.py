@@ -8,7 +8,7 @@ from auth.utility import AuthnzUtility
 
 
 class VerifyUser(Command):
-    """Get user by name or id."""
+    """Verify user by name or id."""
 
     log = logging.getLogger(__name__)
 

@@ -94,7 +94,8 @@ setup(
             'change-password = auth.change_password:ChangePassword',
             'create-user = auth.create_user:CreateUser',
             'create-group= auth.create_group:CreateGroup',
-            'verify-user=auth.verify_user:VerifyUser'
+            'verify-user=auth.verify_user:VerifyUser',
+            'get-group=auth.get_group:GetGroup'
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
