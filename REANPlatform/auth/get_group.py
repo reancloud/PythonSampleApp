@@ -33,7 +33,8 @@ class GetGroup(Command):
         exception_msg = "Specify either --id OR --name"
         if parsed_args.id and parsed_args.name:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif parsed_args.id is None and parsed_args.name is None:
+
+        if parsed_args.id is None and parsed_args.name is None:
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
@@ -45,9 +46,7 @@ class GetGroup(Command):
         try:
             if parsed_args.name:
                 api_response = api_instance.get_group_with_name(parsed_args.name)
-
             else:
-
                 api_response = api_instance.get_group(parsed_args.id)
 
             if api_response:
@@ -59,5 +58,3 @@ class GetGroup(Command):
         except ValueError:
             print("Invalid Group name/id.")
             return 1
-
-
