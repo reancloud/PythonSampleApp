@@ -115,7 +115,8 @@ setup(
             'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec',
             'update-tags = reantest.config_update_tags:ConfigUpdateTags',
             'update-property = reantest.config_update_property:ConfigUpdateProperty',
-            'list-config-properties = reantest.get_all_config_properties:ConfigListProperties'
+            'list-config-properties = reantest.get_all_config_properties:ConfigListProperties',
+            'run-infra-azurespec = reantest.run_infratest_azurespec:RunInfraAzureSpec'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
