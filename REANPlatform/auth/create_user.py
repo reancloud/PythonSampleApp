@@ -70,3 +70,4 @@ class CreateUser(Command):
         except ApiException as api_exception:
             print(api_exception)
             Utility.print_exception(api_exception)
+            return 1

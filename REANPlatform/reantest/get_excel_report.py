@@ -48,3 +48,4 @@ class GetExcelReport(Command):
         except Exception as exception:
             print(exception)
             Utility.print_exception(exception)
+            return 1

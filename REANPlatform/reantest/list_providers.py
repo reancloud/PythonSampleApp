@@ -21,6 +21,7 @@ class ListProvider(Command):
                             help='Allowed values are: [json, table]',
                             type=str, default='json',
                             nargs='?',
+                            choices=['json', 'table'],
                             required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
@@ -77,3 +78,4 @@ class ListProvider(Command):
                             values are: [json, table]")
         except Exception as exception:
             Utility.print_exception(exception)
+            return 1

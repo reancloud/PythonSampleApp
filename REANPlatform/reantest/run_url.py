@@ -70,6 +70,7 @@ class RunURLTest(Command):
         except Exception as exception:
             self.log.debug(exception)
             Utility.print_exception(exception)
+            return 1
 
     @staticmethod
     def validate_url_test_inputs(params):
