@@ -26,9 +26,7 @@ class GetUserByNameOrId(Command):
     def validate_parameters(parsed_args):
         """validate_parameters."""
         exception_msg = "Specify either --id OR --name"
-        if parsed_args.id and parsed_args.name:
-            raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif parsed_args.id is None and parsed_args.name is None:
+        if (parsed_args.id and parsed_args.name) or (parsed_args.id is None and parsed_args.name is None):
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
