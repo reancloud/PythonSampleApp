@@ -68,6 +68,5 @@ class CreateUser(Command):
             Utility.print_output_as_str("User saved successfully :{}, id: {}"
                                         .format(api_response.name, api_response.id), parsed_args.output)
         except ApiException as api_exception:
-            print(api_exception)
             Utility.print_exception(api_exception)
             return 1
