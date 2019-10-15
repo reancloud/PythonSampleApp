@@ -45,11 +45,8 @@ class Configure(Command):
                             required=False,
                             action='store_false'
                            )
-        parser.add_argument('--encrypt_credentials',
-                            '-e',
-                            help='Set true if you want to encrypt credentials in config file.',
-                            action='store_true'
-                            )
+        parser.add_argument('--encrypt_credentials', '-e',
+                            help='Set true if you want to encrypt credentials in config file.', action='store_true')
         return parser
 
     def createFile(self, parsed_args, path):
