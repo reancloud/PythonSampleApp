@@ -100,13 +100,18 @@ class Utility(object):
         if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
             config_file_name = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
             if os.path.isfile(config_file_name):
-                with open(config_file_name, 'r') as stream:    # noqa: E501
+                with open(config_file_name, 'r') as stream:  # noqa: E501
                     data_loaded = yaml.load(stream, Loader=yaml.FullLoader)
-                username = Utility.decryptData(
-                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
-                password = Utility.decryptData(
-                    data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
-                credentials = str(username) + ":" + str(password)
+                try:
+                    username = Utility.decryptData(
+                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
+                    password = Utility.decryptData(
+                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
+                    credentials = str(username) + ":" + str(password)
+                except base64.binascii.Error:
+                    username = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]
+                    password = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]
+                    credentials = str(username) + ":" + str(password)
                 return credentials
         return None
 
