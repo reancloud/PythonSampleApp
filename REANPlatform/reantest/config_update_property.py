@@ -34,11 +34,11 @@ class ConfigUpdateProperty(Command):
         try:
             if parsed_args.tag_json_file is None and parsed_args.tags is None:
                 self.app.stdout.write("Provide at least one parameter")
-                return
+                return 1
 
             if parsed_args.tag_json_file is not None and parsed_args.tags is not None:
                 self.app.stdout.write("Provide only one parameter")
-                return
+                return 1
 
             if parsed_args.tag_json_file is not None:
                 with Utility.open_file(parsed_args.tag_json_file) as handle:
@@ -52,3 +52,4 @@ class ConfigUpdateProperty(Command):
             print(api_response)
         except Exception as exception:
             Utility.print_exception(exception)
+            return 1

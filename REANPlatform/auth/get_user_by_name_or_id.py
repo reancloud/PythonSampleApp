@@ -31,19 +31,27 @@ class GetUserByNameOrId(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        # Initialise instance and api_instance
-        api_instance = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
+        try:
+            # Initialise instance and api_instance
+            api_instance = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
 
-        # validate id and name
-        GetUserByNameOrId.validate_parameters(parsed_args)
-        # Get user by name or id
-        if parsed_args.name:
-            api_response = api_instance.get_by_username(parsed_args.name)
-        else:
-            api_response = api_instance.get_user(parsed_args.id)
-
-        if api_response:
-            if parsed_args.output is not None:
-                Utility.print_output_as_dict(api_response, parsed_args.output)
+            # validate id and name
+            GetUserByNameOrId.validate_parameters(parsed_args)
+            # Get user by name or id
+            if parsed_args.name:
+                api_response = api_instance.get_by_username(parsed_args.name)
             else:
-                print(Utility.get_parsed_json(api_response))
+                api_response = api_instance.get_user(parsed_args.id)
+
+            if api_response:
+                if api_response.name is not None:
+                    if parsed_args.output is not None:
+                        Utility.print_output_as_dict(api_response, parsed_args.output)
+                    else:
+                        print(Utility.get_parsed_json(api_response))
+                else:
+                    print("User not found.")
+                    return 1
+        except Exception as exception:
+            Utility.print_exception(exception)
+            return 1

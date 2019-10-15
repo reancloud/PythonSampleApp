@@ -20,11 +20,12 @@ class ConfigListProperties(Command):
         parser.add_argument('--format', '-f',
                             help='Allowed values are: [json, table]',
                             type=str, default='json',
+                            choices=['json', 'table'],
                             nargs='?',
                             required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
-        parser.add_argument('--type', '-t', help="Specific property type. Example: tags/properties. \
-                            Default Value is Tag", required=False)
+        parser.add_argument('--type', '-t', help="Specific property type. Default Value is Tag",
+                            choices=['tags', 'properties'], default='tags')
         return parser
 
     def take_action(self, parsed_args):

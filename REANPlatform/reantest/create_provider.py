@@ -73,3 +73,4 @@ class CreateProvider(Command):
             print("Provider created successfully.")
         except Exception as exception:
             Utility.print_exception(exception)
+            return 1

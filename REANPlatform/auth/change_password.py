@@ -47,6 +47,7 @@ class ChangePassword(Command):
                 print('Password changed successfully.')
         except ApiException as e:
             Utility.print_exception(e)
+            return 1
 
     def take_action(self, parsed_args):
         """take_action."""

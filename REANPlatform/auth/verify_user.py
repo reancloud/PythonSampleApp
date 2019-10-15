@@ -41,13 +41,18 @@ class VerifyUser(Command):
 
         if parsed_args.name:
             user_dto = api_instance.get_by_username(parsed_args.name)
-
-            api_response = api_instance.verify_user(user_dto.id, user_dto.verification_id)
-
+            if user_dto.verification_id is not None and user_dto.id is not None:
+                api_response = api_instance.verify_user(user_dto.id, user_dto.verification_id)
+            else:
+                print("Invalid Username")
+                return 1
         else:
-
             user_dto = api_instance.get_user(parsed_args.id)
-            api_response = api_instance.verify_user(parsed_args.id, user_dto.verification_id)
+            if user_dto.verification_id is not None and user_dto.id is not None:
+                api_response = api_instance.verify_user(parsed_args.id, user_dto.verification_id)
+            else:
+                print("Invalid ID")
+                return 1
 
         if api_response:
             if parsed_args.output is not None:

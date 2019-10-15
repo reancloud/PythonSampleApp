@@ -20,13 +20,16 @@ class GetUsers(Command):
                             help='Allowed values are: [json, table]',
                             type=str, default='json',
                             nargs='?',
+                            choices=['json', 'table'],
                             required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
-    @staticmethod
-    def get_users(output_format, parsed_args):
-        """Get users."""
+    def take_action(self, parsed_args):
+        """take_action."""
+        # Define parsed argument
+        output_format = parsed_args.format
+
         try:
             # Initialise instance and api_instance in list_user
             api_instance = authnz_sdk_client.UserControllerApi(AuthnzUtility.set_headers())
@@ -54,14 +57,7 @@ class GetUsers(Command):
 
         except ApiException as e:
             Utility.print_exception(e)
-
-    def take_action(self, parsed_args):
-        """take_action."""
-        # Define parsed argument
-        output_format = parsed_args.format
-
-        # List Users
-        GetUsers.get_users(output_format, parsed_args)
+            return 1
 
     @staticmethod
     def parse_response(api_response):
