@@ -54,7 +54,7 @@ class Utility:
     def is_valid_configuration(configuration_details):
         """Verify configuration."""
         return bool(configuration_details and configuration_details[PlatformConstants.USER_NAME_REFERENCE] and configuration_details[PlatformConstants.PASSWORD_REFERENCE] and configuration_details[PlatformConstants.BASE_URL_REFERENCE] and PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in configuration_details)
-            # Validate certificate path if verify ssl is enable
+        # Validate certificate path if verify ssl is enable
 
     @staticmethod
     def encryptData(val):
