@@ -1,7 +1,7 @@
 """List provider module."""
 import logging
-from prettytable import PrettyTable
 from cliff.command import Command
+from prettytable import PrettyTable
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
@@ -53,7 +53,7 @@ class ListProvider(Command):
                         ]
                     )
                 Utility.print_output_as_table("Provider list \n{}".format(table), parsed_args.output)
-            elif list_provider_format == 'json' or list_provider_format == '':
+            elif list_provider_format in 'json' or list_provider_format in '':
                 Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")

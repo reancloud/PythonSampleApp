@@ -1,7 +1,7 @@
 """List environment module."""
 import logging
-from prettytable import PrettyTable
 from cliff.command import Command
+from prettytable import PrettyTable
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
 from reanplatform.set_header import set_header_parameter
@@ -51,7 +51,7 @@ class ListEnvironments(Command):
                         ]
                     )
                 Utility.print_output_as_table("Environment list \n{}".format(table), parsed_args.output)
-            elif output_format == 'json' or output_format == '':
+            elif output_format in 'json' or output_format in '':
                 Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
