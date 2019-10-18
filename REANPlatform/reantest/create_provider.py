@@ -10,6 +10,11 @@ class CreateProvider(Command):
     """Create Provider."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test create-provider --provider_name <provider_name> ' \
+              '--provider_type aws --provider_file_path <path_to provider_credential_file> ' \
+              '--subnet_id <subnet_id> --security_group <security_group_id> --bucket_name <bucket_name> ' \
+              '--instance_profile_name <instance_profile_name> --key_pair_name <keypair_name> ' \
+              '--private_key_file_path <path_to_pem_file> --use_public_ip <true/false> --default_provider <true/false>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -73,4 +78,3 @@ class CreateProvider(Command):
             print("Provider created successfully.")
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

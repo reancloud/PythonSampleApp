@@ -10,14 +10,16 @@ from reanplatform.utility import Utility as PlatformUtility
 
 
 class GetExcelReport(Command):
-    """Get job reports."""
+    """Get excel reports."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test get-excel-report -j <job_id>'
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetExcelReport, self).get_parser(prog_name)
-        parser.add_argument('--job_id', '-j', help='Set Job Id to get Job status example:396f4cfc2c4d46c7921532741c7ab63e.', required=True)
+        parser.add_argument('--job_id', '-j', help='Set Job Id to get Job status example:396f7921532741c7ab63e.'
+                            , required=True)
         parser.add_argument('--output_directory', '-o', help='Set Output directory to store reports.')
         return parser
 
@@ -47,4 +49,3 @@ class GetExcelReport(Command):
                 print("Reports downloaded successfully at " + output_directory)
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1
