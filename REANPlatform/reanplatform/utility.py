@@ -2,10 +2,9 @@
 import os
 from os.path import basename
 import base64
-from base64 import b64decode
 import json
+import logging
 import requests
-import boto3
 from Crypto import Random
 from Crypto.Cipher import AES
 import urllib3
@@ -13,25 +12,49 @@ import yaml
 from reanplatform.utilityconstants import PlatformConstants
 
 
-class Utility(object):
-    """Utility class contains all common method requried for CLI."""
+class Utility:
+    """Utility class contains all common method required for CLI."""
+
+    log = logging.getLogger(__name__)
 
     @staticmethod
     def get_user_credentials():
         """Get configured username and password."""
         try:
-            credentials = Utility.get_env_username_password_and_baseurl()
-            if credentials and credentials.get('user_name') and credentials.get('password'):
-                password = str(credentials.get('password'))
-                if "AWS_LAMBDA_FUNCTION_NAME" in os.environ:
-                    password = boto3.client('kms').decrypt(CiphertextBlob=b64decode(password))['Plaintext'].decode('utf-8')
+            configuration_details = Utility.get_configuration_details()
 
-                credentials = str(credentials.get('user_name')) + ":" + str(password)
+            if configuration_details and configuration_details.get(PlatformConstants.USER_NAME_REFERENCE) and configuration_details.get(PlatformConstants.PASSWORD_REFERENCE):
+                return str(configuration_details.get(PlatformConstants.USER_NAME_REFERENCE)) + ":" + str(configuration_details.get(PlatformConstants.PASSWORD_REFERENCE))
             else:
-                credentials = Utility.get_username_password_from_file()
-            return credentials
+                logging.debug("REANPlatform-cli is not configured")
         except Exception as exception:
-            Utility.print_exception(exception)
+            print("Error occurred while reading credentials")
+            logging.debug(exception)
+
+    @staticmethod
+    def get_configuration_details():
+        """Get configuration details."""
+        configuration_details = Utility.get_config_details_from_environment()
+        if Utility.is_valid_configuration(configuration_details):
+            logging.debug('Fetched credentials from environment variables.')
+            return configuration_details
+
+        configuration_details = Utility.get_configuration_details_from_path()
+
+        if Utility.is_valid_configuration(configuration_details):
+            logging.debug('Fetched credentials from provided configuration file path.')
+            return configuration_details
+
+        configuration_details = Utility.get_configuration_details_from_file()
+        if Utility.is_valid_configuration(configuration_details):
+            logging.debug('Fetched credentials from reanplatform configuration file.')
+            return configuration_details
+
+    @staticmethod
+    def is_valid_configuration(configuration_details):
+        """Verify configuration."""
+        return bool(configuration_details and configuration_details[PlatformConstants.USER_NAME_REFERENCE] and configuration_details[PlatformConstants.PASSWORD_REFERENCE] and configuration_details[PlatformConstants.BASE_URL_REFERENCE] and PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in configuration_details)
+        # Validate certificate path if verify ssl is enable
 
     @staticmethod
     def encryptData(val):
@@ -62,14 +85,10 @@ class Utility(object):
     def get_url(host_url):
         """Get full URL."""
         try:
-            base_url = Utility.get_env_username_password_and_baseurl()
-            if base_url and base_url.get('base_url'):
-                base_url = str(base_url.get('base_url'))
-            else:
-                base_url = Utility.get_config_property(PlatformConstants.BASE_URL_REFERENCE)
-            return base_url + host_url
+            configuration_details = Utility.get_configuration_details()
+            return configuration_details[PlatformConstants.BASE_URL_REFERENCE] + host_url
         except Exception as exception:
-            Utility.print_exception(exception)
+            print(exception)
 
     @staticmethod
     def get_parsed_json(json_object):
@@ -81,20 +100,56 @@ class Utility(object):
         ).replace("\"_", '"')
 
     @staticmethod
-    def get_env_username_password_and_baseurl():
+    def get_config_details_from_environment():
         """Get Environment variables."""
         try:
+
+            verify_ssl_cert = False
+
+            if PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE in os.environ:
+                verify_ssl_cert = os.environ[PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE]
+
             credentials = {
-                'user_name': os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
-                'password': os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE],
-                'base_url': os.environ[PlatformConstants.ENV_BASE_URL_REFERENCE]
+                PlatformConstants.USER_NAME_REFERENCE: os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
+                PlatformConstants.PASSWORD_REFERENCE: os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE],
+                PlatformConstants.BASE_URL_REFERENCE: os.environ[PlatformConstants.ENV_BASE_URL_REFERENCE],
+                PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert
             }
             return credentials
         except KeyError:
             return False
 
     @staticmethod
-    def get_username_password_from_file():
+    def get_configuration_details_from_path():
+        """Get credentials from provided config file."""
+        if PlatformConstants.ENV_CONFIG_FILE_PATH_REFERENCE in os.environ:
+            configuration_file_path = os.environ[PlatformConstants.ENV_CONFIG_FILE_PATH_REFERENCE]
+
+            if os.path.isfile(configuration_file_path):
+                try:
+                    with open(configuration_file_path, "r") as f:
+                        yaml_object = yaml.safe_load(f)
+
+                    for k, v in yaml_object.items():
+                        actual_yaml = v
+
+                    verify_ssl_cert = False
+
+                    if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in actual_yaml:
+                        verify_ssl_cert = actual_yaml[PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
+
+                    credentials = {
+                        PlatformConstants.USER_NAME_REFERENCE: actual_yaml[PlatformConstants.USER_NAME_REFERENCE],
+                        PlatformConstants.PASSWORD_REFERENCE: actual_yaml[PlatformConstants.PASSWORD_REFERENCE],
+                        PlatformConstants.BASE_URL_REFERENCE: actual_yaml[PlatformConstants.BASE_URL_REFERENCE],
+                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert
+                    }
+                    return credentials
+                except KeyError:
+                    logging.debug('Error occurred while fetching configuration detail from provided file paths')
+
+    @staticmethod
+    def get_configuration_details_from_file():
         """Get user name and password from config file."""
         path = os.path.expanduser('~')
         if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
@@ -104,28 +159,37 @@ class Utility(object):
                     data_loaded = yaml.load(stream, Loader=yaml.FullLoader)
                 try:
                     username = Utility.decryptData(
-                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
+                        data_loaded[PlatformConstants.PLATFORM_REFERENCE]
+                        [PlatformConstants.USER_NAME_REFERENCE]).decode('utf-8')
                     password = Utility.decryptData(
-                        data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
-                    credentials = str(username) + ":" + str(password)
+                        data_loaded[PlatformConstants.PLATFORM_REFERENCE]
+                        [PlatformConstants.PASSWORD_REFERENCE]).decode('utf-8')
                 except base64.binascii.Error:
                     username = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]
                     password = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]
-                    credentials = str(username) + ":" + str(password)
+
+                verify_ssl_cert = False
+
+                if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in data_loaded:
+                    verify_ssl_cert = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
+
+                credentials = {
+                    PlatformConstants.USER_NAME_REFERENCE: username,
+                    PlatformConstants.PASSWORD_REFERENCE: password,
+                    PlatformConstants.BASE_URL_REFERENCE: data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.BASE_URL_REFERENCE],
+                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert
+                }
+
                 return credentials
         return None
 
     @staticmethod
     def get_config_property(prop):
         """Get ssl verify certification status from config file."""
-        path = os.path.expanduser('~')
-        if os.path.exists(path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME):
-            config_file_name = path + '/.' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '/' + PlatformConstants.PLATFORM_CONFIG_FILE_NAME + '.yaml'
-            if os.path.isfile(config_file_name):
-                with open(config_file_name, 'r') as stream:    # noqa: E501
-                    data_loaded = yaml.load(stream, Loader=yaml.FullLoader)
-                config_property = data_loaded[PlatformConstants.PLATFORM_REFERENCE][prop]
-                return config_property
+        configuration_details = Utility.get_configuration_details()
+        if configuration_details:
+            if prop in configuration_details:
+                return configuration_details.get(prop)
         return None
 
     @staticmethod
