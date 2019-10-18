@@ -15,6 +15,9 @@ class ExportBlueprintEnvironment(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy export-blueprint-environment --env_id 1'
+
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser

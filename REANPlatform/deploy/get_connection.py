@@ -15,6 +15,9 @@ class GetConnection(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy get-connection --connection_name dummyConnection'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetConnection, self).get_parser(prog_name)

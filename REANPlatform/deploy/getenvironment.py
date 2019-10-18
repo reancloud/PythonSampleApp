@@ -14,6 +14,9 @@ class GetEnvironment(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy get-environment --env_name dummyEnvironment --env_version 01.00.00'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetEnvironment, self).get_parser(prog_name)

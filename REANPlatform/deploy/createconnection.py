@@ -14,6 +14,9 @@ class SaveConnection(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy create-connection --type SSH --name dummyConnection --user dummyUser --securekeypath /Users/reandeploy/dummyKey.pem'
+
     def get_parser(self, prog_name):
         """Get_parser."""
         parser = super(SaveConnection, self).get_parser(prog_name)

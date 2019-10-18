@@ -15,6 +15,9 @@ class DeleteProvider(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy delete-provider --prov_name dummyProvider'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DeleteProvider, self).get_parser(prog_name)

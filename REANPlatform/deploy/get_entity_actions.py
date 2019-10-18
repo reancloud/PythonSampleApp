@@ -13,6 +13,9 @@ class GetEntityActions(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy get-entity-actions --entity_type ENVIRONMENT'
+
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser

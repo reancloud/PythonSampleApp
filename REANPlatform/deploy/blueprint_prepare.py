@@ -18,6 +18,9 @@ class PrepareBlueprint(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy prepare-blueprint --file /Users/reandeploy/importEnvironment.blueprint.reandeploy'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)

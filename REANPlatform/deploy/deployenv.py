@@ -19,6 +19,9 @@ class DepolyEnv(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy deploy-env --env_id 1 --deployment_name dummyDeployment --provider_name dummyProvider --region us-west-1'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DepolyEnv, self).get_parser(prog_name)
