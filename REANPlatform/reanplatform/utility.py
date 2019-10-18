@@ -80,6 +80,7 @@ class Utility:
         print("Exception message: ")
         err = json.loads(exception.body)
         print("%s %s" % (err['message'], err['status']))
+        exit(1)
 
     @staticmethod
     def get_url(host_url):

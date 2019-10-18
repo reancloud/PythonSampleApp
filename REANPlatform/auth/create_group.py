@@ -8,12 +8,13 @@ from auth.utility import AuthnzUtility
 
 
 class CreateGroup(Command):
-    """create user."""
+    """create group."""
 
     log = logging.getLogger(__name__)
 
     _description = 'Create Group'
-    _epilog = 'Example : \n\t rean-auth create-group -p "policy1 policy2 policy3" -d clidescription -u "user1 user2 user3" -n groupName'
+    _epilog = 'Example : \n\t rean-auth create-group -p "policy1 policy2 policy3" -d clidescription' \
+              ' -u "user1 user2 user3" -n groupName'
     # EPILog will get print after commands
 
     def get_parser(self, prog_name):
@@ -65,4 +66,3 @@ class CreateGroup(Command):
 
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
-            return 1

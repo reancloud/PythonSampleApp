@@ -13,7 +13,7 @@ class VerifyUser(Command):
     log = logging.getLogger(__name__)
 
     _description = 'Verify User'
-    _epilog = 'Example : \n\t rean-auth get-user -n <username>'
+    _epilog = 'Example : \n\t rean-auth verify-user -n <user_name>'
 
     # EPILog will get print after commands
 
@@ -45,14 +45,14 @@ class VerifyUser(Command):
                 api_response = api_instance.verify_user(user_dto.id, user_dto.verification_id)
             else:
                 print("Invalid Username")
-                return 1
+                exit(1)
         else:
             user_dto = api_instance.get_user(parsed_args.id)
             if user_dto.verification_id is not None and user_dto.id is not None:
                 api_response = api_instance.verify_user(parsed_args.id, user_dto.verification_id)
             else:
                 print("Invalid ID")
-                return 1
+                exit(1)
 
         if api_response:
             if parsed_args.output is not None:
