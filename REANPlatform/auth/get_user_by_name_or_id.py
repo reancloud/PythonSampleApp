@@ -52,6 +52,6 @@ class GetUserByNameOrId(Command):
                         print(Utility.get_parsed_json(api_response))
                 else:
                     print("User not found.")
-                    return 1
+                    exit(1)
         except Exception as exception:
             Utility.print_exception(exception)
