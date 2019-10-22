@@ -13,6 +13,7 @@ class ConfigListProperties(Command):
     """List Config Properties."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test list-config-properties -t <tags/properties> -f <json/table>'
 
     def get_parser(self, prog_name):
         """Parser of Properties."""

@@ -11,6 +11,7 @@ class GetUserByNameOrId(Command):
     """Get user by name or id."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-auth get-user -n <user_name>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -51,7 +52,6 @@ class GetUserByNameOrId(Command):
                         print(Utility.get_parsed_json(api_response))
                 else:
                     print("User not found.")
-                    return 1
+                    exit(1)
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

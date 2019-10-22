@@ -11,6 +11,7 @@ class GetJobReport(Command):
     """Get job reports."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test get-job-report -j <job_id>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -43,4 +44,3 @@ class GetJobReport(Command):
 
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

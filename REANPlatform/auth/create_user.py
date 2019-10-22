@@ -12,6 +12,8 @@ class CreateUser(Command):
     """create user."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-auth create-user --name <name> --username <user_name> --email <email_id> ' \
+              '--password <password>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -69,4 +71,3 @@ class CreateUser(Command):
                                         .format(api_response.name, api_response.id), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
-            return 1
