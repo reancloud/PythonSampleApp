@@ -57,4 +57,4 @@ class GetGroup(Command):
 
         except ValueError:
             print("Invalid Group name/id.")
-            return 1
+            exit(1)

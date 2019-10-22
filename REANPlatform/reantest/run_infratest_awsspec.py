@@ -76,4 +76,3 @@ class RunInfraTestAwsSpec(Command):
 
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

@@ -10,6 +10,7 @@ class GetInfraJobStatus(Command):
     """Get infra job status."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test get-infra-job-status -j <job_id>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -31,4 +32,3 @@ class GetInfraJobStatus(Command):
             print(api_response)
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

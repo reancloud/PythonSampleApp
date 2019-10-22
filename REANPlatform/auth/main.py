@@ -12,7 +12,7 @@ class Auth(App):
         """__init__."""
         super(Auth, self).__init__(
             description='CLI for REAN Auth.',
-            version='2.16.0',
+            version='2.18.0',
             command_manager=CommandManager('rean.auth'),
             interactive_app_factory=InteractiveApp(App, CommandManager('rean.auth'), stdin=None, stdout=None),
             deferred_help=True,
