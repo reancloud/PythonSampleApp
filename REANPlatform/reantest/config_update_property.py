@@ -12,6 +12,7 @@ class ConfigUpdateProperty(Command):
     """Update config property."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test update-property -f <path_to_tags_json>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -34,11 +35,11 @@ class ConfigUpdateProperty(Command):
         try:
             if parsed_args.tag_json_file is None and parsed_args.tags is None:
                 self.app.stdout.write("Provide at least one parameter")
-                return 1
+                exit(1)
 
             if parsed_args.tag_json_file is not None and parsed_args.tags is not None:
                 self.app.stdout.write("Provide only one parameter")
-                return 1
+                exit(1)
 
             if parsed_args.tag_json_file is not None:
                 with Utility.open_file(parsed_args.tag_json_file) as handle:
@@ -52,4 +53,3 @@ class ConfigUpdateProperty(Command):
             print(api_response)
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

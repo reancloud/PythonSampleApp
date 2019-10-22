@@ -9,6 +9,8 @@ class RunUPA(Command):
     """Run UI Performance test."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test run-upa-test --app_name <app_test> --url <application_url> ' \
+              '--text_to_search <search_text> --page_load_time_out <time_out_in_seconds>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -50,4 +52,3 @@ class RunUPA(Command):
 
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

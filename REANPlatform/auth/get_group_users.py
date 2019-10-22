@@ -38,4 +38,4 @@ class GetGroupUsers(Command):
                     print(Utility.get_parsed_json(api_response))
         except ValueError:
             print("Invalid Group id.")
-            return 1
+            exit(1)
