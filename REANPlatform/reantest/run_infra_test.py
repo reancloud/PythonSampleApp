@@ -161,7 +161,6 @@ class RunInfraTest(Command):
         except Exception as exception:
             # self.log.error(exception)
             Utility.print_exception(exception)
-            return 1
 
     @staticmethod
     def validate_parameter(parsed_args):

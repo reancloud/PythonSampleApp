@@ -12,6 +12,7 @@ class GetUsers(Command):
     """Get Users."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-auth get-all-users -f <json/table>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -57,7 +58,6 @@ class GetUsers(Command):
 
         except ApiException as e:
             Utility.print_exception(e)
-            return 1
 
     @staticmethod
     def parse_response(api_response):

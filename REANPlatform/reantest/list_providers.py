@@ -13,6 +13,7 @@ class ListProvider(Command):
     """List providers."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t rean-test list-providers -f <json/table>'
 
     def get_parser(self, prog_name):
         """Parser of ListProviders."""
@@ -78,4 +79,3 @@ class ListProvider(Command):
                             values are: [json, table]")
         except Exception as exception:
             Utility.print_exception(exception)
-            return 1

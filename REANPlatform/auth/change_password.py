@@ -11,6 +11,8 @@ class ChangePassword(Command):
     """Change Password."""
 
     log = logging.getLogger(__name__)
+    _epilog = 'Example : \n\t  rean-auth change-password -i <user_id> -op <old_password> -np <new_password> ' \
+              '-cp <conform_new_password>'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -47,7 +49,6 @@ class ChangePassword(Command):
                 print('Password changed successfully.')
         except ApiException as e:
             Utility.print_exception(e)
-            return 1
 
     def take_action(self, parsed_args):
         """take_action."""

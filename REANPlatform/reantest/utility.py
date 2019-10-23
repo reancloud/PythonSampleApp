@@ -117,6 +117,7 @@ class Utility:
                 print(exception.body.decode("utf-8"))
         else:
             print(exception)
+        exit(1)
 
     @staticmethod
     def set_headers():
