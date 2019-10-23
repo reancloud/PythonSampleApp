@@ -6,7 +6,7 @@ from deploy_sdk_client.api_client import ApiClient
 from deploy_sdk_client.configuration import Configuration
 
 
-class DeployUtility(object):
+class DeployUtility:
     """Utility class contains all common method requried for CLI."""
 
     @staticmethod

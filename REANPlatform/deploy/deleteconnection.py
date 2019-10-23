@@ -27,9 +27,7 @@ class DeleteConnection(Command):
     def validate_parameters(conn_id, conn_name):
         """validate_parameters."""
         exception_msg = "Specify either --conn_name OR --conn_id"
-        if conn_id and conn_name:
-            raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif conn_id is None and conn_name is None:
+        if (conn_id and conn_name) or (conn_id is None and conn_name is None):
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):
