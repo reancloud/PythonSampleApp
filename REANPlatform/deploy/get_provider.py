@@ -16,7 +16,7 @@ class GetProvider(Command):
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-deploy get-provider --provider_name dummyProvider'
+    _epilog = 'Example : rean-deploy get-provider --provider_id 1'
 
     def get_parser(self, prog_name):
         """get_parser."""
