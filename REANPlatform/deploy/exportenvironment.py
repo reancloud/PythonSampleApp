@@ -46,13 +46,12 @@ class ExportEnvironment(Command):
         if env_id:
             if env_name or env_version:
                 raise RuntimeError("Environment name or version not required when id is specified")
-            else:
-                path = '/env/export/' + env_id
-                response = ExportEnvironment.get_api_response(path)
+            path = '/env/export/' + env_id
+            response = ExportEnvironment.get_api_response(path)
         else:
             if env_name is None:
                 raise RuntimeError("Environment name is required")
-            elif env_version is None:
+            if env_version is None:
                 path = '/env/export/envName/' + env_name
                 response = ExportEnvironment.get_api_response(path)
             else:

@@ -1,7 +1,7 @@
 """Contains constats required for commands."""
 
 
-class DeployConstants(object):
+class DeployConstants:
     """Contains constats required for CLI."""
 
     DEPLOY_URL = '/api/reandeploy/DeployNow/rest'

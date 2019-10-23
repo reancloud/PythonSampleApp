@@ -58,7 +58,7 @@ class ListConnections(Command):
                         ]
                     )
                 Utility.print_output_as_table("Connection list \n{}".format(table), parsed_args.output)
-            elif list_connection_format == 'json' or list_connection_format == '':
+            elif list_connection_format in 'json' or list_connection_format in '':
                 Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 exception_msg = "Please specify correct format, Allowed values are: [json, table]"

@@ -33,9 +33,7 @@ class DeleteProvider(Command):
     def validate_parameters(prov_id, prov_name):
         """validate_parameters."""
         exception_msg = "Specify either --prov_id OR --prov_name"
-        if prov_id and prov_name:
-            raise RuntimeError(re.sub(' +', ' ', exception_msg))
-        elif prov_id is None and prov_name is None:
+        if (prov_id and prov_name) or (prov_id is None and prov_name is None):
             raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
     def take_action(self, parsed_args):

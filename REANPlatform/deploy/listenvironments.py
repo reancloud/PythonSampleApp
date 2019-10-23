@@ -54,7 +54,7 @@ class ListEnvironments(Command):
                         ]
                     )
                 Utility.print_output_as_table("Environment list \n{}".format(table), parsed_args.output)
-            elif output_format == 'json' or output_format == '':
+            elif output_format in 'json' or output_format in '':
                 Utility.print_output_as_dict(api_response, parsed_args.output)
             else:
                 raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
