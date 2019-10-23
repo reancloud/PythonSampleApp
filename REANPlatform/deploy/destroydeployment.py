@@ -15,6 +15,9 @@ class DestroyDeployment(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy destroy-deployment --env_id 1 --deployment_name dummyDeployment'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(DestroyDeployment, self).get_parser(prog_name)

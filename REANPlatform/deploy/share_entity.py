@@ -17,6 +17,9 @@ class ShareEntity(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy share-entity --entity_id 1 --entity_type ENVIRONMENT --group_name dummyGroup --actions "VIEW, EDIT, CREATE, DELETE"'
+
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser

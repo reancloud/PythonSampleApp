@@ -15,6 +15,9 @@ class ListEnvironments(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy list-environment --format table'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ListEnvironments, self).get_parser(prog_name)

@@ -16,6 +16,9 @@ class UpdateProvider(Command):
 
     log = logging.getLogger(__name__)
 
+    # EPILog will get print after commands
+    _epilog = 'Example : rean-deploy update-provider --id 1 --name dummyProvider --type AWS --provider_details /Users/reandeploy/provider.json'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(UpdateProvider, self).get_parser(prog_name)
