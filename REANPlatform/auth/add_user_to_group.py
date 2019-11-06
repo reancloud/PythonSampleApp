@@ -1,5 +1,4 @@
 """Get Users module."""
-import re
 import logging
 from cliff.command import Command
 import authnz_sdk_client
@@ -7,7 +6,7 @@ from auth.utility import AuthnzUtility
 
 
 class AddUserToGroup(Command):
-    """Add user to group"""
+    """Add user to group."""
 
     log = logging.getLogger(__name__)
 
@@ -29,8 +28,7 @@ class AddUserToGroup(Command):
 
     @staticmethod
     def validate_parameters(parsed_args):
-        """validate_parameters."""
-
+        """Validate_parameters."""
         if (parsed_args.user_name or parsed_args.user_id) and parsed_args.user_name and parsed_args.user_id:
             raise RuntimeError("Specify either user-name OR user-id")
 
@@ -39,7 +37,6 @@ class AddUserToGroup(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-
         try:
             # Validate parameters
             AddUserToGroup.validate_parameters(parsed_args)
