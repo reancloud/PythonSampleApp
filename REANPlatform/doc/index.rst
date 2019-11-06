@@ -1,15 +1,18 @@
-Welcome to rean-cli's documentation!
-====================================
-
+=====
+REAN Deploy
+=====
 .. autoprogram-cliff:: rean.deploy
+
+=====
+REAN Auth
+=====
 .. autoprogram-cliff:: rean.auth
+
+=====
+REAN Test
+=====
 .. autoprogram-cliff:: rean.test
 
-.. toctree::
-   :maxdepth: 4
-   :caption: Contents:
-
-    module
 
 Indices and tables
 ==================

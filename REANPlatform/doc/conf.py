@@ -11,8 +11,10 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-import rtcat_sphinx_theme
+
+from PSphinxTheme import utils
+
+html_theme = 'p-greycreme'
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
@@ -80,9 +82,9 @@ pygments_style = None
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = "rtcat_sphinx_theme"
-html_theme_path = [rtcat_sphinx_theme.get_html_theme_path()]
+
+p, html_theme, needs_sphinx = utils.set_psphinxtheme(html_theme)
+html_theme_path = p
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
