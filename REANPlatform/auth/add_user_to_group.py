@@ -1,4 +1,4 @@
-"""Get Users module."""
+"""Add User to Group module."""
 import logging
 from cliff.command import Command
 import authnz_sdk_client
@@ -18,11 +18,19 @@ class AddUserToGroup(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(AddUserToGroup, self).get_parser(prog_name)
-        parser.add_argument('--user_name', '-un', help='User name.', required=False)
-        parser.add_argument('--group_name', '-gn', help='Group name.', required=False)
+        parser.add_argument('--user_name', '-un',
+                            help='User name. This parameter is not required when --user_id is specified',
+                            required=False)
+        parser.add_argument('--group_name', '-gn',
+                            help='Group name. This parameter is not required when --group_id is specified',
+                            required=False)
 
-        parser.add_argument('--user_id', '-ui', help='User id', required=False)
-        parser.add_argument('--group_id', '-gi', help='Group id', required=False)
+        parser.add_argument('--user_id', '-ui',
+                            help='User id. This parameter is not required when --user_name is specified',
+                            required=False)
+        parser.add_argument('--group_id', '-gi',
+                            help='Group id. This parameter is not required when --group_name is specified',
+                            required=False)
 
         return parser
 
