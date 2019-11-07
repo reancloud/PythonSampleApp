@@ -71,8 +71,8 @@ class AddUserToGroup(Command):
             else:
                 group_id = parsed_args.group_id
 
-            logging.debug('user_id : ' + str(user_id))
-            logging.debug('group_id : ' + str(group_id))
+            logging.debug('user_id : %s', str(user_id))
+            logging.debug('group_id : %s', str(group_id))
 
             add_user_to_group_dto = authnz_sdk_client.models.AddUserToGroup(user_id, group_id)
             api_group_instance.add_user_to_group(body=add_user_to_group_dto)
