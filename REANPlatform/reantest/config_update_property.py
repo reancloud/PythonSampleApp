@@ -27,9 +27,7 @@ class ConfigUpdateProperty(Command):
 
         parser.add_argument('--key_value_string', '-kv',
                             help='Provide this string to update multiple properties. Example: key1=val1,key2=val2',
-                            required=False
-                            )
-
+                            required=False)
         return parser
 
     def take_action(self, parsed_args):
