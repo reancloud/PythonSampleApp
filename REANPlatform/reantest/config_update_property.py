@@ -1,7 +1,6 @@
 """Config Update Config Property."""
 
 import logging
-import json
 from cliff.command import Command
 from reantest.utility import Utility
 
