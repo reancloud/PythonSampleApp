@@ -36,8 +36,8 @@ class RunScaleNowTest(Command):
         parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
-        parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
-        parser.add_argument('--git_password', '-gp', help='Set git password for Automation code.')
+        parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.', default="")
+        parser.add_argument('--git_password', '-gp', help='Set git password for Automation code.', default="")
         parser.add_argument('--git_branch', '-gb',
                             help='Set git repository branch name. '
                                  'If not specified, master branch will be considered by default.', default='master')
