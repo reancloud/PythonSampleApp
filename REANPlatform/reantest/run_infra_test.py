@@ -24,7 +24,7 @@ class RunInfraTest(Command):
         parser.add_argument('--name', '-n', help='Set the name for this Infra test Job', required=True)
         parser.add_argument('--ip_address', '-i', help='IP of machine to be tested using serverspec or inspec')
         parser.add_argument('--spec_type', '-s', help='Set spec type',
-                            choices=['Serverspec', 'Awspec', 'Inspec'], required=True)
+                            choices=['Serverspec', 'Awspec', 'Inspec', 'Azurespec'], required=True)
         parser.add_argument('--user', '-u', help='User of machine to be tested using serverspec or inspec')
         parser.add_argument('--password', '-p', help='Password of machine to be tested using serverspec or inspec')
         parser.add_argument('--key', '-k', help='Path to Key for machine to be tested using serverspec or inspec')
@@ -89,30 +89,47 @@ class RunInfraTest(Command):
                     machine_credentials.key = key
                 infra_test_dto_new.machine_creds = machine_credentials
             else:
-                aws_provider = test_sdk_client.AwsProvider()
+                if parsed_args.spec_type == "Awspec":
+                    self.log.debug("Creating aws provider json")
+                    aws_provider = test_sdk_client.AwsProvider()
 
-                with Utility.open_file(parsed_args.provider_json) as handle:
-                    filedata = handle.read()
+                    with Utility.open_file(parsed_args.provider_json) as handle:
+                        filedata = handle.read()
 
-                provider_details_json = json.loads(filedata)
-                aws_provider.region = provider_details_json['region']
-                if parsed_args.credentials_type == 'basic_credentials':
-                    aws_provider.access_key = provider_details_json['access_key']
-                    aws_provider.secret_key = provider_details_json['secret_key']
+                    provider_details_json = json.loads(filedata)
+                    aws_provider.region = provider_details_json['region']
+                    if parsed_args.credentials_type == 'basic_credentials':
+                        aws_provider.access_key = provider_details_json['access_key']
+                        aws_provider.secret_key = provider_details_json['secret_key']
 
-                if parsed_args.credentials_type == 'instance_profile':
-                    instance_profile = test_sdk_client.InstanceProfile
-                    instance_profile.name = provider_details_json['iam_instance_profile']['name']
-                    instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
-                    aws_provider.iam_instance_profile = instance_profile
-                if parsed_args.assume_role == 'true':
-                    assume_role = test_sdk_client.AssumeRole
-                    assume_role.role_arn = provider_details_json['assume_role']['role_arn']
-                    assume_role.session_name = provider_details_json['assume_role']['session_name']
-                    assume_role.external_id = provider_details_json['assume_role']['external_id']
-                    aws_provider.assume_role = assume_role
+                    if parsed_args.credentials_type == 'instance_profile':
+                        instance_profile = test_sdk_client.InstanceProfile
+                        instance_profile.name = provider_details_json['iam_instance_profile']['name']
+                        instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
+                        aws_provider.iam_instance_profile = instance_profile
+                    if parsed_args.assume_role == 'true':
+                        assume_role = test_sdk_client.AssumeRole
+                        assume_role.role_arn = provider_details_json['assume_role']['role_arn']
+                        assume_role.session_name = provider_details_json['assume_role']['session_name']
+                        assume_role.external_id = provider_details_json['assume_role']['external_id']
+                        aws_provider.assume_role = assume_role
 
-                infra_test_dto_new.provider = aws_provider
+                    infra_test_dto_new.provider = aws_provider
+                else:
+                    self.log.debug("Creating azure provider json")
+                    azure_provider = test_sdk_client.AzureProvider()
+
+                    with Utility.open_file(parsed_args.provider_json) as handle:
+                        filedata = handle.read()
+
+                    provider_details_json = json.loads(filedata)
+
+                    azure_provider.subscription_id = provider_details_json['subscription_id']
+                    azure_provider.client_id = provider_details_json['client_id']
+                    azure_provider.client_secret = provider_details_json['client_secret']
+                    azure_provider.tenant_id = provider_details_json['tenant_id']
+
+                    infra_test_dto_new.azure_provider = azure_provider
 
                 if parsed_args.upload_input_file_path != "":
                     infra_test_dto_new.awspec_actual_input_file = parsed_args.upload_input_file_path
@@ -167,7 +184,7 @@ class RunInfraTest(Command):
         """Validate parameters."""
         error_message = ""
 
-        if parsed_args.spec_type != 'Awspec':
+        if parsed_args.spec_type != 'Awspec' and parsed_args.spec_type != 'Azurespec':
             if parsed_args.password is None and parsed_args.key is None:
                 error_message = "Password or key required"
 
