@@ -28,7 +28,7 @@ class RunScaleNowTest(Command):
                             help='Set users count to put load on your application in parallel.', required=True)
         parser.add_argument('--browser_per_instance', '-bi', help='Set browsers count per instance. default: 3',
                             type=int, default=3)
-        parser.add_argument('--hours_to_run', '-hr', help='Set maximum hours to run test', type=int, required=True)
+        parser.add_argument('--hours_to_run', '-mh', help='Set maximum hours to run test', type=int, required=True)
         parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', choices=['True', 'False'],
                             default=False)
 
