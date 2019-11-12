@@ -135,7 +135,7 @@ class RunInfraTest(Command):
                     infra_test_dto_new.awspec_actual_input_file = parsed_args.upload_input_file_path
                     self.log.debug("Uploading input file ...")
                     infra_test_dto_new.infra_param_file_name = Utility.upload_code(parsed_args.upload_input_file_path,
-                                                                                   parsed_args.name)
+                                                                                   parsed_args.name, True)
                     self.log.debug("input file object Name : %s ", parsed_args.upload_code_file_path)
 
             if parsed_args.upload_code_file_path != 'test':

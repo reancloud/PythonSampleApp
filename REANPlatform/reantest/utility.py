@@ -135,7 +135,7 @@ class Utility:
         return api_client
 
     @staticmethod
-    def upload_code(file_path, app_name):
+    def upload_code(file_path, app_name, code_upload =False):
         """Servlet API call to upload automation code manually."""
         # This module will call REANTest upload servlet.
         # This servlet upload code file to s3 bucket of provider and that s3 object name will get used for test.
@@ -155,7 +155,11 @@ class Utility:
 
         credentials = PlatformUtility.get_user_credentials()
         HEADERS = {'Authorization': credentials}
-        params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
+
+        if code_upload:
+            params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'true'}
+        else:
+            params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'),
