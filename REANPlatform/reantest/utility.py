@@ -135,7 +135,7 @@ class Utility:
         return api_client
 
     @staticmethod
-    def upload_code(file_path, app_name, code_upload =False):
+    def upload_code(file_path, app_name, code_upload=False):
         """Servlet API call to upload automation code manually."""
         # This module will call REANTest upload servlet.
         # This servlet upload code file to s3 bucket of provider and that s3 object name will get used for test.
