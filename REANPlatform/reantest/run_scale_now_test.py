@@ -28,7 +28,7 @@ class RunScaleNowTest(Command):
                             help='Set users count to put load on your application in parallel.', required=True)
         parser.add_argument('--browser_per_instance', '-bi', help='Set browsers count per instance. default: 3',
                             type=int, default=3)
-        parser.add_argument('--hours_to_run', '-hr', help='Set maximum hours to run test', type=int, required=True)
+        parser.add_argument('--hours_to_run', '-mh', help='Set maximum hours to run test', type=int, required=True)
         parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', choices=['True', 'False'],
                             default=False)
 
@@ -36,8 +36,8 @@ class RunScaleNowTest(Command):
         parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
 
         parser.add_argument('--git_repository_url', '-gr', help='Set git clone url for Automation code.')
-        parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.')
-        parser.add_argument('--git_password', '-gp', help='Set git password for Automation code.')
+        parser.add_argument('--git_username', '-gu', help='Set git username for Automation code.', default="")
+        parser.add_argument('--git_password', '-gp', help='Set git password for Automation code.', default="")
         parser.add_argument('--git_branch', '-gb',
                             help='Set git repository branch name. '
                                  'If not specified, master branch will be considered by default.', default='master')
