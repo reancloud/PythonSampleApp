@@ -60,6 +60,8 @@ class RunInfraTest(Command):
         parser.add_argument('--provider_json', '-f', help='Provide file aws provider json file path')
         parser.add_argument('--assume_role', '-ar', help='set assume role true/false, default value is false',
                             default='false')
+        parser.add_argument('--wait', '-w', action='store_true', help='Set to true for wait until job to finish',
+                            default=False)
 
         return parser
 
@@ -174,6 +176,10 @@ class RunInfraTest(Command):
 
             self.log.debug("Response is------------: %s ", job_id)
             print("Infra test job submitted successfully. Job Id is : ", job_id)
+
+            if parsed_args.wait:
+                api_instance = test_sdk_client.InfraTestApi(Utility.set_headers())
+                Utility.wait_while_job_running(api_instance, job_id, False)
 
         except Exception as exception:
             # self.log.error(exception)
