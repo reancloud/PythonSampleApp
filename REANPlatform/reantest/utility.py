@@ -78,9 +78,12 @@ class Utility:
         return open(path, "r")
 
     @staticmethod
-    def wait_while_job_running(api_instance, job_id):
+    def wait_while_job_running(api_instance, job_id, isUserJob=True):
         """Wait while job running."""
-        job_status = api_instance.get_job_status(job_id)
+        if isUserJob:
+            job_status = api_instance.get_job_status(job_id)
+        else:
+            job_status = api_instance.get_infra_test_job_status(job_id)
         spinner = itertools.cycle(['-', '/', '|', '\\'])
         print("The Status of Job_Id:", job_id, " is ", job_status)
         while "RUNNING" in job_status:
@@ -89,11 +92,15 @@ class Utility:
                 sys.stdout.flush()
                 time.sleep(0.1)
                 sys.stdout.write('\b')
-            job_status = api_instance.get_job_status(job_id)
+
+            if isUserJob:
+                job_status = api_instance.get_job_status(job_id)
+            else:
+                job_status = api_instance.get_infra_test_job_status(job_id)
         print("The Status of Job_Id:", job_id, " is ", job_status)
 
     @staticmethod
-    def execute_test(body, parsed_args, log, method_to_execute):
+    def execute_test(body, parsed_args, log, method_to_execute, isUserJob=True):
         """Execute Test."""
         job_id = method_to_execute(body)
 
@@ -101,8 +108,11 @@ class Utility:
         print("The request Job/test submitted successfully. Job Id is : ", job_id)
 
         if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
-            api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
-            Utility.wait_while_job_running(api_instance, job_id)
+            if isUserJob:
+                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
+            else:
+                api_instance = test_sdk_client.InfraTestApi(Utility.set_headers())
+            Utility.wait_while_job_running(api_instance, job_id, isUserJob)
 
     @staticmethod
     def print_exception(exception):
