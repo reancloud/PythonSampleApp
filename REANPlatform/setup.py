@@ -101,7 +101,8 @@ setup(
             'verify-user=auth.verify_user:VerifyUser',
             'get-group=auth.get_group:GetGroup',
             'get-group-users=auth.get_group_users:GetGroupUsers',
-            'add-user-to-group=auth.add_user_to_group:AddUserToGroup'
+            'add-user-to-group=auth.add_user_to_group:AddUserToGroup',
+            'list-groups = auth.list_groups:ListGroups',
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
