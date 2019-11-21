@@ -1,12 +1,11 @@
 """List all groups."""
 
 import json
-from prettytable import PrettyTable
-from reanplatform.utility import Utility as PlatformUtility
 import logging
+from prettytable import PrettyTable
 from cliff.command import Command
 import authnz_sdk_client
-from reanplatform.utility import Utility
+from reanplatform.utility import Utility as PlatformUtility
 from auth.utility import AuthnzUtility
 
 
@@ -31,7 +30,6 @@ class ListGroups(Command):
     def take_action(self, parsed_args):
         """take_action of ListGroups."""
         list_groups_format = parsed_args.format
-        """list_groups."""
         try:
             api_instance = authnz_sdk_client.GroupControllerApi(AuthnzUtility.set_headers())
             api_response = api_instance.get_groups()
