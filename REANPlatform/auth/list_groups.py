@@ -5,7 +5,7 @@ import logging
 from prettytable import PrettyTable
 from cliff.command import Command
 import authnz_sdk_client
-from reanplatform.utility import Utility as PlatformUtility
+from reanplatform.utility import Utility
 from auth.utility import AuthnzUtility
 
 
@@ -52,9 +52,9 @@ class ListGroups(Command):
                                 group.group_level_sharing
                             ]
                         )
-                    PlatformUtility.print_output_as_str("{}".format(table), parsed_args.output)
+                    Utility.print_output_as_str("{}".format(table), parsed_args.output)
                 elif list_groups_format == 'json' or list_groups_format == '':
-                    PlatformUtility.print_output_as_str(
+                    Utility.print_output_as_str(
                         json.dumps(
                             api_response,
                             default=lambda o: o.__dict__,
