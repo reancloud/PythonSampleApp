@@ -1,5 +1,6 @@
 """Get Deployment InputJson."""
 import logging
+import ast
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
@@ -57,4 +58,4 @@ class GetDeploymentInput(Command):
             if parsed_args.output is not None:
                 Utility.print_output_as_dict(deployment_input, parsed_args.output)
             else:
-                print(deployment_input)
+                print(Utility.get_parsed_json(ast.literal_eval(deployment_input)))
