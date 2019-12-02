@@ -77,11 +77,10 @@ class ConfigListProperties(Command):
         """List Config Properties."""
         properties_data = api_response.properties
         if parsed_args.format == 'table':
-            porperties_table = PrettyTable(['Display Name', 'Key', 'Value'])
-            porperties_table.padding_width = 1
-
             for title in properties_data:
                 print(title)
+                porperties_table = PrettyTable(['Display Name', 'Key', 'Value'])
+                porperties_table.padding_width = 1
 
                 for property_data in properties_data[title]:
                     porperties_table.add_row(
@@ -92,6 +91,7 @@ class ConfigListProperties(Command):
 
                         ]
                     )
+
                 PlatformUtility.print_output_as_str("{}".format(porperties_table), parsed_args.output)
 
         elif parsed_args.format == 'json' or parsed_args.format == '':
