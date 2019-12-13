@@ -24,7 +24,7 @@ class SaveProvider(Command):
         parser = super(SaveProvider, self).get_parser(prog_name)
         parser.add_argument('--name', '-n', help='Provider name',
                             required=True)
-        parser.add_argument('--type', '-t', help='Provider type',
+        parser.add_argument('--type', '-t', help='Provider type', choices=['aws', 'digitalocean', 'vsphere', 'nsxt', 'azurerm', 'docker', 'google', 'opc', 'helm', 'kubernetes', 'dns', 'hecvm', 'azurestack', 'azuread', 'heccp'],
                             required=True)
         parser.add_argument('--provider_details', '-f',
                             help='Json file with applicable key-value pair \
