@@ -17,14 +17,14 @@ class SaveProvider(Command):
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-deploy create-provider --name dummyProvider --type AWS --provider_details /Users/reandeploy/provider.json'
+    _epilog = 'Example : rean-deploy create-provider --name dummyProvider --type aws --provider_details /Users/reandeploy/provider.json'
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SaveProvider, self).get_parser(prog_name)
         parser.add_argument('--name', '-n', help='Provider name',
                             required=True)
-        parser.add_argument('--type', '-t', help='Provider type',
+        parser.add_argument('--type', '-t', help='Provider type. Allowed values are: [aws, digitalocean, vsphere, nsxt, azurerm, docker, google, opc, helm, kubernetes, dns, hecvm, azurestack, azuread, heccp]',
                             required=True)
         parser.add_argument('--provider_details', '-f',
                             help='Json file with applicable key-value pair \
