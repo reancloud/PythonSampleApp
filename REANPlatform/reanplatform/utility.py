@@ -108,7 +108,18 @@ class Utility:
             verify_ssl_cert = False
 
             if PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE in os.environ:
-                verify_ssl_cert = os.environ[PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE]
+                verify_ssl_cert_variable = os.environ[PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE]
+                if type(verify_ssl_cert_variable) == str:
+                    if not verify_ssl_cert_variable.lower() in ['true', 'false']:
+                        print('Invalid ignore SSL environment variable')
+                        exit(1)
+                    if verify_ssl_cert_variable.lower() == 'true':
+                        verify_ssl_cert = True
+                elif type(verify_ssl_cert_variable) == bool:
+                    verify_ssl_cert = verify_ssl_cert_variable
+                else:
+                    print('Invalid ignore SSL type environment variable')
+                    exit(1)
 
             credentials = {
                 PlatformConstants.USER_NAME_REFERENCE: os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
@@ -137,7 +148,18 @@ class Utility:
                     verify_ssl_cert = False
 
                     if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in actual_yaml:
-                        verify_ssl_cert = actual_yaml[PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
+                        verify_ssl_cert_variable = actual_yaml[PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
+                        if type(verify_ssl_cert_variable) == str:
+                            if not verify_ssl_cert_variable.lower() in ['true', 'false']:
+                                print('Invalid ignore SSL parameter in configuration file')
+                                exit(1)
+                            if verify_ssl_cert_variable.lower() == 'true':
+                                verify_ssl_cert = True
+                        elif type(verify_ssl_cert_variable) == bool:
+                            verify_ssl_cert = verify_ssl_cert_variable
+                        else:
+                            print('Invalid ignore SSL parameter type in configuration file. ')
+                            exit(1)
 
                     credentials = {
                         PlatformConstants.USER_NAME_REFERENCE: actual_yaml[PlatformConstants.USER_NAME_REFERENCE],
