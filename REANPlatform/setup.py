@@ -106,7 +106,7 @@ setup(
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
-            'run-upa-test = reantest.run_upa:RunUPA',
+            # 'run-upa-test = reantest.run_upa:RunUPA',
             'run-security-test = reantest.run_security_test:RunSecurityTest',
             'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
             'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
