@@ -10,7 +10,7 @@ class RunSecurityTest(Command):
 
     log = logging.getLogger(__name__)
     _description = 'Run Security test'
-    _epilog = 'Example : rean-test run-security-test -n <name> -u <url> -p AppScan'
+    _epilog = 'Example : rean-test run-security-test -n <name> -u <url> -p AppScan -w true'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -20,6 +20,7 @@ class RunSecurityTest(Command):
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
         parser.add_argument('--security_packs', '-p', choices=['AppScan', 'HttpHeader', 'All'],
                             help='Set Security packs', required=True)
+        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish')
 
         return parser
 
