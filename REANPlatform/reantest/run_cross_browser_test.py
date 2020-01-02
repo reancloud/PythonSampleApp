@@ -26,7 +26,7 @@ class RunCrossBrowserTest(Command):
                             help='Set the name for this Automation Job.',
                             required=True)
         parser.add_argument('--test_suite', '-ts',
-                            help='Set test suite. This parameter is required only for sample test')
+                            help='Set test suite. This parameter describe the test suite type')
         parser.add_argument('--url', '-u',
                             help='Set url To be used in Automation test. Example:http://www.google.com.')
         parser.add_argument('--preserve_machine', '-p',
