@@ -46,10 +46,7 @@ class RunSecurityTest(Command):
                 security_packs_list.append('AppScan')
                 security_packs_list.append('HttpHeader')
 
-            if parsed_args.username is not None and (parsed_args.password is None
-                                                     or parsed_args.username_field_xpath is None
-                                                     or parsed_args.password_field_xpath is None
-                                                     or parsed_args.submit_button_xpath is None):
+            if parsed_args.username is not None and (parsed_args.password is None or parsed_args.username_field_xpath is None or parsed_args.password_field_xpath is None or parsed_args.submit_button_xpath is None):
                 raise RuntimeError('Invalid login details')
 
             security_test_dto_new = test_sdk_client.SecurityTestDtoNew()
