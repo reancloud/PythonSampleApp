@@ -1,10 +1,9 @@
-""" Update Provider."""
+"""Update Provider."""
 
 import logging
+import json
 from cliff.command import Command
 from reantest.utility import Utility
-import json
-
 import test_sdk_client
 
 
