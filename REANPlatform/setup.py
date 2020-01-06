@@ -122,7 +122,8 @@ setup(
             'update-property = reantest.config_update_property:ConfigUpdateProperty',
             'list-config-properties = reantest.get_all_config_properties:ConfigListProperties',
             'run-infra-azurespec = reantest.run_infratest_azurespec:RunInfraAzureSpec',
-            'get-provider = reantest.get_provider:GetProvider'
+            'get-provider = reantest.get_provider:GetProvider',
+            'update-provider = reantest.update_provider:UpdateProvider'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
