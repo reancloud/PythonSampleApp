@@ -3,8 +3,8 @@
 import logging
 import json
 from cliff.command import Command
-from reantest.utility import Utility
 import test_sdk_client
+from reantest.utility import Utility
 
 
 class UpdateProvider(Command):
@@ -21,23 +21,20 @@ class UpdateProvider(Command):
         """get_parser."""
         parser = super(UpdateProvider, self).get_parser(prog_name)
         parser.add_argument('--provider_name', '-n', help='Set provider name', required=True)
-        parser.add_argument('--provider_type', '-t', help='Set provider type', choices=['aws'], required=True)
+        parser.add_argument('--provider_type', '-t', help='Set provider type', choices=['aws'])
         parser.add_argument('--provider_file_path', '-pd', help='Json file with applicable key-value pair for '
-                                                                'provider type. File absolute path', required=True)
-        parser.add_argument('--subnet_id', '-s', help='Subnet id to launch EC2 instances to perform testing',
-                            required=True)
-        parser.add_argument('--security_group', '-sg', help='Security Group Id to associate to launched EC2 instance',
-                            required=True)
-        parser.add_argument('--bucket_name', '-b', help='Bucket name to store REAN Test Report', required=True)
+                                                                'provider type. File absolute path')
+        parser.add_argument('--subnet_id', '-s', help='Subnet id to launch EC2 instances to perform testing')
+        parser.add_argument('--security_group', '-sg', help='Security Group Id to associate to launched EC2 instance')
+        parser.add_argument('--bucket_name', '-b', help='Bucket name to store REAN Test Report')
         parser.add_argument('--instance_profile_name', '-a', help='Instance Profile Name is used to '
-                                                                  'upload reports to s3', required=True)
-        parser.add_argument('--key_pair_name', '-k', help='Set key pair name', required=True)
-        parser.add_argument('--private_key_file_path', '-pk', help='Private Key to connect to instance', required=True)
+                                                                  'upload reports to s3')
+        parser.add_argument('--key_pair_name', '-k', help='Set key pair name')
+        parser.add_argument('--private_key_file_path', '-pk', help='Private Key to connect to instance')
         parser.add_argument('--use_public_ip', '-p', help='Is Use Public IP for connecting test instance',
-                            choices=['true', 'false'], default=False)
+                            choices=['true', 'false'])
         parser.add_argument('--default_provider', '-d', help='Set true to set default provider, Default value is false',
-                            choices=['true', 'false'], default=False)
-        parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
+                            choices=['true', 'false'])
         return parser
 
     def take_action(self, parsed_args):
@@ -45,34 +42,47 @@ class UpdateProvider(Command):
         try:
             self.log.debug(parsed_args)
 
-            with Utility.open_file(parsed_args.provider_file_path) as handle:
-                filedata = handle.read()
-
-            provider_details_json = json.loads(filedata)
-
-            with Utility.open_file(parsed_args.private_key_file_path) as handle:
-                private_key = handle.read()
-
-            body = test_sdk_client.ProviderDto(
-                name=parsed_args.provider_name,
-                type=parsed_args.provider_type,
-                data=provider_details_json
-            )
-
-            body.subnet_id = parsed_args.subnet_id
-            body.security_group_id = parsed_args.security_group
-            body.key_pair_name = parsed_args.key_pair_name
-            body.bucket_name = parsed_args.bucket_name
-            body.test_instance_role = parsed_args.instance_profile_name
-            body.use_public_ip = parsed_args.use_public_ip
-            body.default_provider = parsed_args.default_provider
-            body.private_key = private_key
-
-            self.log.debug(body)
-
-            self.log.debug("Execution stared for create provider")
             api_instance = test_sdk_client.ProviderApi(Utility.set_headers())
-            api_response = api_instance.update_provider(body)
+            old_provider = api_instance.get_provider_by_name(parsed_args.provider_name)
+
+            if parsed_args.provider_type is not None:
+                old_provider.provider_type = parsed_args.provider_type
+
+            if parsed_args.subnet_id is not None:
+                old_provider.subnet_id = parsed_args.subnet_id
+
+            if parsed_args.security_group is not None:
+                old_provider.security_group = parsed_args.security_group
+
+            if parsed_args.bucket_name is not None:
+                old_provider.bucket_name = parsed_args.bucket_name
+
+            if parsed_args.instance_profile_name is not None:
+                old_provider.test_instance_role = parsed_args.instance_profile_name
+
+            if parsed_args.key_pair_name is not None:
+                old_provider.key_pair_name = parsed_args.key_pair_name
+
+            if parsed_args.provider_file_path is not None:
+                with Utility.open_file(parsed_args.provider_file_path) as handle:
+                    filedata = handle.read()
+                    provider_details_json = json.loads(filedata)
+                    old_provider.data = provider_details_json
+
+            if parsed_args.private_key_file_path is not None:
+                with Utility.open_file(parsed_args.private_key_file_path) as handle:
+                    private_key = handle.read()
+                    old_provider.private_key = private_key
+
+            if parsed_args.use_public_ip is not None:
+                old_provider.use_public_ip = parsed_args.use_public_ip
+
+            if parsed_args.default_provider is not None:
+                old_provider.default_provider = parsed_args.default_provider
+
+            self.log.debug("Execution started for update provider")
+
+            api_response = api_instance.update_provider(old_provider)
 
             self.log.debug(api_response)
 
