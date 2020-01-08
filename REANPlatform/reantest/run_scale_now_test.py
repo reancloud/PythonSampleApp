@@ -30,7 +30,7 @@ class RunScaleNowTest(Command):
                             type=int, default=3)
         parser.add_argument('--hours_to_run', '-mh', help='Set maximum hours to run test', type=int, required=True)
 
-        parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', action= 'store_true',
+        parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', action='store_true',
                             default=False)
         parser.add_argument('--incremental_user_count', '-ic',
                             help='Users count to put load on your application after specified interval in parallel. default: 1',
