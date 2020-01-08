@@ -142,6 +142,7 @@ class RunInfraTest(Command):
 
             if parsed_args.upload_code_file_path != 'test':
                 infra_test_dto_new.codebase_type = 'UPLOAD_CODE'
+                infra_test_dto_new.upload_actual_input_file = parsed_args.upload_code_file_path
                 self.log.debug("Uploading code file ...")
                 infra_test_dto_new.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                                parsed_args.name)

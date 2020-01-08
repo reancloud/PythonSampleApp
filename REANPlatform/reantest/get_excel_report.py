@@ -46,5 +46,7 @@ class GetExcelReport(Command):
                     output_directory = os.path.abspath(file_name)
                 open(output_directory, 'wb').write(api_response.content)
                 print("Reports downloaded successfully at " + output_directory)
+            else:
+                print(api_response.text)
         except Exception as exception:
             Utility.print_exception(exception)

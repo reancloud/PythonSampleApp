@@ -110,6 +110,7 @@ class RunScaleNowTest(Command):
             if parsed_args.upload_code_file_path != 'test':
                 scale_test_dto.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
+                scale_test_dto.upload_actual_input_file = parsed_args.upload_code_file_path
                 scale_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                            parsed_args.name)
                 self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
