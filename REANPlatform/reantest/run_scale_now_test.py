@@ -102,7 +102,8 @@ class RunScaleNowTest(Command):
             scale_test_dto.hours_to_run = parsed_args.hours_to_run
             scale_test_dto.type = "loadtest"  # type
 
-            if parsed_args.incremental_load == 'True':
+            if parsed_args.incremental_load:
+                scale_test_dto.incremental_load = parsed_args.incremental_load
                 scale_test_dto.incremental_user_count = parsed_args.incremental_user_count
                 scale_test_dto.incremental_interval = parsed_args.incremental_interval
 
