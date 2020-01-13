@@ -99,6 +99,7 @@ class RunInfraTest(Command):
                         filedata = handle.read()
 
                     provider_details_json = json.loads(filedata)
+                    RunInfraTest.validate_instance_profile_inputs(provider_details_json)
                     aws_provider.region = provider_details_json['region']
                     if parsed_args.credentials_type == 'basic_credentials':
                         aws_provider.access_key = provider_details_json['access_key']
@@ -106,8 +107,12 @@ class RunInfraTest(Command):
 
                     if parsed_args.credentials_type == 'instance_profile':
                         instance_profile = test_sdk_client.InstanceProfile
-                        instance_profile.name = provider_details_json['iam_instance_profile']['name']
-                        instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
+                        if 'name' in provider_details_json['iam_instance_profile']:
+                            instance_profile.name = provider_details_json['iam_instance_profile']['name']
+                            instance_profile.arn = None
+                        if 'arn' in provider_details_json['iam_instance_profile']:
+                            instance_profile.name = None
+                            instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
                         aws_provider.iam_instance_profile = instance_profile
                     if parsed_args.assume_role == 'true':
                         assume_role = test_sdk_client.AssumeRole
@@ -204,3 +209,14 @@ class RunInfraTest(Command):
 
         if error_message:
             raise RuntimeError(error_message)
+
+    @staticmethod
+    def validate_instance_profile_inputs(params):
+        """Validate Role and name."""
+        message = ""
+        # # Validation name and arn
+        if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
+            message = "Please Provide either name or role arn."
+
+        if message:
+            raise RuntimeError(message)

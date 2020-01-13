@@ -2,8 +2,9 @@
 import logging
 import json
 from cliff.command import Command
-from reantest.utility import Utility
 import test_sdk_client
+from reantest.utility import Utility
+
 
 
 class RunInfraTestAwsSpec(Command):
@@ -37,6 +38,7 @@ class RunInfraTestAwsSpec(Command):
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
+            RunInfraTestAwsSpec.validate_instance_profile_inputs(provider_json)
             aws_provider.region = provider_json['region']
             if provider_json.get('access_key') is not None:
                 aws_provider.access_key = provider_json['access_key']
@@ -44,8 +46,12 @@ class RunInfraTestAwsSpec(Command):
 
             if provider_json.get('iam_instance_profile') is not None:
                 instance_profile = test_sdk_client.InstanceProfile
-                instance_profile.name = provider_json['iam_instance_profile']['name']
-                instance_profile.arn = provider_json['iam_instance_profile']['arn']
+                if 'name' in provider_json['iam_instance_profile']:
+                    instance_profile.name = provider_json['iam_instance_profile']['name']
+                    instance_profile.arn = None
+                if 'arn' in provider_json['iam_instance_profile']:
+                    instance_profile.name = None
+                    instance_profile.arn = provider_json['iam_instance_profile']['arn']
                 aws_provider.iam_instance_profile = instance_profile
 
             if provider_json.get('assume_role') is not None:
@@ -76,3 +82,14 @@ class RunInfraTestAwsSpec(Command):
 
         except Exception as exception:
             Utility.print_exception(exception)
+
+    @staticmethod
+    def validate_instance_profile_inputs(params):
+        """Validate Role and name."""
+        message = ""
+        # # Validation name and arn
+        if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
+            message = "Please Provide either name or role arn."
+
+        if message:
+            raise RuntimeError(message)
