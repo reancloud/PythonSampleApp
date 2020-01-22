@@ -6,7 +6,6 @@ import test_sdk_client
 from reantest.utility import Utility
 
 
-
 class RunInfraTestAwsSpec(Command):
     """Run Infratest AWSSpec."""
 
