@@ -90,7 +90,8 @@ setup(
             'share-entity = deploy.share_entity:ShareEntity',
             'get-entity-actions = deploy.get_entity_actions:GetEntityActions',
             'get-provider = deploy.get_provider:GetProvider',
-            'get-connection = deploy.get_connection:GetConnection'
+            'get-connection = deploy.get_connection:GetConnection',
+            'get-deployment-resource-ids = deploy.get_deployment_resource_ids:GetDeploymentResourceIds'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
