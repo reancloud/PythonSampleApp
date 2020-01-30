@@ -26,7 +26,6 @@ class RunURLTest(Command):
         parser.add_argument('--text_to_search', '-t', type=str, help='Set the text to search', required=True)
 
         parser.add_argument('--page_load_time_out', '-p', type=int, help='Set the Page load timeout time in secs', required=True)
-        parser.add_argument('--upa', '-up', help='Set true if needs UPA test to run with the Test')
         parser.add_argument('--crawl', '-cr', help='Set true if needs Crawl test to run with the Test')
         parser.add_argument('--chrome', '-c', help='Give the comma separated versions for Chrome to run test on')
         parser.add_argument('--firefox', '-f', help='Give the comma separated versions for Firefox to run test on')
