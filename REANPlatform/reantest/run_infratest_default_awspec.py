@@ -1,28 +1,39 @@
-"""Run Infratest AWSSpec."""
+"""Run Infratest Default AwsSpec."""
+
 import logging
 import json
 from cliff.command import Command
 import test_sdk_client
-from reantest.utility import Utility
+import deploy_sdk_client
+from reantest.utility import Utility as TestUtility
+from reanplatform.set_header import set_header_parameter
+from reanplatform.utility import Utility as PlatformUtility
+from deploy.utility import DeployUtility
+from deploy.constants import DeployConstants
 
 
-class RunInfraTestAwsSpec(Command):
-    """Run Infratest AWSSpec."""
+class RunInfraTestDefaultAwsSpec(Command):
+    """Run Infratest Default AwsSpec."""
 
     log = logging.getLogger(__name__)
-    _description = 'Run Infra AWSSpec test'
-    _epilog = 'Example : \n\t rean-test run-infra-awsspec --name <name> -i <Absolute path to input.json> ' \
-              '-o <Absolute path to output.json> -pf <Absolute path to provider.json>'
+    _description = 'Run Infra test Default AwsSpec'
+    _epilog = 'Example : \n\t rean-test run-infratest-default-awsspec --name <name> -i <Absolute path to input.json> ' \
+              '--env_name <environment name> -pf <Absolute path to provider.json>'
 
     def get_parser(self, prog_name):
         """get_parser."""
-        parser = super(RunInfraTestAwsSpec, self).get_parser(prog_name)
+        parser = super(RunInfraTestDefaultAwsSpec, self).get_parser(prog_name)
 
         parser.add_argument('--name', '-n', help='Set the name for this Infra test Job', required=True)
+        parser.add_argument('--env_name', '-en', help='Environment name', required=True)
+        parser.add_argument('--env_version', '-ev', help='Environment version.', required=False)
         parser.add_argument('--provider_file_path', '-pf', help='Provide file aws provider json file path',
                             required=True)
         parser.add_argument('--input', '-i', help='Input json file', required=True)
-        parser.add_argument('--output', '-o', help='Output json file', required=True)
+        parser.add_argument('--deployment_name', '-dn', default='default',
+                            help='Deployment name. Please provide this attribute if deployment name is not default.',
+                            required=False)
+
         return parser
 
     def take_action(self, parsed_args):
@@ -33,11 +44,11 @@ class RunInfraTestAwsSpec(Command):
             body = test_sdk_client.AwspecParam()
             body.name = parsed_args.name
             aws_provider = test_sdk_client.AwsProvider()
-            with Utility.open_file(parsed_args.provider_file_path) as handle:
+            with TestUtility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
-            RunInfraTestAwsSpec.validate_instance_profile_inputs(provider_json)
+            RunInfraTestDefaultAwsSpec.validate_instance_profile_inputs(provider_json)
             aws_provider.region = provider_json['region']
             if provider_json.get('access_key') is not None:
                 aws_provider.access_key = provider_json['access_key']
@@ -62,25 +73,40 @@ class RunInfraTestAwsSpec(Command):
 
             body.provider = aws_provider
 
-            with Utility.open_file(parsed_args.input) as handle:
+            with TestUtility.open_file(parsed_args.input) as handle:
                 input_data = handle.read()
 
             body.input = json.loads(input_data)
 
-            with Utility.open_file(parsed_args.output) as handle:
-                output_data = handle.read()
+            api_client = set_header_parameter(DeployUtility.create_api_client(),
+                                              PlatformUtility.get_url(DeployConstants.DEPLOY_URL))
+            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
 
-            body.output = json.loads(output_data)
+            if parsed_args.env_version is not None:
+                env_res = api_instance.get_environment_by_version_and_name(parsed_args.env_name, parsed_args.env_version)
+            else:
+                env_res = api_instance.get_environment_by_name_with_latest_version(parsed_args.env_name)
+
+            api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_res.id, parsed_args.deployment_name)
+
+            if api_status.status != 'DEPLOYED':
+                message = "Environment status is not Deployed."
+                if message:
+                    raise RuntimeError(message)
+
+            api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(env_res.id, parsed_args.deployment_name)
+
+            body.output = api_response
 
             self.log.debug(body)
-            self.log.debug("Execution stared for RunInfraTestAwsSpec")
+            self.log.debug("Execution started for RunInfraTestDefaultAwsSpec")
 
-            job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_awspec(body)
+            job_id = test_sdk_client.RunTestNewApi(TestUtility.set_headers()).execute_infra_awspec(body)
             self.log.debug("Response is------------: %s ", job_id)
-            print("The request Infra awsspec test submitted successfully. Job Id is : ", job_id)
+            print("The request Infra test Default AwsSpec submitted successfully. Job Id is : ", job_id)
 
         except Exception as exception:
-            Utility.print_exception(exception)
+            TestUtility.print_exception(exception)
 
     @staticmethod
     def validate_instance_profile_inputs(params):
