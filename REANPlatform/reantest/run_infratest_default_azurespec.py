@@ -4,10 +4,12 @@ import json
 from cliff.command import Command
 import test_sdk_client
 import deploy_sdk_client
-from reantest.utility import Utility
+from reantest.utility import Utility as TestUtility
 from reantest.constants import TestConstants
 from reanplatform.set_header import set_header_parameter
 from deploy.utility import DeployUtility
+from deploy.constants import DeployConstants
+from reanplatform.utility import Utility as PlatformUtility
 
 
 class RunInfraDefaultAzureSpec(Command):
@@ -38,7 +40,7 @@ class RunInfraDefaultAzureSpec(Command):
             body = test_sdk_client.AzurespecParam()
             body.name = parsed_args.name
             azure_provider = test_sdk_client.AzureProvider()
-            with Utility.open_file(parsed_args.provider_file_path) as handle:
+            with TestUtility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
@@ -56,13 +58,13 @@ class RunInfraDefaultAzureSpec(Command):
 
             body.azure_provider = azure_provider
 
-            with Utility.open_file(parsed_args.input) as handle:
+            with TestUtility.open_file(parsed_args.input) as handle:
                 input_data = handle.read()
 
             body.input = json.loads(input_data)
 
             api_client = set_header_parameter(DeployUtility.create_api_client(),
-                                              Utility.get_url(TestConstants.DEPLOY_URL))
+                                              PlatformUtility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
 
             if parsed_args.env_version is not None:
@@ -78,9 +80,9 @@ class RunInfraDefaultAzureSpec(Command):
             self.log.debug(body)
             self.log.debug("Execution started for RunInfraTestDefaultAzureSpec")
 
-            job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_azurespec(body)
+            job_id = test_sdk_client.RunTestNewApi(TestUtility.set_headers()).execute_infra_azurespec(body)
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Infra  default azurespec test submitted successfully. Job Id is : ", job_id)
 
         except Exception as exception:
-            Utility.print_exception(exception)
+            TestUtility.print_exception(exception)
