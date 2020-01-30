@@ -6,9 +6,9 @@ import test_sdk_client
 import deploy_sdk_client
 from reantest.utility import Utility as TestUtility
 from reanplatform.set_header import set_header_parameter
+from reanplatform.utility import Utility as PlatformUtility
 from deploy.utility import DeployUtility
 from deploy.constants import DeployConstants
-from reanplatform.utility import Utility as PlatformUtility
 
 
 class RunInfraDefaultAzureSpec(Command):
