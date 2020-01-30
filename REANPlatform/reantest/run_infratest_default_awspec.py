@@ -6,10 +6,10 @@ from cliff.command import Command
 import test_sdk_client
 import deploy_sdk_client
 from reantest.utility import Utility as TestUtility
-from reantest.constants import TestConstants
 from reanplatform.set_header import set_header_parameter
-from deploy.utility import DeployUtility
 from reanplatform.utility import Utility as PlatformUtility
+from deploy.utility import DeployUtility
+from deploy.constants import DeployConstants
 
 
 class RunInfraTestDefaultAwsSpec(Command):
@@ -76,7 +76,7 @@ class RunInfraTestDefaultAwsSpec(Command):
             body.input = json.loads(input_data)
 
             api_client = set_header_parameter(DeployUtility.create_api_client(),
-                                              PlatformUtility.get_url(TestConstants.DEPLOY_URL))
+                                              PlatformUtility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
 
             if parsed_args.env_version is not None:
