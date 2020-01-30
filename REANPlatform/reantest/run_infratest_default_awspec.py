@@ -30,6 +30,9 @@ class RunInfraTestDefaultAwsSpec(Command):
         parser.add_argument('--provider_file_path', '-pf', help='Provide file aws provider json file path',
                             required=True)
         parser.add_argument('--input', '-i', help='Input json file', required=True)
+        parser.add_argument('--deployment_name', '-dn', default='default',
+                            help='Deployment name. Please provide this attribute if deployment name is not default.',
+                            required=False)
 
         return parser
 
@@ -84,11 +87,15 @@ class RunInfraTestDefaultAwsSpec(Command):
             else:
                 env_res = api_instance.get_environment_by_name_with_latest_version(parsed_args.env_name)
 
-            # print(api_res)
-            print(env_res.id)
-            api_response = api_instance.get_deployed_resource_ids(env_res.id)
+            api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_res.id, parsed_args.deployment_name)
 
-            print(api_response)
+            if api_status.status != 'DEPLOYED':
+                message = "Environment status is not Deployed."
+                if message:
+                    raise RuntimeError(message)
+
+            api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(env_res.id, parsed_args.deployment_name)
+
             body.output = api_response
 
             self.log.debug(body)
@@ -106,8 +113,9 @@ class RunInfraTestDefaultAwsSpec(Command):
         """Validate Role and name."""
         message = ""
         # # Validation name and arn
-        if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
-            message = "Please Provide either name or role arn."
+        if 'iam_instance_profile' in params:
+            if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
+                message = "Please Provide either name or role arn."
 
         if message:
             raise RuntimeError(message)
