@@ -125,7 +125,6 @@ setup(
             'run-infra-azurespec = reantest.run_infratest_azurespec:RunInfraAzureSpec',
             'get-provider = reantest.get_provider:GetProvider',
             'update-provider = reantest.update_provider:UpdateProvider',
-            'update = reantest.update_provider:UpdateProvider',
             'run-infratest-default-awsspec = reantest.run_infratest_default_awspec:RunInfraTestDefaultAwsSpec',
             'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec'
         ],
