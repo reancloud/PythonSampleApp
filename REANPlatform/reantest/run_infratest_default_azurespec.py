@@ -5,7 +5,6 @@ from cliff.command import Command
 import test_sdk_client
 import deploy_sdk_client
 from reantest.utility import Utility as TestUtility
-from reantest.constants import TestConstants
 from reanplatform.set_header import set_header_parameter
 from deploy.utility import DeployUtility
 from deploy.constants import DeployConstants
@@ -30,6 +29,9 @@ class RunInfraDefaultAzureSpec(Command):
         parser.add_argument('--provider_file_path', '-pf', help='Provide file azure provider json file path',
                             required=True)
         parser.add_argument('--input', '-i', help='Input json file', required=True)
+        parser.add_argument('--deployment_name', '-dn', default='default',
+                            help='Deployment name. Please provide this attribute if deployment name is not default.',
+                            required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -73,7 +75,16 @@ class RunInfraDefaultAzureSpec(Command):
             else:
                 env_res = api_instance.get_environment_by_name_with_latest_version(parsed_args.env_name)
 
-            api_response = api_instance.get_deployed_resource_ids(env_res.id)
+            api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_res.id,
+                                                                                      parsed_args.deployment_name)
+
+            if api_status.status != 'DEPLOYED':
+                message = "Environment status is not Deployed."
+                if message:
+                    raise RuntimeError(message)
+
+            api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(env_res.id,
+                                                                                         parsed_args.deployment_name)
 
             body.output = api_response
 
