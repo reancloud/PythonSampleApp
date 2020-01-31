@@ -111,6 +111,7 @@ class RunInfraDefaultAzureSpec(Command):
 
     @staticmethod
     def validate_env_inputs(env_id, env_name):
+        """Validate EnvId or EnvName."""
         message = ""
 
         if env_id is not None and env_name is not None:
