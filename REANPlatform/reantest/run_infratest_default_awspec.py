@@ -25,7 +25,8 @@ class RunInfraTestDefaultAwsSpec(Command):
         parser = super(RunInfraTestDefaultAwsSpec, self).get_parser(prog_name)
 
         parser.add_argument('--name', '-n', help='Set the name for this Infra test Job', required=True)
-        parser.add_argument('--env_name', '-en', help='Environment name', required=True)
+        parser.add_argument('--env_name', '-en', help='Environment name', required=False)
+        parser.add_argument('--env_id', '-id', help='Environment id', required=False)
         parser.add_argument('--env_version', '-ev', help='Environment version.', required=False)
         parser.add_argument('--provider_file_path', '-pf', help='Provide file aws provider json file path',
                             required=True)
@@ -48,6 +49,7 @@ class RunInfraTestDefaultAwsSpec(Command):
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
+            RunInfraTestDefaultAwsSpec.validate_env_inputs(parsed_args.env_id, parsed_args.env_name)
             RunInfraTestDefaultAwsSpec.validate_instance_profile_inputs(provider_json)
             aws_provider.region = provider_json['region']
             if provider_json.get('access_key') is not None:
@@ -82,19 +84,28 @@ class RunInfraTestDefaultAwsSpec(Command):
                                               PlatformUtility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
 
-            if parsed_args.env_version is not None:
-                env_res = api_instance.get_environment_by_version_and_name(parsed_args.env_name, parsed_args.env_version)
-            else:
-                env_res = api_instance.get_environment_by_name_with_latest_version(parsed_args.env_name)
+            if parsed_args.env_name is not None:
+                if parsed_args.env_version is not None:
+                    env_res = api_instance.get_environment_by_version_and_name(parsed_args.env_name, parsed_args.env_version)
+                else:
+                    env_res = api_instance.get_environment_by_name_with_latest_version(parsed_args.env_name)
 
-            api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_res.id, parsed_args.deployment_name)
+            if parsed_args.env_id is not None:
+                api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(parsed_args.env_id,
+                                                                                          parsed_args.deployment_name)
+            else:
+                api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_res.id, parsed_args.deployment_name)
 
             if api_status.status != 'DEPLOYED':
                 message = "Environment status is not Deployed."
                 if message:
                     raise RuntimeError(message)
 
-            api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(env_res.id, parsed_args.deployment_name)
+            if parsed_args.env_id is not None:
+                api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(parsed_args.env_id,
+                                                                                             parsed_args.deployment_name)
+            else:
+                api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(env_res.id, parsed_args.deployment_name)
 
             body.output = api_response
 
@@ -116,6 +127,20 @@ class RunInfraTestDefaultAwsSpec(Command):
         if 'iam_instance_profile' in params:
             if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
                 message = "Please Provide either name or role arn."
+
+        if message:
+            raise RuntimeError(message)
+
+    @staticmethod
+    def validate_env_inputs(env_id, env_name):
+        """Validate EnvId or EnvName."""
+        message = ""
+
+        if env_id is not None and env_name is not None:
+            message = "Please Provide either env_id or env_name."
+
+        elif env_id is None and env_name is None:
+            message = "Please Provide either env_id or env_name."
 
         if message:
             raise RuntimeError(message)
