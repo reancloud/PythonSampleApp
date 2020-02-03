@@ -139,5 +139,8 @@ class RunInfraTestDefaultAwsSpec(Command):
         if env_id is not None and env_name is not None:
             message = "Please Provide either env_id or env_name."
 
+        elif env_id is None and env_name is None:
+            message = "Please Provide either env_id or env_name."
+
         if message:
             raise RuntimeError(message)
