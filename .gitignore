@@ -119,3 +119,6 @@ lib64
 # VSCode
 .vscode
 
+
+.yardoc/
+REANPlatform/doc/_build/
