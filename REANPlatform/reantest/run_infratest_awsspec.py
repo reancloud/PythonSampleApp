@@ -87,8 +87,9 @@ class RunInfraTestAwsSpec(Command):
         """Validate Role and name."""
         message = ""
         # # Validation name and arn
-        if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
-            message = "Please Provide either name or role arn."
+        if 'iam_instance_profile' in params:
+            if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
+                message = "Please Provide either name or role arn."
 
         if message:
             raise RuntimeError(message)
