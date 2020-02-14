@@ -1,6 +1,6 @@
 """Utility class for authnz."""
-import urllib3
 import os
+import urllib3
 from reanplatform.utilityconstants import PlatformConstants
 from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility as PlatformUtility
