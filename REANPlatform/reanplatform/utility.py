@@ -110,6 +110,7 @@ class Utility:
 
             if PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE in os.environ:
                 verify_ssl_cert_variable = os.environ[PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE]
+
                 if isinstance(verify_ssl_cert_variable, str):
                     if not verify_ssl_cert_variable.lower() in ['true', 'false']:
                         print('Invalid ignore SSL environment variable')
@@ -123,7 +124,7 @@ class Utility:
                     exit(1)
 
             if verify_ssl_cert:
-                ssl_cert_path = os.environ[PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE]
+                ssl_cert_path = os.environ[PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE]
 
             credentials = {
                 PlatformConstants.USER_NAME_REFERENCE: os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
