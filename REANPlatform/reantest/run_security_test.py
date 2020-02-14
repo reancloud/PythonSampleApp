@@ -10,7 +10,7 @@ class RunSecurityTest(Command):
 
     log = logging.getLogger(__name__)
     _description = 'Run Security test'
-    _epilog = 'Example : rean-test run-security-test -n <name> -u <url> -p AppScan'
+    _epilog = 'Example : rean-test run-security-test -n <name> -u <url> -p AppScan -w true'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -20,6 +20,14 @@ class RunSecurityTest(Command):
         parser.add_argument('--url', '-u', help='Set url To test example:http://www.google.com.', required=True)
         parser.add_argument('--security_packs', '-p', choices=['AppScan', 'HttpHeader', 'All'],
                             help='Set Security packs', required=True)
+
+        parser.add_argument('--username', '-un', help='Set User name', required=False)
+        parser.add_argument('--password', '-pw', help='Set password', required=False)
+        parser.add_argument('--username_field_xpath', '-ux', help='Set username field xpath', required=False)
+        parser.add_argument('--password_field_xpath', '-px', help='Set password field xpath', required=False)
+        parser.add_argument('--submit_button_xpath', '-bx', help='Ser submit button xpath', required=False)
+
+        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish')
 
         return parser
 
@@ -38,11 +46,27 @@ class RunSecurityTest(Command):
                 security_packs_list.append('AppScan')
                 security_packs_list.append('HttpHeader')
 
+            if parsed_args.username is not None and (parsed_args.password is None or parsed_args.username_field_xpath is None or parsed_args.password_field_xpath is None or parsed_args.submit_button_xpath is None):
+                raise RuntimeError('Invalid login details')
+
             security_test_dto_new = test_sdk_client.SecurityTestDtoNew()
 
             security_test_dto_new.test_url = parsed_args.url
             security_test_dto_new.name = parsed_args.name
             security_test_dto_new.security_pack = security_packs_list
+
+            if parsed_args.username:
+                security_test_dto_new.username = parsed_args.username
+                security_test_dto_new.password = parsed_args.password
+
+                security_test_login_url_detail_dto = test_sdk_client.SecurityTestLoginUrlDetailDto()
+
+                security_test_login_url_detail_dto.username_field_xpath = parsed_args.username_field_xpath
+                security_test_login_url_detail_dto.password_field_xpath = parsed_args.password_field_xpath
+                security_test_login_url_detail_dto.submit_button_xpath = parsed_args.submit_button_xpath
+
+                security_test_dto_new.url_login_detail = security_test_login_url_detail_dto
+
             self.log.debug(security_test_dto_new)
             self.log.debug("Execution stared for Security Test")
 

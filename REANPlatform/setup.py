@@ -7,7 +7,7 @@ PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 
-VERSION = '2.19.0'
+VERSION = '2.20.1'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -39,7 +39,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==2.19.0', 'deploy_sdk_client==2.19.0', 'test_sdk_client==2.19.0'],
+    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==2.20.0', 'deploy_sdk_client==2.20.0', 'test_sdk_client==2.20.0'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -90,7 +90,8 @@ setup(
             'share-entity = deploy.share_entity:ShareEntity',
             'get-entity-actions = deploy.get_entity_actions:GetEntityActions',
             'get-provider = deploy.get_provider:GetProvider',
-            'get-connection = deploy.get_connection:GetConnection'
+            'get-connection = deploy.get_connection:GetConnection',
+            'get-deployment-resource-ids = deploy.get_deployment_resource_ids:GetDeploymentResourceIds'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
@@ -106,7 +107,7 @@ setup(
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
-            'run-upa-test = reantest.run_upa:RunUPA',
+            # 'run-upa-test = reantest.run_upa:RunUPA',
             'run-security-test = reantest.run_security_test:RunSecurityTest',
             'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
             'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
@@ -122,7 +123,10 @@ setup(
             'update-property = reantest.config_update_property:ConfigUpdateProperty',
             'list-config-properties = reantest.get_all_config_properties:ConfigListProperties',
             'run-infra-azurespec = reantest.run_infratest_azurespec:RunInfraAzureSpec',
-            'get-provider = reantest.get_provider:GetProvider'
+            'get-provider = reantest.get_provider:GetProvider',
+            'update-provider = reantest.update_provider:UpdateProvider',
+            'run-infratest-default-awsspec = reantest.run_infratest_default_awspec:RunInfraTestDefaultAwsSpec',
+            'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',

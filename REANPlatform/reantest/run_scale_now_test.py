@@ -29,8 +29,15 @@ class RunScaleNowTest(Command):
         parser.add_argument('--browser_per_instance', '-bi', help='Set browsers count per instance. default: 3',
                             type=int, default=3)
         parser.add_argument('--hours_to_run', '-mh', help='Set maximum hours to run test', type=int, required=True)
-        parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', choices=['True', 'False'],
+
+        parser.add_argument('--incremental_load', '-l', help='Set Incremental load. Default: False', action='store_true',
                             default=False)
+        parser.add_argument('--incremental_user_count', '-ic',
+                            help='Users count to put load on your application after specified interval in parallel. default: 1',
+                            type=int)
+        parser.add_argument('--incremental_interval', '-im',
+                            help='Interval in minutes to increment load with above specified user count. default: 30(min)',
+                            type=int)
 
         # CodeBase Parameters
         parser.add_argument('--upload_code_file_path', '-cf', help='Set upload file path', default="test")
@@ -95,9 +102,15 @@ class RunScaleNowTest(Command):
             scale_test_dto.hours_to_run = parsed_args.hours_to_run
             scale_test_dto.type = "loadtest"  # type
 
+            if parsed_args.incremental_load:
+                scale_test_dto.incremental_load = parsed_args.incremental_load
+                scale_test_dto.incremental_user_count = parsed_args.incremental_user_count
+                scale_test_dto.incremental_interval = parsed_args.incremental_interval
+
             if parsed_args.upload_code_file_path != 'test':
                 scale_test_dto.codebase_type = 'UPLOAD_CODE'
                 self.log.debug("Uploading code file ...")
+                scale_test_dto.upload_actual_input_file = parsed_args.upload_code_file_path
                 scale_test_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
                                                                            parsed_args.name)
                 self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
@@ -159,6 +172,11 @@ class RunScaleNowTest(Command):
         else:
             if params.git_repository_url is not None:
                 message = "Upload file name and Git repository url parameters can not be used together"
+
+        if params.incremental_load and not params.incremental_user_count and not params.incremental_interval:
+            message = "Please provide incremental user count and incremental interval"
+        elif params.incremental_load is False and params.incremental_user_count is not None and params.incremental_interval is not None:
+            message = "set incremental load True to set incremental user count and incremental interval"
 
         if message:
             raise RuntimeError(message)
