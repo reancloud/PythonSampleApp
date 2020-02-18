@@ -26,7 +26,8 @@ class Utility:
             if configuration_details and configuration_details.get(PlatformConstants.USER_NAME_REFERENCE) and configuration_details.get(PlatformConstants.PASSWORD_REFERENCE):
                 return str(configuration_details.get(PlatformConstants.USER_NAME_REFERENCE)) + ":" + str(configuration_details.get(PlatformConstants.PASSWORD_REFERENCE))
             else:
-                logging.debug("REANPlatform-cli is not configured")
+                print("REANPlatform-cli is not configured")
+                exit(1)
         except Exception as exception:
             print("Error occurred while reading credentials")
             logging.debug(exception)
@@ -124,7 +125,14 @@ class Utility:
                     exit(1)
 
             if verify_ssl_cert:
+                if PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE not in os.environ:
+                    print("Set environment variable for certificate path")
+                    exit(1)
+
                 ssl_cert_path = os.environ[PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE]
+                if not os.path.isfile(ssl_cert_path):
+                    print('Invalid certificate path %s ' % ssl_cert_path)
+                    exit(1)
 
             credentials = {
                 PlatformConstants.USER_NAME_REFERENCE: os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
@@ -169,7 +177,16 @@ class Utility:
                             exit(1)
 
                     if verify_ssl_cert:
+
+                        if PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE not in actual_yaml:
+                            print("SSL certificate path is not provided")
+                            exit(1)
+
                         ssl_cert_path = actual_yaml[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
+
+                        if not os.path.isfile(ssl_cert_path):
+                            print('Invalid certificate path %s ' % ssl_cert_path)
+                            exit(1)
 
                     credentials = {
                         PlatformConstants.USER_NAME_REFERENCE: actual_yaml[PlatformConstants.USER_NAME_REFERENCE],
@@ -210,6 +227,9 @@ class Utility:
 
                 if verify_ssl_cert:
                     ssl_cert_path = data_loaded[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
+                    if not os.path.isfile(ssl_cert_path):
+                        print('Invalid certificate path %s ' % ssl_cert_path)
+                        exit(1)
 
                 credentials = {
                     PlatformConstants.USER_NAME_REFERENCE: username,

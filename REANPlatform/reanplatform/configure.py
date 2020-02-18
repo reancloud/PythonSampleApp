@@ -103,9 +103,9 @@ class Configure(Command):
         else:
             password = getpass.getpass()
 
-        if not parsed_args.ignore_ssl_verification:
+        if parsed_args.ignore_ssl_verification:
             if not parsed_args.ssl_certificate_path:
-                raise RuntimeError('to verify SSL, provide ssl certificate path.')
+                raise RuntimeError('To verify SSL, provide ssl certificate path.')
 
         if parsed_args.encrypt_credentials:
             data = {
