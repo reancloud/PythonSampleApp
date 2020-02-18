@@ -35,9 +35,7 @@ class AuthnzUtility(object):
         if verify_ssl:
             ssl_ca_cert = PlatformUtility.get_config_property(PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE)
             if os.path.exists(ssl_ca_cert):
-                with open(ssl_ca_cert, "r") as handle:
-                    cert_data = handle.read()
-                Configuration.ssl_ca_cert = cert_data
+                Configuration().ssl_ca_cert = ssl_ca_cert
             else:
                 RuntimeError('Configured SSL path is invalid.')
 
