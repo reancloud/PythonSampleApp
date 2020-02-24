@@ -2,7 +2,7 @@
 
 VIRTUALENV='cli_doc_env'
 PYTHON_CMD=$(which python3)
-TARGET_ARTIFACTORY_NAME='local-release-documentation-reanplatform'
+TARGET_ARTIFACTORY_REPO_NAME='local-release-documentation-reanplatform'
 
 
 ACTIVE_DIR=$(pwd)
@@ -58,11 +58,11 @@ echo $PLATFORM_VERSION
 echo "----------------------------------------------"
 
 echo "-------- Target artifactory URL --------------"
-echo "https://artifactory.prod.platform.reancloud.com/artifactory/"$TARGET_ARTIFACTORY_NAME"/platform-cli-doc/"$PLATFORM_VERSION"/platform-cli-doc-"$PLATFORM_VERSION".zip"
+echo "https://artifactory.prod.platform.reancloud.com/artifactory/"$TARGET_ARTIFACTORY_REPO_NAME"/python/platform-cli-doc/"$PLATFORM_VERSION"/platform-cli-doc-"$PLATFORM_VERSION".zip"
 echo "----------------------------------------------"
 
 
-curl -H 'X-JFrog-Art-Api:'$ARTIFACTORY_API_KEY -T reanplatform-cli-doc.zip "https://artifactory.prod.platform.reancloud.com/artifactory/"$TARGET_ARTIFACTORY_NAME"/platform-cli-doc/"$PLATFORM_VERSION"/platform-cli-doc-"$PLATFORM_VERSION".zip"
+curl -H 'X-JFrog-Art-Api:'$ARTIFACTORY_API_KEY -T reanplatform-cli-doc.zip "https://artifactory.prod.platform.reancloud.com/artifactory/"$TARGET_ARTIFACTORY_REPO_NAME"/python/platform-cli-doc/"$PLATFORM_VERSION"/platform-cli-doc-"$PLATFORM_VERSION".zip"
 echo "------------  Zip uploaded to artifactory ------------"
 
 deactivate
