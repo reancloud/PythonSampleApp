@@ -1,0 +1,14 @@
+@Library('reanplatform') _
+
+node {
+    pythonPipelines.releaseBuild(
+        name: 'reanplatform-cli',
+        setup_py_path: 'REANPlatform',
+        autoRelease: false
+    )
+    sh """
+    #!/bin/bash -l
+    bundle exec  rake document:generate 
+    """.stripIndent()
+
+}
