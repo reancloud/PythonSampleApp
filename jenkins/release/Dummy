@@ -6,9 +6,6 @@ node {
         setup_py_path: 'REANPlatform',
         autoRelease: false
     )
-    sh """
-    #!/bin/bash -l
-    bundle exec  rake document:generate 
-    """.stripIndent()
+    sh "#!/bin/bash -l\nbundle exec  rake document:generate"
 
 }
