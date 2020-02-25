@@ -6,6 +6,9 @@ node {
         setup_py_path: 'REANPlatform',
         autoRelease: false
     )
-    sh "#!/bin/bash -l\nbundle exec  rake document:generate"
+
+    withCredentials([string(credentialsId: 'artifactory-api-key', variable: 'ARTIFACTORY_API_KEY')) {
+         sh "#!/bin/bash -l\nbundle exec  rake document:generate"
+        }
 
 }
