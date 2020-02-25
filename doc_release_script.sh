@@ -1,4 +1,5 @@
 #!/bin/bash -l
+set -e
 
 VIRTUALENV='cli_doc_env'
 PYTHON_CMD=$(which python3)
