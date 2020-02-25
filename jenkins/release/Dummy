@@ -7,7 +7,7 @@ node {
         autoRelease: false
     )
 
-    withCredentials([string(credentialsId: 'artifactory-api-key', variable: 'ARTIFACTORY_API_KEY')) {
+    withCredentials([string(credentialsId: 'artifactory-api-key', variable: 'ARTIFACTORY_API_KEY')]) {
          sh "#!/bin/bash -l\nbundle exec  rake document:generate"
         }
 
