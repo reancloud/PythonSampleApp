@@ -195,7 +195,6 @@ class Utility:
                 print('Invalid configuration file path')
                 exit(1)
 
-
     @staticmethod
     def get_configuration_details_from_file():
         """Get user name and password from config file."""
