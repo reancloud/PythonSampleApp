@@ -45,6 +45,12 @@ class Configure(Command):
                             required=False,
                             action='store_false'
                            )
+        parser.add_argument('--ssl_certificate_path',
+                            '-cp',
+                            help='Must provide certificate path if ssl verification used.',
+                            required=False,
+                            default=''
+                           )
         parser.add_argument('--encrypt_credentials', '-e',
                             help='Set true if you want to encrypt credentials in config file.', action='store_true')
         return parser
@@ -97,13 +103,18 @@ class Configure(Command):
         else:
             password = getpass.getpass()
 
+        if not parsed_args.ignore_ssl_verification:
+            if not parsed_args.ssl_certificate_path:
+                raise RuntimeError('to verify SSL, provide ssl certificate path.')
+
         if parsed_args.encrypt_credentials:
             data = {
                 PlatformConstants.PLATFORM_REFERENCE: {
                     PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
                     PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
                     PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password),
-                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification
+                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification,
+                    PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: parsed_args.ssl_certificate_path
                 }
             }
         else:
@@ -112,7 +123,8 @@ class Configure(Command):
                     PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
                     PlatformConstants.USER_NAME_REFERENCE: parsed_args.username,
                     PlatformConstants.PASSWORD_REFERENCE: password,
-                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification
+                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification,
+                    PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: parsed_args.ssl_certificate_path
                 }
             }
         return data

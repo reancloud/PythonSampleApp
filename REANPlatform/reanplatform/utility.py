@@ -106,9 +106,11 @@ class Utility:
         try:
 
             verify_ssl_cert = False
+            ssl_cert_path = ''
 
             if PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE in os.environ:
                 verify_ssl_cert_variable = os.environ[PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE]
+
                 if isinstance(verify_ssl_cert_variable, str):
                     if not verify_ssl_cert_variable.lower() in ['true', 'false']:
                         print('Invalid ignore SSL environment variable')
@@ -121,11 +123,15 @@ class Utility:
                     print('Invalid ignore SSL type environment variable')
                     exit(1)
 
+            if verify_ssl_cert:
+                ssl_cert_path = os.environ[PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE]
+
             credentials = {
                 PlatformConstants.USER_NAME_REFERENCE: os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
                 PlatformConstants.PASSWORD_REFERENCE: os.environ[PlatformConstants.ENV_PASSWORD_REFERENCE],
                 PlatformConstants.BASE_URL_REFERENCE: os.environ[PlatformConstants.ENV_BASE_URL_REFERENCE],
-                PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert
+                PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert,
+                PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: ssl_cert_path
             }
             return credentials
         except KeyError:
@@ -146,6 +152,7 @@ class Utility:
                         actual_yaml = v
 
                     verify_ssl_cert = False
+                    ssl_cert_path = ''
 
                     if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in actual_yaml:
                         verify_ssl_cert_variable = actual_yaml[PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
@@ -161,11 +168,15 @@ class Utility:
                             print('Invalid ignore SSL parameter type in configuration file. ')
                             exit(1)
 
+                    if verify_ssl_cert:
+                        ssl_cert_path = actual_yaml[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
+
                     credentials = {
                         PlatformConstants.USER_NAME_REFERENCE: actual_yaml[PlatformConstants.USER_NAME_REFERENCE],
                         PlatformConstants.PASSWORD_REFERENCE: actual_yaml[PlatformConstants.PASSWORD_REFERENCE],
                         PlatformConstants.BASE_URL_REFERENCE: actual_yaml[PlatformConstants.BASE_URL_REFERENCE],
-                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert
+                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert,
+                        PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: ssl_cert_path
                     }
                     return credentials
                 except KeyError:
@@ -192,15 +203,20 @@ class Utility:
                     password = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]
 
                 verify_ssl_cert = False
+                ssl_cert_path = ''
 
                 if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in data_loaded:
                     verify_ssl_cert = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
+
+                if verify_ssl_cert:
+                    ssl_cert_path = data_loaded[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
 
                 credentials = {
                     PlatformConstants.USER_NAME_REFERENCE: username,
                     PlatformConstants.PASSWORD_REFERENCE: password,
                     PlatformConstants.BASE_URL_REFERENCE: data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.BASE_URL_REFERENCE],
-                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert
+                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: verify_ssl_cert,
+                    PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: ssl_cert_path
                 }
 
                 return credentials

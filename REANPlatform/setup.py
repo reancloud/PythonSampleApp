@@ -7,7 +7,7 @@ PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 
-VERSION = '2.20.0'
+VERSION = '2.21.0'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -124,7 +124,9 @@ setup(
             'list-config-properties = reantest.get_all_config_properties:ConfigListProperties',
             'run-infra-azurespec = reantest.run_infratest_azurespec:RunInfraAzureSpec',
             'get-provider = reantest.get_provider:GetProvider',
-            'update-provider = reantest.update_provider:UpdateProvider'
+            'update-provider = reantest.update_provider:UpdateProvider',
+            'run-infratest-default-awsspec = reantest.run_infratest_default_awspec:RunInfraTestDefaultAwsSpec',
+            'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
