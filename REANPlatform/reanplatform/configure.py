@@ -104,7 +104,7 @@ class Configure(Command):
             password = getpass.getpass()
 
         if parsed_args.ssl_certificate_path is not None and not os.path.isfile(parsed_args.ssl_certificate_path):
-                raise RuntimeError('Invalid SSL certificate path.')
+            raise RuntimeError('Invalid SSL certificate path.')
 
         if parsed_args.encrypt_credentials:
             if parsed_args.ssl_certificate_path is not None:
