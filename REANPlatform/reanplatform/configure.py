@@ -43,13 +43,13 @@ class Configure(Command):
                             '-i',
                             help='Ignore Verifying SSL certificate.',
                             required=False,
-                            action='store_false'
+                            action='store_false',
+                            default=True
                            )
         parser.add_argument('--ssl_certificate_path',
                             '-cp',
                             help='Must provide certificate path if ssl verification used.',
-                            required=False,
-                            default=''
+                            required=False
                            )
         parser.add_argument('--encrypt_credentials', '-e',
                             help='Set true if you want to encrypt credentials in config file.', action='store_true')
@@ -103,28 +103,48 @@ class Configure(Command):
         else:
             password = getpass.getpass()
 
-        if parsed_args.ignore_ssl_verification:
-            if not parsed_args.ssl_certificate_path:
-                raise RuntimeError('To verify SSL, provide ssl certificate path.')
+        if parsed_args.ssl_certificate_path is not None and not os.path.isfile(parsed_args.ssl_certificate_path):
+                raise RuntimeError('Invalid SSL certificate path.')
 
         if parsed_args.encrypt_credentials:
-            data = {
-                PlatformConstants.PLATFORM_REFERENCE: {
-                    PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
-                    PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
-                    PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password),
-                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification,
-                    PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: parsed_args.ssl_certificate_path
+            if parsed_args.ssl_certificate_path is not None:
+                data = {
+                    PlatformConstants.PLATFORM_REFERENCE: {
+                        PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
+                        PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
+                        PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password),
+                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification,
+                        PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: parsed_args.ssl_certificate_path
+                    }
                 }
-            }
+            else:
+                data = {
+                    PlatformConstants.PLATFORM_REFERENCE: {
+                        PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
+                        PlatformConstants.USER_NAME_REFERENCE: Utility.encryptData(parsed_args.username),
+                        PlatformConstants.PASSWORD_REFERENCE: Utility.encryptData(password),
+                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification
+                    }
+                }
         else:
-            data = {
-                PlatformConstants.PLATFORM_REFERENCE: {
-                    PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
-                    PlatformConstants.USER_NAME_REFERENCE: parsed_args.username,
-                    PlatformConstants.PASSWORD_REFERENCE: password,
-                    PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification,
-                    PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: parsed_args.ssl_certificate_path
+            if parsed_args.ssl_certificate_path is not None:
+                data = {
+                    PlatformConstants.PLATFORM_REFERENCE: {
+                        PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
+                        PlatformConstants.USER_NAME_REFERENCE: parsed_args.username,
+                        PlatformConstants.PASSWORD_REFERENCE: password,
+                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification,
+                        PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE: parsed_args.ssl_certificate_path
+                    }
                 }
-            }
+            else:
+                data = {
+                    PlatformConstants.PLATFORM_REFERENCE: {
+                        PlatformConstants.BASE_URL_REFERENCE: self.__parse_base_url(parsed_args.platform_base_url),
+                        PlatformConstants.USER_NAME_REFERENCE: parsed_args.username,
+                        PlatformConstants.PASSWORD_REFERENCE: password,
+                        PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE: parsed_args.ignore_ssl_verification
+                    }
+                }
+
         return data
