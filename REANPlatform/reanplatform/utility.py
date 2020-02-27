@@ -106,7 +106,7 @@ class Utility:
         """Get Environment variables."""
         try:
 
-            verify_ssl_cert = False
+            verify_ssl_cert = True
             ssl_cert_path = ''
 
             if PlatformConstants.ENV_VERIFY_SSL_CERTIFICATE_REFERENCE in os.environ:
@@ -116,8 +116,8 @@ class Utility:
                     if not verify_ssl_cert_variable.lower() in ['true', 'false']:
                         print('Invalid ignore SSL environment variable')
                         exit(1)
-                    if verify_ssl_cert_variable.lower() == 'true':
-                        verify_ssl_cert = True
+                    if verify_ssl_cert_variable.lower() == 'false':
+                        verify_ssl_cert = False
                 elif isinstance(verify_ssl_cert_variable, bool):
                     verify_ssl_cert = verify_ssl_cert_variable
                 else:
@@ -125,14 +125,11 @@ class Utility:
                     exit(1)
 
             if verify_ssl_cert:
-                if PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE not in os.environ:
-                    print("Set environment variable for certificate path")
-                    exit(1)
-
-                ssl_cert_path = os.environ[PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE]
-                if not os.path.isfile(ssl_cert_path):
-                    print('Invalid certificate path %s ' % ssl_cert_path)
-                    exit(1)
+                if PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE in os.environ:
+                    ssl_cert_path = os.environ[PlatformConstants.ENV_SSL_CERTIFICATE_PATH_REFERENCE]
+                    if not os.path.isfile(ssl_cert_path):
+                        print('Invalid certificate path %s ' % ssl_cert_path)
+                        exit(1)
 
             credentials = {
                 PlatformConstants.USER_NAME_REFERENCE: os.environ[PlatformConstants.ENV_USER_NAME_REFERENCE],
@@ -159,7 +156,7 @@ class Utility:
                     for k, v in yaml_object.items():
                         actual_yaml = v
 
-                    verify_ssl_cert = False
+                    verify_ssl_cert = True
                     ssl_cert_path = ''
 
                     if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in actual_yaml:
@@ -168,8 +165,8 @@ class Utility:
                             if not verify_ssl_cert_variable.lower() in ['true', 'false']:
                                 print('Invalid ignore SSL parameter in configuration file')
                                 exit(1)
-                            if verify_ssl_cert_variable.lower() == 'true':
-                                verify_ssl_cert = True
+                            if verify_ssl_cert_variable.lower() == 'false':
+                                verify_ssl_cert = False
                         elif isinstance(verify_ssl_cert_variable, bool):
                             verify_ssl_cert = verify_ssl_cert_variable
                         else:
@@ -177,16 +174,12 @@ class Utility:
                             exit(1)
 
                     if verify_ssl_cert:
+                        if PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE in actual_yaml:
+                            ssl_cert_path = actual_yaml[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
 
-                        if PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE not in actual_yaml:
-                            print("SSL certificate path is not provided")
-                            exit(1)
-
-                        ssl_cert_path = actual_yaml[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
-
-                        if not os.path.isfile(ssl_cert_path):
-                            print('Invalid certificate path %s ' % ssl_cert_path)
-                            exit(1)
+                            if not os.path.isfile(ssl_cert_path):
+                                print('Invalid certificate path %s ' % ssl_cert_path)
+                                exit(1)
 
                     credentials = {
                         PlatformConstants.USER_NAME_REFERENCE: actual_yaml[PlatformConstants.USER_NAME_REFERENCE],
@@ -198,6 +191,9 @@ class Utility:
                     return credentials
                 except KeyError:
                     logging.debug('Error occurred while fetching configuration detail from provided file paths')
+            else:
+                print('Invalid configuration file path')
+                exit(1)
 
     @staticmethod
     def get_configuration_details_from_file():
@@ -219,17 +215,18 @@ class Utility:
                     username = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.USER_NAME_REFERENCE]
                     password = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.PASSWORD_REFERENCE]
 
-                verify_ssl_cert = False
+                verify_ssl_cert = True
                 ssl_cert_path = ''
 
-                if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in data_loaded:
+                if PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE in data_loaded[PlatformConstants.PLATFORM_REFERENCE]:
                     verify_ssl_cert = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.VERIFY_SSL_CERTIFICATE_REFERENCE]
 
                 if verify_ssl_cert:
-                    ssl_cert_path = data_loaded[PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
-                    if not os.path.isfile(ssl_cert_path):
-                        print('Invalid certificate path %s ' % ssl_cert_path)
-                        exit(1)
+                    if PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE in data_loaded[PlatformConstants.PLATFORM_REFERENCE]:
+                        ssl_cert_path = data_loaded[PlatformConstants.PLATFORM_REFERENCE][PlatformConstants.SSL_CERTIFICATE_PATH_REFERENCE]
+                        if not os.path.isfile(ssl_cert_path):
+                            print('Invalid certificate path %s ' % ssl_cert_path)
+                            exit(1)
 
                 credentials = {
                     PlatformConstants.USER_NAME_REFERENCE: username,
