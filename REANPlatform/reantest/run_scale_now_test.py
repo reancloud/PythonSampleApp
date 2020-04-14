@@ -147,7 +147,6 @@ class RunScaleNowTest(Command):
             if parsed_args.wait:
                 Utility.wait_while_job_running(test_sdk_client.RunTestApi(Utility.set_headers()), job_id)
 
-
         except Exception as exception:
             self.log.error(exception)
             Utility.print_exception(exception)
