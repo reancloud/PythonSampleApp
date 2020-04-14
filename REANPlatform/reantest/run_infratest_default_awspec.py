@@ -34,6 +34,7 @@ class RunInfraTestDefaultAwsSpec(Command):
         parser.add_argument('--deployment_name', '-dn', default='default',
                             help='Deployment name. Please provide this attribute if deployment name is not default.',
                             required=False)
+        parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
         return parser
 
@@ -115,6 +116,9 @@ class RunInfraTestDefaultAwsSpec(Command):
             job_id = test_sdk_client.RunTestNewApi(TestUtility.set_headers()).execute_infra_awspec(body)
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Infra test Default AwsSpec submitted successfully. Job Id is : ", job_id)
+
+            if parsed_args.wait:
+                TestUtility.wait_while_job_running(test_sdk_client.InfraTestApi(TestUtility.set_headers()), job_id, False)
 
         except Exception as exception:
             TestUtility.print_exception(exception)

@@ -23,6 +23,7 @@ class RunInfraAzureSpec(Command):
                             required=True)
         parser.add_argument('--input', '-i', help='Input json file', required=True)
         parser.add_argument('--output', '-o', help='Output json file', required=True)
+        parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -67,6 +68,9 @@ class RunInfraAzureSpec(Command):
             job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_azurespec(body)
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Infra azurespec test submitted successfully. Job Id is : ", job_id)
+
+            if parsed_args.wait:
+                Utility.wait_while_job_running(test_sdk_client.InfraTestApi(Utility.set_headers()), job_id, False)
 
         except Exception as exception:
             Utility.print_exception(exception)

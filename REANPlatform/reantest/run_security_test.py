@@ -27,7 +27,7 @@ class RunSecurityTest(Command):
         parser.add_argument('--password_field_xpath', '-px', help='Set password field xpath', required=False)
         parser.add_argument('--submit_button_xpath', '-bx', help='Ser submit button xpath', required=False)
 
-        parser.add_argument('--wait', '-w', help='Set to true for wait until job to finish')
+        parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
         return parser
 
@@ -78,9 +78,8 @@ class RunSecurityTest(Command):
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Security test submitted successfully. Job Id is : ", job_id)
 
-            if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
-                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
-                Utility.wait_while_job_running(api_instance, job_id)
+            if parsed_args.wait:
+                Utility.wait_while_job_running(test_sdk_client.RunTestApi(Utility.set_headers()), job_id)
 
         except Exception as exception:
             Utility.print_exception(exception)
