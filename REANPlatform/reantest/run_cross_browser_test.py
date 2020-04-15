@@ -15,7 +15,7 @@ class RunCrossBrowserTest(Command):
     _epilog = 'Example: rean-test run-automation-test --name <name> --test_suite Selenium --url <url> ' \
               '--git_repository_url <git_url> --git_branch <branch> --command_to_run_test <command to run test> ' \
               '--output_directory_path <report path> --report_file_name <report file name>  --chrome 64 ' \
-              '--automation_code_language <Java/Ruby>'
+              '--automation_code_language <Java/Ruby> --wait'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -77,8 +77,7 @@ class RunCrossBrowserTest(Command):
         parser.add_argument('--ie', '-i',
                             help='Give the comma separated versions for IE to run test on.')
         # Wait parameter
-        parser.add_argument('--wait', '-w',
-                            help='Set to true for wait until job to finish.')
+        parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
         # parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
 
@@ -144,9 +143,8 @@ class RunCrossBrowserTest(Command):
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Cross browser test submitted successfully. Job Id is : ", job_id)
 
-            if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
-                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
-                Utility.wait_while_job_running(api_instance, job_id)
+            if parsed_args.wait:
+                Utility.wait_while_job_running(test_sdk_client.RunTestApi(Utility.set_headers()), job_id)
 
         except Exception as exception:
             # self.log.error(exception)
