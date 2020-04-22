@@ -23,8 +23,10 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'rean-cli'
-copyright = '2018, rean'
+copyright = u'2020, Hitachi Vantara Corporation'
 author = 'rean'
+
+html_show_sourcelink = False
 
 # The short X.Y version
 version = ''
