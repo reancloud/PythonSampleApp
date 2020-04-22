@@ -38,13 +38,13 @@ class RunInfraTestAwsSpec(Command):
                 filedata = handle.read()
 
             provider_json = json.loads(filedata)
-            RunInfraTestAwsSpec.validate_instance_profile_inputs(provider_json)
             aws_provider.region = provider_json['region']
             if provider_json.get('access_key') is not None:
                 aws_provider.access_key = provider_json['access_key']
                 aws_provider.secret_key = provider_json['secret_key']
 
             if provider_json.get('iam_instance_profile') is not None:
+                RunInfraTestAwsSpec.validate_instance_profile_inputs(provider_json)
                 instance_profile = test_sdk_client.InstanceProfile
                 if 'name' in provider_json['iam_instance_profile']:
                     instance_profile.name = provider_json['iam_instance_profile']['name']
