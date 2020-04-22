@@ -1,22 +1,19 @@
 =====
-REAN Deploy
+Deploy Accelerator
 =====
 .. autoprogram-cliff:: rean.deploy
 
 =====
-REAN Auth
+Authnz
 =====
 .. autoprogram-cliff:: rean.auth
 
 =====
-REAN Test
+Test Accelerator
 =====
 .. autoprogram-cliff:: rean.test
 
 
 Indices and tables
 ==================
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
-
