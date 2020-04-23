@@ -13,7 +13,7 @@ class Deploy(App):
         """__init__."""
         super(Deploy, self).__init__(
             description='CLI for REAN Deploy.',
-            version='2.22.0',
+            version='2.23.0',
             command_manager=CommandManager('rean.deploy'),
             interactive_app_factory=InteractiveApp(App, CommandManager('rean.deploy'), stdin=None, stdout=None),
             deferred_help=True,
