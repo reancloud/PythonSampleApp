@@ -14,7 +14,7 @@ from deploy.utility import DeployUtility
 
 
 class ImportBlueprint(Command):
-    """Import the REAN Deploy blueprint."""
+    """Import the HCAP Deploy blueprint."""
 
     log = logging.getLogger(__name__)
 
@@ -24,8 +24,8 @@ class ImportBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(ImportBlueprint, self).get_parser(prog_name)
-        parser.add_argument('--blueprint_file', '-b', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=True)
-        parser.add_argument('--attribute_file', '-a', help='Blueprint attributes. REAN Deploy blueprint attributes file path. A path can be absolute path.', required=True)
+        parser.add_argument('--blueprint_file', '-b', help='Blueprint file. HCAP Deploy blueprint file path. A path can be absolute path.', required=True)
+        parser.add_argument('--attribute_file', '-a', help='Blueprint attributes. HCAP Deploy blueprint attributes file path. A path can be absolute path.', required=True)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
@@ -42,15 +42,14 @@ class ImportBlueprint(Command):
     def validate_parameters(blueprint_path, attribute_path):
         """Validate cli parameters."""
         if blueprint_path is None and attribute_path is None:
-            raise RuntimeError("Please provide REAN Deploy\
-                blueprint file and attributes file absolute path")
+            raise RuntimeError("Please provide HCAP Deploy blueprint file and attributes file absolute path")
 
     @staticmethod
     def blueprint_import(blueprint_path, attribute_path, parsed_args):
         """blueprint_import."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_env_instance = deploy_sdk_client.EnvironmentApi(api_client)
+            api_env_instance = deploy_sdk_client.ImportBlueprintApi(api_client)
             blueprint_all_env = api_env_instance.prepare_import_blueprint(file=blueprint_path)
             os.chdir(os.path.dirname(attribute_path))
             with open(basename(attribute_path), "r") as handle:
