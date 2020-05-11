@@ -24,7 +24,7 @@ class PrepareBlueprint(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(PrepareBlueprint, self).get_parser(prog_name)
-        parser.add_argument('--file', '-f', help='Blueprint file. REAN Deploy blueprint file path. A path can be absolute path.', required=False)
+        parser.add_argument('--file', '-f', help='Blueprint file. HCAP Deploy blueprint file path. A path can be absolute path.', required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
@@ -41,15 +41,14 @@ class PrepareBlueprint(Command):
     def validate_parameters(file_path):
         """Validate cli parameters."""
         if file_path is None:
-            raise RuntimeError("Please provide REAN Deploy\
-                blueprint file absolute path")
+            raise RuntimeError("Please provide HCAP Deploy blueprint file absolute path")
 
     @staticmethod
     def blueprint_prepare(blueprint_path, attribute_path, parsed_args):     # noqa: E501
         """blueprint_prepare."""
         try:
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
-            api_env_instance = deploy_sdk_client.EnvironmentApi(api_client)
+            api_env_instance = deploy_sdk_client.ImportBlueprintApi(api_client)
             blueprint_all_env = api_env_instance.prepare_import_blueprint(file=blueprint_path)     # noqa: E501
 
             prepare_data = {}
