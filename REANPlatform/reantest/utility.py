@@ -98,6 +98,9 @@ class Utility:
             else:
                 job_status = api_instance.get_infra_test_job_status(job_id)
         print("The Status of Job_Id:", job_id, " is ", job_status)
+        failed_status = ["FAILED", "USER_STOPPED", "STOPPED_GRACEFULY"]
+        if job_status in failed_status:
+            exit(1)
 
     @staticmethod
     def execute_test(body, parsed_args, log, method_to_execute, isUserJob=True):
