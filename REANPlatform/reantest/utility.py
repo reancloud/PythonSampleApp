@@ -5,10 +5,10 @@ import sys
 import time
 import itertools
 import uuid
+import json
 import urllib3
 import requests
 import validators
-import json
 
 import test_sdk_client
 from test_sdk_client.api_client import ApiClient
@@ -194,6 +194,7 @@ class Utility:
 
     @staticmethod
     def export_jobid(job_name, job_id, file_path):
+        """Export HCAP test job id to file."""
         if file_path:
             data = {
                 "job_name": job_name,
@@ -201,4 +202,3 @@ class Utility:
             }
             with open(file_path, "w+") as outfile:
                 json.dump(data, outfile)
-
