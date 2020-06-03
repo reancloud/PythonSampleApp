@@ -33,6 +33,7 @@ class RunInfraDefaultAzureSpec(Command):
         parser.add_argument('--deployment_name', '-dn', default='default',
                             help='Deployment name. Please provide this attribute if deployment name is not default.',
                             required=False)
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
         return parser
 
@@ -105,6 +106,7 @@ class RunInfraDefaultAzureSpec(Command):
 
             job_id = test_sdk_client.RunTestNewApi(TestUtility.set_headers()).execute_infra_azurespec(body)
             self.log.debug("Response is------------: %s ", job_id)
+            TestUtility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Infra  default azurespec test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:

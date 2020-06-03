@@ -26,7 +26,7 @@ class RunSecurityTest(Command):
         parser.add_argument('--username_field_xpath', '-ux', help='Set username field xpath', required=False)
         parser.add_argument('--password_field_xpath', '-px', help='Set password field xpath', required=False)
         parser.add_argument('--submit_button_xpath', '-bx', help='Ser submit button xpath', required=False)
-
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
         return parser
@@ -76,6 +76,7 @@ class RunSecurityTest(Command):
                 job_id = response_security_test_dto_new.id
 
             self.log.debug("Response is------------: %s ", job_id)
+            Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Security test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:

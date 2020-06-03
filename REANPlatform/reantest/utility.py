@@ -5,6 +5,7 @@ import sys
 import time
 import itertools
 import uuid
+import json
 import urllib3
 import requests
 import validators
@@ -190,3 +191,14 @@ class Utility:
             raise RuntimeError('Failed to upload file, %s' % file_path)
 
         return file_name
+
+    @staticmethod
+    def export_jobid(job_name, job_id, file_path):
+        """Export HCAP test job id to file."""
+        if file_path:
+            data = {
+                "job_name": job_name,
+                "job_id": job_id
+            }
+            with open(file_path, "w+") as outfile:
+                json.dump(data, outfile)

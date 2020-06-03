@@ -60,9 +60,9 @@ class RunInfraTest(Command):
         parser.add_argument('--provider_json', '-f', help='Provide file aws provider json file path')
         parser.add_argument('--assume_role', '-ar', help='set assume role true/false, default value is false',
                             default='false')
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish',
                             default=False)
-
         return parser
 
     def take_action(self, parsed_args):
@@ -179,6 +179,8 @@ class RunInfraTest(Command):
             job_id = ""
             if response_infra_test_dto_new.id:
                 job_id = response_infra_test_dto_new.id
+
+            Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
 
             self.log.debug("Response is------------: %s ", job_id)
             print("Infra test job submitted successfully. Job Id is : ", job_id)

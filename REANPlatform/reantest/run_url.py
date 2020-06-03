@@ -30,6 +30,7 @@ class RunURLTest(Command):
         parser.add_argument('--chrome', '-c', help='Give the comma separated versions for Chrome to run test on')
         parser.add_argument('--firefox', '-f', help='Give the comma separated versions for Firefox to run test on')
         parser.add_argument('--ie', '-i', help='Give the comma separated versions for IE to run test on')
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
         return parser
@@ -60,6 +61,7 @@ class RunURLTest(Command):
             job_id = response_url_test_dto_new.id
 
             self.log.debug("Response is------------: %s ", job_id)
+            Utility.export_jobid(parsed_args.app_name, job_id, parsed_args.export_jobid_path)
             print("The request URL test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:

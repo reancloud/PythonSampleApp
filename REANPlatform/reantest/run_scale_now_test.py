@@ -69,6 +69,7 @@ class RunScaleNowTest(Command):
                             help='Give the comma separated versions for Chrome to run test on.')
         parser.add_argument('--firefox', '-f',
                             help='Give the comma separated versions for Firefox to run test on.')
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
 
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
@@ -142,6 +143,7 @@ class RunScaleNowTest(Command):
                 job_id = response_scale_test_dto.id
 
             self.log.debug("Response is------------: %s ", job_id)
+            Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request scale test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:

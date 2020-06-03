@@ -34,6 +34,7 @@ class RunInfraTestDefaultAwsSpec(Command):
         parser.add_argument('--deployment_name', '-dn', default='default',
                             help='Deployment name. Please provide this attribute if deployment name is not default.',
                             required=False)
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
         return parser
