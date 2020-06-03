@@ -23,6 +23,7 @@ class RunInfraAzureSpec(Command):
                             required=True)
         parser.add_argument('--input', '-i', help='Input json file', required=True)
         parser.add_argument('--output', '-o', help='Output json file', required=True)
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
         return parser
 
@@ -67,6 +68,7 @@ class RunInfraAzureSpec(Command):
 
             job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_azurespec(body)
             self.log.debug("Response is------------: %s ", job_id)
+            Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Infra azurespec test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:

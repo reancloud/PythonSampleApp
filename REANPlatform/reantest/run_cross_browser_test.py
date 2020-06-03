@@ -76,9 +76,9 @@ class RunCrossBrowserTest(Command):
                             help='Give the comma separated versions for Firefox to run test on.')
         parser.add_argument('--ie', '-i',
                             help='Give the comma separated versions for IE to run test on.')
+        parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         # Wait parameter
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
-
         # parser.add_argument('--opera', '-O', help='Give the comma separated versions for Opera to run test on.')
 
         return parser
@@ -139,6 +139,8 @@ class RunCrossBrowserTest(Command):
             job_id = ""
             if response_functional_test_dto.id:
                 job_id = response_functional_test_dto.id
+
+            Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
 
             self.log.debug("Response is------------: %s ", job_id)
             print("The request Cross browser test submitted successfully. Job Id is : ", job_id)

@@ -8,6 +8,7 @@ import uuid
 import urllib3
 import requests
 import validators
+import json
 
 import test_sdk_client
 from test_sdk_client.api_client import ApiClient
@@ -190,3 +191,14 @@ class Utility:
             raise RuntimeError('Failed to upload file, %s' % file_path)
 
         return file_name
+
+    @staticmethod
+    def export_jobid(job_name, job_id, file_path):
+        if file_path:
+            data = {
+                "job_name": job_name,
+                "job_id": job_id
+            }
+            with open(file_path, "w+") as outfile:
+                json.dump(data, outfile)
+
