@@ -103,6 +103,8 @@ class RunInfraTest(Command):
                     if parsed_args.credentials_type == 'basic_credentials':
                         aws_provider.access_key = provider_details_json['access_key']
                         aws_provider.secret_key = provider_details_json['secret_key']
+                        if "aws_session_token" in provider_details_json:
+                            aws_provider.aws_session_token = provider_details_json['aws_session_token']
 
                     if parsed_args.credentials_type == 'instance_profile':
                         RunInfraTest.validate_instance_profile_inputs(provider_details_json)

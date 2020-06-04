@@ -56,6 +56,8 @@ class RunInfraTestDefaultAwsSpec(Command):
             if provider_json.get('access_key') is not None:
                 aws_provider.access_key = provider_json['access_key']
                 aws_provider.secret_key = provider_json['secret_key']
+                if "aws_session_token" in provider_json:
+                    aws_provider.aws_session_token = provider_json['aws_session_token']
 
             if provider_json.get('iam_instance_profile') is not None:
                 RunInfraTestDefaultAwsSpec.validate_instance_profile_inputs(provider_json)
