@@ -22,7 +22,7 @@ class Status(Command):
         # Define parser
         parser = super(Status, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id.', required=True)
-        parser.add_argument('--deployment_name', '-dn', help='Deployment name.', required=False)
+        parser.add_argument('--deployment_name', '-dn', default='default', help='Deployment Name. Please provide this attribute if deployment name is not default.', required=False)
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
                             required=False
@@ -39,10 +39,7 @@ class Status(Command):
             # Initialise api_client and api_instance to get deployment status
             api_client = set_header_parameter(DeployUtility.create_api_client(), Utility.get_url(DeployConstants.DEPLOY_URL))
             api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-            if deployment_name is not None:
-                api_response = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_id, deployment_name)
-            else:
-                api_response = api_instance.get_deploy_status_by_env_id(env_id)
+            api_response = api_instance.get_deployment_details(env_id, deployment_name)
             return api_response.status
 
         except ApiException as api_exception:
