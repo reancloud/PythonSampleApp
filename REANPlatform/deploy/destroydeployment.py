@@ -8,6 +8,7 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
+from deploy.getdeploymentstatus import Status
 
 
 class DestroyDeployment(Command):
@@ -48,8 +49,8 @@ class DestroyDeployment(Command):
 
             # Get deployment status
             while 1:
-                deploy_status = env_api_instance.get_deploy_status_by_env_id_and_deployment_name(deployment_response.environment.id, deployment_response.deployment_name)
-                status_dict = str(deploy_status)
+                status = Status.deployment_status(parsed_args.env_id, parsed_args.deployment_name)
+                status_dict = str(status)
                 if "DESTROYING" in status_dict:
                     time.sleep(1)
                 else:
