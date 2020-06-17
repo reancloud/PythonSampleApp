@@ -65,15 +65,21 @@ class ShareEntity(Command):
             group = api_instance_group.get_group_with_name(group_name)
             api_instance_share = deploy_sdk_client.ShareApi(api_client)
             entity = ShareEntity.get_entity(api_client, entity_id, entity_type)
-
             if entity is not None:
+                if entity_type == 'PACKAGE':
+                    entity_name = entity.package_name
+                elif entity_type == 'DEPLOYMENT':
+                    entity_name = entity.deployment_name
+                else:
+                    entity_name = entity.name
                 multi_share_policy = deploy_sdk_client.MultiSharePolicy(
-                    ids={entity_id: entity.name},
+                    ids={entity_id: entity_name},
                     resource_type=entity_type,
                     share_policy=ShareEntity.get_share_policy(entity_type, group, actions),
                     share_all_versions='false'
                 )
                 api_instance_share.share_resource(multi_share_policy)
+                Utility.print_output_as_str("{}: {} is shared with Group: {} successfully.".format(entity_type, entity_name, group_name), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
