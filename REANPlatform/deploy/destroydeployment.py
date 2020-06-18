@@ -1,6 +1,7 @@
 """Destroy deployment module."""
 import logging
 import time
+import json
 from cliff.command import Command
 import deploy_sdk_client
 from deploy_sdk_client.rest import ApiException
@@ -8,7 +9,6 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
-from deploy.getdeploymentstatus import Status
 
 
 class DestroyDeployment(Command):
@@ -46,16 +46,19 @@ class DestroyDeployment(Command):
             deploy_status = None
 
             deployment_response = env_api_instance.destroy_deployment(env_id, deployment_name)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
 
-            # Get deployment status
+        try:
             while 1:
-                status = Status.deployment_status(parsed_args.env_id, parsed_args.deployment_name)
-                status_dict = str(status)
+                deploy_status = env_api_instance.get_deployment_details(env_id, deployment_name)
+                status_dict = str(deploy_status.status)
                 if "DESTROYING" in status_dict:
                     time.sleep(1)
                 else:
                     break
-
-            Utility.print_output_as_str("Environment Status : {} ".format(deploy_status.status), parsed_args.output)
         except ApiException as api_exception:
-            Utility.print_exception(api_exception)
+            err = json.loads(api_exception.body)
+            error_message = "Deployment with Environment ID: {} and Deployment name {} does not exist.".format(env_id, deployment_name)
+            if error_message in err['message']:
+                Utility.print_output_as_str("Environment Status : DESTROYED")
