@@ -210,6 +210,10 @@ class RunInfraTest(Command):
             if parsed_args.git_repository_url is not None:
                 error_message = "Upload file name and Git repository url parameters can not be used together"
 
+        if parsed_args.spec_type != 'Serverspec' and parsed_args.spec_type != 'Inspec':
+            if parsed_args.provider_json is None:
+                error_message = "Provider file path is required."
+
         if error_message:
             raise RuntimeError(error_message)
 
