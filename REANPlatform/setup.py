@@ -7,7 +7,7 @@ PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 
-VERSION = '2.25.1'
+VERSION = '2.26.0'
 
 try:
     long_description = open('README.rst', 'rt').read()
