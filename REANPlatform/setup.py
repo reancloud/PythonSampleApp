@@ -91,7 +91,8 @@ setup(
             'get-entity-actions = deploy.get_entity_actions:GetEntityActions',
             'get-provider = deploy.get_provider:GetProvider',
             'get-connection = deploy.get_connection:GetConnection',
-            'get-deployment-resource-ids = deploy.get_deployment_resource_ids:GetDeploymentResourceIds'
+            'get-deployment-resource-ids = deploy.get_deployment_resource_ids:GetDeploymentResourceIds',
+            'get-accelerator-version = deploy.get_accelerator_version:GetAcceleratorVersion'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',
