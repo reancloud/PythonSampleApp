@@ -12,7 +12,7 @@ class ReanPlatform(App):
         """__init__."""
         super(ReanPlatform, self).__init__(
             description='CLI for REAN Platform.',
-            version='2.26.0',
+            version='2.27.0',
             command_manager=CommandManager('rean.platform'),
             interactive_app_factory=InteractiveApp(App, CommandManager('rean.platform'), stdin=None, stdout=None),
             deferred_help=True,
