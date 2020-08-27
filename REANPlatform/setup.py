@@ -127,7 +127,8 @@ setup(
             'get-provider = reantest.get_provider:GetProvider',
             'update-provider = reantest.update_provider:UpdateProvider',
             'run-infratest-default-awsspec = reantest.run_infratest_default_awspec:RunInfraTestDefaultAwsSpec',
-            'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec'
+            'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec',
+            'get-accelerator-version = reantest.get_accelerator_version:GetAcceleratorVersion'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
