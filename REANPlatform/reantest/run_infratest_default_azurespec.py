@@ -7,7 +7,6 @@ import test_sdk_client
 from deploy.getdeploymentstatus import Status
 from deploy.get_deployment_resource_ids import GetDeploymentResourceIds
 from deploy.getenvironment import GetEnvironment
-from deploy.getdeploymentstatus import Status
 from reantest.utility import Utility as TestUtility
 
 
@@ -71,8 +70,8 @@ class RunInfraDefaultAzureSpec(Command):
 
             if parsed_args.env_name is not None:
                 if parsed_args.env_version is not None:
-                    env_res = GetEnvironment.get_environment_by_name_and_version(parsed_args.env_name,
-                                                                               parsed_args.env_version)
+                    env_res = GetEnvironment.get_environment_by_name_and_version(
+                        parsed_args.env_name, parsed_args.env_version)
                 else:
                     env_res = GetEnvironment.get_environment_by_env_name(parsed_args.env_name)
 
@@ -88,11 +87,11 @@ class RunInfraDefaultAzureSpec(Command):
                     raise RuntimeError(message)
 
             if parsed_args.env_id is not None:
-                api_response = GetDeploymentResourceIds.get_deployment_resource_ids(parsed_args.env_id,
-                                                                                             parsed_args.deployment_name)
+                api_response = GetDeploymentResourceIds.get_deployment_resource_ids(
+                    parsed_args.env_id, parsed_args.deployment_name)
             else:
-                api_response = GetDeploymentResourceIds.get_deployment_resource_ids(env_res.id,
-                                                                                             parsed_args.deployment_name)
+                api_response = GetDeploymentResourceIds.get_deployment_resource_ids(
+                    env_res.id, parsed_args.deployment_name)
 
             body.output = api_response
 
