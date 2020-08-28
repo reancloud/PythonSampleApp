@@ -1,14 +1,14 @@
 """Run Infratest Default AzureSpec."""
+
 import logging
 import json
 from cliff.command import Command
 import test_sdk_client
-import deploy_sdk_client
+from deploy.getdeploymentstatus import Status
+from deploy.get_deployment_resource_ids import GetDeploymentResourceIds
+from deploy.getenvironment import GetEnvironment
+from deploy.getdeploymentstatus import Status
 from reantest.utility import Utility as TestUtility
-from reanplatform.set_header import set_header_parameter
-from reanplatform.utility import Utility as PlatformUtility
-from deploy.utility import DeployUtility
-from deploy.constants import DeployConstants
 
 
 class RunInfraDefaultAzureSpec(Command):
@@ -69,34 +69,29 @@ class RunInfraDefaultAzureSpec(Command):
 
             body.input = json.loads(input_data)
 
-            api_client = set_header_parameter(DeployUtility.create_api_client(),
-                                              PlatformUtility.get_url(DeployConstants.DEPLOY_URL))
-            api_instance = deploy_sdk_client.EnvironmentApi(api_client)
-
             if parsed_args.env_name is not None:
                 if parsed_args.env_version is not None:
-                    env_res = api_instance.get_environment_by_version_and_name(parsed_args.env_name,
+                    env_res = GetEnvironment.get_environment_by_name_and_version(parsed_args.env_name,
                                                                                parsed_args.env_version)
                 else:
-                    env_res = api_instance.get_environment_by_name_with_latest_version(parsed_args.env_name)
+                    env_res = GetEnvironment.get_environment_by_env_name(parsed_args.env_name)
 
             if parsed_args.env_id is not None:
-                api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(parsed_args.env_id,
-                                                                                          parsed_args.deployment_name)
+                api_status = Status.deployment_status(parsed_args.env_id, parsed_args.deployment_name)
             else:
-                api_status = api_instance.get_deploy_status_by_env_id_and_deployment_name(env_res.id,
-                                                                                          parsed_args.deployment_name)
+                api_status = Status.deployment_status(env_res.id, parsed_args.deployment_name)
 
-            if api_status.status != 'DEPLOYED':
+            status_dict = str(api_status)
+            if "DEPLOYED" not in status_dict:
                 message = "Environment status is not Deployed."
                 if message:
                     raise RuntimeError(message)
 
             if parsed_args.env_id is not None:
-                api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(parsed_args.env_id,
+                api_response = GetDeploymentResourceIds.get_deployment_resource_ids(parsed_args.env_id,
                                                                                              parsed_args.deployment_name)
             else:
-                api_response = api_instance.get_deployed_resource_ids_by_env_id_and_dep_name(env_res.id,
+                api_response = GetDeploymentResourceIds.get_deployment_resource_ids(env_res.id,
                                                                                              parsed_args.deployment_name)
 
             body.output = api_response
