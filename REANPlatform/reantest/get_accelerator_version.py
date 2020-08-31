@@ -1,4 +1,4 @@
-"""Run get report CLI."""
+"""Get accelerator version."""
 
 import logging
 from cliff.command import Command
@@ -9,7 +9,7 @@ from reanplatform.utility import Utility as PlatformUtility
 
 
 class GetAcceleratorVersion(Command):
-    """Get job reports."""
+    """Get accelerator version."""
 
     log = logging.getLogger(__name__)
     _epilog = 'Example : \n\t rean-test get-accelerator-version'
