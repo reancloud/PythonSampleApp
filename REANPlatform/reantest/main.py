@@ -38,7 +38,7 @@ class Test(App):
 
 
 def main(argv=sys.argv[1:]):
-    """main."""
+    """Entry point to Test cli."""
     try:
         myapp = Test()
         return myapp.run(argv)

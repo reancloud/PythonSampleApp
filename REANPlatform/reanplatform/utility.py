@@ -9,6 +9,7 @@ from Crypto import Random
 from Crypto.Cipher import AES
 import urllib3
 import yaml
+from reanplatform import REAN_SECRET_KEY
 from reanplatform.utilityconstants import PlatformConstants
 
 
@@ -62,7 +63,7 @@ class Utility:
         """Encrypts credentials."""
         raw = val.encode('utf-8')
         iv = Random.new().read(AES.block_size)
-        cipher = AES.new(PlatformConstants.REAN_SECRET_KEY.encode('utf-8'), AES.MODE_CFB, iv)
+        cipher = AES.new(REAN_SECRET_KEY.encode('utf-8'), AES.MODE_CFB, iv)
         encoded = base64.b64encode(iv + cipher.encrypt(raw))
         return encoded
 
@@ -71,7 +72,7 @@ class Utility:
         """Decrypts credentials."""
         enc = base64.b64decode(encoded)
         iv = enc[:16]
-        cipher = AES.new(PlatformConstants.REAN_SECRET_KEY.encode('utf-8'), AES.MODE_CFB, iv)
+        cipher = AES.new(REAN_SECRET_KEY.encode('utf-8'), AES.MODE_CFB, iv)
         decoded = cipher.decrypt(enc[16:])
         return decoded
 
