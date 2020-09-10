@@ -33,7 +33,7 @@ pipeline {
                             sh '''
                                 #!/bin/bash
                                 set -e
-                                python3 -m pydocstyle REANPlatform/mnc
+                                # python3 -m pydocstyle REANPlatform/mnc
                                 python3 -m pydocstyle REANPlatform/deploy
                                 python3 -m pydocstyle REANPlatform/reanplatform
                                 python3 -m pydocstyle REANPlatform/auth
