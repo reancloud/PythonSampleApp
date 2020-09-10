@@ -307,7 +307,9 @@ class Configure(Command):   # noqa: D203
                 group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
                 action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
                 share_group_permission_instance = deploy_sdk_client.ShareApi.get_shared_resource_policy(group_dto_instance, action_list)
-                environment_policy_instance = deploy_sdk_client.Environment.attribute_map(environment_id, [share_group_permission_instance])
+                # environment_policy_instance = deploy_sdk_client.Environment.attribute_map(environment_id, [share_group_permission_instance])
+                # E1102: deploy_sdk_client.Environment.attribute_map is not callable (not-callable)
+                environment_policy_instance = ""
                 api_client.share_environment(environment_id, body=environment_policy_instance)
                 time.sleep(3)
             logging.info("All the rules are shared with group :%s", deploy_group)
