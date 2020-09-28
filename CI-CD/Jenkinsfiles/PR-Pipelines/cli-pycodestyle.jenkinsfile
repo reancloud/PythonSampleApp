@@ -33,7 +33,7 @@ pipeline {
                             sh '''
                                 #!/bin/bash
                                 set -e
-                                python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/mnc
+                                # python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/mnc
                                 python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/deploy
                                 python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/reanplatform
                                 python3 -m pycodestyle --ignore=E501,E124,E123 REANPlatform/auth

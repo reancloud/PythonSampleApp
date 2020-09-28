@@ -33,7 +33,7 @@ class MNC(App):            # noqa: D203
 
 
 def main(argv=sys.argv[1:]):
-    """main."""
+    """Entry point to MNC cli."""
     mnc = MNC()
     return mnc.run(argv)
 

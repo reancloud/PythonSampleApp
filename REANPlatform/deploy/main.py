@@ -36,7 +36,7 @@ class Deploy(App):
 
 
 def main(argv=sys.argv[1:]):
-    """main."""
+    """Entry point to deploy cli."""
     try:
         myapp = Deploy()
         return myapp.run(argv)

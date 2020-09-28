@@ -35,7 +35,7 @@ class ReanPlatform(App):
 
 
 def main(argv=sys.argv[1:]):
-    """main."""
+    """Entry point to reanplatform cli."""
     rean = ReanPlatform()
     return rean.run(argv)
 

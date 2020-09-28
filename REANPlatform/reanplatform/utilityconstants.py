@@ -5,7 +5,6 @@ class PlatformConstants(object):
     """Contains constats required for Utility."""
 
     PLATFORM_CONFIG_FILE_NAME = 'reanplatform'
-    REAN_SECRET_KEY = 'UjXnZr4u7x!A%D*G-KaPdSgVkYp3s5v8'
 
     PLATFORM_REFERENCE = 'platform'
     USER_NAME_REFERENCE = 'username'

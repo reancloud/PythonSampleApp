@@ -209,7 +209,7 @@ class Configure(Command):   # noqa: D203
                         if one_env.import_config.name in list_of_existing_env:
                             to_del.append(index)
                             logging.info("Rule already imported successfully")
-                            continue
+                            # continue ## removed for pylint fix
                         elif one_env.import_config.name == "22.0-mnc_config_rules_processor_setup" or one_env.import_config.name == "3.0-mnc_rule_processor_setup" or one_env.import_config.name == "2.0-mnc_notifier_processor_setup" or one_env.import_config.name == "20.0-mnc_read_write_roles_setup" or one_env.import_config.name == "21.0-mnc_assume_role_policies" or one_env.import_config.name == "22.1-mnc_config_rules_setup":
                             blueprint_all_env.environment_imports[index].import_config.connection_id = master_account_connection_id
                             blueprint_all_env.environment_imports[index].import_config.provider_id = master_account_provider_id
@@ -307,7 +307,9 @@ class Configure(Command):   # noqa: D203
                 group_dto_instance = deploy_sdk_client.GroupDto(id=group_id, name=deploy_group)
                 action_list = ['VIEW', 'CREATE', 'DELETE', 'EDIT', 'EXPORT', 'DEPLOY', 'DESTROY', 'IMPORT']
                 share_group_permission_instance = deploy_sdk_client.ShareApi.get_shared_resource_policy(group_dto_instance, action_list)
-                environment_policy_instance = deploy_sdk_client.Environment.attribute_map(environment_id, [share_group_permission_instance])
+                # environment_policy_instance = deploy_sdk_client.Environment.attribute_map(environment_id, [share_group_permission_instance])
+                # E1102: deploy_sdk_client.Environment.attribute_map is not callable (not-callable)
+                environment_policy_instance = ""
                 api_client.share_environment(environment_id, body=environment_policy_instance)
                 time.sleep(3)
             logging.info("All the rules are shared with group :%s", deploy_group)

@@ -35,7 +35,7 @@ class Auth(App):
 
 
 def main(argv=sys.argv[1:]):
-    """main."""
+    """Entry point to Auth cli."""
     myapp = Auth()
     return myapp.run(argv)
 
