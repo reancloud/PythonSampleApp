@@ -71,6 +71,8 @@ class Configure(Command):
     def take_action(self, parsed_args):
         """take_action."""
         try:
+            if not parsed_args.username:
+                raise RuntimeError('Invalid username.')
             path = os.path.expanduser('~')
             if os.path.exists(path + '/.' + Constants.PLATFORM_CONFIG_FILE_NAME):
                 self.createFile(parsed_args, path)
