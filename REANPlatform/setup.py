@@ -7,8 +7,6 @@ PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 
-
-
 VERSION = '3.0.0'
 
 try:
