@@ -28,7 +28,7 @@ setup(
                  'Programming Language :: Python :: 3.2',
                  'Programming Language :: Python :: 3.5.1',
                  'Programming Language :: Python :: 3.5.5',
-                 'Programming Language :: Python :: 3.6',
+                 'Programming Language :: Python :: 3.6.7',
                  'Intended Audience :: Developers',
                  'Environment :: Console',
                 ],
@@ -39,7 +39,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'deploy_sdk_client==3.0.0', 'test_sdk_client==2.22.3'],
+    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'solution-package-sdk-client==0.0.1','deploy_sdk_client==3.0.0','test_sdk_client==2.22.3'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -49,7 +49,11 @@ setup(
             'rean-deploy = deploy.main:main',
             'rean-auth = auth.main:main',
             'rean-mnc = mnc.main:main',
-            'rean-test = reantest.main:main'
+            'rean-test = reantest.main:main',
+            'rean-solution = solution.main:main'
+        ],
+        'rean.solution':[
+           'command=solution.command:Command',
         ],
         'rean.platform': [
             'rean-platform = reanplatform.reanhelp:HelpPlatform',
