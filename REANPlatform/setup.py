@@ -54,6 +54,7 @@ setup(
         ],
         'rean.solution':[
            'command=solution.command:Command',
+           'create-solution=solution.createsolution:CreateSolution'
         ],
         'rean.platform': [
             'rean-platform = reanplatform.reanhelp:HelpPlatform',
