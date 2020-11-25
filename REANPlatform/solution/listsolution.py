@@ -2,6 +2,7 @@
 import os
 from os.path import basename
 import logging
+from prettytable import PrettyTable
 from cliff.command import Command
 import authnz_sdk_client
 from auth.utility import AuthnzUtility

@@ -25,7 +25,7 @@ class GetSolution(Command):
         """get_parser."""
         parser = super(GetSolution, self).get_parser(prog_name)
         parser.add_argument('--solution-name', '-n', help='Solution name. This parameter is required to get the solution package.', required=True)
-        parser.add_argument('--solution-version', '-v', help='Solution version. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--solution-version', '-sv', help='Solution version. This parameter is required to get the solution package.', required=True)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 

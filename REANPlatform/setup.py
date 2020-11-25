@@ -56,10 +56,13 @@ setup(
         'rean.solution':[
            'create-solution=solution.createsolution:CreateSolution',
            'delete-solution=solution.deletesolution:DeleteSolution',
+           'get-solution=solution.getsolution:GetSolution',
+           'list-solutions=solution.listsolution:ListSolutions'
         ],
         'rean.workflow':[
             'solution-deploy=workflow.solutiondeploy:SolutionDeploy',
             'solution-destroy=workflow.solutiondestroy:SolutionDestroy',
+            'get-solution-deployment=workflow.get_solution_deployment:GetSolutionDeployment',
         ],
         'rean.platform': [
             'rean-platform = reanplatform.reanhelp:HelpPlatform',
