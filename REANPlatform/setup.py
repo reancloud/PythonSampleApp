@@ -39,7 +39,7 @@ setup(
 
     provides=[],
 
-    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'solution_sdk_client==0.0.1','deploy_sdk_client==3.0.0','test_sdk_client==2.22.3'],
+    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'solution_sdk_client==0.0.1', 'workflow_sdk_client==0.0.1'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -50,11 +50,16 @@ setup(
             'rean-auth = auth.main:main',
             'rean-mnc = mnc.main:main',
             'rean-test = reantest.main:main',
-            'rean-solution = solution.main:main'
+            'rean-solution = solution.main:main',
+            'rean-workflow = workflow.main:main'
         ],
         'rean.solution':[
-           'command=solution.command:Command',
-           'create-solution=solution.createsolution:CreateSolution'
+           'create-solution=solution.createsolution:CreateSolution',
+           'delete-solution=solution.deletesolution:DeleteSolution',
+        ],
+        'rean.workflow':[
+            'solution-deploy=workflow.solutiondeploy:SolutionDeploy',
+            'solution-destroy=workflow.solutiondestroy:SolutionDestroy',
         ],
         'rean.platform': [
             'rean-platform = reanplatform.reanhelp:HelpPlatform',

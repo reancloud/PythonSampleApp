@@ -61,12 +61,12 @@ class CreateSolution(Command):
 
             jsondata = json.loads(filedata)
 
-            if solution_name is not None;
+            if solution_name is not None:
                 jsondata['metadata']['name'] = solution_name
-            if solution_version is not None;
+            if solution_version is not None:
                 jsondata['metadata']['version'] = solution_version
 
             saved_solution = api_solution_instance.save_solution_using_post2(jsondata)
-
+            Utility.print_output_as_str("Solution Package Added Succesfully: {}".format(saved_solution), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
