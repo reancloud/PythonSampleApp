@@ -4,6 +4,7 @@
 class WorkflowConstants:
     """Contains constats required for CLI."""
 
+    SOLUTION_URL = '/api/reansolutionpackage'
     WORKFLOW_URL = '/api/reanworkflowengine'
     NAME_REFERENCE = 'name'
     PROVIDER_DETAILS_REFERENCE = 'provider_details'
