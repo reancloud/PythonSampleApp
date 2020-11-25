@@ -83,6 +83,10 @@ class RunInfraTest(Command):
                 machine_credentials = test_sdk_client.MachineCredentials()
 
                 machine_credentials.ip = parsed_args.ip_address
+
+                if parsed_args.user is None or not parsed_args.user:
+                    raise RuntimeError("Provide user for " + parsed_args.spec_type)
+
                 machine_credentials.user = parsed_args.user
                 machine_credentials.password = parsed_args.password
                 if parsed_args.key is not None:
