@@ -93,7 +93,6 @@ class RunCrossBrowserTest(Command):
             functional_test_dto.browsers = browser_list
             functional_test_dto.type = "functionaltest"  # type
 
-
             functional_test_dto.test_url = parsed_args.url
 
             if parsed_args.upload_code_file_path != 'test':
