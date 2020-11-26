@@ -60,7 +60,7 @@ setup(
             'list-solutions=workflow.listsolution:ListSolutions',
             'solution-deploy=workflow.solutiondeploy:SolutionDeploy',
             'solution-destroy=workflow.solutiondestroy:SolutionDestroy',
-            'get-solution-deployment=workflow.get_solution_deployment:GetSolutionDeployment',
+            'get-solution-deployment=workflow.getsolutiondeployment:GetSolutionDeployment',
             'list-solution-deployments=workflow.listsolutiondeployment:ListSolutionDeployment',
         ],
         'rean.platform': [

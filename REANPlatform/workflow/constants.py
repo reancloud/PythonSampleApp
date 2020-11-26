@@ -9,6 +9,7 @@ class WorkflowConstants:
     NAME_REFERENCE = 'name'
     PROVIDER_DETAILS_REFERENCE = 'provider_details'
     PROVIDER_TYPE_REFERENCE = 'type'
+    DESTROYING_STATUS = 'DESTROYING'
 
     def __setattr__(self, attr, value):
         """__setattr__."""

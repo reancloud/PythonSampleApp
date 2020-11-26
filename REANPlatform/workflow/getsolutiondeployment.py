@@ -9,6 +9,7 @@ from reanplatform.set_header import set_header_parameter
 from reanplatform.utility import Utility
 from workflow.constants import WorkflowConstants
 from workflow.workflow_utility import WorkflowUtility
+from workflow.getsolution import GetSolution
 
 
 class GetSolutionDeployment(Command):
@@ -30,12 +31,16 @@ class GetSolutionDeployment(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        solution_name = parsed_args.solution_name
-        solution_version = parsed_args.solution_version
-        print("solution_version=====>", solution_version)
-        deployment_name = parsed_args.deployment_name
-        GetSolutionDeployment.validate_parameters(solution_name, solution_version, deployment_name)
-        GetSolutionDeployment.get_solution_package(solution_name, solution_version, deployment_name, parsed_args)
+        try:
+            solution_name = parsed_args.solution_name
+            solution_version = parsed_args.solution_version
+            deployment_name = parsed_args.deployment_name
+            GetSolutionDeployment.validate_parameters(solution_name, solution_version, deployment_name)
+            solutio_deployment = GetSolutionDeployment.get_solution_package(solution_name, solution_version, deployment_name)
+            Utility.print_output_as_str("Solution Package Deployment Status: {}".format(solutio_deployment), parsed_args.output)
+        except ApiException as api_exception:
+            Utility.print_exception(api_exception)
+
 
     @staticmethod
     def validate_parameters(solution_name, solution_version, deployment_name):
@@ -50,13 +55,14 @@ class GetSolutionDeployment(Command):
             raise RuntimeError("Please provide HCAP Workflow Solution Package Deployment Name")
 
     @staticmethod
-    def get_solution_package(solution_name, solution_version, deployment_name, parsed_args):
-        """create_provider."""
-        solution_package_id = 'AXX-nC1VVcpUxUfs1-CL'
-        api_client = set_header_parameter(WorkflowUtility.create_api_client(), Utility.get_url(WorkflowConstants.WORKFLOW_URL))
-        workflow_api_instance = workflow_sdk_client.DeploymentcontrollerApi(api_client)
+    def get_solution_package(solution_name, solution_version, deployment_name):
+        """get solution package ."""
         try:
-            api_response = workflow_api_instance.get_solution_package_deploy_status_by_name_using_get(deployment_name, solution_package_id)
-            Utility.print_output_as_str("Solution Package Deployment Status: {}".format(api_response), parsed_args.output)
+            solution_package = GetSolution.getsolution(solution_name, solution_version)
+            if solution_package.id is not None:
+                api_client = set_header_parameter(WorkflowUtility.create_api_client(), Utility.get_url(WorkflowConstants.WORKFLOW_URL))
+                workflow_api_instance = workflow_sdk_client.DeploymentcontrollerApi(api_client)
+                api_response = workflow_api_instance.get_solution_package_deploy_status_by_name_using_get(deployment_name, solution_package.id)
+                return api_response
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

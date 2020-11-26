@@ -1,4 +1,4 @@
-"""Import blueprint module."""
+"""Get solution module."""
 import os
 from os.path import basename
 import logging
@@ -15,12 +15,9 @@ from workflow.solution_utility import SolutionUtility
 
 class GetSolution(Command):
     """Get the HCAP Workflow solution package."""
-
     log = logging.getLogger(__name__)
-
     # EPILog will get print after commands
     _epilog = 'Example : rean-solution get-solution --solution-name cli-create --solution-version 00.03.00'
-
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetSolution, self).get_parser(prog_name)
@@ -33,9 +30,7 @@ class GetSolution(Command):
         """take_action."""
         solution_name = parsed_args.solution_name
         solution_version = parsed_args.solution_version
-
         GetSolution.validate_parameters(solution_name, solution_version)
-
         GetSolution.get_solution(solution_name, solution_version, parsed_args)    # noqa: E501
 
     @staticmethod
@@ -48,14 +43,21 @@ class GetSolution(Command):
 
     @staticmethod
     def get_solution(solution_name, solution_version, parsed_args):
-        """get_solution."""
+        """Get solution."""
         try:
-            api_client = set_header_parameter(SolutionUtility.create_api_client(), Utility.get_url(WorkflowConstants.SOLUTION_URL))
-            api_solution_instance = solution_sdk_client.Solutionpackagecontrollerv2Api(api_client)
-            print(parsed_args)
-            solution = api_solution_instance.get_solution_by_name_and_version_using_get2(solution_name, solution_version)
+            solution = GetSolution.getsolution(solution_name, solution_version)
             Utility.print_output_as_dict(solution, parsed_args.output)
-
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
+    @staticmethod
+    def getsolution(solution_name, solution_version):
+        """Get solution."""
+        try:
+            api_client = set_header_parameter(SolutionUtility.create_api_client(), Utility.get_url(WorkflowConstants.SOLUTION_URL))
+            api_solution_instance = solution_sdk_client.Solutionpackagecontrollerv2Api(api_client)
+            solution = api_solution_instance.get_solution_by_name_and_version_using_get2(solution_name, solution_version)
+            return solution
+        except ApiException as api_exception:
+            print("get solution exception")
+            Utility.print_exception(api_exception)
