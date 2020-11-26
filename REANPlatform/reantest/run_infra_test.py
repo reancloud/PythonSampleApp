@@ -56,7 +56,7 @@ class RunInfraTest(Command):
         parser.add_argument('--upload_input_file_path', '-if', help='Set input file path', default="")
 
         parser.add_argument('--credentials_type', '-t', help='Set credentials credential type',
-                            choices=['basic_credentials', 'instance_profile'], default='basic_credentials')
+                            choices=['basic_credentials'], default='basic_credentials')
         parser.add_argument('--provider_json', '-f', help='Provide file aws provider json file path')
         parser.add_argument('--assume_role', '-ar', help='set assume role true/false, default value is false',
                             default='false')
