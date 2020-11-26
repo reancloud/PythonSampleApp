@@ -126,7 +126,11 @@ class Utility:
             if not exception.body:  # Added for authnz exception
                 print(exception)
             elif isinstance(exception.body, str):
-                print(exception.body)
+                json_obj = json.loads(exception.body)
+                if "message" in json_obj:
+                    print(json_obj["message"])
+                else:
+                    print(exception.body)
             elif isinstance(exception.body, bytes):
                 print(exception.body.decode("utf-8"))
         else:
