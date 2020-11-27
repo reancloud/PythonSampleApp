@@ -56,7 +56,7 @@ class RunInfraTest(Command):
         parser.add_argument('--upload_input_file_path', '-if', help='Set input file path', default="")
 
         parser.add_argument('--credentials_type', '-t', help='Set credentials credential type',
-                            choices=['basic_credentials', 'instance_profile'], default='basic_credentials')
+                            choices=['basic_credentials'], default='basic_credentials')
         parser.add_argument('--provider_json', '-f', help='Provide file aws provider json file path')
         parser.add_argument('--assume_role', '-ar', help='set assume role true/false, default value is false',
                             default='false')
@@ -110,16 +110,6 @@ class RunInfraTest(Command):
                         if "aws_session_token" in provider_details_json:
                             aws_provider.aws_session_token = provider_details_json['aws_session_token']
 
-                    if parsed_args.credentials_type == 'instance_profile':
-                        RunInfraTest.validate_instance_profile_inputs(provider_details_json)
-                        instance_profile = test_sdk_client.InstanceProfile
-                        if 'name' in provider_details_json['iam_instance_profile']:
-                            instance_profile.name = provider_details_json['iam_instance_profile']['name']
-                            instance_profile.arn = None
-                        if 'arn' in provider_details_json['iam_instance_profile']:
-                            instance_profile.name = None
-                            instance_profile.arn = provider_details_json['iam_instance_profile']['arn']
-                        aws_provider.iam_instance_profile = instance_profile
                     if parsed_args.assume_role == 'true':
                         assume_role = test_sdk_client.AssumeRole
                         assume_role.role_arn = provider_details_json['assume_role']['role_arn']
@@ -220,14 +210,3 @@ class RunInfraTest(Command):
 
         if error_message:
             raise RuntimeError(error_message)
-
-    @staticmethod
-    def validate_instance_profile_inputs(params):
-        """Validate Role and name."""
-        message = ""
-        # # Validation name and arn
-        if 'arn' in params['iam_instance_profile'] and 'name' in params['iam_instance_profile']:
-            message = "Please Provide either name or role arn."
-
-        if message:
-            raise RuntimeError(message)
