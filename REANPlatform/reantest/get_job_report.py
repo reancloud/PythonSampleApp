@@ -16,7 +16,7 @@ class GetJobReport(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetJobReport, self).get_parser(prog_name)
-        parser.add_argument('--job_id', '-j', help='Set Job Id to get Job status example:396f4cfc2c4d46c7921532741c7ab63e.', required=True)
+        parser.add_argument('--job_id', '-j', help='Set Job Id to get Job status.', required=True)
         parser.add_argument('--output_directory', '-o', help='Set Output directory to store reports.')
         return parser
 
