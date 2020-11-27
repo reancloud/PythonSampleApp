@@ -17,7 +17,7 @@ class GetInfraJobStatus(Command):
         parser = super(GetInfraJobStatus, self).get_parser(prog_name)
 
         parser.add_argument('--job_id', '-j',
-                            help='Set Job Id to get Job status example:396f4cfc2c4d46c7921532741c7ab63e.',
+                            help='Set Job Id to get Job status.',
                             required=True)
         return parser
 
