@@ -50,7 +50,6 @@ setup(
             'rean-auth = auth.main:main',
             'rean-mnc = mnc.main:main',
             'rean-test = reantest.main:main',
-            'rean-solution = solution.main:main',
             'rean-workflow = workflow.main:main'
         ],
         'rean.workflow':[
