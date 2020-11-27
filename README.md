@@ -12,7 +12,7 @@ Requirements
 
 Work-in-progress
 
-    1. rean-platforml --help
+    1. rean-platform --help
     2. rean-deploy --help
   
 ## Development Steps
