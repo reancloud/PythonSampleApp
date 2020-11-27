@@ -59,5 +59,4 @@ class GetSolution(Command):
             solution = api_solution_instance.get_solution_by_name_and_version_using_get2(solution_name, solution_version)
             return solution
         except ApiException as api_exception:
-            print("get solution exception")
             Utility.print_exception(api_exception)

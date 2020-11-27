@@ -37,14 +37,12 @@ class ListSolutionDeployment(Command):
 
     @staticmethod
     def get_all_solution_package(parsed_args):
-        """create_provider."""
-        #solution_package_id = 'AXX-nC1VVcpUxUfs1-CL'
+        """get all solution package."""
         api_client = set_header_parameter(WorkflowUtility.create_api_client(), Utility.get_url(WorkflowConstants.WORKFLOW_URL))
         workflow_api_instance = workflow_sdk_client.DeploymentcontrollerApi(api_client)
         try:
             api_response = workflow_api_instance.get_all_deployment_using_get()
-            print("api_response====>", api_response)
-            #Utility.print_output_as_dict(api_response, parsed_args.output)
-            #Utility.print_output_as_str("Solution Package Deployment :{}".format(api_response), parsed_args.output)
+            Utility.print_output_as_dict(api_response, parsed_args.output)
+            Utility.print_output_as_str("Solution Package Deployment :{}".format(api_response), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

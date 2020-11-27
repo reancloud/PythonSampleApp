@@ -1,6 +1,7 @@
 """Save provider module."""
 import os
 import json
+import time
 import logging
 from cliff.command import Command
 import workflow_sdk_client
@@ -66,7 +67,7 @@ class SolutionDestroy(Command):
                 if solution_wait is True and api_response.id is not None:
                     while 1:
                         deployment_status = workflow_api_instance.get_solution_package_deploy_status_using_get(api_response.id)
-                        if deployment_status.status is WorkflowConstants.DESTROYING_STATUS:
+                        if deployment_status.status != "FAILED" and deployment_status.status != "DESTROYED":
                             time.sleep(1)
                         else:
                             Utility.print_output_as_str("Solution Package Destroy status : {}".format(deployment_status), parsed_args.output)
