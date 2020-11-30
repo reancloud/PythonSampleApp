@@ -1,4 +1,4 @@
-"""Import blueprint module."""
+"""Delete Workflow Solution module."""
 import os
 from os.path import basename
 import logging
@@ -22,7 +22,7 @@ class DeleteSolution(Command):
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-solution create --id AXX0g1s0VcpUxUfs1-B_'
+    _epilog = 'Example : rean-workflow delete-solution --solution-name solutionName --solution-version 00.00.01'
 
     def get_parser(self, prog_name):
         """get_parser."""

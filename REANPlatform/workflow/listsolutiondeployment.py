@@ -1,4 +1,4 @@
-"""Save provider module."""
+"""List Workflow Solution module deployments."""
 import os
 import json
 import logging
@@ -17,7 +17,7 @@ class ListSolutionDeployment(Command):
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-workflow --solution-name solutionpackagedeployment --solution-version 1.0.2 --deployment-name solutionpackagedeployment'
+    _epilog = 'Example : rean-workflow list-solution-deployments'
 
     def get_parser(self, prog_name):
         """get_parser."""

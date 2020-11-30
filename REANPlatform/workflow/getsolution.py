@@ -1,4 +1,4 @@
-"""Get solution module."""
+"""Get Workflow Solution module."""
 import os
 from os.path import basename
 import logging
@@ -17,7 +17,7 @@ class GetSolution(Command):
     """Get the HCAP Workflow solution package."""
     log = logging.getLogger(__name__)
     # EPILog will get print after commands
-    _epilog = 'Example : rean-solution get-solution --solution-name cli-create --solution-version 00.03.00'
+    _epilog = 'Example : rean-workflow get-solution --solution-name cli-create --solution-version 00.03.00'
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetSolution, self).get_parser(prog_name)

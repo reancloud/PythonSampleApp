@@ -1,4 +1,4 @@
-"""Import blueprint module."""
+"""Create Workflow Solution module."""
 import os
 from os.path import basename
 import logging
@@ -21,13 +21,13 @@ class CreateSolution(Command):
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-solution create --solution_file /Users/reanworkflow/solution.json'
+    _epilog = 'Example : rean-workflow create --solution-file /Users/reanworkflow/solution.json'
 
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(CreateSolution, self).get_parser(prog_name)
-        parser.add_argument('--solution_file', '-s', help='Solution file. HCAP Workflow solution file path. A path can be absolute path.', required=True)
-        parser.add_argument('--update-if-exists', '-u', help='This parameter will update the existing solution package based on solution name and solution version.', required=False)
+        parser.add_argument('--solution-file', '-s', help='Solution file. HCAP Workflow solution file path. A path can be absolute path.', required=True)
+        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='This parameter will update the existing solution package based on solution name and solution version.', required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
@@ -55,8 +55,9 @@ class CreateSolution(Command):
 
             jsondata = json.loads(filedata)
             api_solution_instance = CreateSolution.get_api_instance(jsondata['schemaVersion'])
+            update_if_exists = bool(parsed_args.update_if_exists)
 
-            if parsed_args.update_if_exists is not None:
+            if update_if_exists is True:
                 saved_solution = CreateSolution.update_solution(api_solution_instance, jsondata)
             else:
                 saved_solution = CreateSolution.save_solution(api_solution_instance, jsondata)

@@ -1,4 +1,4 @@
-"""Save provider module."""
+"""Destroy Workflow Solution module deployments."""
 import os
 import json
 import time
@@ -19,7 +19,7 @@ class SolutionDestroy(Command):
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-workflow solution-destroy --id AXX0hYc_VcpUxUfs1-CA'
+    _epilog = 'Example : rean-workflow solution-destroy --solution-name cli-create --solution-version 00.03.00 --deployment-name demo'
 
     def get_parser(self, prog_name):
         """get_parser."""
@@ -28,9 +28,9 @@ class SolutionDestroy(Command):
                             help="Write output to <file> instead of stdout.",
                             required=False
                            )
-        parser.add_argument('--solution_name', '-n', help='Solution package name.', required=True)
-        parser.add_argument('--solution_version', '-sv', help='Solution package version.', required=True)
-        parser.add_argument('--deployment_name', '-dn', help='Solution package deployment name.', required=True)
+        parser.add_argument('--solution-name', '-n', help='Solution package name.', required=True)
+        parser.add_argument('--solution-version', '-sv', help='Solution package version.', required=True)
+        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name.', required=True)
         parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
         return parser
 
@@ -68,7 +68,7 @@ class SolutionDestroy(Command):
                     while 1:
                         deployment_status = workflow_api_instance.get_solution_package_deploy_status_using_get(api_response.id)
                         if deployment_status.status != "FAILED" and deployment_status.status != "DESTROYED":
-                            time.sleep(1)
+                            time.sleep(10)
                         else:
                             Utility.print_output_as_str("Solution Package Destroy status : {}".format(deployment_status), parsed_args.output)
                             break

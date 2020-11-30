@@ -1,4 +1,4 @@
-"""Save provider module."""
+"""Get Workflow Solution module deployment."""
 import os
 import json
 import logging
@@ -23,9 +23,9 @@ class GetSolutionDeployment(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetSolutionDeployment, self).get_parser(prog_name)
-        parser.add_argument('--solution_name', '-n', help='Solution package name.', required=True)
-        parser.add_argument('--solution_version', '-sv', help='Solution package version.', required=True)
-        parser.add_argument('--deployment_name', '-dn', help='Solution package deployment name.', required=True)
+        parser.add_argument('--solution-name', '-n', help='Solution package name.', required=True)
+        parser.add_argument('--solution-version', '-sv', help='Solution package version.', required=True)
+        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name.', required=True)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 

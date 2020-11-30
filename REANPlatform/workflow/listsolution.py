@@ -1,4 +1,4 @@
-"""Import blueprint module."""
+"""List all Workflow Solutions module."""
 import os
 from os.path import basename
 import logging
@@ -15,12 +15,12 @@ from workflow.solution_utility import SolutionUtility
 
 
 class ListSolutions(Command):
-    """Get the HCAP Workflow solution package."""
+    """List the HCAP Workflow solution package."""
 
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-solution list-solution'
+    _epilog = 'Example : rean-workflow list-solution'
 
     def get_parser(self, prog_name):
         """get_parser."""
