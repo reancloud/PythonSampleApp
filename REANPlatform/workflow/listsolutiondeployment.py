@@ -33,16 +33,31 @@ class ListSolutionDeployment(Command):
     def take_action(self, parsed_args):
         """take_action."""
         output_format = parsed_args.format
-        ListSolutionDeployment.get_all_solution_package(parsed_args)
+        ListSolutionDeployment.get_solution_deployments(output_format, parsed_args)
+
 
     @staticmethod
-    def get_all_solution_package(parsed_args):
-        """get all solution package."""
-        api_client = set_header_parameter(WorkflowUtility.create_api_client(), Utility.get_url(WorkflowConstants.WORKFLOW_URL))
-        workflow_api_instance = workflow_sdk_client.DeploymentcontrollerApi(api_client)
+    def get_solution_deployments(output_format, parsed_args):
+        """List solution deployments."""
         try:
-            api_response = workflow_api_instance.get_all_deployment_using_get()
-            Utility.print_output_as_dict(api_response, parsed_args.output)
-            Utility.print_output_as_str("Solution Package Deployment :{}".format(api_response), parsed_args.output)
+            api_client = set_header_parameter(WorkflowUtility.create_api_client(), Utility.get_url(WorkflowConstants.WORKFLOW_URL))
+            workflow_api_instance = workflow_sdk_client.DeploymentcontrollerApi(api_client)
+            allSolutionDeployments = workflow_api_instance.get_all_deployment_using_get()
+            if output_format == 'table':
+                table = PrettyTable(['Id', 'Name', 'Status'])
+                table.padding_width = 1
+                for dep in allSolutionDeployments:
+                    table.add_row(
+                        [
+                            dep.id,
+                            dep.name,
+                            dep.status
+                        ]
+                    )
+                Utility.print_output_as_table("Solution Package Deployment list \n{}".format(table), parsed_args.output)
+            elif output_format in 'json' or output_format in '':
+                Utility.print_output_as_dict(allSolutionDeployments, parsed_args.output)
+            else:
+                raise RuntimeError("Please specify correct format, Allowed values are: [json, table]")
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
