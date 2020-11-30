@@ -2,6 +2,7 @@
 import os
 import json
 import logging
+from prettytable import PrettyTable
 from cliff.command import Command
 import workflow_sdk_client
 from workflow_sdk_client.rest import ApiException
