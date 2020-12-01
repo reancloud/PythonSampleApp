@@ -81,7 +81,7 @@ class SolutionDeploy(Command):
                 SolutionDeploy.update_solution_package(workflow_api_instance, solution_wait, parsed_args, solution_deployment)
             else:
                 SolutionDeploy.deploy_solution(workflow_api_instance, solution_wait, parsed_args, solution_deployment)
-                
+
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -135,7 +135,7 @@ class SolutionDeploy(Command):
         try:
             while 1:
                 deployment_status = workflow_api_instance.get_solution_package_deploy_status_using_get(solution_id)
-                if deployment_status.status != 'FAILED' and deployment_status.status != 'DEPLOYED' :
+                if deployment_status.status != 'FAILED' and deployment_status.status != 'DEPLOYED':
                     time.sleep(10)
                 else:
                     return deployment_status

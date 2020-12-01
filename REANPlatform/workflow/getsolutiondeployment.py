@@ -41,7 +41,6 @@ class GetSolutionDeployment(Command):
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
-
     @staticmethod
     def validate_parameters(solution_name, solution_version, deployment_name):
         """Validate cli parameters."""

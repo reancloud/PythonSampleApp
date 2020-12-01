@@ -36,7 +36,6 @@ class ListSolutionDeployment(Command):
         output_format = parsed_args.format
         ListSolutionDeployment.get_solution_deployments(output_format, parsed_args)
 
-
     @staticmethod
     def get_solution_deployments(output_format, parsed_args):
         """List solution deployments."""

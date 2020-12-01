@@ -18,6 +18,7 @@ class GetSolution(Command):
     log = logging.getLogger(__name__)
     # EPILog will get print after commands
     _epilog = 'Example : rean-workflow get-solution --solution-name cli-create --solution-version 00.03.00'
+
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetSolution, self).get_parser(prog_name)
