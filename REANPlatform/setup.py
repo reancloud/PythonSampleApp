@@ -51,7 +51,7 @@ setup(
             'rean-test = reantest.main:main',
             'rean-workflow = workflow.main:main'
         ],
-        'rean.workflow':[
+        'rean.workflow': [
             'create-solution=workflow.createsolution:CreateSolution',
             'delete-solution=workflow.deletesolution:DeleteSolution',
             'get-solution=workflow.getsolution:GetSolution',
