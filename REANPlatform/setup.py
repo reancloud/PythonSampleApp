@@ -28,7 +28,7 @@ setup(
                  'Programming Language :: Python :: 3.2',
                  'Programming Language :: Python :: 3.5.1',
                  'Programming Language :: Python :: 3.5.5',
-                 'Programming Language :: Python :: 3.6',
+                 'Programming Language :: Python :: 3.6.7',
                  'Intended Audience :: Developers',
                  'Environment :: Console',
                 ],
@@ -38,8 +38,7 @@ setup(
     scripts=[],
 
     provides=[],
-
-    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'urllib3==1.25.11', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'deploy_sdk_client==3.0.0', 'test_sdk_client==2.22.3'],
+    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'urllib3==1.25.11', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'deploy_sdk_client==3.0.0', 'test_sdk_client==2.22.3', 'solution_sdk_client==0.16.0', 'workflow_sdk_client==0.16.0'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
@@ -49,7 +48,18 @@ setup(
             'rean-deploy = deploy.main:main',
             'rean-auth = auth.main:main',
             'rean-mnc = mnc.main:main',
-            'rean-test = reantest.main:main'
+            'rean-test = reantest.main:main',
+            'rean-workflow = workflow.main:main'
+        ],
+        'rean.workflow': [
+            'create-solution=workflow.createsolution:CreateSolution',
+            'delete-solution=workflow.deletesolution:DeleteSolution',
+            'get-solution=workflow.getsolution:GetSolution',
+            'list-solution=workflow.listsolution:ListSolutions',
+            'solution-deploy=workflow.solutiondeploy:SolutionDeploy',
+            'solution-destroy=workflow.solutiondestroy:SolutionDestroy',
+            'get-solution-deployment=workflow.getsolutiondeployment:GetSolutionDeployment',
+            'list-solution-deployments=workflow.listsolutiondeployment:ListSolutionDeployment',
         ],
         'rean.platform': [
             'rean-platform = reanplatform.reanhelp:HelpPlatform',
