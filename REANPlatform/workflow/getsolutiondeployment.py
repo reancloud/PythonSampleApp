@@ -23,9 +23,9 @@ class GetSolutionDeployment(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(GetSolutionDeployment, self).get_parser(prog_name)
-        parser.add_argument('--solution-name', '-n', help='Solution package name.', required=True)
-        parser.add_argument('--solution-version', '-sv', help='Solution package version.', required=True)
-        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name.', required=True)
+        parser.add_argument('--solution-name', '-n', help='Solution name. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--solution-version', '-sv', help='Solution version. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name. This parameter is required to get the solution package deployment.', required=True)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 

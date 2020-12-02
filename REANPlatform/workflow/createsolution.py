@@ -26,8 +26,8 @@ class CreateSolution(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(CreateSolution, self).get_parser(prog_name)
-        parser.add_argument('--solution-file', '-s', help='Solution file. HCAP Workflow solution file path. A path can be absolute path.', required=True)
-        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='This parameter will update the existing solution package based on solution name and solution version.', required=False)
+        parser.add_argument('--solution-file', '-s', help='Json file with applicable key-value pair for solution package. Must specify an absolute path.', required=True)
+        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='Update the existing solution package based on solution name and solution version', required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
