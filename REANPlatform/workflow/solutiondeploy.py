@@ -15,7 +15,7 @@ from workflow.getsolutiondeployment import GetSolutionDeployment
 
 
 class SolutionDeploy(Command):
-    """Deploy Solution Package"""
+    """Deploy the solution package."""
 
     log = logging.getLogger(__name__)
 

@@ -14,7 +14,7 @@ from workflow.getsolutiondeployment import GetSolutionDeployment
 
 
 class SolutionDestroy(Command):
-    """Destroy Solution Package By Id"""
+    """Destroy the solution package."""
 
     log = logging.getLogger(__name__)
 
@@ -24,14 +24,14 @@ class SolutionDestroy(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SolutionDestroy, self).get_parser(prog_name)
-        parser.add_argument('--output', '-o',
-                            help="Write output to <file> instead of stdout.",
-                            required=False
-                           )
         parser.add_argument('--solution-name', '-n', help='Solution package name.', required=True)
         parser.add_argument('--solution-version', '-sv', help='Solution package version.', required=True)
         parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name.', required=True)
         parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
+        parser.add_argument('--output', '-o',
+                            help="Write output to <file> instead of stdout.",
+                            required=False
+                           )
         return parser
 
     def take_action(self, parsed_args):
@@ -57,7 +57,7 @@ class SolutionDestroy(Command):
 
     @staticmethod
     def destroy_solution_package(solution_name, solution_version, deployment_name, solution_wait, parsed_args):
-        """destroy solution package using id."""
+        """destroy solution package"""
         try:
             solution_deployment = GetSolutionDeployment.get_solution_package(solution_name, solution_version, deployment_name)
             if solution_deployment is not None and solution_deployment.id is not None:

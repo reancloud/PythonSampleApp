@@ -16,7 +16,7 @@ from workflow.solution_utility import SolutionUtility
 
 
 class CreateSolution(Command):
-    """Create the HCAP Workflow solution package."""
+    """Create the solution package."""
 
     log = logging.getLogger(__name__)
 

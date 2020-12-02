@@ -17,7 +17,7 @@ from workflow.getsolution import GetSolution
 
 
 class DeleteSolution(Command):
-    """Delete the HCAP Workflow solution package."""
+    """Delete the solution package."""
 
     log = logging.getLogger(__name__)
 

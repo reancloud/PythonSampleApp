@@ -13,7 +13,7 @@ from workflow.getsolution import GetSolution
 
 
 class GetSolutionDeployment(Command):
-    """Deploy Solution Package"""
+    """Get the solution package deployment."""
 
     log = logging.getLogger(__name__)
 
