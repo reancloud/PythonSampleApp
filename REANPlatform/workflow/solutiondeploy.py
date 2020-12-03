@@ -31,7 +31,7 @@ class SolutionDeploy(Command):
         parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='Update the existing solution package based on solution name and solution version', required=False)
         parser.add_argument('--deployment-description', '-dd', help='Solution package description.', required=False)
         parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
-        parser.add_argument('--package-details', '-f',
+        parser.add_argument('--deployment-file', '-f',
                             help='Json file with applicable key-value pair \
                             for solution package deployment. File absolute path',
                             required=True
@@ -44,7 +44,7 @@ class SolutionDeploy(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        package_details = parsed_args.package_details
+        package_details = parsed_args.deployment_file
         solution_wait = bool(parsed_args.wait)
         update_if_exists = bool(parsed_args.update_if_exists)
         SolutionDeploy.validate_parameters(parsed_args)
