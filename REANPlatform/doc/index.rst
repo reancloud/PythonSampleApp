@@ -13,6 +13,11 @@ Test Accelerator
 =====
 .. autoprogram-cliff:: rean.test
 
+=====
+Workflow Accelerator
+=====
+.. autoprogram-cliff:: rean.workflow
+
 
 Indices and tables
 ==================
