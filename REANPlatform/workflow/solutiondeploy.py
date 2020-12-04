@@ -73,7 +73,10 @@ class SolutionDeploy(Command):
                 raise RuntimeError('Solution deployment file %s does not exists' % file_path)
             # Parse parameters
             with open(file_path, "r") as handle:
-                filedata = handle.read()
+                if handle.name.endswith('.json'):
+                    filedata = handle.read()
+                else:
+                    raise RuntimeError("Provide the absolute path of the solution package deployment JSON file.")
 
             jsondata = json.loads(filedata)
             solution_deployment = SolutionDeploy.create_input_json(jsondata, parsed_args)
