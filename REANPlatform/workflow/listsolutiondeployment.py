@@ -13,7 +13,7 @@ from workflow.workflow_utility import WorkflowUtility
 
 
 class ListSolutionDeployment(Command):
-    """Deploy Solution Package"""
+    """List the solution package deployment."""
 
     log = logging.getLogger(__name__)
 

@@ -14,7 +14,8 @@ from workflow.solution_utility import SolutionUtility
 
 
 class GetSolution(Command):
-    """Get the HCAP Workflow solution package."""
+    """Get the solution package."""
+
     log = logging.getLogger(__name__)
     # EPILog will get print after commands
     _epilog = 'Example : rean-workflow get-solution --solution-name cli-create --solution-version 00.03.00'
