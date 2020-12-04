@@ -51,7 +51,10 @@ class CreateSolution(Command):
         try:
             os.chdir(os.path.dirname(solution_path))
             with open(basename(solution_path), "r") as handle:
-                filedata = handle.read()
+                if handle.name.endswith('.json'):
+                    filedata = handle.read()
+                else:
+                    raise RuntimeError("Provide the absolute path of the solution package JSON file.")
 
             jsondata = json.loads(filedata)
             api_solution_instance = CreateSolution.get_api_instance(jsondata['schemaVersion'])
