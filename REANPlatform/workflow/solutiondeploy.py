@@ -15,7 +15,7 @@ from workflow.getsolutiondeployment import GetSolutionDeployment
 
 
 class SolutionDeploy(Command):
-    """Deploy Solution Package"""
+    """Deploy the solution package."""
 
     log = logging.getLogger(__name__)
 
@@ -25,13 +25,13 @@ class SolutionDeploy(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SolutionDeploy, self).get_parser(prog_name)
-        parser.add_argument('--solution-name', '-n', help='Solution package name.', required=True)
-        parser.add_argument('--solution-version', '-sv', help='Solution package version.', required=True)
-        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name.', required=True)
-        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='This parameter will update the existing solution package based on solution name and solution version.', required=False)
+        parser.add_argument('--solution-name', '-n', help='Solution package name. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--solution-version', '-sv', help='Solution package version. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name. This parameter is required to get the solution package deployment.', required=True)
+        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='Update the existing solution package based on solution name and solution version', required=False)
         parser.add_argument('--deployment-description', '-dd', help='Solution package description.', required=False)
         parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
-        parser.add_argument('--package-details', '-f',
+        parser.add_argument('--deployment-file', '-f',
                             help='Json file with applicable key-value pair \
                             for solution package deployment. File absolute path',
                             required=True
@@ -44,7 +44,7 @@ class SolutionDeploy(Command):
 
     def take_action(self, parsed_args):
         """take_action."""
-        package_details = parsed_args.package_details
+        package_details = parsed_args.deployment_file
         solution_wait = bool(parsed_args.wait)
         update_if_exists = bool(parsed_args.update_if_exists)
         SolutionDeploy.validate_parameters(parsed_args)
