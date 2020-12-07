@@ -73,6 +73,6 @@ class SolutionDestroy(Command):
                             Utility.print_output_as_str("Solution Package Destroy status : {}".format(deployment_status), parsed_args.output)
                             break
                 else:
-                    Utility.print_output_as_str("Solution Package Destroy Succesfully: {}".format(api_response), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package Destroy Successfully: {}".format(api_response), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
