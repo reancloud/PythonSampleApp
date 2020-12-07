@@ -57,6 +57,9 @@ class CreateSolution(Command):
                     raise RuntimeError("Provide the absolute path of the solution package JSON file.")
 
             jsondata = json.loads(filedata)
+            if "schemaVersion" not in jsondata:
+                raise RuntimeError("Provide the schemaVersion in solution package JSON file.")
+
             api_solution_instance = CreateSolution.get_api_instance(jsondata['schemaVersion'])
             update_if_exists = bool(parsed_args.update_if_exists)
 
