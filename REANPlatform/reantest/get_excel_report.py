@@ -29,7 +29,7 @@ class GetExcelReport(Command):
         output_directory = parsed_args.output_directory
 
         try:
-            path = '/exportdata/excel/' + job_id
+            path = '/export/excel/' + job_id
             curl_url = Constants.PLATFORM_BASE_URL + Constants.TEST_URL + path
             api_response = PlatformUtility.get_zip_stream(curl_url)
             if api_response.status_code == 200:

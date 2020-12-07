@@ -32,9 +32,9 @@ class RunInfraTestAwsSpec(Command):
         try:
 
             self.log.debug(parsed_args)
-            body = test_sdk_client.AwspecParam()
+            body = test_sdk_client.AwspecParamOld()
             body.name = parsed_args.name
-            aws_provider = test_sdk_client.AwsProvider()
+            aws_provider = test_sdk_client.AwsProviderOld()
             with Utility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
 
@@ -48,7 +48,7 @@ class RunInfraTestAwsSpec(Command):
 
             if provider_json.get('iam_instance_profile') is not None:
                 RunInfraTestAwsSpec.validate_instance_profile_inputs(provider_json)
-                instance_profile = test_sdk_client.InstanceProfile
+                instance_profile = test_sdk_client.InstanceProfileOld
                 if 'name' in provider_json['iam_instance_profile']:
                     instance_profile.name = provider_json['iam_instance_profile']['name']
                     instance_profile.arn = None
@@ -58,7 +58,7 @@ class RunInfraTestAwsSpec(Command):
                 aws_provider.iam_instance_profile = instance_profile
 
             if provider_json.get('assume_role') is not None:
-                assume_role = test_sdk_client.AssumeRole
+                assume_role = test_sdk_client.AssumeRoleOld
                 assume_role.role_arn = provider_json['assume_role']['role_arn']
                 assume_role.session_name = provider_json['assume_role']['session_name']
                 assume_role.external_id = provider_json['assume_role']['external_id']
@@ -79,13 +79,15 @@ class RunInfraTestAwsSpec(Command):
             self.log.debug(body)
             self.log.debug("Execution stared for RunInfraTestAwsSpec")
 
-            job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_awspec(body)
+            job_id = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                Utility.set_headers()).run_default_awspec_using_post(body)
             self.log.debug("Response is------------: %s ", job_id)
             Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Infra awsspec test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.InfraTestApi(Utility.set_headers()), job_id, False)
+                Utility.wait_while_job_running(test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                    Utility.set_headers()), job_id, False)
 
         except Exception as exception:
             Utility.print_exception(exception)

@@ -25,8 +25,8 @@ class GetJobReport(Command):
         self.log.debug(parsed_args)
 
         try:
-            api_instance = test_sdk_client.RunJobsApi(Utility.set_headers())
-            api_response = api_instance.get_job_report(parsed_args.job_id, _preload_content=False)
+            api_instance = test_sdk_client.TestbackwardscompatibilitycontrollerApi(Utility.set_headers())
+            api_response = api_instance.downloadreport_using_get(parsed_args.job_id, _preload_content=False)
 
             file_name = 'reports_' + parsed_args.job_id + '.zip'
             if parsed_args.output_directory is not None and Utility.validate_path(parsed_args):

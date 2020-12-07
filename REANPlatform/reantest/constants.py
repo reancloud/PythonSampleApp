@@ -4,7 +4,7 @@
 class TestConstants(object):
     """Contains constats required for CLI."""
 
-    TEST_URL = '/api/reantest/TestNow/rest'
+    TEST_URL = '/api/hcap-test/test-service'
 
     def __setattr__(self, attr, value):
         """__setattr__."""

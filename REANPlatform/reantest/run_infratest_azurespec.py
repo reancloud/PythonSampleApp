@@ -32,9 +32,9 @@ class RunInfraAzureSpec(Command):
         try:
 
             self.log.debug(parsed_args)
-            body = test_sdk_client.AzurespecParam()
+            body = test_sdk_client.AzurespecParamOld()
             body.name = parsed_args.name
-            azure_provider = test_sdk_client.AzureProvider()
+            azure_provider = test_sdk_client.AzureProviderOld()
             with Utility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
 
@@ -66,13 +66,15 @@ class RunInfraAzureSpec(Command):
             self.log.debug(body)
             self.log.debug("Execution stared for RunInfraTestAzureSpec")
 
-            job_id = test_sdk_client.RunTestNewApi(Utility.set_headers()).execute_infra_azurespec(body)
+            job_id = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                Utility.set_headers()).run_default_azurespec_using_post(body)
             self.log.debug("Response is------------: %s ", job_id)
             Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Infra azurespec test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.InfraTestApi(Utility.set_headers()), job_id, False)
+                Utility.wait_while_job_running(test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                    Utility.set_headers()), job_id, False)
 
         except Exception as exception:
             Utility.print_exception(exception)
