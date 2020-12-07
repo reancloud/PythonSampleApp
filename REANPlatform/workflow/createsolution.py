@@ -57,9 +57,7 @@ class CreateSolution(Command):
                     raise RuntimeError("Provide the absolute path of the solution package JSON file.")
 
             jsondata = json.loads(filedata)
-            if "schemaVersion" not in jsondata:
-                raise RuntimeError("Provide the schemaVersion in solution package JSON file.")
-
+            CreateSolution.validate_input_json(jsondata)
             api_solution_instance = CreateSolution.get_api_instance(jsondata['schemaVersion'])
             update_if_exists = bool(parsed_args.update_if_exists)
 
@@ -108,3 +106,18 @@ class CreateSolution(Command):
                 return api_solution_instance.update_solution_using_put2(jsondata)
         except ApiException as api_exception:
             return CreateSolution.save_solution(api_solution_instance, jsondata)
+
+    @staticmethod
+    def validate_input_json(jsondata):
+        """ validate the input json """
+        if "schemaVersion" not in jsondata:
+            raise RuntimeError("Provide the schemaVersion in solution package JSON file.")
+
+        if "metadata" not in jsondata:
+            raise RuntimeError("Provide the metadata in solution package JSON file.")
+
+        if "name" not in jsondata["metadata"]:
+            raise RuntimeError("Provide the name in metadata of solution package JSON file.")
+
+        if "version" not in jsondata["metadata"]:
+            raise RuntimeError("Provide the version in metadata of solution package JSON file.")
