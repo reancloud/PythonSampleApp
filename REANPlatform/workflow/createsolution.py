@@ -27,7 +27,7 @@ class CreateSolution(Command):
         """get_parser."""
         parser = super(CreateSolution, self).get_parser(prog_name)
         parser.add_argument('--solution-file', '-s', help='Json file with applicable key-value pair for solution package. Must specify an absolute path.', required=True)
-        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='Update the existing solution package based on solution name and solution version', required=False)
+        parser.add_argument('--update-if-exists', '-u', action='store_true', default="False", help='Update the existing solution package based on solution name and solution version', required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
@@ -35,12 +35,12 @@ class CreateSolution(Command):
         """take_action."""
         solution_path = parsed_args.solution_file
 
-        CreateSolution.validate_parameters(solution_path)
+        CreateSolution.validate_parameters(solution_path, parsed_args)
 
         CreateSolution.create_solution(solution_path, parsed_args)    # noqa: E501
 
     @staticmethod
-    def validate_parameters(solution_path):
+    def validate_parameters(solution_path, parsed_args):
         """Validate cli parameters."""
         if solution_path is None:
             raise RuntimeError("Please provide HCAP Workflow solution file absolute path")
@@ -58,7 +58,7 @@ class CreateSolution(Command):
 
             jsondata = json.loads(filedata)
             api_solution_instance = CreateSolution.get_api_instance(jsondata['schemaVersion'])
-            update_if_exists = bool(parsed_args.update_if_exists)
+            update_if_exists = parsed_args.update_if_exists
 
             if update_if_exists is True:
                 saved_solution = CreateSolution.update_solution(api_solution_instance, jsondata)
