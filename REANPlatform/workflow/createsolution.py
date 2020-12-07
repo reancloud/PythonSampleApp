@@ -35,12 +35,12 @@ class CreateSolution(Command):
         """take_action."""
         solution_path = parsed_args.solution_file
 
-        CreateSolution.validate_parameters(solution_path, parsed_args)
+        CreateSolution.validate_parameters(solution_path)
 
         CreateSolution.create_solution(solution_path, parsed_args)    # noqa: E501
 
     @staticmethod
-    def validate_parameters(solution_path, parsed_args):
+    def validate_parameters(solution_path):
         """Validate cli parameters."""
         if solution_path is None:
             raise RuntimeError("Please provide HCAP Workflow solution file absolute path")
