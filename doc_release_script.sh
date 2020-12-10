@@ -18,18 +18,9 @@ source $VIRTUALENV/bin/activate
 echo "------------ VirtualEnv created ------------"
 
 
-# Install latest available CLI from QA setup
-echo "------------ Installing Authnz SDK from released artifactory ------------"
-pip install --no-cache-dir authnz-sdk-client --index-url https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_API_KEY}@artifactory.prod.platform.reancloud.com/artifactory/api/pypi/virtual-pypi/simple
-echo "------------ Completed Authnz SDK installation ------------"
-
-echo "------------ Installing Deploy SDK from released artifactory ------------"
-pip install --no-cache-dir deploy-sdk-client --index-url https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_API_KEY}@artifactory.prod.platform.reancloud.com/artifactory/api/pypi/virtual-pypi/simple
-echo "------------ Completed Deploy SDK installation ------------"
-
-echo "------------ Installing Test SDK from released artifactory ------------"
-pip install --no-cache-dir test-sdk-client --index-url https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_API_KEY}@artifactory.prod.platform.reancloud.com/artifactory/api/pypi/virtual-pypi/simple
-echo "------------ Completed Test SDK installation ------------"
+echo "------------ Installing reanplatform-cli from released artifactory ------------"
+pip install --no-cache-dir reanplatform-cli --index-url https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_API_KEY}@artifactory.prod.platform.reancloud.com/artifactory/api/pypi/virtual-pypi/simple
+echo "------------ Completed reanplatform-cli installation ------------"
 
 
 cd REANPlatform/

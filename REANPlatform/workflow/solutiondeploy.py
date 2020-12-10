@@ -28,9 +28,9 @@ class SolutionDeploy(Command):
         parser.add_argument('--solution-name', '-n', help='Solution package name. This parameter is required to get the solution package.', required=True)
         parser.add_argument('--solution-version', '-sv', help='Solution package version. This parameter is required to get the solution package.', required=True)
         parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name. This parameter is required to get the solution package deployment.', required=True)
-        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='Update the existing solution package based on solution name and solution version', required=False)
+        parser.add_argument('--update-if-exists', '-u', action="store_true", default="False", help='Update the existing solution package based on solution name and solution version', required=False)
         parser.add_argument('--deployment-description', '-dd', help='Solution package description.', required=False)
-        parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
+        parser.add_argument('--wait', '-w', action="store_true", default="False", help='Wait flag for explicitly waiting to deploy the deployment', required=False)
         parser.add_argument('--deployment-file', '-f',
                             help='Json file with applicable key-value pair \
                             for solution package deployment. File absolute path',
@@ -45,8 +45,8 @@ class SolutionDeploy(Command):
     def take_action(self, parsed_args):
         """take_action."""
         package_details = parsed_args.deployment_file
-        solution_wait = bool(parsed_args.wait)
-        update_if_exists = bool(parsed_args.update_if_exists)
+        solution_wait = parsed_args.wait
+        update_if_exists = parsed_args.update_if_exists
         SolutionDeploy.validate_parameters(parsed_args)
         SolutionDeploy.deploy_solution_package(package_details, parsed_args, solution_wait, update_if_exists)
 
@@ -73,7 +73,10 @@ class SolutionDeploy(Command):
                 raise RuntimeError('Solution deployment file %s does not exists' % file_path)
             # Parse parameters
             with open(file_path, "r") as handle:
-                filedata = handle.read()
+                if handle.name.endswith('.json'):
+                    filedata = handle.read()
+                else:
+                    raise RuntimeError("Provide the absolute path of the solution package deployment JSON file.")
 
             jsondata = json.loads(filedata)
             solution_deployment = SolutionDeploy.create_input_json(jsondata, parsed_args)
@@ -109,9 +112,9 @@ class SolutionDeploy(Command):
             api_response = workflow_api_instance.deploy_using_post(solution_deployment)
             if solution_wait is True and api_response.id is not None:
                 solution_status = SolutionDeploy.wait_for_status(solution_wait, workflow_api_instance, api_response.id)
-                Utility.print_output_as_str("Solution Package Deployed Succesfully: {}".format(solution_status), parsed_args.output)
+                Utility.print_output_as_str("Solution Package Deployed Successfully: {}".format(solution_status), parsed_args.output)
             else:
-                Utility.print_output_as_str("Solution Package Deployment Succesfully: {}".format(api_response), parsed_args.output)
+                Utility.print_output_as_str("Solution Package Deployment Successfully: {}".format(api_response), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -124,9 +127,9 @@ class SolutionDeploy(Command):
                 redeploy_response = workflow_api_instance.redeploy_using_put(solution_deployment)
                 if solution_wait is True and redeploy_response.id is not None:
                     redeploy_status = SolutionDeploy.wait_for_status(solution_wait, workflow_api_instance, redeploy_response.id)
-                    Utility.print_output_as_str("Solution Package ReDeployed Succesfully: {}".format(redeploy_status), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package ReDeployed Successfully: {}".format(redeploy_status), parsed_args.output)
                 else:
-                    Utility.print_output_as_str("Solution Package Redeploy Succesfully: {}".format(redeploy_response), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package Redeploy Successfully: {}".format(redeploy_response), parsed_args.output)
         except ApiException as api_exception:
             return SolutionDeploy.deploy_solution(workflow_api_instance, solution_wait, parsed_args, solution_deployment)
 
