@@ -116,8 +116,10 @@ class CreateSolution(Command):
         if "metadata" not in jsondata:
             raise RuntimeError("Provide the metadata in solution package JSON file.")
 
-        if "name" not in jsondata["metadata"]:
-            raise RuntimeError("Provide the name in metadata of solution package JSON file.")
-
-        if "version" not in jsondata["metadata"]:
-            raise RuntimeError("Provide the version in metadata of solution package JSON file.")
+        if jsondata["metadata"] is not None:
+            if "name" not in jsondata["metadata"]:
+                raise RuntimeError("Provide the name in metadata of solution package JSON file.")
+            if "version" not in jsondata["metadata"]:
+                raise RuntimeError("Provide the version in metadata of solution package JSON file.")
+        else:
+            raise RuntimeError("metadata should not be null in solution package JSON file.")
