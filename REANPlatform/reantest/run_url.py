@@ -75,7 +75,6 @@ class RunURLTest(Command):
     @staticmethod
     def validate_url_test_inputs(params):
         """Validate url and browsers input."""
-
         # Validation for Test URL
         if not validators.url(params.url):
             raise RuntimeError("Please enter valid Test URL.")

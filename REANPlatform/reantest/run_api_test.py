@@ -78,8 +78,8 @@ class RunApiTest(Command):
                 job_param_dto.useUploadCode = True
                 self.log.debug("Uploading code file ...")
                 job_param_dto.actualupload_code_file_name = parsed_args.upload_code_file_path
-                job_param_dto.upload_code_file_name = Utility.upload_code(parsed_args.upload_code_file_path,
-                                                                                parsed_args.name)
+                job_param_dto.upload_code_file_name = Utility.upload_code(
+                    parsed_args.upload_code_file_path, parsed_args.name)
                 self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
             else:
                 job_param_dto.useUploadCode = False
@@ -122,7 +122,6 @@ class RunApiTest(Command):
     @staticmethod
     def validate_inputs(params):
         """validate_automation_test_input."""
-
         message = ""
         if not validators.url(params.url):
             message = "Please enter valid Application URL."
