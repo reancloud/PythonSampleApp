@@ -6,6 +6,7 @@ from cliff.command import Command
 from reantest.utility import Utility
 
 from reanplatform.constants import Constants
+from reantest.constants import TestConstants
 from reanplatform.utility import Utility as PlatformUtility
 
 
@@ -29,9 +30,10 @@ class GetExcelReport(Command):
         output_directory = parsed_args.output_directory
 
         try:
-            path = '/export/excel/' + job_id
-            curl_url = Constants.PLATFORM_BASE_URL + Constants.TEST_URL + path
+            path = '/reports/export/excel/' + job_id
+            curl_url = Constants.PLATFORM_BASE_URL + TestConstants.TEST_URL + path
             api_response = PlatformUtility.get_zip_stream(curl_url)
+            self.log.debug(api_response)
             if api_response.status_code == 200:
                 file_name = 'TestData-' + job_id + '.xlsx'
                 if output_directory is not None:

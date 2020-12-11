@@ -10,7 +10,6 @@ class Constants(object):
     # PLATFORM_URL_WITH_HOST = Utility.get_host_url()
     AUTHNZ_URL = '/api'
     DEPLOY_URL = '/api/reandeploy/DeployNow/rest'
-    TEST_URL = '/api/reantest/TestNow/rest'
     MNC_URL = '/api/'
     AUTHORIZATION = "Authorization"
     # CREDENTIALS = Utility.get_user_credentials()

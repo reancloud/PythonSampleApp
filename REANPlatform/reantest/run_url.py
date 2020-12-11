@@ -65,8 +65,7 @@ class RunURLTest(Command):
             print("The request URL test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.TestbackwardscompatibilitycontrollerApi(
-                    Utility.set_headers()), job_id)
+                Utility.wait_while_job_running(job_id)
 
         except Exception as exception:
             self.log.debug(exception)
@@ -76,7 +75,6 @@ class RunURLTest(Command):
     @staticmethod
     def validate_url_test_inputs(params):
         """Validate url and browsers input."""
-        # All the parameters validations goes in this function
 
         # Validation for Test URL
         if not validators.url(params.url):

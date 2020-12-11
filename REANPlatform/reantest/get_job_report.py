@@ -1,5 +1,6 @@
 """Run get report CLI."""
 
+import os
 from pathlib import Path
 import logging
 from cliff.command import Command
@@ -39,8 +40,8 @@ class GetJobReport(Command):
                     print("Reports downloaded successfully at " + parsed_args.output_directory + '/' + file_name)
             else:
                 self.log.debug("File path not exists")
-                open(str(Path.home()) + "/" + file_name, 'wb').write(api_response.data)
-                print("Reports downloaded successfully at " + str(Path.home()) + "/" + file_name)
+                open(os.path.abspath(file_name), 'wb').write(api_response.data)
+                print("Reports downloaded successfully at " + os.path.abspath(file_name))
 
         except Exception as exception:
             Utility.print_exception(exception)
