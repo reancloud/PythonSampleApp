@@ -44,8 +44,7 @@ class RunURLTest(Command):
 
             RunURLTest.validate_url_test_inputs(parsed_args)
 
-            url_test_dto_new = test_sdk_client.UrlTestDtoNew()
-
+            url_test_dto_new = test_sdk_client.UrlTestOldDto()
             url_test_dto_new.name = parsed_args.app_name
             url_test_dto_new.browsers = browser_list
             url_test_dto_new.test_url = parsed_args.url
@@ -57,7 +56,8 @@ class RunURLTest(Command):
 
             self.log.debug("Execution stared for URL test")
 
-            response_url_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_url_test(url_test_dto_new)
+            response_url_test_dto_new = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                Utility.set_headers()).run_url_test_using_post1(url_test_dto_new)
             job_id = response_url_test_dto_new.id
 
             self.log.debug("Response is------------: %s ", job_id)
@@ -65,7 +65,7 @@ class RunURLTest(Command):
             print("The request URL test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.RunTestApi(Utility.set_headers()), job_id)
+                Utility.wait_while_job_running(job_id)
 
         except Exception as exception:
             self.log.debug(exception)
@@ -75,8 +75,6 @@ class RunURLTest(Command):
     @staticmethod
     def validate_url_test_inputs(params):
         """Validate url and browsers input."""
-        # All the parameters validations goes in this function
-
         # Validation for Test URL
         if not validators.url(params.url):
             raise RuntimeError("Please enter valid Test URL.")

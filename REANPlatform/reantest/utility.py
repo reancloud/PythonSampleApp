@@ -39,7 +39,7 @@ class Utility:
         """get_browser_DTO."""
         log = logging.getLogger(__name__)
         log.debug(params)
-        browser_list = test_sdk_client.BrowsersDto()
+        browser_list = test_sdk_client.BrowserOldDto()
 
         if hasattr(params, 'firefox') and params.firefox is not None:
             firefox = Utility.get_unique_seq(params.firefox.split(","))
@@ -79,12 +79,10 @@ class Utility:
         return open(path, "r")
 
     @staticmethod
-    def wait_while_job_running(api_instance, job_id, isUserJob=True):
+    def wait_while_job_running(job_id):
         """Wait while job running."""
-        if isUserJob:
-            job_status = api_instance.get_job_status(job_id)
-        else:
-            job_status = api_instance.get_infra_test_job_status(job_id)
+        api_instance = test_sdk_client.TestbackwardscompatibilitycontrollerApi(Utility.set_headers())
+        job_status = api_instance.get_browser_test_status_using_get(job_id)
         spinner = itertools.cycle(['-', '/', '|', '\\'])
         print("The Status of Job_Id:", job_id, " is ", job_status)
         while "RUNNING" in job_status:
@@ -94,29 +92,11 @@ class Utility:
                 time.sleep(0.1)
                 sys.stdout.write('\b')
 
-            if isUserJob:
-                job_status = api_instance.get_job_status(job_id)
-            else:
-                job_status = api_instance.get_infra_test_job_status(job_id)
+            job_status = api_instance.get_browser_test_status_using_get(job_id)
         print("The Status of Job_Id:", job_id, " is ", job_status)
         failed_status = ["FAILED", "USER_STOPPED", "STOPPED_GRACEFULY"]
         if job_status in failed_status:
             exit(1)
-
-    @staticmethod
-    def execute_test(body, parsed_args, log, method_to_execute, isUserJob=True):
-        """Execute Test."""
-        job_id = method_to_execute(body)
-
-        log.debug("Response is------------: %s ", job_id)
-        print("The request Job/test submitted successfully. Job Id is : ", job_id)
-
-        if job_id is not None and hasattr(parsed_args, 'wait') and parsed_args.wait == "true":
-            if isUserJob:
-                api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
-            else:
-                api_instance = test_sdk_client.InfraTestApi(Utility.set_headers())
-            Utility.wait_while_job_running(api_instance, job_id, isUserJob)
 
     @staticmethod
     def print_exception(exception):
@@ -126,10 +106,13 @@ class Utility:
             if not exception.body:  # Added for authnz exception
                 print(exception)
             elif isinstance(exception.body, str):
-                json_obj = json.loads(exception.body)
-                if "message" in json_obj:
-                    print(json_obj["message"])
-                else:
+                try:
+                    json_obj = json.loads(exception.body)
+                    if "message" in json_obj:
+                        print(json_obj["message"])
+                    else:
+                        print(exception.body)
+                except ValueError:
                     print(exception.body)
             elif isinstance(exception.body, bytes):
                 print(exception.body.decode("utf-8"))
@@ -183,12 +166,12 @@ class Utility:
         HEADERS = {'Authorization': credentials}
 
         if code_upload:
-            params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'true'}
+            params = {'filename': file_name + '.zip', 'userId': credentials.split(':')[0], 'awspecIO': 'true'}
         else:
-            params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
+            params = {'filename': file_name + '.zip', 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        responce = requests.post(PlatformUtility.get_url('/api/reantest/TestNow/uploadCode'),
+        responce = requests.post(PlatformUtility.get_url('/api/hcap-test/test-service/storage/upload-file'),
                                  headers=HEADERS, files=file, data=params, verify=False)
 
         if responce.status_code != 200:

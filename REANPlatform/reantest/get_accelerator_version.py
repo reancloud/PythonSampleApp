@@ -24,11 +24,11 @@ class GetAcceleratorVersion(Command):
         self.log.debug(parsed_args)
 
         try:
-            api_instance = test_sdk_client.VersionResourceApi(Utility.set_headers())
-            version = api_instance.get_accelerator_version()
+            api_instance = test_sdk_client.VersioncontrollerApi(Utility.set_headers())
+            version = api_instance.get_accelerator_version_using_get()
 
             if version:
-                PlatformUtility.print_output_as_str("{} {} ".format(version["acceleratorName"],
-                                                                    version["acceleratorVersion"]))
+                PlatformUtility.print_output_as_str("{} {} ".format(version.accelerator_name,
+                                                                    version.accelerator_version))
         except ApiException as exception:
             PlatformUtility.print_exception(exception)

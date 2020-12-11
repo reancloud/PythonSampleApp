@@ -71,7 +71,7 @@ class RunInfraTest(Command):
         try:
             RunInfraTest.validate_parameter(parsed_args)
 
-            infra_test_dto_new = test_sdk_client.InfraTestDtoNew()
+            infra_test_dto_new = test_sdk_client.InfraTestOldDto()
 
             infra_test_dto_new.name = parsed_args.name
 
@@ -80,7 +80,7 @@ class RunInfraTest(Command):
 
             if parsed_args.spec_type == "Serverspec" or parsed_args.spec_type == "Inspec":
 
-                machine_credentials = test_sdk_client.MachineCredentials()
+                machine_credentials = test_sdk_client.MachineCredentialsOld()
 
                 machine_credentials.ip = parsed_args.ip_address
 
@@ -97,7 +97,7 @@ class RunInfraTest(Command):
             else:
                 if parsed_args.spec_type == "Awspec":
                     self.log.debug("Creating aws provider json")
-                    aws_provider = test_sdk_client.AwsProvider()
+                    aws_provider = test_sdk_client.AwsProviderOld()
 
                     with Utility.open_file(parsed_args.provider_json) as handle:
                         filedata = handle.read()
@@ -111,7 +111,7 @@ class RunInfraTest(Command):
                             aws_provider.aws_session_token = provider_details_json['aws_session_token']
 
                     if parsed_args.assume_role == 'true':
-                        assume_role = test_sdk_client.AssumeRole
+                        assume_role = test_sdk_client.AssumeRoleOld
                         assume_role.role_arn = provider_details_json['assume_role']['role_arn']
                         assume_role.session_name = provider_details_json['assume_role']['session_name']
                         assume_role.external_id = provider_details_json['assume_role']['external_id']
@@ -120,7 +120,7 @@ class RunInfraTest(Command):
                     infra_test_dto_new.provider = aws_provider
                 else:
                     self.log.debug("Creating azure provider json")
-                    azure_provider = test_sdk_client.AzureProvider()
+                    azure_provider = test_sdk_client.AzureProviderOld()
 
                     with Utility.open_file(parsed_args.provider_json) as handle:
                         filedata = handle.read()
@@ -151,14 +151,14 @@ class RunInfraTest(Command):
             else:
                 infra_test_dto_new.codebase_type = 'GIT'
 
-                git_config_dto = test_sdk_client.GitConfigDto()
+                git_config_dto = test_sdk_client.GitConfigOldDto()
                 git_config_dto.url = parsed_args.git_repository_url
                 git_config_dto.passsword = parsed_args.git_password
                 git_config_dto.user = parsed_args.git_username
                 git_config_dto.branch = parsed_args.git_branch
                 infra_test_dto_new.git_config = git_config_dto
 
-            execution_details_dto = test_sdk_client.ExecutionDetailsDto()
+            execution_details_dto = test_sdk_client.ExecutionDetailsOldDto()
             execution_details_dto.run_command = parsed_args.command_to_run_test
             execution_details_dto.pre_script = parsed_args.pre_script
             execution_details_dto.post_script = parsed_args.post_script
@@ -169,8 +169,8 @@ class RunInfraTest(Command):
 
             self.log.debug(infra_test_dto_new)
             self.log.debug("Execution stared for Infra test")
-            response_infra_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_infra_test(
-                infra_test_dto_new)
+            response_infra_test_dto_new = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                Utility.set_headers()).run_infra_test_using_post1(infra_test_dto_new)
 
             job_id = ""
             if response_infra_test_dto_new.id:
@@ -182,7 +182,7 @@ class RunInfraTest(Command):
             print("Infra test job submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.InfraTestApi(Utility.set_headers()), job_id, False)
+                Utility.wait_while_job_running(job_id)
 
         except Exception as exception:
             # self.log.error(exception)

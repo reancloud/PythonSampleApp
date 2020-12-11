@@ -41,9 +41,9 @@ class RunInfraDefaultAzureSpec(Command):
         try:
 
             self.log.debug(parsed_args)
-            body = test_sdk_client.AzurespecParam()
+            body = test_sdk_client.AzurespecParamOld()
             body.name = parsed_args.name
-            azure_provider = test_sdk_client.AzureProvider()
+            azure_provider = test_sdk_client.AzureProviderOld()
             RunInfraDefaultAzureSpec.validate_env_inputs(parsed_args.env_id, parsed_args.env_name)
             with TestUtility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
@@ -98,13 +98,14 @@ class RunInfraDefaultAzureSpec(Command):
             self.log.debug(body)
             self.log.debug("Execution started for RunInfraTestDefaultAzureSpec")
 
-            job_id = test_sdk_client.RunTestNewApi(TestUtility.set_headers()).execute_infra_azurespec(body)
+            job_id = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                TestUtility.set_headers()).run_default_azurespec_using_post(body)
             self.log.debug("Response is------------: %s ", job_id)
             TestUtility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Infra  default azurespec test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                TestUtility.wait_while_job_running(test_sdk_client.InfraTestApi(TestUtility.set_headers()), job_id, False)
+                TestUtility.wait_while_job_running(job_id)
 
         except Exception as exception:
             TestUtility.print_exception(exception)

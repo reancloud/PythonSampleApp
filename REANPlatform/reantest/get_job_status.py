@@ -26,8 +26,8 @@ class GetJobStatus(Command):
         self.log.debug(parsed_args)
 
         try:
-            api_instance = test_sdk_client.RunTestApi(Utility.set_headers())
-            api_response = api_instance.get_job_status(parsed_args.job_id)
+            api_instance = test_sdk_client.TestbackwardscompatibilitycontrollerApi(Utility.set_headers())
+            api_response = api_instance.get_browser_test_status_using_get(parsed_args.job_id)
             self.log.debug(api_response)
             print(api_response)
         except Exception as exception:
