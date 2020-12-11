@@ -117,8 +117,7 @@ class RunInfraTestDefaultAwsSpec(Command):
             print("The request Infra test Default AwsSpec submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                TestUtility.wait_while_job_running(test_sdk_client.TestbackwardscompatibilitycontrollerApi(
-                    TestUtility.set_headers()), job_id, False)
+                TestUtility.wait_while_job_running(job_id)
 
         except Exception as exception:
             TestUtility.print_exception(exception)
