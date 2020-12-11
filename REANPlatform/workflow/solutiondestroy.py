@@ -27,7 +27,7 @@ class SolutionDestroy(Command):
         parser.add_argument('--solution-name', '-n', help='Solution package name. This parameter is required to get the solution package.', required=True)
         parser.add_argument('--solution-version', '-sv', help='Solution package version. This parameter is required to get the solution package.', required=True)
         parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name. This parameter is required to get the solution package deployment.', required=True)
-        parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
+        parser.add_argument('--wait', '-w', action="store_true", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
                             required=False
@@ -39,7 +39,7 @@ class SolutionDestroy(Command):
         solution_name = parsed_args.solution_name
         solution_version = parsed_args.solution_version
         deployment_name = parsed_args.deployment_name
-        solution_wait = bool(parsed_args.wait)
+        solution_wait = parsed_args.wait
         SolutionDestroy.validate_parameters(solution_name, solution_version, deployment_name)
         SolutionDestroy.destroy_solution_package(solution_name, solution_version, deployment_name, solution_wait, parsed_args)
 
@@ -73,6 +73,6 @@ class SolutionDestroy(Command):
                             Utility.print_output_as_str("Solution Package Destroy status : {}".format(deployment_status), parsed_args.output)
                             break
                 else:
-                    Utility.print_output_as_str("Solution Package Destroy Succesfully: {}".format(api_response), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package Destroy Successfully: {}".format(api_response), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
