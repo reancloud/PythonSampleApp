@@ -90,7 +90,7 @@ class RunInfraAzureSpec(Command):
 
     @staticmethod
     def validate(parsed_args):
-        """Validate argument"""
+        """Validate argument."""
         if parsed_args.upload_input_file is None and parsed_args.input is None and parsed_args.output is None:
             raise RuntimeError("Provide input, output or upload input file path.")
 
