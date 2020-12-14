@@ -144,21 +144,22 @@ class Utility:
         return api_client
 
     @staticmethod
-    def upload_code(file_path, app_name, code_upload=False):
+    def upload_code(file_path, app_name, code_upload=True):
         """Servlet API call to upload automation code manually."""
-        # This module will call REANTest upload servlet.
-        # This servlet upload code file to s3 bucket of provider and that s3 object name will get used for test.
-
-        file_name = 'code-' + app_name + '-' + uuid.uuid4().hex
+        # HcaptTest Git code upload only supports zip file. for other file upload set code_upload to False
+        if not file_path:
+            raise RuntimeError('file path is empty please provide valid path')
 
         if not os.path.isfile(file_path):
             raise RuntimeError('file %s does not exists' % file_path)
 
         file_extension = os.path.splitext(file_path)[1].lower()
 
-        # REANTest only support zip file to upload
-        if file_extension != ".zip":
-            raise RuntimeError('Invalid file type %s, test only support zip file upload' % file_path)
+        if code_upload:
+            if file_extension != ".zip":
+                raise RuntimeError("Upload code only support zip file.")
+
+        file_name = 'code-' + app_name + '-' + uuid.uuid4().hex + file_extension
 
         file = {'file': open(file_path, 'rb')}
 
@@ -166,9 +167,9 @@ class Utility:
         HEADERS = {'Authorization': credentials}
 
         if code_upload:
-            params = {'filename': file_name + '.zip', 'userId': credentials.split(':')[0], 'awspecIO': 'true'}
+            params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'true'}
         else:
-            params = {'filename': file_name + '.zip', 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
+            params = {'filename': file_name, 'userId': credentials.split(':')[0], 'awspecIO': 'null'}
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         responce = requests.post(PlatformUtility.get_url('/api/hcap-test/test-service/storage/upload-file'),
