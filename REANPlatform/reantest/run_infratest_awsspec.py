@@ -21,8 +21,9 @@ class RunInfraTestAwsSpec(Command):
         parser.add_argument('--name', '-n', help='Set the name for this Infra test Job', required=True)
         parser.add_argument('--provider_file_path', '-pf', help='Provide file aws provider json file path',
                             required=True)
-        parser.add_argument('--input', '-i', help='Input json file', required=True)
-        parser.add_argument('--output', '-o', help='Output json file', required=True)
+        parser.add_argument('--input', '-i', help='Input json file', required=False)
+        parser.add_argument('--output', '-o', help='Output json file', required=False)
+        parser.add_argument('--upload_input_file', '-u', help='Infrastructure detail file as zip', required=False)
         parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
         return parser
@@ -32,9 +33,11 @@ class RunInfraTestAwsSpec(Command):
         try:
 
             self.log.debug(parsed_args)
-            body = test_sdk_client.AwspecParamOld()
-            body.name = parsed_args.name
+            awspec_param_old = test_sdk_client.AwspecParamOld()
+            awspec_param_old.name = parsed_args.name
             aws_provider = test_sdk_client.AwsProviderOld()
+            RunInfraTestAwsSpec.validate(parsed_args)
+
             with Utility.open_file(parsed_args.provider_file_path) as handle:
                 filedata = handle.read()
 
@@ -64,23 +67,30 @@ class RunInfraTestAwsSpec(Command):
                 assume_role.external_id = provider_json['assume_role']['external_id']
                 aws_provider.assume_role = assume_role
 
-            body.provider = aws_provider
+            awspec_param_old.provider = aws_provider
 
-            with Utility.open_file(parsed_args.input) as handle:
-                input_data = handle.read()
+            if parsed_args.upload_input_file is not None:
+                self.log.debug("Uploading input file ...")
+                awspec_param_old.actual_input_file_name = parsed_args.upload_input_file
+                awspec_param_old.input_file_name = Utility.upload_code(
+                    parsed_args.upload_input_file, parsed_args.name, False)
+                self.log.debug("Input code object Name : %s ", awspec_param_old.input_file_name)
+            else:
+                with Utility.open_file(parsed_args.input) as handle:
+                    input_data = handle.read()
 
-            body.input = json.loads(input_data)
+                awspec_param_old.input = json.loads(input_data)
 
-            with Utility.open_file(parsed_args.output) as handle:
-                output_data = handle.read()
+                with Utility.open_file(parsed_args.output) as handle:
+                    output_data = handle.read()
 
-            body.output = json.loads(output_data)
+                awspec_param_old.output = json.loads(output_data)
 
-            self.log.debug(body)
+            self.log.debug(awspec_param_old)
             self.log.debug("Execution stared for RunInfraTestAwsSpec")
 
             job_id = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
-                Utility.set_headers()).run_default_awspec_using_post(body)
+                Utility.set_headers()).run_default_awspec_using_post(awspec_param_old)
             self.log.debug("Response is------------: %s ", job_id)
             Utility.export_jobid(parsed_args.name, job_id, parsed_args.export_jobid_path)
             print("The request Infra awsspec test submitted successfully. Job Id is : ", job_id)
@@ -90,6 +100,16 @@ class RunInfraTestAwsSpec(Command):
 
         except Exception as exception:
             Utility.print_exception(exception)
+
+    @staticmethod
+    def validate(parsed_args):
+        """Validate argument."""
+        if parsed_args.upload_input_file is None and parsed_args.input is None and parsed_args.output is None:
+            raise RuntimeError("Provide input, output or upload input file path.")
+
+        if parsed_args.upload_input_file is None:
+            if parsed_args.input is None or parsed_args.output is None:
+                raise RuntimeError("Provide input and output.")
 
     @staticmethod
     def validate_instance_profile_inputs(params):
