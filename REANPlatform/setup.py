@@ -67,7 +67,8 @@ setup(
             'rean-deploy = reanplatform.reanhelp:HelpDeploy',
             'rean-test = reanplatform.reanhelp:HelpTest',
             'rean-mnc = reanplatform.reanhelp:HelpMnc',
-            'rean-auth = reanplatform.reanhelp:HelpAuth'
+            'rean-auth = reanplatform.reanhelp:HelpAuth',
+            'rean-workflow = reanplatform.reanhelp:HelpWorkflow'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
