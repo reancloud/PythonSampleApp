@@ -45,3 +45,11 @@ class HelpPlatform(Command):
         """get_parser."""
     def take_action(self, parsed_args):
         """take_action."""
+
+class HelpWorkflow(Command):
+    """Details of rean-workflow cli."""
+
+    def get_parser(self, prog_name):
+        """get_parser."""
+    def take_action(self, parsed_args):
+        """take_action."""
