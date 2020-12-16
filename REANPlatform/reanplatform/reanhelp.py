@@ -46,6 +46,7 @@ class HelpPlatform(Command):
     def take_action(self, parsed_args):
         """take_action."""
 
+
 class HelpWorkflow(Command):
     """Details of rean-workflow cli."""
 
