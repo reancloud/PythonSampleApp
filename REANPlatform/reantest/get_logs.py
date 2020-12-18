@@ -9,7 +9,7 @@ class GetLogs(Command):
     """Get user job status."""
 
     log = logging.getLogger(__name__)
-    _epilog = 'Example : \n\t rean-test get-job-status -j <job_id>'
+    _epilog = 'Example : \n\t rean-test get-job-logs -j <job_id> -f <firefox_version> -o <path_to_output_directory>'
 
     def get_parser(self, prog_name):
         """get_parser."""
