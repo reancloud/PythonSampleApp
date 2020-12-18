@@ -1,7 +1,6 @@
 """Run get report CLI."""
 
 import os
-from pathlib import Path
 import logging
 from cliff.command import Command
 import test_sdk_client

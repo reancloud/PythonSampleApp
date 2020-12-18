@@ -132,7 +132,8 @@ setup(
             'run-infratest-default-awsspec = reantest.run_infratest_default_awspec:RunInfraTestDefaultAwsSpec',
             'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec',
             'run-api-test = reantest.run_api_test:RunApiTest',
-            'get-accelerator-version = reantest.get_accelerator_version:GetAcceleratorVersion'
+            'get-accelerator-version = reantest.get_accelerator_version:GetAcceleratorVersion',
+            'get-job-logs = reantest.get_logs:GetLogs',
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
