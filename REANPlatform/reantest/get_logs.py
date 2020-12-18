@@ -5,6 +5,7 @@ from cliff.command import Command
 from reantest.utility import Utility
 import test_sdk_client
 
+
 class GetLogs(Command):
     """Get user job status."""
 
