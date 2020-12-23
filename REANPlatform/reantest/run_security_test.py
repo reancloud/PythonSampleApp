@@ -49,7 +49,7 @@ class RunSecurityTest(Command):
             if parsed_args.username is not None and (parsed_args.password is None or parsed_args.username_field_xpath is None or parsed_args.password_field_xpath is None or parsed_args.submit_button_xpath is None):
                 raise RuntimeError('Invalid login details')
 
-            security_test_dto_new = test_sdk_client.SecurityTestDtoNew()
+            security_test_dto_new = test_sdk_client.SecurityTestDtoOld()
 
             security_test_dto_new.test_url = parsed_args.url
             security_test_dto_new.name = parsed_args.name
@@ -59,7 +59,7 @@ class RunSecurityTest(Command):
                 security_test_dto_new.username = parsed_args.username
                 security_test_dto_new.password = parsed_args.password
 
-                security_test_login_url_detail_dto = test_sdk_client.SecurityTestLoginUrlDetailDto()
+                security_test_login_url_detail_dto = test_sdk_client.SecurityTestLoginUrlDetailDtoOld()
 
                 security_test_login_url_detail_dto.username_field_xpath = parsed_args.username_field_xpath
                 security_test_login_url_detail_dto.password_field_xpath = parsed_args.password_field_xpath
@@ -70,7 +70,8 @@ class RunSecurityTest(Command):
             self.log.debug(security_test_dto_new)
             self.log.debug("Execution stared for Security Test")
 
-            response_security_test_dto_new = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_security_test(security_test_dto_new)
+            response_security_test_dto_new = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                Utility.set_headers()).run_security_test_using_post1(security_test_dto_new)
             job_id = ''
             if response_security_test_dto_new.id:
                 job_id = response_security_test_dto_new.id
@@ -80,7 +81,7 @@ class RunSecurityTest(Command):
             print("The request Security test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.RunTestApi(Utility.set_headers()), job_id)
+                Utility.wait_while_job_running(job_id)
 
         except Exception as exception:
             Utility.print_exception(exception)

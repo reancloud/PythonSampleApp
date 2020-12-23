@@ -7,7 +7,7 @@ PROJECT = 'reanplatform-cli'
 
 # Change docs/sphinx/conf.py too!
 
-VERSION = '3.0.2'
+VERSION = '3.0.3'
 
 try:
     long_description = open('README.rst', 'rt').read()
@@ -67,7 +67,8 @@ setup(
             'rean-deploy = reanplatform.reanhelp:HelpDeploy',
             'rean-test = reanplatform.reanhelp:HelpTest',
             'rean-mnc = reanplatform.reanhelp:HelpMnc',
-            'rean-auth = reanplatform.reanhelp:HelpAuth'
+            'rean-auth = reanplatform.reanhelp:HelpAuth',
+            'rean-workflow = reanplatform.reanhelp:HelpWorkflow'
         ],
         'rean.deploy': [
             'list-provider = deploy.listproviders:ListProvider',
@@ -118,27 +119,21 @@ setup(
         ],
         'rean.test': [
             'run-url-test = reantest.run_url:RunURLTest',
-            # 'run-upa-test = reantest.run_upa:RunUPA',
             'run-security-test = reantest.run_security_test:RunSecurityTest',
             'run-automation-test = reantest.run_cross_browser_test:RunCrossBrowserTest',
             'run-scale-test =  reantest.run_scale_now_test:RunScaleNowTest',
             'get-job-status = reantest.get_job_status:GetJobStatus',
             'get-job-report = reantest.get_job_report:GetJobReport',
             'get-excel-report = reantest.get_excel_report:GetExcelReport',
-            # 'create-provider = reantest.create_provider:CreateProvider',
-            # 'list-providers = reantest.list_providers:ListProvider',
             'get-infra-job-status = reantest.get_infra_job_status:GetInfraJobStatus',
             'run-infra-test = reantest.run_infra_test:RunInfraTest',
             'run-infra-awsspec = reantest.run_infratest_awsspec:RunInfraTestAwsSpec',
-            # 'update-tags = reantest.config_update_tags:ConfigUpdateTags',
-            # 'update-property = reantest.config_update_property:ConfigUpdateProperty',
-            # 'list-config-properties = reantest.get_all_config_properties:ConfigListProperties',
             'run-infra-azurespec = reantest.run_infratest_azurespec:RunInfraAzureSpec',
-            # 'get-provider = reantest.get_provider:GetProvider',
-            # 'update-provider = reantest.update_provider:UpdateProvider',
             'run-infratest-default-awsspec = reantest.run_infratest_default_awspec:RunInfraTestDefaultAwsSpec',
             'run-infratest-default-azurespec = reantest.run_infratest_default_azurespec:RunInfraDefaultAzureSpec',
-            'get-accelerator-version = reantest.get_accelerator_version:GetAcceleratorVersion'
+            'run-api-test = reantest.run_api_test:RunApiTest',
+            'get-accelerator-version = reantest.get_accelerator_version:GetAcceleratorVersion',
+            'get-job-logs = reantest.get_logs:GetLogs',
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',

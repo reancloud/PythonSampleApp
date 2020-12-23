@@ -14,7 +14,7 @@ from workflow.getsolutiondeployment import GetSolutionDeployment
 
 
 class SolutionDestroy(Command):
-    """Destroy Solution Package By Id"""
+    """Destroy the solution package."""
 
     log = logging.getLogger(__name__)
 
@@ -24,14 +24,14 @@ class SolutionDestroy(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(SolutionDestroy, self).get_parser(prog_name)
+        parser.add_argument('--solution-name', '-n', help='Solution package name. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--solution-version', '-sv', help='Solution package version. This parameter is required to get the solution package.', required=True)
+        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name. This parameter is required to get the solution package deployment.', required=True)
+        parser.add_argument('--wait', '-w', action="store_true", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
         parser.add_argument('--output', '-o',
                             help="Write output to <file> instead of stdout.",
                             required=False
                            )
-        parser.add_argument('--solution-name', '-n', help='Solution package name.', required=True)
-        parser.add_argument('--solution-version', '-sv', help='Solution package version.', required=True)
-        parser.add_argument('--deployment-name', '-dn', help='Solution package deployment name.', required=True)
-        parser.add_argument('--wait', '-w', action="store", default="False", help='Wait flag for explicitly waiting to destroy the deployment', required=False)
         return parser
 
     def take_action(self, parsed_args):
@@ -39,7 +39,7 @@ class SolutionDestroy(Command):
         solution_name = parsed_args.solution_name
         solution_version = parsed_args.solution_version
         deployment_name = parsed_args.deployment_name
-        solution_wait = bool(parsed_args.wait)
+        solution_wait = parsed_args.wait
         SolutionDestroy.validate_parameters(solution_name, solution_version, deployment_name)
         SolutionDestroy.destroy_solution_package(solution_name, solution_version, deployment_name, solution_wait, parsed_args)
 
@@ -57,7 +57,7 @@ class SolutionDestroy(Command):
 
     @staticmethod
     def destroy_solution_package(solution_name, solution_version, deployment_name, solution_wait, parsed_args):
-        """destroy solution package using id."""
+        """destroy solution package"""
         try:
             solution_deployment = GetSolutionDeployment.get_solution_package(solution_name, solution_version, deployment_name)
             if solution_deployment is not None and solution_deployment.id is not None:
@@ -73,6 +73,6 @@ class SolutionDestroy(Command):
                             Utility.print_output_as_str("Solution Package Destroy status : {}".format(deployment_status), parsed_args.output)
                             break
                 else:
-                    Utility.print_output_as_str("Solution Package Destroy Succesfully: {}".format(api_response), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package Destroy Successfully: {}".format(api_response), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

@@ -93,7 +93,7 @@ class RunScaleNowTest(Command):
 
             self.log.debug(browser_list)
 
-            scale_test_dto = test_sdk_client.ScaleTestDto()
+            scale_test_dto = test_sdk_client.ScaleTestOldDto()
 
             scale_test_dto.name = parsed_args.name
             scale_test_dto.browsers = browser_list
@@ -117,7 +117,7 @@ class RunScaleNowTest(Command):
                 self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
             else:
                 scale_test_dto.codebase_type = 'GIT'
-                git_config_dto = test_sdk_client.GitConfigDto()
+                git_config_dto = test_sdk_client.GitConfigOldDto()
 
                 git_config_dto.url = parsed_args.git_repository_url
                 git_config_dto.passsword = parsed_args.git_password
@@ -125,7 +125,7 @@ class RunScaleNowTest(Command):
                 git_config_dto.branch = parsed_args.git_branch
                 scale_test_dto.git_config = git_config_dto
 
-            execution_details_dto = test_sdk_client.ExecutionDetailsDto()
+            execution_details_dto = test_sdk_client.ExecutionDetailsOldDto()
             execution_details_dto.run_command = parsed_args.command_to_run_test
             execution_details_dto.pre_script = parsed_args.pre_script
             execution_details_dto.post_script = parsed_args.post_script
@@ -136,7 +136,8 @@ class RunScaleNowTest(Command):
             self.log.debug(scale_test_dto)
             self.log.debug("Execution stared for Scale Test")
 
-            response_scale_test_dto = test_sdk_client.RunTestNewApi(Utility.set_headers()).run_scale_test(scale_test_dto)
+            response_scale_test_dto = test_sdk_client.TestbackwardscompatibilitycontrollerApi(
+                Utility.set_headers()).run_scale_test_using_post1(scale_test_dto)
 
             job_id = ""
             if response_scale_test_dto.id:
@@ -147,7 +148,7 @@ class RunScaleNowTest(Command):
             print("The request scale test submitted successfully. Job Id is : ", job_id)
 
             if parsed_args.wait:
-                Utility.wait_while_job_running(test_sdk_client.RunTestApi(Utility.set_headers()), job_id)
+                Utility.wait_while_job_running(job_id)
 
         except Exception as exception:
             self.log.error(exception)

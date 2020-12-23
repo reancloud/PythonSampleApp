@@ -17,7 +17,7 @@ from workflow.getsolution import GetSolution
 
 
 class DeleteSolution(Command):
-    """Delete the HCAP Workflow solution package."""
+    """Delete the solution package."""
 
     log = logging.getLogger(__name__)
 
@@ -57,6 +57,6 @@ class DeleteSolution(Command):
                 api_client = set_header_parameter(SolutionUtility.create_api_client(), Utility.get_url(WorkflowConstants.SOLUTION_URL))
                 api_solution_instance = solution_sdk_client.Solutionpackagecontrollerv2Api(api_client)
                 deleted_solution = api_solution_instance.delete_using_delete2(solution_package.id)
-                Utility.print_output_as_str("Solution Package deleted Succesfully: {}".format(deleted_solution), parsed_args.output)
+                Utility.print_output_as_str("Solution Package deleted Successfully: {}".format(deleted_solution), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

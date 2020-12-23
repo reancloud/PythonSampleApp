@@ -12,7 +12,7 @@ class Workflow(App):
         """__init__."""
         super(Workflow, self).__init__(
             description='CLI for Workflow deployment.',
-            version='0.0.1',
+            version='0.16.0',
             command_manager=CommandManager('rean.workflow'),
             interactive_app_factory=InteractiveApp(App, CommandManager('rean.workflow'), stdin=None, stdout=None),
             deferred_help=True,

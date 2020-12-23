@@ -16,7 +16,7 @@ from workflow.solution_utility import SolutionUtility
 
 
 class CreateSolution(Command):
-    """Create the HCAP Workflow solution package."""
+    """Create the solution package."""
 
     log = logging.getLogger(__name__)
 
@@ -26,8 +26,8 @@ class CreateSolution(Command):
     def get_parser(self, prog_name):
         """get_parser."""
         parser = super(CreateSolution, self).get_parser(prog_name)
-        parser.add_argument('--solution-file', '-s', help='Solution file. HCAP Workflow solution file path. A path can be absolute path.', required=True)
-        parser.add_argument('--update-if-exists', '-u', action="store", default="False", help='This parameter will update the existing solution package based on solution name and solution version.', required=False)
+        parser.add_argument('--solution-file', '-s', help='Json file with applicable key-value pair for solution package. Must specify an absolute path.', required=True)
+        parser.add_argument('--update-if-exists', '-u', action='store_true', default="False", help='Update the existing solution package based on solution name and solution version', required=False)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         return parser
 
@@ -51,29 +51,33 @@ class CreateSolution(Command):
         try:
             os.chdir(os.path.dirname(solution_path))
             with open(basename(solution_path), "r") as handle:
-                filedata = handle.read()
+                if handle.name.endswith('.json'):
+                    filedata = handle.read()
+                else:
+                    raise RuntimeError("Provide the absolute path of the solution package JSON file.")
 
             jsondata = json.loads(filedata)
+            CreateSolution.validate_input_json(jsondata)
             api_solution_instance = CreateSolution.get_api_instance(jsondata['schemaVersion'])
-            update_if_exists = bool(parsed_args.update_if_exists)
+            update_if_exists = parsed_args.update_if_exists
 
             if update_if_exists is True:
                 saved_solution = CreateSolution.update_solution(api_solution_instance, jsondata)
             else:
                 saved_solution = CreateSolution.save_solution(api_solution_instance, jsondata)
-            Utility.print_output_as_str("Solution Package Added Succesfully: {}".format(saved_solution), parsed_args.output)
+            Utility.print_output_as_str("Solution Package Added Successfully: {}".format(saved_solution), parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
     @staticmethod
     def get_api_instance(schema_version):
         """Get API instance."""
-        if schema_version == "1.0":
+        if schema_version.startswith("1"):
             api_client = set_header_parameter(SolutionUtility.create_api_client(), Utility.get_url(WorkflowConstants.SOLUTION_URL))
             api_solution_instance = solution_sdk_client.Solutionpackagecontrollerv1Api(api_client)
             return api_solution_instance
 
-        if schema_version == "2.0":
+        if schema_version.startswith("2"):
             api_client = set_header_parameter(SolutionUtility.create_api_client(), Utility.get_url(WorkflowConstants.SOLUTION_URL))
             api_solution_instance = solution_sdk_client.Solutionpackagecontrollerv2Api(api_client)
             return api_solution_instance
@@ -81,24 +85,41 @@ class CreateSolution(Command):
     @staticmethod
     def save_solution(api_solution_instance, jsondata):
         """Save Solution."""
-        if jsondata['schemaVersion'] == "1.0":
+        if jsondata['schemaVersion'].startswith("1"):
             return api_solution_instance.save_solution_using_post1(jsondata)
 
-        if jsondata['schemaVersion'] == "2.0":
+        if jsondata['schemaVersion'].startswith("2"):
             return api_solution_instance.save_solution_using_post2(jsondata)
 
     @staticmethod
     def update_solution(api_solution_instance, jsondata):
         """Update Solution."""
         try:
-            if jsondata['schemaVersion'] == "1.0":
+            if jsondata['schemaVersion'].startswith("1"):
                 solution = api_solution_instance.get_solution_by_name_and_version_using_get1(jsondata['metadata']['name'], jsondata['metadata']['version'])
                 jsondata['id'] = solution.id
                 return api_solution_instance.update_solution_using_put1(jsondata)
 
-            if jsondata['schemaVersion'] == "2.0":
+            if jsondata['schemaVersion'].startswith("2"):
                 solution = api_solution_instance.get_solution_by_name_and_version_using_get2(jsondata['metadata']['name'], jsondata['metadata']['version'])
                 jsondata['id'] = solution.id
                 return api_solution_instance.update_solution_using_put2(jsondata)
         except ApiException as api_exception:
             return CreateSolution.save_solution(api_solution_instance, jsondata)
+
+    @staticmethod
+    def validate_input_json(jsondata):
+        """ validate the input json """
+        if "schemaVersion" not in jsondata:
+            raise RuntimeError("Provide the schemaVersion in solution package JSON file.")
+
+        if "metadata" not in jsondata:
+            raise RuntimeError("Provide the metadata in solution package JSON file.")
+
+        if jsondata["metadata"] is not None:
+            if "name" not in jsondata["metadata"]:
+                raise RuntimeError("Provide the name in metadata of solution package JSON file.")
+            if "version" not in jsondata["metadata"]:
+                raise RuntimeError("Provide the version in metadata of solution package JSON file.")
+        else:
+            raise RuntimeError("metadata should not be null in solution package JSON file.")
