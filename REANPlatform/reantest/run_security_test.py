@@ -21,11 +21,18 @@ class RunSecurityTest(Command):
         parser.add_argument('--security_packs', '-p', choices=['AppScan', 'HttpHeader', 'All'],
                             help='Set Security packs', required=True)
 
+        parser.add_argument('--spider_depth', '-sd', help='Set spider depth', default=0, required=False)
+        parser.add_argument('--use_ajax_spider', '-as', action='store_true',
+                            help='Set to use ajax spider', default=False)
+
         parser.add_argument('--username', '-un', help='Set User name', required=False)
         parser.add_argument('--password', '-pw', help='Set password', required=False)
         parser.add_argument('--username_field_xpath', '-ux', help='Set username field xpath', required=False)
         parser.add_argument('--password_field_xpath', '-px', help='Set password field xpath', required=False)
-        parser.add_argument('--submit_button_xpath', '-bx', help='Ser submit button xpath', required=False)
+        parser.add_argument('--submit_button_xpath', '-bx', help='Set submit button xpath', required=False)
+        parser.add_argument('--login_url', '-li', help='Set login url', required=False)
+        parser.add_argument('--logout_url', '-lo', help='Set logout url', required=False)
+
         parser.add_argument('--export_jobid_path', '-ej', help='Export job id to file absolute path.')
         parser.add_argument('--wait', '-w', action='store_true', help='Wait until job finish', default=False)
 
@@ -54,6 +61,8 @@ class RunSecurityTest(Command):
             security_test_dto_new.test_url = parsed_args.url
             security_test_dto_new.name = parsed_args.name
             security_test_dto_new.security_pack = security_packs_list
+            security_test_dto_new.spider_depth = parsed_args.spider_depth
+            security_test_dto_new.ajax_spider = parsed_args.use_ajax_spider
 
             if parsed_args.username:
                 security_test_dto_new.username = parsed_args.username
@@ -64,6 +73,8 @@ class RunSecurityTest(Command):
                 security_test_login_url_detail_dto.username_field_xpath = parsed_args.username_field_xpath
                 security_test_login_url_detail_dto.password_field_xpath = parsed_args.password_field_xpath
                 security_test_login_url_detail_dto.submit_button_xpath = parsed_args.submit_button_xpath
+                security_test_login_url_detail_dto.login_url = parsed_args.login_url
+                security_test_login_url_detail_dto.logout_url = parsed_args.logout_url
 
                 security_test_dto_new.url_login_detail = security_test_login_url_detail_dto
 
