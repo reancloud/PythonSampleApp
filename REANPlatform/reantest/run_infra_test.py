@@ -24,7 +24,7 @@ class RunInfraTest(Command):
         parser.add_argument('--name', '-n', help='Set the name for this Infra test Job', required=True)
         parser.add_argument('--ip_address', '-i', help='IP of machine to be tested using serverspec or inspec')
         parser.add_argument('--spec_type', '-s', help='Set spec type',
-                            choices=['Serverspec', 'Awspec', 'Inspec', 'Azurespec'], required=True)
+                            choices=['Serverspec', 'Awspec', 'Inspec', 'Azurespec', 'Gcpspec'], required=True)
         parser.add_argument('--user', '-u', help='User of machine to be tested using serverspec or inspec')
         parser.add_argument('--password', '-p', help='Password of machine to be tested using serverspec or inspec')
         parser.add_argument('--key', '-k', help='Path to Key for machine to be tested using serverspec or inspec')
@@ -76,7 +76,6 @@ class RunInfraTest(Command):
             infra_test_dto_new.name = parsed_args.name
 
             infra_test_dto_new.re_run_from = ""
-            infra_test_dto_new.spec_type = parsed_args.spec_type
 
             if parsed_args.spec_type == "Serverspec" or parsed_args.spec_type == "Inspec":
 
@@ -94,6 +93,7 @@ class RunInfraTest(Command):
                         key = handle.read()
                     machine_credentials.key = key
                 infra_test_dto_new.machine_creds = machine_credentials
+                infra_test_dto_new.spec_type = parsed_args.spec_type
             else:
                 if parsed_args.spec_type == "Awspec":
                     self.log.debug("Creating aws provider json")
@@ -118,7 +118,8 @@ class RunInfraTest(Command):
                         aws_provider.assume_role = assume_role
 
                     infra_test_dto_new.provider = aws_provider
-                else:
+                    infra_test_dto_new.spec_type = parsed_args.spec_type
+                elif parsed_args.spec_type == "Azurespec":
                     self.log.debug("Creating azure provider json")
                     azure_provider = test_sdk_client.AzureProviderOld()
 
@@ -133,7 +134,23 @@ class RunInfraTest(Command):
                     azure_provider.tenant_id = provider_details_json['tenant_id']
 
                     infra_test_dto_new.azure_provider = azure_provider
+                    infra_test_dto_new.spec_type = parsed_args.spec_type
+                elif parsed_args.spec_type == 'Gcpspec':
+                    self.log.debug("Creating gcp provider json")
 
+                    with Utility.open_file(parsed_args.provider_json) as handle:
+                        filedata = handle.read()
+
+                    provider_details_json = json.loads(filedata)
+
+                    gcpspec_dto = test_sdk_client.GcpInfraTestDto()
+                    gcpspec_dto.project = provider_details_json['project']
+                    gcpspec_dto.credentials = provider_details_json['credentials']
+
+                    gcpspec_dto.infra_spec_type = 'gcpspec'  # Hack, to fix issue with InfraTestOldDto type
+                    infra_test_dto_new.spec_type = 'gcpspec'
+
+                    infra_test_dto_new.gcp_infra_test_dto = gcpspec_dto
                 if parsed_args.upload_input_file_path != "":
                     infra_test_dto_new.awspec_actual_input_file = parsed_args.upload_input_file_path
                     self.log.debug("Uploading input file ...")
@@ -193,7 +210,7 @@ class RunInfraTest(Command):
         """Validate parameters."""
         error_message = ""
 
-        if parsed_args.spec_type != 'Awspec' and parsed_args.spec_type != 'Azurespec':
+        if parsed_args.spec_type == 'Serverspec' or parsed_args.spec_type == 'Inspec':
             if parsed_args.password is None and parsed_args.key is None:
                 error_message = "Password or key required"
 
@@ -204,7 +221,8 @@ class RunInfraTest(Command):
             if parsed_args.git_repository_url is not None:
                 error_message = "Upload file name and Git repository url parameters can not be used together"
 
-        if parsed_args.spec_type != 'Serverspec' and parsed_args.spec_type != 'Inspec':
+        if parsed_args.spec_type == 'Awspec' or parsed_args.spec_type == 'Azurespec' \
+                or parsed_args.spec_type == 'Gcpspec':
             if parsed_args.provider_json is None:
                 error_message = "Provider file path is required."
 
