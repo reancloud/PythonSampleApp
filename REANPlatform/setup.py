@@ -38,7 +38,7 @@ setup(
     scripts=[],
 
     provides=[],
-    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'urllib3==1.25.11', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'deploy_sdk_client==3.0.0', 'test_sdk_client==2.22.3', 'solution_sdk_client==0.16.0', 'workflow_sdk_client==0.16.0'],
+    install_requires=['cliff==2.15.0', 'validators==0.14.0', 'boto3==1.9.225', 'urllib3==1.25.11', 'wheel==0.33.6', 'pycryptodome==3.9.0', 'certifi==2019.6.16', 'python-jenkins==1.5.0', 'cmd2==0.9.1', 'setuptools>=40.4.1', 'authnz_sdk_client==3.0.0', 'deploy_sdk_client==3.0.0', 'test_sdk_client==3.2.0', 'solution_sdk_client==0.16.0', 'workflow_sdk_client==0.16.0'],
     namespace_packages=[],
     packages=find_packages(),
     include_package_data=True,
