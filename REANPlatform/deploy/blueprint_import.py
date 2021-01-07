@@ -72,20 +72,25 @@ class ImportBlueprint(Command):
 
             # Read data from blueprint
             for one_env in blueprint_all_env.environment_imports:
+                key = one_env.import_config.name + '-' + one_env.import_config.env_version
+
                 # Data load from prepar blueprint attribute file
                 for blueprint_attribute_key in jsondata:
-                    if (jsondata[blueprint_attribute_key]['connection_id'] and jsondata[blueprint_attribute_key]['provider_id']):
-                        blueprint_all_env.environment_imports[index].import_config.connection_id = jsondata[blueprint_attribute_key]['connection_id']
-                        blueprint_all_env.environment_imports[index].import_config.provider_id = jsondata[blueprint_attribute_key]['provider_id']
-                        blueprint_all_env.environment_imports[index].import_config.name = jsondata[blueprint_attribute_key]['name']
-                        blueprint_all_env.environment_imports[index].import_config.description = jsondata[blueprint_attribute_key]['description']
-                        blueprint_all_env.environment_imports[index].import_config.env_version = jsondata[blueprint_attribute_key]['env_version']
-                        blueprint_all_env.environment_imports[index].import_config.region = jsondata[blueprint_attribute_key]['region']
-                        env_names.append(blueprint_all_env.environment_imports[index].import_config.name)
-                        index = index + 1
-                    else:
-                        exception_msg = "Connection_id and provider_id are missing to %s environment in the file location %s: " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path)
-                        raise RuntimeError(re.sub(' +', ' ', exception_msg))
+                    if blueprint_attribute_key == key:
+                        if (jsondata[blueprint_attribute_key]['connection_id'] and jsondata[blueprint_attribute_key]['provider_id']):
+                            blueprint_all_env.environment_imports[index].import_config.connection_id = jsondata[blueprint_attribute_key]['connection_id']
+                            blueprint_all_env.environment_imports[index].import_config.provider_id = jsondata[blueprint_attribute_key]['provider_id']
+                            blueprint_all_env.environment_imports[index].import_config.name = jsondata[blueprint_attribute_key]['name']
+                            blueprint_all_env.environment_imports[index].import_config.description = jsondata[blueprint_attribute_key]['description']
+                            blueprint_all_env.environment_imports[index].import_config.env_version = jsondata[blueprint_attribute_key]['env_version']
+                            blueprint_all_env.environment_imports[index].import_config.region = jsondata[blueprint_attribute_key]['region']
+                            env_names.append(blueprint_all_env.environment_imports[index].import_config.name)
+                            index = index + 1
+                        else:
+                            exception_msg = "Connection_id and provider_id are\
+                                missing to %s environment in the file\
+                                 location %s: " % (blueprint_all_env.environment_imports[index].import_config.name, attribute_path)
+                            raise RuntimeError(re.sub(' +', ' ', exception_msg))
 
             if group_name is not None and actions is not None:
                 api_instance_group = authnz_sdk_client.GroupControllerApi(AuthnzUtility.set_headers())
