@@ -46,6 +46,7 @@ class PlanDeployment(Command):
         plan_response = None
         child_input_json = None
         depends_on_json = None
+        connections = None
 
         if parsed_args.input_json_file:
             child_input_json = PlanDeployment.read_file_as_json_object(parsed_args.input_json_file)
@@ -61,6 +62,7 @@ class PlanDeployment(Command):
             provider_name=parsed_args.provider_name,
             input_json=child_input_json,
             parent_deployments=depends_on_json,
+            connections=connections,
             chef_environment=parsed_args.chef_environment
         )
 
