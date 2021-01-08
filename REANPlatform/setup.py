@@ -103,7 +103,8 @@ setup(
             'get-provider = deploy.get_provider:GetProvider',
             'get-connection = deploy.get_connection:GetConnection',
             'get-deployment-resource-ids = deploy.get_deployment_resource_ids:GetDeploymentResourceIds',
-            'get-accelerator-version = deploy.get_accelerator_version:GetAcceleratorVersion'
+            'get-accelerator-version = deploy.get_accelerator_version:GetAcceleratorVersion',
+            'plan-environment = deploy.plan_environment:PlanEnvironment'
         ],
         'rean.auth': [
             'get-all-users = auth.get_users:GetUsers',

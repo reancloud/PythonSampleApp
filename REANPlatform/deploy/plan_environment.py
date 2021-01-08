@@ -1,4 +1,4 @@
-"""Plan Deployment."""
+"""Plan Environment."""
 import os
 import os.path
 import logging
@@ -12,20 +12,19 @@ from deploy.constants import DeployConstants
 from deploy.utility import DeployUtility
 
 
-class PlanDeployment(Command):
-    """Plan Deployment."""
+class PlanEnvironment(Command):
+    """Plan Environment."""
 
     log = logging.getLogger(__name__)
 
     # EPILog will get print after commands
-    _epilog = 'Example : rean-deploy plan-deployment --env_id 1 --deployment_name dummyDeployment'
+    _epilog = 'Example : rean-deploy plan-environment --env_id 1'
 
     def get_parser(self, prog_name):
         """get_parser."""
         # Define parser
-        parser = super(PlanDeployment, self).get_parser(prog_name)
+        parser = super(PlanEnvironment, self).get_parser(prog_name)
         parser.add_argument('--env_id', '-i', help='Environment id', required=True)
-        parser.add_argument('--deployment_name', '-dn', default='default', help='Deployment Name. Please provide this attribute if deployment name is not default.', required=True)
         parser.add_argument('--output', '-o', help="Write output to <file> instead of stdout.", required=False)
         parser.add_argument('--resource_connection', '-f', help="Json file with applicable resouce name-connection name pair. File absolute path \nExample:\n\"[{\"resourceName\" : \"connectionName\"}]", required=False)
         parser.add_argument('--chef_environment', '-ce', help="Chef Environment Name(Only when HCAP Deploy is configured for Chefserver)", required=False)
@@ -42,22 +41,21 @@ class PlanDeployment(Command):
         """take_action."""
         # Define parsed_args
         env_id = parsed_args.env_id
-        deployment_name = parsed_args.deployment_name
         plan_response = None
         child_input_json = None
         depends_on_json = None
         connections = None
 
         if parsed_args.input_json_file:
-            child_input_json = PlanDeployment.read_file_as_json_object(parsed_args.input_json_file)
+            child_input_json = PlanEnvironment.read_file_as_json_object(parsed_args.input_json_file)
         if parsed_args.parent_deployment_mappings:
-            depends_on_json = PlanDeployment.read_file_as_json_object(parsed_args.parent_deployment_mappings)
+            depends_on_json = PlanEnvironment.read_file_as_json_object(parsed_args.parent_deployment_mappings)
         if parsed_args.resource_connection:
-            connections = PlanDeployment.read_file_as_json_object(parsed_args.resource_connection)
+            connections = PlanEnvironment.read_file_as_json_object(parsed_args.resource_connection)
 
         deploy_config = deploy_sdk_client.DeploymentConfigurationDto(
             environment_id=parsed_args.env_id,
-            deployment_name=parsed_args.deployment_name,
+            deployment_name='',
             region=parsed_args.region,
             provider_name=parsed_args.provider_name,
             input_json=child_input_json,
