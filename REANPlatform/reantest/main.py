@@ -14,7 +14,7 @@ class Test(App):
         self.api_instance = None
         super(Test, self).__init__(
             description='CLI for REAN Test.',
-            version='2.22.3',
+            version='3.2.0',
             command_manager=CommandManager('rean.test'),
             interactive_app_factory=InteractiveApp(App, CommandManager('rean.test'), stdin=None, stdout=None),
             deferred_help=True,
