@@ -40,8 +40,14 @@ class GetLogs(Command):
                 browser_version = parsed_args.firefox
 
             api_instance = test_sdk_client.TeststoragecontrollerApi(Utility.set_headers())
-            api_response = api_instance.download_logs_by_browser_using_get(
-                browser_type, job_id, browser_version, _preload_content=False)
+
+            if browser_type is None:  # For Api and infra test where browsers are not used.
+                self.log.debug("Executing get log for non browser api")
+                api_response = api_instance.download_logs_for_non_browser_using_get(job_id, _preload_content=False)
+            else:
+                self.log.debug("Executing get logs by browser API")
+                api_response = api_instance.download_logs_by_browser_using_get(
+                    browser_type, job_id, browser_version, _preload_content=False)
 
             file_name = job_id + '-' + browser_type + '-' + browser_version + '.log'
             if parsed_args.output_directory is not None and Utility.validate_path(parsed_args):
@@ -58,4 +64,5 @@ class GetLogs(Command):
                 print("Logs downloaded successfully at " + os.path.abspath(file_name))
 
         except Exception as exception:
+            self.log.debug(exception)
             Utility.print_exception(exception)
