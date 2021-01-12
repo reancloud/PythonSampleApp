@@ -74,15 +74,14 @@ class RunApiTest(Command):
             job_param_dto = test_sdk_client.JobParamsDto()
 
             if parsed_args.upload_code_file_path != 'test':
-                job_param_dto.useUploadCode = True
+                job_param_dto.use_upload_code = True
                 self.log.debug("Uploading code file ...")
                 job_param_dto.actualupload_code_file_name = parsed_args.upload_code_file_path
                 job_param_dto.upload_code_file_name = Utility.upload_code(
                     parsed_args.upload_code_file_path, parsed_args.name)
                 self.log.debug("Code object Name : %s ", parsed_args.upload_code_file_path)
             else:
-                job_param_dto.useUploadCode = False
-
+                job_param_dto.use_upload_code = False
                 job_param_dto.git_url = parsed_args.git_repository_url
                 job_param_dto.git_password = parsed_args.git_password
                 job_param_dto.git_user = parsed_args.git_username
@@ -115,7 +114,6 @@ class RunApiTest(Command):
                 Utility.wait_while_job_running(job_id)
 
         except Exception as exception:
-            self.log.error(exception)
             Utility.print_exception(exception)
 
     @staticmethod
