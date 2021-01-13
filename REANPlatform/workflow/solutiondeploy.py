@@ -112,9 +112,11 @@ class SolutionDeploy(Command):
             api_response = workflow_api_instance.deploy_using_post(solution_deployment)
             if solution_wait is True and api_response.id is not None:
                 solution_status = SolutionDeploy.wait_for_status(solution_wait, workflow_api_instance, api_response.id)
-                Utility.print_output_as_str("Solution Package Deployed Successfully: {}".format(solution_status), parsed_args.output)
+                Utility.print_output_as_str("Solution Package Deployed Successfully")
+                Utility.print_output_as_dict(solution_status, parsed_args.output)
             else:
-                Utility.print_output_as_str("Solution Package Deployment Successfully: {}".format(api_response), parsed_args.output)
+                Utility.print_output_as_str("Solution Package Deployment Successfully")
+                Utility.print_output_as_dict(api_response, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
@@ -127,9 +129,11 @@ class SolutionDeploy(Command):
                 redeploy_response = workflow_api_instance.redeploy_using_put(solution_deployment)
                 if solution_wait is True and redeploy_response.id is not None:
                     redeploy_status = SolutionDeploy.wait_for_status(solution_wait, workflow_api_instance, redeploy_response.id)
-                    Utility.print_output_as_str("Solution Package ReDeployed Successfully: {}".format(redeploy_status), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package ReDeployed Successfully")
+                    Utility.print_output_as_dict(redeploy_status, parsed_args.output)
                 else:
-                    Utility.print_output_as_str("Solution Package Redeploy Successfully: {}".format(redeploy_response), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package Redeploy Successfully")
+                    Utility.print_output_as_dict(redeploy_response, parsed_args.output)
         except ApiException as api_exception:
             return SolutionDeploy.deploy_solution(workflow_api_instance, solution_wait, parsed_args, solution_deployment)
 
