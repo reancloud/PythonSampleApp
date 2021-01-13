@@ -70,9 +70,11 @@ class SolutionDestroy(Command):
                         if deployment_status.status != "FAILED" and deployment_status.status != "DESTROYED":
                             time.sleep(10)
                         else:
-                            Utility.print_output_as_str("Solution Package Destroy status : {}".format(deployment_status), parsed_args.output)
+                            Utility.print_output_as_str("Solution Package Destroy status")
+                            Utility.print_output_as_dict(deployment_status, parsed_args.output)
                             break
                 else:
-                    Utility.print_output_as_str("Solution Package Destroy Successfully: {}".format(api_response), parsed_args.output)
+                    Utility.print_output_as_str("Solution Package Destroy Successfully")
+                    Utility.print_output_as_dict(api_response, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)

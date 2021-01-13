@@ -65,7 +65,8 @@ class CreateSolution(Command):
                 saved_solution = CreateSolution.update_solution(api_solution_instance, jsondata)
             else:
                 saved_solution = CreateSolution.save_solution(api_solution_instance, jsondata)
-            Utility.print_output_as_str("Solution Package Added Successfully: {}".format(saved_solution), parsed_args.output)
+            Utility.print_output_as_str("Solution Package Added Successfully")
+            Utility.print_output_as_dict(saved_solution, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
