@@ -8,7 +8,7 @@ import test_sdk_client
 
 
 class GetLogs(Command):
-    """Get user job status."""
+    """Get job logs."""
 
     log = logging.getLogger(__name__)
     _epilog = 'Example : \n\t rean-test get-job-logs -j <job_id> -f <firefox_version> -o <path_to_output_directory>'
