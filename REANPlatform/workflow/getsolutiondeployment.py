@@ -37,7 +37,8 @@ class GetSolutionDeployment(Command):
             deployment_name = parsed_args.deployment_name
             GetSolutionDeployment.validate_parameters(solution_name, solution_version, deployment_name)
             solutio_deployment = GetSolutionDeployment.get_solution_package(solution_name, solution_version, deployment_name)
-            Utility.print_output_as_str("Solution Package Deployment Status: {}".format(solutio_deployment), parsed_args.output)
+            Utility.print_output_as_str("Solution Package Deployment Status")
+            Utility.print_output_as_dict(solutio_deployment, parsed_args.output)
         except ApiException as api_exception:
             Utility.print_exception(api_exception)
 
