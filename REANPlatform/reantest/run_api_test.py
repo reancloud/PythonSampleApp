@@ -13,10 +13,9 @@ class RunApiTest(Command):
     log = logging.getLogger(__name__)
 
     _description = 'Run Api Test'
-    _epilog = 'Example: rean-test run-automation-test --name <name> --test_suite Selenium --url <url> ' \
-              '--git_repository_url <git_url> --git_branch <branch> --command_to_run_test <command to run test> ' \
-              '--output_directory_path <report path> --report_file_name <report file name>  --chrome 64 ' \
-              '--automation_code_language <Java/Ruby> --wait'
+    _epilog = 'Example: rean-test run-api-test --name <name> --url <url> --git_repository_url <git_url>' \
+              '--git_branch <branch> --pre_script <prescript> --command_to_run_test <command_to_run> ' \
+              '--post_script <post_script>  --output_directory <output_dir --report_file_name <report_file_name>'
 
     def get_parser(self, prog_name):
         """get_parser."""

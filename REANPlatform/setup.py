@@ -135,6 +135,7 @@ setup(
             'run-api-test = reantest.run_api_test:RunApiTest',
             'get-accelerator-version = reantest.get_accelerator_version:GetAcceleratorVersion',
             'get-job-logs = reantest.get_logs:GetLogs',
+            'run-infra-gcpspec = reantest.run_infratest_gcpspec:RunInfraTestGcpSpec'
         ],
         'rean.mnc': [
             'configure = mnc.configure:Configure',
