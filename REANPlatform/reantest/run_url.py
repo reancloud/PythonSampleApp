@@ -13,7 +13,7 @@ class RunURLTest(Command):
     log = logging.getLogger(__name__)
 
     _description = 'Run URL test'
-    _epilog = 'Example : \n\t rean-test run-url-test -u http://www.google.com -t GMail -c 64 -w true'
+    _epilog = 'Example : \n\t rean-test run-url-test -u http://www.google.com -t GMail -c 83 -w  -p 10 -a JobName'
     # EPILog will get print after commands
 
     def get_parser(self, prog_name):
