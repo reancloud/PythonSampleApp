@@ -1,0 +1,7 @@
+@Library('reanplatform') _
+
+node {
+    pythonPipelines.hotfixStart(
+        name: 'PythonSampleApp'
+    )
+}

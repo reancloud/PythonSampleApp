@@ -1,0 +1,8 @@
+@Library('reanplatform') _
+
+node {
+    pythonPipelines.hotfixFinish(
+        name: 'PythonSampleApp',
+        setup_py_path: 'REANPlatform'
+    )
+}
