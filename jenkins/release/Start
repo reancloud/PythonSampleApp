@@ -2,6 +2,6 @@
 
 node {
     pythonPipelines.releaseStart(
-        name: 'reanplatform-cli'
+        name: 'PythonSampleApp'
     )
 }

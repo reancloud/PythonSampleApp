@@ -2,7 +2,7 @@
 
 node {
     pythonPipelines.releaseFinish(
-        name: 'reanplatform-cli',
+        name: 'PythonSampleApp',
         setup_py_path: 'REANPlatform'
     )
 }
